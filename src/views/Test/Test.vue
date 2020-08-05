@@ -17,7 +17,14 @@
 
 <script>
 export default {
-
+  mounted() {
+    // 接口调用
+    this.$api.demo.getForumInfo().then(res => {
+      console.log('res => ', res.data.data)
+    }).catch(e => {
+      console.log('err')
+    })
+  }
 }
 </script>
 

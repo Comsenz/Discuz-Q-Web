@@ -9,6 +9,8 @@ Vue.config.productionTip = process.env.NODE_ENV !== 'production'
 import './plugins/element-ui'
 // svg
 import './plugins/svg-icon'
+// api
+import './plugins/api/api'
 
 // 全局样式
 import './assets/sass/main.scss'
