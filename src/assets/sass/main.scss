@@ -105,7 +105,7 @@ table {
   white-space: nowrap;
 }
 .cont{
-  max-width: 1200px;
+  max-width: 1005px;
   margin: 0 auto;
 }
 
@@ -125,29 +125,6 @@ table {
   float: right;
 }
 
-.container-bg{
-  background: #F7F7F7;
-}
-.cont-bg{
-  background: #FFFFFF;
-}
-
-.color-red,.colorRed {
-  color:#F67272 !important;
-}
-
-.color-green,.colorGreen {
-  color: #37BC26 !important;
-}
-
-.color-9,.color9 {
-  color: #999 !important;
-}
-
-.color-blue{
-  color: $default-color !important;
-}
-
 .hidden-text,.text-hidden {
   overflow: hidden;
   text-overflow:ellipsis;
@@ -158,17 +135,3 @@ table {
   cursor: pointer;
 }
 
-.cont-min-height {
-  min-height: calc(100vh - 221px);
-}
-
-.auto-width {
-  height: 100%;
-  body {
-    min-width: auto;
-    width: 100% !important;
-  }
-  #app {
-    height: 100%;
-  }
-}

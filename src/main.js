@@ -7,6 +7,8 @@ Vue.config.productionTip = false
 
 import './plugins/element-ui'
 
+// 全局样式
+import './assets/sass/main.scss'
 new Vue({
   router,
   store,
