@@ -1,56 +1,14 @@
 import Vue from 'vue'
 import {
-  MessageBox,
-  Message,
-  Carousel,
-  CarouselItem,
-  InfiniteScroll,
-  Pagination,
-  Image,
-  Upload,
-  Dialog,
-  Button,
-  Form,
-  FormItem,
-  Select,
-  Input,
-  Option,
-  Radio,
-  RadioGroup,
-  RadioButton,
-  Checkbox,
-  CheckboxButton,
-  CheckboxGroup,
-  Icon,
-  Slider
+  Button
 } from 'element-ui'
 
-Vue.use(Carousel)
-Vue.use(CarouselItem)
-Vue.use(InfiniteScroll)
-Vue.use(Pagination)
-Vue.use(Image)
-Vue.use(Upload)
-Vue.use(Dialog)
-Vue.use(Icon)
 Vue.use(Button)
-Vue.use(Form)
-Vue.use(FormItem)
-Vue.use(Select)
-Vue.use(Input)
-Vue.use(Option)
-Vue.use(Radio)
-Vue.use(RadioGroup)
-Vue.use(RadioButton)
-Vue.use(Checkbox)
-Vue.use(CheckboxButton)
-Vue.use(CheckboxGroup)
-Vue.use(Slider)
 
-Vue.prototype.$msgbox = MessageBox
-Vue.prototype.$alert = MessageBox.alert
-Vue.prototype.$confirm = MessageBox.confirm
-Vue.prototype.$message = Message
+// Vue.prototype.$msgbox = MessageBox
+// Vue.prototype.$alert = MessageBox.alert
+// Vue.prototype.$confirm = MessageBox.confirm
+// Vue.prototype.$message = Message
 
 // 完整列表： 完整组件列表以 components.json 为准
 // import {
