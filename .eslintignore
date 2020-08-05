@@ -1,8 +1,0 @@
-/build/
-/config/
-/.nuxt/
-/dist/
-/*.js
-/.git
-/.vscode
-node_modules
