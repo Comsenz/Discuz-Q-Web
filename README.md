@@ -1,4 +1,4 @@
-# demo-template
+# Discuz-Q-Web
 
 ## Project setup
 ```

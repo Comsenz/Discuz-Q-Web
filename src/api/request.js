@@ -6,7 +6,6 @@ import Qs from 'qs'
 
 // const isDev = process.env.NODE_ENV === 'development'
 const service = axios.create({
-  // baseURL: "http://203.195.197.176/live",
   baseURL: process.env.VUE_APP_BASE_API,
   // timeout: 60000,  // 请求超时时间；Respone 拦截器要做好提示处理
   paramsSerializer: params =>
