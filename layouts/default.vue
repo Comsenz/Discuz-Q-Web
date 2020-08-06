@@ -16,7 +16,7 @@
   align-items: center;
   text-align: center;
   margin-top: 15px;
-  width: 78.5%;
+  width: 1005px;
   height: 706px;
   background: rgba(255, 255, 255, 1);
   box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.03);
