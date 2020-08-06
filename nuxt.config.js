@@ -30,7 +30,7 @@ export default {
   */
   css: [
     'element-ui/lib/theme-chalk/index.css',
-    {src:'~assets/css/main.scss',lang:'scss'}
+    '@/src/assets/sass/reset.scss'
   ],
   /*
   ** Plugins to load before mounting the App
