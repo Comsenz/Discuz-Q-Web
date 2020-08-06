@@ -17,8 +17,6 @@
 </template>
 
 <script>
-  import { status } from '@/library/jsonapi-vuex/index';
-
   export default {
     name: 'findpwd',
     data() {
@@ -76,6 +74,19 @@
 </script>
 
 <style lang="scss" scoped>
+  ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: #C0C4CC;
+  }
+  ::-moz-placeholder { /* Firefox 19+ */
+    color: #C0C4CC;
+  }
+  :-ms-input-placeholder { /* IE 10+ */
+    color: #C0C4CC;
+  }
+  :-moz-placeholder { /* Firefox 18- */
+    color: #C0C4CC;
+  }
+
   .page-findpwd {
     margin: 60px auto 0;
     height: 300px;
@@ -113,6 +124,10 @@
           color: #C0C4CC;
           padding: 0 16px;
           border: none;
+        }
+
+        > input[placeholder], [placeholder], *[placeholder] {
+          color: red !important;
         }
       }
     }
