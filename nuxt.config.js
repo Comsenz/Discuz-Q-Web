@@ -1,5 +1,5 @@
-import enLocale from './plugins/en.js';
-import zhLocale from './plugins/zh.js';
+import enLocale from './plugins/lang/en.js';
+import zhLocale from './plugins/lang/zh.js';
 
 const path = require('path')
 function resolve(dir) {
@@ -37,7 +37,7 @@ export default {
   */
   css: [
     'element-ui/lib/theme-chalk/index.css',
-    { src: '@/assets/css/reset.scss', lang: 'scss' }
+    '@/src/assets/sass/reset.scss'
   ],
   /*
   ** Plugins to load before mounting the App
