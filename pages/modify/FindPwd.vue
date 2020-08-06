@@ -1,5 +1,5 @@
 <template>
-  <div class="page-findpwd">
+  <div class="page-find-pwd">
     <div class="title"> {{ $t('modify.forgetPassword') }}\{{ $t('modify.retrievePassword') }}</div>
     <div class="describe"> {{ $t('modify.retrievePasswordByPhone') }}</div>
     <div class="retrieve-inputs">
@@ -87,7 +87,7 @@
     color: #C0C4CC;
   }
 
-  .page-findpwd {
+  .page-find-pwd {
     margin: 60px auto 0;
     height: 300px;
     width: 300px;

@@ -1,7 +1,7 @@
 <template>
-  <div class="page-findpwd">
+  <div class="page-reset-pwd">
     <div class="title"> {{ $t('modify.newPwdTitle') }} </div>
-    <div class="describe"> {{ $t('modify.user') }} "特朗普" {{ $t('modify.resetPassword') }}</div>
+    <div class="describe"> {{ $t('modify.user') }} ”特朗普“ {{ $t('modify.resetPassword') }}</div>
     <div class="retrieve-inputs">
       <label>
         <input type="text" :placeholder="$t('modify.enterNew')">
@@ -16,7 +16,7 @@
 
 <script>
   export default {
-    name: 'ResetPassword',
+    name: 'ResetPwd',
   }
 </script>
 
@@ -34,7 +34,7 @@
     color: #C0C4CC;
   }
 
-  .page-findpwd {
+  .page-reset-pwd {
     margin: 60px auto 0;
     height: 300px;
     width: 300px;
