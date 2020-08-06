@@ -5,64 +5,91 @@
         <img src="@/assets/logo.png"
              alt />
       </div>
-      <div class="log-r">
-        <div>
-          <button type>登录</button>
-        </div>
-        <div>
-          <button type>注册</button>
-        </div>
+      <div class="h-search">
+        <el-input size="medium"
+                  placeholder="请输入内容"
+                  suffix-icon="el-icon-search"
+                  v-model="inputVal">
+        </el-input>
       </div>
-      <!-- <HSearch></HSearch> -->
+      <div class="h-button">
+        <el-button type="primary"
+                   plain
+                   size="small"
+                   class="h-button1">登录</el-button>
+
+        <el-button type="primary"
+                   size="small"
+                   class="h-button2">注册</el-button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-// import HSearch from './search/index'
+
 export default {
-  // components:{
-  //   HSearch
-  // },
   name: "Header",
   data () {
-    return {};
+    return {
+      inputVal:''
+    };
   },
 };
 </script>
 <style lang="scss">
 .header {
-  width: 100%;
+  min-width: 1032px;
   height: 65px;
   background: rgba(255, 255, 255, 1);
   box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.03);
   opacity: 1;
   .header-container {
     margin: 0 auto;
-    width: 78.5%;
-    height: 100%;
+    width: 1005px;
+    height: 65px;
     color: yellow;
     padding: 15px 0;
+    align-items: center;
     .logo {
       float: left;
       width: 150px;
       height: 35px;
-      /* background: red; */
+      img {
+        height: 100%;
+      }
+    }
+    .h-search {
+      margin-left: 30px;
+      width: 298px;
+      height: 36px;
+      background: rgba(255, 255, 255, 1);
+      border: 1px solid rgba(237, 237, 237, 1);
+      opacity: 0.66;
+      border-radius: 4px;
+      float: left;
+      /* background: yellow; */
+    }
+    .h-button {
+      float: right;
+      .h-button1 {
+        width: 60px;
+        height: 35px;
+        color: #1878f3;
+        background: #ffffff;
+        border-color: #1878f3;
+      }
+      .h-button2 {
+        width: 60px;
+        height: 35px;
+        color: #ffff;
+        background: #1878f3;
+        border-color: #1878f3;
+      }
     }
   }
 }
 
-.h-search {
-  margin-left: 30px;
-  width: 298px;
-  height: 33px;
-  background: rgba(255, 255, 255, 1);
-  border: 1px solid rgba(237, 237, 237, 1);
-  opacity: 0.66;
-  border-radius: 4px;
-  float: left;
-  /* background: yellow; */
-}
 .h-search-input {
   width: 255px;
   border: none;
