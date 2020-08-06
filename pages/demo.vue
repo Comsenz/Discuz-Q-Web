@@ -6,7 +6,10 @@
     <el-button type="info">信息按钮</el-button>
     <el-button type="warning">警告按钮</el-button>
     <el-button type="danger">危险按钮</el-button>
-    
+    <p>svg</p>
+    <div>
+      <svg-icon style="font-size: 100px;" type="alipay" />
+    </div>
     <div>{{info}}</div>
   </div>
 </template>
