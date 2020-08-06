@@ -68,7 +68,6 @@ export default {
           ...enLocale
         },
         zh: {
-          welcome: '欢迎',
           ...zhLocale
         }
       }
