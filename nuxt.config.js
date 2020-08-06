@@ -51,8 +51,12 @@ export default {
   /*
   ** Nuxt.js modules
   */
-  modules: [
+   modules: [
+    '@nuxtjs/axios',
   ],
+  axios: {
+    // proxyHeaders: false
+  },
   /*
   ** Build configuration
   ** See https://nuxtjs.org/api/configuration-build/

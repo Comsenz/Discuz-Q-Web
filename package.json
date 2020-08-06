@@ -9,8 +9,10 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@nuxtjs/axios": "^5.12.1",
     "element-ui": "^2.13.2",
-    "nuxt": "^2.14.0"
+    "nuxt": "^2.14.0",
+    "qs": "^6.5.2"
   },
   "devDependencies": {}
 }
