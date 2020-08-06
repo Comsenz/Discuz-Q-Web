@@ -6,7 +6,7 @@ import Qs from 'qs'
 const isDev = process.env.NODE_ENV === 'development'
 const service = axios.create({
   // baseURL: process.env.VUE_APP_BASE_API,
-  baseURL: 'https://discuz.chat/api',
+  baseURL: process.env.baseURL,
   // timeout: 60000,  // 请求超时时间；Respone 拦截器要做好提示处理
   paramsSerializer: params =>
     Qs.stringify(params, {
