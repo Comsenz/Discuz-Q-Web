@@ -14,14 +14,14 @@
         </el-input>
 
       <div class="h-button">
-        <nuxt-link to="user/register">
+        <nuxt-link to="user/login">
            <el-button type="primary"
                    plain
                    size="small"
                    class="h-button1">{{ $t('user.login')  }}</el-button>
         </nuxt-link>
 
-        <nuxt-link to="user/login">
+        <nuxt-link to="user/register">
         <el-button type="primary"
                    size="small"
                    class="h-button2">{{ $t('user.register') }}</el-button>
