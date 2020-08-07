@@ -78,7 +78,7 @@
         }
         status.run(() => this.$store.dispatch('jv/post', params))
           .then(res => {
-            window.localStorage.setItem('username', res.username)
+            if (process.client) window.localStorage.setItem('username', res.username)
             this.$router.push('/modify/resetpwdsuccess')
           }, e => {
             const {response: {status}} = e

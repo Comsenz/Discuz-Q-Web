@@ -5,6 +5,7 @@ import locale from 'element-ui/lib/locale/lang/en'
 import {
   Button,
   Input,
+  Image,
   Message,
   Tabs,
   TabPane,
@@ -13,6 +14,7 @@ import {
 
 Vue.use(Button, { locale })
 Vue.use(Input, { locale })
+Vue.use(Image, { locale })
 Vue.use(Tabs, { locale })
 Vue.use(TabPane, { locale })
 Vue.use(Checkbox, { locale })
