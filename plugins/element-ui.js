@@ -6,10 +6,16 @@ import {
   Button,
   Input,
   Image,
-  Message
+  Message,
+  Tabs,
+  TabPane,
+  Checkbox
 } from 'element-ui'
 
 Vue.use(Button, { locale })
 Vue.use(Input, { locale })
 Vue.use(Image, { locale })
+Vue.use(Tabs, { locale })
+Vue.use(TabPane, { locale })
+Vue.use(Checkbox, { locale })
 Vue.prototype.$message = Message;
