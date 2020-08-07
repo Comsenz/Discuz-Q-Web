@@ -5,22 +5,27 @@
         <img src="@/assets/logo.png"
              alt />
       </div>
-      <div class="h-search">
+
         <el-input size="medium"
                   placeholder="请输入内容"
                   suffix-icon="el-icon-search"
-                  v-model="inputVal">
+                  v-model="inputVal"
+                  class="h-search">
         </el-input>
-      </div>
+
       <div class="h-button">
-        <el-button type="primary"
+        <nuxt-link to="user/register">
+           <el-button type="primary"
                    plain
                    size="small"
-                   class="h-button1">登录</el-button>
+                   class="h-button1">{{ $t('user.login')  }}</el-button>
+        </nuxt-link>
 
+        <nuxt-link to="user/login">
         <el-button type="primary"
                    size="small"
-                   class="h-button2">注册</el-button>
+                   class="h-button2">{{ $t('user.register') }}</el-button>
+        </nuxt-link>
       </div>
     </div>
   </div>
@@ -37,7 +42,7 @@ export default {
   },
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .header {
   min-width: 1032px;
   height: 65px;
@@ -48,7 +53,6 @@ export default {
     margin: 0 auto;
     width: 1005px;
     height: 65px;
-    color: yellow;
     padding: 15px 0;
     align-items: center;
     .logo {
