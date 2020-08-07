@@ -4,19 +4,24 @@
     <div class="describe"> {{ $t('modify.retrievePasswordByPhone') }}</div>
     <div class="retrieve-inputs">
       <label>
-        <input type="text" @input="onInput" :placeholder="$t('modify.placeEnterRegisteredPhone')">
-        <button @click="getVerifyCode" :disabled="isVerifyDisabled" v-if="!canCountDown" >{{$t('modify.sendVerifyCode')}}</button>
-        <button disabled v-else >{{countDownSecond + $t('modify.retransmission')}}</button>
+        <input maxlength="11" type="text" @input="onInput" :placeholder="$t('modify.placeEnterRegisteredPhone')">
+        <button @click="sendVerifyCode" :disabled="isVerifyDisabled" v-if="!canCountDown">
+          {{$t('modify.sendVerifyCode')}}
+        </button>
+        <button disabled v-else>{{countDownSecond + $t('modify.retransmission')}}</button>
       </label>
-      <label>
-        <input type="text" :placeholder="$t('modify.placeEnterCode')">
-      </label>
+      <el-input maxlength="6" v-model="verifyCode" :placeholder="$t('modify.placeEnterCode')"></el-input>
+      <el-input v-model="newPassword" :placeholder="$t('modify.enterNew')" show-password></el-input>
+      <el-input v-model="newPasswordRepeat" :placeholder="$t('modify.enterNewRepeat')" show-password></el-input>
     </div>
-    <button class="submit">{{$t('modify.submit')}}</button>
+    <button @click="submit" class="submit">{{$t('modify.submit')}}</button>
   </div>
 </template>
 
 <script>
+  // import retrievePassword from '@/api/v1/retrievePassword'
+  import {status} from '@/library/jsonapi-vuex/index'
+
   export default {
     name: 'findpwd',
     data() {
@@ -24,51 +29,62 @@
         phoneNumber: '',
         isVerifyDisabled: true,
         canCountDown: false,
-        countDownSecond: 10
+        countDownSecond: 60,
+        verifyCode: '',
+        newPassword: '',
+        newPasswordRepeat: '',
+        username: ''
       }
     },
     methods: {
-      // onLoad(sing) {
-      //   this.sendtype = sing.pas;
-      //   this.userid = Number(sing.user) || '';
-      //   if (this.userid) {
-      //     this.inptdisplay = true;
-      //   } else {
-      //     this.inptdisplay = false;
-      //   }
-      //   this.personaldata();
-      // },
       onInput(e) {
         this.phoneNumber = e.target.value.replace(/[^\d]/g, '')
         this.isVerifyDisabled = this.phoneNumber.length !== 11
       },
-      getVerifyCode() {
+      countDown(interval) {
         this.canCountDown = true
+        this.countDownSecond = interval
         const countDownInterval = setInterval(() => {
           this.countDownSecond -= 1
           if (this.countDownSecond === 0) {
             this.canCountDown = false
-            this.countDownSecond = 10
             clearInterval(countDownInterval)
           }
         }, 1000)
       },
-      sendOut() {
+      async sendVerifyCode() {
         const params = {
-          _jv: {
-            type: 'sms/send',
-          },
+          _jv: {type: 'sms/send',},
           mobile: this.phoneNumber,
           type: 'reset_pwd',
         }
-        const sendphon = status.run(() => this.$store.dispatch('jv/post', params))
-        sendphon.then(res => {
-          if (res) {
-            this.num -= 1
-          }
-        })
+        status.run(() => this.$store.dispatch('jv/post', params))
+          .then(res => {
+            if (res.interval) this.countDown(res.interval)
+          }, e => {
+            const {response: {data: {errors}}} = e
+            if (errors[0]) return this.$message.error(errors[0].detail[0])
+          })
       },
-
+      submit() {
+        if (!this.verifyCode) return this.$message.warning('验证码不能为空')
+        if (this.newPassword !== this.newPasswordRepeat) return this.$message.warning('两次输入密码不同')
+        const params = {
+          _jv: {type: 'sms/verify',},
+          mobile: this.phoneNumber,
+          code: this.verifyCode,
+          password: this.newPassword,
+          type: 'reset_pwd',
+        }
+        status.run(() => this.$store.dispatch('jv/post', params))
+          .then(res => {
+            window.localStorage.setItem('username', res.username)
+            this.$router.push('/modify/resetpwdsuccess')
+          }, e => {
+            const {response: {status}} = e
+            if (status === 500) return this.$message.error('验证码不正确')
+          })
+      }
     }
   }
 </script>
@@ -77,12 +93,15 @@
   ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
     color: #C0C4CC;
   }
+
   ::-moz-placeholder { /* Firefox 19+ */
     color: #C0C4CC;
   }
+
   :-ms-input-placeholder { /* IE 10+ */
     color: #C0C4CC;
   }
+
   :-moz-placeholder { /* Firefox 18- */
     color: #C0C4CC;
   }
@@ -107,6 +126,11 @@
     > .retrieve-inputs {
       margin-top: 40px;
 
+      > .el-input {
+        margin-bottom: 20px;
+        color: #C0C4CC;
+      }
+
       > label {
         width: 100%;
         height: 40px;
@@ -116,19 +140,18 @@
         margin-bottom: 20px;
 
         > button {
+          color: #1878F3;
           width: 90px;
           border-left: 1px solid #DCDFE6;
         }
 
         > input {
-          color: #C0C4CC;
-          padding: 0 16px;
+          flex: 1;
           border: none;
+          padding: 0 16px;
+          color: #C0C4CC;
         }
 
-        > input[placeholder], [placeholder], *[placeholder] {
-          color: red !important;
-        }
       }
     }
 

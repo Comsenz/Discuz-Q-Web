@@ -1,7 +1,7 @@
 <template>
   <div class="page-findpwd">
     <div class="title"> {{ $t('modify.resetPasswordSuccess') }}</div>
-    <div class="describe"> {{ $t('modify.user') }} ”特朗普“ {{ $t('modify.resetPasswordSuccessRepeat') }} !</div>
+    <div class="describe"> {{ $t('modify.user') + ' “' + username + '” ' + $t('modify.resetPasswordSuccessRepeat') }} !</div>
     <div class="detail"> {{ $t('modify.resetPasswordLoginTip') }}</div>
     <el-button class="login">登录</el-button>
   </div>
@@ -10,6 +10,12 @@
 <script>
   export default {
     name: 'ResetPwdSuccess',
+    computed: {
+      username() {
+        if (process.client) return window.localStorage.getItem('username') || ''
+        return ''
+      }
+    }
   }
 </script>
 
