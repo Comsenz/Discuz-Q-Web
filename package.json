@@ -11,14 +11,19 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.12.1",
     "element-ui": "^2.13.2",
+    "jsonpath-plus": "^3.0.0",
+    "lodash": "^4.17.19",
+    "lodash.get": "^4.4.2",
+    "lodash.isequal": "^4.5.0",
+    "lodash.merge": "^4.6.2",
     "nuxt": "^2.14.0",
     "nuxt-i18n": "^6.13.7",
-    "qs": "^6.5.2",
-    "sass": "^1.26.10",
-    "sass-loader": "^9.0.3"
+    "qs": "^6.5.2"
   },
   "devDependencies": {
     "babel-plugin-component": "^1.1.1",
+    "sass": "^1.26.10",
+    "sass-loader": "^9.0.3",
     "svg-sprite-loader": "^5.0.0"
   }
 }

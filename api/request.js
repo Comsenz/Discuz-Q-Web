@@ -17,6 +17,7 @@ const service = axios.create({
 // Request 拦截器
 service.interceptors.request.use(
   oConfig => {
+    oConfig.headers['Accept'] = 'application/vnd.api+json'
     return oConfig
   },
   oError => {

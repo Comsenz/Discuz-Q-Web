@@ -19,25 +19,46 @@
 </template>
 
 <script>
-import demoApi from '@/api/v1/demo'
 export default {
   // 异步数据用法
-  async asyncData({ params }) {
-    const { data } = await demoApi.getForumInfo()
-    return { info: data.data }
+  async asyncData({ params, store }) {
+    const _params = {
+      _jv: {
+        type: 'forum',
+      },
+    };
+    
+    const data = await store.dispatch('jv/get', _params)
+    console.log('asyncData =>', data)
+    return { info: data }
   },
   data() {
     return {
       info: ''
     }
   },
+  mounted() {
+     const params = {
+        _jv: {
+          type: 'users?page[limit]=4',
+        },
+        include: 'groups',
+     };
+      this.$store.dispatch('jv/get', params).then(data => {
+        console.log('user data => ', data)
+      });
+  },
   methods: {
     getData() {
-      console.log(demoApi)
-      demoApi.getForumInfo().then(res => {
-        console.log('res =>', res.data.data)
-        this.info = JSON.stringify(res.data.data || {})
-      })
+      const params = {
+        _jv: {
+          type: 'forum',
+        },
+      };
+      this.$store.dispatch('jv/get', params).then(data => {
+        console.log('forum data => ', data)
+        this.info = data
+      });
     },
     storeCommit() {
       this.$store.commit('demo/increment')
