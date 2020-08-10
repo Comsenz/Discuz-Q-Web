@@ -18,8 +18,8 @@ const service = axios.create({
 service.interceptors.request.use(
   oConfig => {
     oConfig.headers['Accept'] = 'application/vnd.api+json'
-    if(localStorage.getItem('access_token')){
-    oConfig.headers['authorization'] = `Bearer ${localStorage.getItem('access_token')}`
+    if (localStorage.getItem('access_token')) {
+      oConfig.headers['authorization'] = `Bearer ${localStorage.getItem('access_token')}`
     }
     return oConfig
   },

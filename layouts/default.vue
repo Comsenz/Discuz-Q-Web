@@ -1,6 +1,9 @@
 <template>
   <div>
-    <Header :key="this.$route.path" :head-img="info.set_site ? info.set_site.site_header_logo : ''" />
+    <Header
+      :key="this.$route.path"
+      :head-img="info.set_site ? info.set_site.site_header_logo : ''"
+    />
     <div class="app-cont">
       <Nuxt />
     </div>
@@ -16,15 +19,18 @@ export default {
     }
   },
   mounted() {
-    const _params = {
-      _jv: {
-        type: 'forum'
-      }
-    }
-    this.$store.dispatch('jv/get', _params).then(data => {
-      console.log('user data => ', data)
-      this.info = data
-    })
+    const info = this.$store.getters['jv/get']('forums/1')
+    this.info = info
+    console.log(info)
+    // const _params = {
+    //   _jv: {
+    //     type: 'forum'
+    //   }
+    // }
+    // this.$store.dispatch('jv/get', _params).then(data => {
+    //   console.log('user data => ', data)
+    //   this.info = data
+    // })
   }
 }
 </script>

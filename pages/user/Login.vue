@@ -222,12 +222,12 @@ export default {
           if (status === 500) return this.$message.error('验证码不正确')
         })
     },
-    async QRcode () {
+    async QRcode() {
       const _params = {
         _jv: {
-          type: 'oauth/wechat/web/user',
-        },
-      };
+          type: 'oauth/wechat/web/user'
+        }
+      }
       await this.$store.dispatch('jv/get', _params).then(data => {
         // console.log('user data => ', data)
         this.info = data
@@ -239,13 +239,12 @@ export default {
         _jv: {
           type: encodeURI(`oauth/wechat/web/user/search?scene_str="${this.scene_str}"`)
 
-        },
-      };
+        }
+      }
       console.log(params)
       await this.$store.dispatch('jv/get', params).then(data => {
         console.log('user data => ', data)
-
-      });
+      })
     }
 
   }

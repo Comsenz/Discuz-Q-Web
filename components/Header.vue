@@ -16,7 +16,11 @@
         class="h-search"
       />
 
-      <div v-if="!isLogin" v-cloak class="h-button">
+      <div
+        v-if="!isLogin"
+        v-cloak
+        class="h-button"
+      >
         <nuxt-link :to="'/user/login'">
           <el-button
             type="primary"
@@ -34,13 +38,19 @@
           >{{ $t('user.register') }}</el-button>
         </nuxt-link>
       </div>
-      <div class="h-button" v-else v-cloak>
+      <div
+        v-else
+        v-cloak
+        class="h-button"
+      >
 
-           <el-button type="primary"
-                   plain
-                   size="small"
-                   class="h-button3"
-                   @click="ExitLogin">{{ $t('user.logout')  }}</el-button>
+        <el-button
+          type="primary"
+          plain
+          size="small"
+          class="h-button3"
+          @click="ExitLogin"
+        >{{ $t('user.logout') }}</el-button>
 
       </div>
     </div>
@@ -67,12 +77,12 @@ export default {
   mounted() {
     this.isLoginh()
   },
-  methods:{
-    isLoginh(){
-       this.isLogin = window.localStorage.getItem('access_token') ? true : false
-       console.log(this.isLogin)
+  methods: {
+    isLoginh() {
+      this.isLogin = !!window.localStorage.getItem('access_token')
+      console.log(this.isLogin)
     },
-    ExitLogin(){
+    ExitLogin() {
       this.isLogin = window.localStorage.removeItem('access_token')
     }
   }
