@@ -19,7 +19,6 @@
 </template>
 
 <script>
-  // import retrievePassword from '@/api/v1/retrievePassword'
   import {status} from '@/library/jsonapi-vuex/index'
 
   export default {

@@ -2,16 +2,15 @@
   <div class="page-post">
     <main>
       <div class="title">
-        <img class="avatar" :src="author.avatarUrl" :alt="author.username">
+        <Avatar :user="author"></Avatar>
+<!--        <img class="avatar" :src="author.avatarUrl" :alt="author.username">-->
         <div class="title-info">
           <div class="author-name">{{author.username}}</div>
           <div class="timer">发布于 {{formatDate(article.createdAt)}}（编辑于 {{formatDate(article.updatedAt)}}）</div>
         </div>
       </div>
       <article>
-        <div class="content">
-          {{article.content}}
-        </div>
+        <div class="content" v-html="article.contentHtml" />
         <div class="images">
           <el-image
             v-for="(image, index) in article.images"
@@ -45,11 +44,12 @@
     },
     methods: {
       getPost() {
-        const id = 1766 // 以后需要从导航取
+        const id = 1796 // 以后需要从导航取
         const params = { _jv: {type: `/threads/${id}`} }
         this.$store.dispatch('jv/get', params).then(data => {
           this.author = data.user
           this.article = data.firstPost
+          console.log('post', data)
           console.log('author', this.author)
           console.log('article', this.article)
         })

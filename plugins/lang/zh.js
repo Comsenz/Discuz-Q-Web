@@ -136,7 +136,7 @@ export default {
   core: {
     register_close: '站点禁止注册',
     bind_error: '绑定错误',
-    noavatar: '无',
+    noAvatar: '无',
     thousand: '万',
     content: '内容',
     not_authenticated: '请登录',
