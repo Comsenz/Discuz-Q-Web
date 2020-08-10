@@ -19,18 +19,15 @@ export default {
     }
   },
   mounted() {
-    const info = this.$store.getters['jv/get']('forums/1')
-    this.info = info
-    console.log(info)
-    // const _params = {
-    //   _jv: {
-    //     type: 'forum'
-    //   }
-    // }
-    // this.$store.dispatch('jv/get', _params).then(data => {
-    //   console.log('user data => ', data)
-    //   this.info = data
-    // })
+    const _params = {
+      _jv: {
+        type: 'forum'
+      }
+    }
+    this.$store.dispatch('jv/get', _params).then(data => {
+      console.log('user data => ', data)
+      this.info = data
+    })
   }
 }
 </script>
