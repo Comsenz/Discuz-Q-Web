@@ -111,8 +111,8 @@ export default {
       content: '获取验证码',
       canClick: true,
       verifyCode: '',
-      info:'',
-      scene_str:''
+      info: '',
+      scene_str: ''
 
     }
   },
@@ -201,12 +201,12 @@ export default {
         })
 
     },
-    async QRcode(){
+    async QRcode () {
       const _params = {
-      _jv: {
-        type: 'oauth/wechat/web/user',
-      },
-    };
+        _jv: {
+          type: 'oauth/wechat/web/user',
+        },
+      };
       await this.$store.dispatch('jv/get', _params).then(data => {
         // console.log('user data => ', data)
         this.info = data
@@ -215,23 +215,17 @@ export default {
       });
 
 
-       const params = {
-      _jv: {
-        type: 'oauth/wechat/web/user/search',
-        scene_str:'this.scene_str'
-      },
-    };
-    console.log(params)
-       this.$store.dispatch('jv/get', params).then(data => {
+      const params = {
+        _jv: {
+          type: encodeURI(`oauth/wechat/web/user/search?scene_str="${this.scene_str}"`)
+
+        },
+      };
+      console.log(params)
+      await this.$store.dispatch('jv/get', params).then(data => {
         console.log('user data => ', data)
 
       });
-
-
-    },
-    async QRcodeCheck(){
-
-
     }
 
   }
