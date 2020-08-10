@@ -10,5 +10,12 @@ export const mutations = {
 import { jsonapiModule } from '../library/jsonapi-vuex/index';
 import service from '../api/request';
 export const modules = {
-  jv: jsonapiModule(service, { preserveJson: true, mergeRecords: true }),
+  jv: jsonapiModule(
+    service, 
+    { 
+      preserveJson: true,
+      mergeRecords: true,
+      followRelationshipsData: false
+    }
+  ),
 }

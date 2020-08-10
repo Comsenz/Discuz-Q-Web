@@ -3,7 +3,11 @@
     <div class="title"> {{ $t('modify.resetPasswordSuccess') }}</div>
     <div class="describe"> {{ $t('modify.user') + ' “' + username + '” ' + $t('modify.resetPasswordSuccessRepeat') }} !</div>
     <div class="detail"> {{ $t('modify.resetPasswordLoginTip') }}</div>
-    <el-button class="login">登录</el-button>
+    <nuxt-link to="/user/login" class="login">
+        <el-button>
+        {{ $t('user.login') }}
+        </el-button>
+    </nuxt-link>
   </div>
 </template>
 
@@ -43,6 +47,7 @@
     }
 
     > .login {
+      display: block;
       margin-top: 20px;
     }
 
