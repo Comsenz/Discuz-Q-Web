@@ -13,7 +13,8 @@
         <el-input placeholder="请输入内容"
                   v-model="passWord"
                   type="password"
-                  class="reg-input">
+                  class="reg-input"
+                  @keyup.enter.native="Register">
         </el-input>
         <span class="title2">重复密码</span>
         <el-input placeholder="请输入内容"
@@ -102,6 +103,7 @@
 
 <script>
 export default {
+  name:'Register',
   data () {
     return {
       userName: '',

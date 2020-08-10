@@ -294,6 +294,10 @@ export default {
   },
   // 登录注册
   user: {
+    status:'remember my status',
+    phonelogin:'PhoneLogin',
+    userlogin:'UserLogin',
+    quicklogin:'QuickLogin',
     login: 'Login',
     register: 'Register',
     registerReason: 'Register reason',
@@ -303,6 +307,7 @@ export default {
     reason: 'Please input reason',
     phoneNumber: 'Please input phoneNumber',
     pwd: 'Please input password',
+    verification:'verificationCode',
     verificationCode: 'Please input verificationCode',
     exist: 'An existing account? Login',
     noexist: 'There is no account? Register',

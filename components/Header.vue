@@ -2,26 +2,26 @@
   <div class="header">
     <div class="header-container">
       <div class="logo">
-        <img src="@/assets/logo.png"
+        <img :src="headImg != '' && headImg != null ? headImg : require('static/logo.png')"
              alt />
       </div>
 
         <el-input size="medium"
-                  placeholder="请输入内容"
+                  :placeholder="$t('search.search')"
                   suffix-icon="el-icon-search"
                   v-model="inputVal"
                   class="h-search">
         </el-input>
 
-      <div class="h-button">
-        <nuxt-link to="user/login">
+      <div class="h-button" v-if="!isLogin" v-cloak>
+        <nuxt-link :to="'/user/login'">
            <el-button type="primary"
                    plain
                    size="small"
                    class="h-button1">{{ $t('user.login')  }}</el-button>
         </nuxt-link>
 
-        <nuxt-link to="user/register">
+        <nuxt-link to="/user/register">
         <el-button type="primary"
                    size="small"
                    class="h-button2">{{ $t('user.register') }}</el-button>
@@ -35,14 +35,34 @@
 
 export default {
   name: "Header",
+  props:{
+    headImg: {
+      type: String,
+      default: '',
+    }
+  },
   data () {
     return {
-      inputVal:''
+      inputVal:'',
+      isLogin:''
+
     };
   },
+  mounted(){
+    this.isLoginh()
+  },
+  methods:{
+    isLoginh(){
+       this.isLogin = window.localStorage.getItem('access_token') ? true : false
+       console.log(this.isLogin)
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
+[v-cloak] {
+  display: none;
+}
 .header {
   min-width: 1032px;
   height: 65px;

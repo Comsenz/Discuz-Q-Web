@@ -1,9 +1,9 @@
 export const state = () => ({
-  
+
 })
 
 export const mutations = {
-  
+
 }
 
 // https://github.com/mrichar1/jsonapi-vuex

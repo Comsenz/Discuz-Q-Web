@@ -18,6 +18,7 @@ const service = axios.create({
 service.interceptors.request.use(
   oConfig => {
     oConfig.headers['Accept'] = 'application/vnd.api+json'
+    // oConfig.headers['Authorization'] = `Bearer ${localStorage.getItem('access_token')}`
     return oConfig
   },
   oError => {
@@ -27,7 +28,7 @@ service.interceptors.request.use(
 // Respone 拦截器
 service.interceptors.response.use(
   oRes => {
-    
+
     return oRes
   },
   oError => {
