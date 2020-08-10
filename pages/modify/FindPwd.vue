@@ -107,8 +107,7 @@
   }
 
   .page-find-pwd {
-    margin: 60px auto 0;
-    height: 300px;
+    margin: 60px auto;
     width: 300px;
 
     > .title {
