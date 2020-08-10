@@ -1,13 +1,32 @@
 <template>
   <div>
-    <Header/>
+    <Header :head-img="info.set_site ? info.set_site.site_header_logo : ''" :key="this.$route.path"/>
     <div class="container">
       <Nuxt/>
     </div>
     <Footer/>
   </div>
 </template>
-
+<script>
+export default {
+  data() {
+    return {
+      info: ''
+    }
+  },
+  mounted() {
+     const _params = {
+      _jv: {
+        type: 'forum',
+      },
+    };
+      this.$store.dispatch('jv/get', _params).then(data => {
+        console.log('user data => ', data)
+        this.info = data
+      });
+  }
+}
+</script>
 <style>
   .container {
     display: flex;
