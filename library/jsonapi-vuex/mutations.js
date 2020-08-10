@@ -20,6 +20,7 @@ export default () => {
     deleteRecord: (state, record) => {
       const [type, id] = utils.getTypeId(record)
       if (!type || !id) {
+        // eslint-disable-next-line no-throw-literal
         throw `deleteRecord: Missing type or id: ${record}`
       }
       Vue.delete(state[type], id)
@@ -59,14 +60,14 @@ export default () => {
      */
     clearRecords: (state, records) => {
       const newRecords = utils.normToStore(records)
-      for (let [type, item] of Object.entries(newRecords)) {
+      for (const [type, item] of Object.entries(newRecords)) {
         const storeRecords = get(state, [type], {})
-        for (let id of Object.keys(storeRecords)) {
+        for (const id of Object.keys(storeRecords)) {
           if (!utils.hasProperty(item, id)) {
             Vue.delete(state[type], id)
           }
         }
       }
-    },
+    }
   }
 }

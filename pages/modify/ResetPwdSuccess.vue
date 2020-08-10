@@ -4,23 +4,23 @@
     <div class="describe"> {{ $t('modify.user') + ' “' + username + '” ' + $t('modify.resetPasswordSuccessRepeat') }} !</div>
     <div class="detail"> {{ $t('modify.resetPasswordLoginTip') }}</div>
     <nuxt-link to="/user/login" class="login">
-        <el-button>
+      <el-button>
         {{ $t('user.login') }}
-        </el-button>
+      </el-button>
     </nuxt-link>
   </div>
 </template>
 
 <script>
-  export default {
-    name: 'ResetPwdSuccess',
-    computed: {
-      username() {
-        if (process.client) return window.localStorage.getItem('username') || ''
-        return ''
-      }
+export default {
+  name: 'ResetPwdSuccess',
+  computed: {
+    username() {
+      if (process.client) return window.localStorage.getItem('username') || ''
+      return ''
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

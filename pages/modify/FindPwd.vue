@@ -4,89 +4,88 @@
     <div class="describe"> {{ $t('modify.retrievePasswordByPhone') }}</div>
     <div class="retrieve-inputs">
       <label>
-        <input maxlength="11" type="text" @input="onInput" :placeholder="$t('modify.placeEnterRegisteredPhone')">
-        <button @click="sendVerifyCode" :disabled="isVerifyDisabled" v-if="!canCountDown">
-          {{$t('modify.sendVerifyCode')}}
+        <input maxlength="11" type="text" :placeholder="$t('modify.placeEnterRegisteredPhone')" @input="onInput">
+        <button v-if="!canCountDown" :disabled="isVerifyDisabled" @click="sendVerifyCode">
+          {{ $t('modify.sendVerifyCode') }}
         </button>
-        <button disabled v-else>{{countDownSecond + $t('modify.retransmission')}}</button>
+        <button v-else disabled>{{ countDownSecond + $t('modify.retransmission') }}</button>
       </label>
-      <el-input maxlength="6" v-model="verifyCode" :placeholder="$t('modify.placeEnterCode')"></el-input>
-      <el-input v-model="newPassword" :placeholder="$t('modify.enterNew')" show-password></el-input>
-      <el-input v-model="newPasswordRepeat" :placeholder="$t('modify.enterNewRepeat')" show-password></el-input>
+      <el-input v-model="verifyCode" maxlength="6" :placeholder="$t('modify.placeEnterCode')" />
+      <el-input v-model="newPassword" :placeholder="$t('modify.enterNew')" show-password />
+      <el-input v-model="newPasswordRepeat" :placeholder="$t('modify.enterNewRepeat')" show-password />
     </div>
-    <button @click="submit" class="submit">{{$t('modify.submit')}}</button>
+    <button class="submit" @click="submit">{{ $t('modify.submit') }}</button>
   </div>
 </template>
 
 <script>
-  // import retrievePassword from '@/api/v1/retrievePassword'
-  import {status} from '@/library/jsonapi-vuex/index'
+import { status } from '@/library/jsonapi-vuex/index'
 
-  export default {
-    name: 'findpwd',
-    data() {
-      return {
-        phoneNumber: '',
-        isVerifyDisabled: true,
-        canCountDown: false,
-        countDownSecond: 60,
-        verifyCode: '',
-        newPassword: '',
-        newPasswordRepeat: '',
-        username: ''
-      }
+export default {
+  name: 'Findpwd',
+  data() {
+    return {
+      phoneNumber: '',
+      isVerifyDisabled: true,
+      canCountDown: false,
+      countDownSecond: 60,
+      verifyCode: '',
+      newPassword: '',
+      newPasswordRepeat: '',
+      username: ''
+    }
+  },
+  methods: {
+    onInput(e) {
+      this.phoneNumber = e.target.value.replace(/[^\d]/g, '')
+      this.isVerifyDisabled = this.phoneNumber.length !== 11
     },
-    methods: {
-      onInput(e) {
-        this.phoneNumber = e.target.value.replace(/[^\d]/g, '')
-        this.isVerifyDisabled = this.phoneNumber.length !== 11
-      },
-      countDown(interval) {
-        this.canCountDown = true
-        this.countDownSecond = interval
-        const countDownInterval = setInterval(() => {
-          this.countDownSecond -= 1
-          if (this.countDownSecond === 0) {
-            this.canCountDown = false
-            clearInterval(countDownInterval)
-          }
-        }, 1000)
-      },
-      async sendVerifyCode() {
-        const params = {
-          _jv: {type: 'sms/send',},
-          mobile: this.phoneNumber,
-          type: 'reset_pwd',
+    countDown(interval) {
+      this.canCountDown = true
+      this.countDownSecond = interval
+      const countDownInterval = setInterval(() => {
+        this.countDownSecond -= 1
+        if (this.countDownSecond === 0) {
+          this.canCountDown = false
+          clearInterval(countDownInterval)
         }
-        status.run(() => this.$store.dispatch('jv/post', params))
-          .then(res => {
-            if (res.interval) this.countDown(res.interval)
-          }, e => {
-            const {response: {data: {errors}}} = e
-            if (errors[0]) return this.$message.error(errors[0].detail[0])
-          })
-      },
-      submit() {
-        if (!this.verifyCode) return this.$message.warning('验证码不能为空')
-        if (this.newPassword !== this.newPasswordRepeat) return this.$message.warning('两次输入密码不同')
-        const params = {
-          _jv: {type: 'sms/verify',},
-          mobile: this.phoneNumber,
-          code: this.verifyCode,
-          password: this.newPassword,
-          type: 'reset_pwd',
-        }
-        status.run(() => this.$store.dispatch('jv/post', params))
-          .then(res => {
-            if (process.client) window.localStorage.setItem('username', res.username)
-            this.$router.push('/modify/resetpwdsuccess')
-          }, e => {
-            const {response: {status}} = e
-            if (status === 500) return this.$message.error('验证码不正确')
-          })
+      }, 1000)
+    },
+    async sendVerifyCode() {
+      const params = {
+        _jv: { type: 'sms/send' },
+        mobile: this.phoneNumber,
+        type: 'reset_pwd'
       }
+      status.run(() => this.$store.dispatch('jv/post', params))
+        .then(res => {
+          if (res.interval) this.countDown(res.interval)
+        }, e => {
+          const { response: { data: { errors }}} = e
+          if (errors[0]) return this.$message.error(errors[0].detail[0])
+        })
+    },
+    submit() {
+      if (!this.verifyCode) return this.$message.warning('验证码不能为空')
+      if (this.newPassword !== this.newPasswordRepeat) return this.$message.warning('两次输入密码不同')
+      const params = {
+        _jv: { type: 'sms/verify' },
+        mobile: this.phoneNumber,
+        code: this.verifyCode,
+        password: this.newPassword,
+        type: 'reset_pwd'
+      }
+      status.run(() => this.$store.dispatch('jv/post', params))
+        .then(res => {
+          if (process.client) window.localStorage.setItem('username', res.username)
+          this.$router.push('/modify/resetpwdsuccess')
+        }, e => {
+          const { response: { status }} = e
+          if (status === 500) return this.$message.error('验证码不正确')
+        })
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

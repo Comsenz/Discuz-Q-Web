@@ -6,7 +6,9 @@
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
-    "generate": "nuxt generate"
+    "generate": "nuxt generate",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "lintfix": "eslint --fix --ext .js,.vue --ignore-path .gitignore ."
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.12.1",
@@ -18,13 +20,25 @@
     "lodash.merge": "^4.6.2",
     "nuxt": "^2.14.0",
     "nuxt-i18n": "^6.13.7",
-    "qs": "^6.5.2"
+    "qs": "^6.5.2",
+    "dayjs": "^1.8.32"
   },
   "devDependencies": {
     "babel-plugin-component": "^1.1.1",
-    "dayjs": "^1.8.32",
     "sass": "^1.26.10",
     "sass-loader": "^9.0.3",
-    "svg-sprite-loader": "^5.0.0"
+    "svg-sprite-loader": "^5.0.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.6.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-loader": "^4.0.2",
+    "eslint-plugin-html": "^6.0.3",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "eslint-plugin-vue": "^6.2.2"
   }
 }

@@ -2,29 +2,36 @@
   <div class="header">
     <div class="header-container">
       <div class="logo">
-        <img :src="headImg != '' && headImg != null ? headImg : require('static/logo.png')"
-             alt />
+        <img
+          :src="headImg != '' && headImg != null ? headImg : require('static/logo.png')"
+          alt
+        >
       </div>
 
-        <el-input size="medium"
-                  :placeholder="$t('search.search')"
-                  suffix-icon="el-icon-search"
-                  v-model="inputVal"
-                  class="h-search">
-        </el-input>
+      <el-input
+        v-model="inputVal"
+        size="medium"
+        :placeholder="$t('search.search')"
+        suffix-icon="el-icon-search"
+        class="h-search"
+      />
 
-      <div class="h-button" v-if="!isLogin" v-cloak>
+      <div v-if="!isLogin" v-cloak class="h-button">
         <nuxt-link :to="'/user/login'">
-           <el-button type="primary"
-                   plain
-                   size="small"
-                   class="h-button1">{{ $t('user.login')  }}</el-button>
+          <el-button
+            type="primary"
+            plain
+            size="small"
+            class="h-button1"
+          >{{ $t('user.login') }}</el-button>
         </nuxt-link>
 
         <nuxt-link to="/user/register">
-        <el-button type="primary"
-                   size="small"
-                   class="h-button2">{{ $t('user.register') }}</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            class="h-button2"
+          >{{ $t('user.register') }}</el-button>
         </nuxt-link>
       </div>
       <div class="h-button" v-else v-cloak>
@@ -43,21 +50,21 @@
 <script>
 
 export default {
-  name: "Header",
-  props:{
+  name: 'Header',
+  props: {
     headImg: {
       type: String,
-      default: '',
+      default: ''
     }
   },
-  data () {
+  data() {
     return {
-      inputVal:'',
-      isLogin:''
+      inputVal: '',
+      isLogin: ''
 
-    };
+    }
   },
-  mounted(){
+  mounted() {
     this.isLoginh()
   },
   methods:{
@@ -69,7 +76,7 @@ export default {
       this.isLogin = window.localStorage.removeItem('access_token')
     }
   }
-};
+}
 </script>
 <style lang="scss" scoped>
 [v-cloak] {

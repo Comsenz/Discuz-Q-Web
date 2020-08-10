@@ -2,16 +2,15 @@
   <div class="page-post">
     <main>
       <div class="title">
-        <img class="avatar" :src="author.avatarUrl" :alt="author.username">
+        <Avatar :user="author"></Avatar>
+        <!--        <img class="avatar" :src="author.avatarUrl" :alt="author.username">-->
         <div class="title-info">
-          <div class="author-name">{{author.username}}</div>
-          <div class="timer">发布于 {{formatDate(article.createdAt)}}（编辑于 {{formatDate(article.updatedAt)}}）</div>
+          <div class="author-name">{{ author.username }}</div>
+          <div class="timer">发布于 {{ formatDate(article.createdAt) }}（编辑于 {{ formatDate(article.updatedAt) }}）</div>
         </div>
       </div>
       <article>
-        <div class="content">
-          {{article.content}}
-        </div>
+        <div class="content" v-html="article.contentHtml"/>
         <div class="images">
           <el-image
             v-for="(image, index) in article.images"
@@ -19,11 +18,12 @@
             style="max-width: 100%"
             :src="image.thumbUrl"
             :alt="image.filename"
-            fit="fill"></el-image>
+            fit="fill"
+          />
         </div>
       </article>
-      <div class="tags"></div>
-      <div class="actions"></div>
+      <div class="tags"/>
+      <div class="actions"/>
     </main>
     <aside>我是一个伟大的侧栏</aside>
   </div>
@@ -33,7 +33,7 @@
   import dayjs from 'dayjs'
 
   export default {
-    name: 'post',
+    name: 'Post',
     data() {
       return {
         author: {},
@@ -46,7 +46,7 @@
     methods: {
       getPost() {
         const id = 1766 // 以后需要从导航取
-        const params = { _jv: {type: `/threads/${id}`} }
+        const params = {_jv: {type: `/threads/${id}`}}
         this.$store.dispatch('jv/get', params).then(data => {
           this.author = data.user
           this.article = data.firstPost
@@ -113,6 +113,5 @@
       min-height: 300px;
     }
   }
-
 
 </style>
