@@ -20,7 +20,7 @@ let config, status, utils
  */
 const jsonapiModule = (api, conf = {}) => {
   config = Object.assign({}, jvConfig, conf)
-  let state = { [config['jvtag']]: {} }
+  const state = { [config['jvtag']]: {}}
 
   // Instantiate helper classes with config prior to re-exporting
   utils = new Utils(config)
@@ -33,7 +33,7 @@ const jsonapiModule = (api, conf = {}) => {
 
     actions: actions(api, config),
     getters: getters(config),
-    mutations: mutations(),
+    mutations: mutations()
   }
 }
 

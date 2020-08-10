@@ -1,5 +1,5 @@
-import enLocale from './plugins/lang/en.js';
-import zhLocale from './plugins/lang/zh.js';
+import enLocale from './plugins/lang/en.js'
+import zhLocale from './plugins/lang/zh.js'
 
 const path = require('path')
 function resolve(dir) {
@@ -28,12 +28,12 @@ export default {
   head: {
     title: process.env.npm_package_name || '',
     meta: [
-      {charset: 'utf-8'},
-      {name: 'viewport', content: 'width=device-width, initial-scale=1'},
-      {hid: 'description', name: 'description', content: process.env.npm_package_description || ''}
+      { charset: 'utf-8' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
     ],
     link: [
-      {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'}
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
   /*
@@ -105,28 +105,27 @@ export default {
       ]
     },
     // svg处理
-    extend(config,context){
-      // config.module.rule('svg').uses.clear()
-      // config.module
-      //   .rule('svg-sprite-loader')
-      //   .test(/\.svg$/)
-      //   .include.add(resolve('~assets/svg-icons')) // 处理svg目录
-      //   .end()
-      //   .use('svg-sprite-loader')
-      //   .loader('svg-sprite-loader')
-      //   .options({
-      //     esModule: false
-      //   })
+    extend(config, context) {
+      // Run ESLint on save
+      if (context.isDev && context.isClient) {
+        config.module.rules.push({
+          enforce: 'pre',
+          test: /\.(js|vue)$/,
+          loader: 'eslint-loader',
+          exclude: /(node_modules)/
+        })
+      }
+
       // 排除 nuxt 原配置的影响,Nuxt 默认有vue-loader,会处理svg,img等
       // 找到匹配.svg的规则,然后将存放svg文件的目录排除
       const svgRule = config.module.rules.find(rule => rule.test.test('.svg'))
       svgRule.exclude = [resolve('assets/svg-icons')]
 
-      //添加loader规则
+      // 添加loader规则
       config.module.rules.push({
-          test: /\.svg$/, //匹配.svg
-          include: [resolve('assets/svg-icons')], //将存放svg的目录加入到loader处理目录
-          use: [{ loader: 'svg-sprite-loader',options: { esModule: false } }]
+        test: /\.svg$/, // 匹配.svg
+        include: [resolve('assets/svg-icons')], // 将存放svg的目录加入到loader处理目录
+        use: [{ loader: 'svg-sprite-loader', options: { esModule: false }}]
       })
     }
   }

@@ -1,91 +1,115 @@
 <template>
-  <div class='register'>
-    <h2 class="register-title">{{$t('user.userlogin')}}</h2>
-    <el-tabs type="border-card"
-             class="register-select">
+  <div class="register">
+    <h2 class="register-title">{{ $t('user.userlogin') }}</h2>
+    <el-tabs
+      type="border-card"
+      class="register-select"
+    >
       <!-- 用户名登录 -->
       <el-tab-pane :label="$t('user.userlogin')">
         <span class="title">用户名/邮箱</span>
-        <el-input :placeholder="$t('user.username')"
-                  v-model="userName"
-                  class="reg-input">
-        </el-input>
-        <span class="title2">{{$t('user.pwd')}}</span>
-        <el-input :placeholder="$t('user.password')"
-                  v-model="passWord"
-                  type="password"
-                  class="reg-input"
-                  @keyup.enter.native="UserLogin">
-        </el-input>
+        <el-input
+          v-model="userName"
+          :placeholder="$t('user.username')"
+          class="reg-input"
+        />
+        <span class="title2">{{ $t('user.pwd') }}</span>
+        <el-input
+          v-model="passWord"
+          :placeholder="$t('user.password')"
+          type="password"
+          class="reg-input"
+          @keyup.enter.native="UserLogin"
+        />
         <div class="agreement">
           <el-checkbox v-model="checked">
-            <span class="agree">{{$t('user.status')}} </span>
+            <span class="agree">{{ $t('user.status') }} </span>
           </el-checkbox>
           <div class="logorreg">
-            <span>尚无账号，立即<nuxt-link to="/user/register">{{ $t('user.register')  }}</nuxt-link></span>
-            <nuxt-link to="/modify/findpwd"
-                       class="findpass">{{ $t('modify.findpawdtitle')  }}</nuxt-link>
+            <span>尚无账号，立即<nuxt-link to="/user/register">{{ $t('user.register') }}</nuxt-link></span>
+            <nuxt-link
+              to="/modify/findpwd"
+              class="findpass"
+            >{{ $t('modify.findpawdtitle') }}</nuxt-link>
           </div>
         </div>
-        <el-button type="primary"
-                   class="r-button"
-                   @click="UserLogin">{{ $t('user.login') }}</el-button>
+        <el-button
+          type="primary"
+          class="r-button"
+          @click="UserLogin"
+        >{{ $t('user.login') }}</el-button>
       </el-tab-pane>
       <!-- 手机号登录 -->
       <el-tab-pane :label="$t('user.phonelogin')">
         <span class="title2">{{ $t('profile.mobile') }}</span>
-        <el-input :placeholder="$t('user.phoneNumber')"
-                  v-model="phoneNumber"
-                  class="phone-input">
-        </el-input>
+        <el-input
+          v-model="phoneNumber"
+          :placeholder="$t('user.phoneNumber')"
+          class="phone-input"
+        />
 
-        <el-button class="count-b"
-                   @click="sendVerifyCode"
-                   :class="{disabled: !this.canClick}">{{content}}</el-button>
+        <el-button
+          class="count-b"
+          :class="{disabled: !canClick}"
+          @click="sendVerifyCode"
+        >{{ content }}</el-button>
 
-        <span class="title3">{{$t('user.verification')}}</span>
-        <el-input :placeholder="$t('user.verificationCodeLogin')"
-                  v-model="verifyCode"
-                  class="reg-input">
-        </el-input>
+        <span class="title3">{{ $t('user.verification') }}</span>
+        <el-input
+          v-model="verifyCode"
+          :placeholder="$t('user.verificationCodeLogin')"
+          class="reg-input"
+        />
         <div class="agreement">
           <el-checkbox v-model="checked">
             <span class="agree">我已阅读并同意 </span>
-            <nuxt-link to="agreement"
-                       class="agreement_text">《用户服务隐私协议》</nuxt-link>
+            <nuxt-link
+              to="agreement"
+              class="agreement_text"
+            >《用户服务隐私协议》</nuxt-link>
           </el-checkbox>
         </div>
-        <el-button type="primary"
-                   class="r-button"
-                   @click="PhoneLogin">{{ $t('user.login') }}</el-button>
+        <el-button
+          type="primary"
+          class="r-button"
+          @click="PhoneLogin"
+        >{{ $t('user.login') }}</el-button>
       </el-tab-pane>
       <!-- 快捷登录 -->
       <el-tab-pane :label="$t('user.quicklogin')">
         <div class="quick">
           <div class="quick-container">
             <div class="quick-title">
-              <img src="@/assets/wechat.png"
-                   alt="">
+              <img
+                src="@/assets/wechat.png"
+                alt=""
+              >
               <span>微信扫码登录</span>
             </div>
 
             <div class="qrcode">
-              <img :src="info.img"
-                   alt="">
+              <img
+                :src="info.img"
+                alt=""
+              >
 
             </div>
             <span>请用微信扫一扫扫码上方二维码</span>
           </div>
           <div class="quick-container">
             <div class="quick-title">
-              <img src="@/assets/qq.png"
-                   alt="">
+              <img
+                src="@/assets/qq.png"
+                alt=""
+              >
               <span>qq一键登录</span>
             </div>
 
             <div class="qrcode2">
-              <img src="@/assets/qq-big.png"
-                   alt="">
+              <img
+                src="@/assets/qq-big.png"
+                alt=""
+              >
 
             </div>
             <span>点击用QQ号码登陆注册</span>
@@ -101,7 +125,7 @@
 import { status } from '@/library/jsonapi-vuex/index'
 export default {
   name: 'Login',
-  data () {
+  data() {
     return {
       userName: '',
       passWord: '',
@@ -111,21 +135,20 @@ export default {
       content: '获取验证码',
       canClick: true,
       verifyCode: '',
-      info:'',
-      scene_str:''
+      info: '',
+      scene_str: ''
 
     }
   },
-  mounted () {
+  mounted() {
     this.QRcode()
-
   },
   methods: {
-    countDown (interval) {
+    countDown(interval) {
       if (!this.canClick) return
       this.canClick = false
       this.content = interval + 's后重新发送'
-      let clock = window.setInterval(() => {
+      const clock = window.setInterval(() => {
         interval--
         this.content = interval + 's后重新发送'
         if (interval < 0) {
@@ -136,13 +159,13 @@ export default {
         }
       }, 1000)
     },
-    async UserLogin () {
+    async UserLogin() {
       console.log(this.userName)
       console.log(this.passWord)
       const params = {
-        _jv: { type: '/login', },
+        _jv: { type: '/login' },
         username: this.userName,
-        password: this.passWord,
+        password: this.passWord
       }
       await status.run(() => this.$store.dispatch('jv/post', params))
         .then(res => {
@@ -163,32 +186,31 @@ export default {
             // };
             this.$router.push('/')
           }
-
         }, e => {
-          const { response: { data: { errors } } } = e
+          const { response: { data: { errors }}} = e
           if (errors[0]) return this.$message.error(errors[0].detail[0])
         })
     },
-    async sendVerifyCode () {
+    async sendVerifyCode() {
       const params = {
-        _jv: { type: 'sms/send', },
+        _jv: { type: 'sms/send' },
         mobile: this.phoneNumber,
-        type: 'login',
+        type: 'login'
       }
       await status.run(() => this.$store.dispatch('jv/post', params))
         .then(res => {
           if (res.interval) this.countDown(res.interval)
         }, e => {
-          const { response: { data: { errors } } } = e
+          const { response: { data: { errors }}} = e
           if (errors[0]) return this.$message.error(errors[0].detail[0])
         })
     },
-    async PhoneLogin () {
+    async PhoneLogin() {
       const params = {
-        _jv: { type: 'sms/verify', },
+        _jv: { type: 'sms/verify' },
         mobile: this.phoneNumber,
         code: this.verifyCode,
-        type: 'login',
+        type: 'login'
       }
       await status.run(() => this.$store.dispatch('jv/post', params))
         .then(res => {
@@ -196,41 +218,35 @@ export default {
           this.$message.success('登录成功')
           this.$router.push('/')
         }, e => {
-          const { response: { status } } = e
+          const { response: { status }} = e
           if (status === 500) return this.$message.error('验证码不正确')
         })
-
     },
-    async QRcode(){
+    async QRcode() {
       const _params = {
-      _jv: {
-        type: 'oauth/wechat/web/user',
-      },
-    };
+        _jv: {
+          type: 'oauth/wechat/web/user'
+        }
+      }
       await this.$store.dispatch('jv/get', _params).then(data => {
         // console.log('user data => ', data)
         this.info = data
         this.scene_str = data.scene_str
         console.log(this.scene_str)
-      });
+      })
 
-
-       const params = {
-      _jv: {
-        type: 'oauth/wechat/web/user/search',
-        scene_str:'this.scene_str'
-      },
-    };
-    console.log(params)
-       this.$store.dispatch('jv/get', params).then(data => {
+      const params = {
+        _jv: {
+          type: 'oauth/wechat/web/user/search',
+          scene_str: 'this.scene_str'
+        }
+      }
+      console.log(params)
+      this.$store.dispatch('jv/get', params).then(data => {
         console.log('user data => ', data)
-
-      });
-
-
+      })
     },
-    async QRcodeCheck(){
-
+    async QRcodeCheck() {
 
     }
 

@@ -18,4 +18,4 @@ Vue.use(Image, { locale })
 Vue.use(Tabs, { locale })
 Vue.use(TabPane, { locale })
 Vue.use(Checkbox, { locale })
-Vue.prototype.$message = Message;
+Vue.prototype.$message = Message

@@ -34,7 +34,7 @@ export default {
         wed: '三',
         thu: '四',
         fri: '五',
-        sat: '六',
+        sat: '六'
       },
       months: {
         jan: '一月',
@@ -48,54 +48,54 @@ export default {
         sep: '九月',
         oct: '十月',
         nov: '十一月',
-        dec: '十二月',
+        dec: '十二月'
       },
       morning: '上午',
-      afternoon: '下午',
+      afternoon: '下午'
     },
     // 列表加载提示相关
     list: {
       loading: '加载中',
       noMatch: '无匹配数据',
       noData: '暂无数据',
-      noMoreData: '没有更多数据了！',
+      noMoreData: '没有更多数据了！'
     },
     // 提示框
     msgbox: {
       title: '提示',
       confirm: '确定',
       cancel: '取消',
-      error: '输入的数据不合法!',
+      error: '输入的数据不合法!'
     },
     // 上传
     upload: {
       delete: '删除',
       preview: '查看图片',
-      continue: '继续上传',
+      continue: '继续上传'
     },
     // 图片
     image: {
       error: '加载失败',
-      imageUploading: '图片上传中...',
+      imageUploading: '图片上传中...'
     },
     // 视频
     video: {
       error: '加载失败',
-      videoUploading: '视频上传中...',
+      videoUploading: '视频上传中...'
     },
     // 导航
     pageHeader: {
-      title: '返回',
+      title: '返回'
     },
     // @人员页面
     atMember: {
       atTitle: '选择@人员',
       selectedMember: '搜索成员',
       notSelected: '尚未选',
-      selected: '@ 已选',
+      selected: '@ 已选'
     },
     role: {
-      noRole: '暂无角色',
+      noRole: '暂无角色'
     },
     // 发布页
     post: {
@@ -124,14 +124,14 @@ export default {
       failedToObtainSignature: '获取签名失败',
       fromWeChatApplet: '来自微信小程序',
       theTitleCanNotBeBlank: '标题不能为空',
-      pleaseEnterAPostTitle: '请输入帖子标题',
-    },
+      pleaseEnterAPostTitle: '请输入帖子标题'
+    }
   },
   uploader: {
     uploadFailed: '上传失败',
     uploadedSuccessfully: '上传成功',
     videoUploadedSuccessfully: '视频上传成功',
-    videoUploading: '视频上传中...',
+    videoUploading: '视频上传中...'
   },
   core: {
     register_close: '站点禁止注册',
@@ -215,7 +215,7 @@ export default {
     TheAmountCannotExceedOneMillion: '金额最高不能超过100万元',
     available: '暂无数据',
     userDeleted: '该用户已被删除',
-    InvalidParameterValue: '腾讯云配置参数错误',
+    InvalidParameterValue: '腾讯云配置参数错误'
   },
   topic: {
     topicPageTitle: '内容详情页',
@@ -284,7 +284,7 @@ export default {
     hot: '热度',
     sortTimeSequence: '评论时间正序',
     sortTimeReverse: '评论时间倒序',
-    itsAlreadyWantedSort: '已经是你想要的顺序了哦',
+    itsAlreadyWantedSort: '已经是你想要的顺序了哦'
   },
   pay: {
     passwordTip: '请输入支付密码',
@@ -312,10 +312,10 @@ export default {
     payFail: '支付失败',
     payType: '支付方式',
     payPassword: '支付密码',
-    wechatIdentificationQRcode: '微信识别二维码',
+    wechatIdentificationQRcode: '微信识别二维码'
   },
   auth: {
-    userinfo: '获取头像和昵称',
+    userinfo: '获取头像和昵称'
   },
   // 首页
   home: {
@@ -348,7 +348,7 @@ export default {
     siteName: '站点名称',
     needRealname: '发布内容需要实名认证，请在我的资料页进行实名认证',
     needPhone: '发布内容需要绑定手机号，请在我的资料页进行手机绑定',
-    record: '网站备案信息:',
+    record: '网站备案信息:'
   },
   // 站点管理页面
   manage: {
@@ -381,7 +381,7 @@ export default {
     periodvalidity: '有效期至',
     myauthority: '我的权限',
     setting: '设置',
-    noContent: '暂无内容',
+    noContent: '暂无内容'
   },
   // 消息页面
   notice: {
@@ -402,7 +402,7 @@ export default {
     emptycontent: '内容不能为空',
     contentMaxLength: '不能超过450个字',
     approved: '您的提现审核已通过，请注意查收。',
-    unapproved: '您的提现审核已拒绝，拒绝原因：审核不通过。',
+    unapproved: '您的提现审核已拒绝，拒绝原因：审核不通过。'
   },
   // 海报分享页
   share: {
@@ -421,7 +421,7 @@ export default {
     siteintroduction: '站点介绍',
     member: '成员',
     confirm: '确定保存到相册吗',
-    nothing: '无',
+    nothing: '无'
   },
   // 信息修改页
   modify: {
@@ -522,7 +522,7 @@ export default {
       editPosts: '编辑',
       essence: '加精',
       sticky: '置顶',
-      deletePosts: '删除回复',
+      deletePosts: '删除回复'
     },
     createThreadImage: '发布图片',
     createThread: '发布文本',
@@ -531,7 +531,7 @@ export default {
     attachment: {
       create: ['上传附件', '上传图片'],
       view: ['查看附件', '查看图片'],
-      delete: '删除附件',
+      delete: '删除附件'
     },
     createThreadWithCaptcha: '发帖需要验证码',
     editOwnThreadOrPost: '编辑发布的主题或回复',
@@ -540,32 +540,32 @@ export default {
     publishNeedRealName: '发布内容需要实名认证',
     viewUserList: '站点会员列表',
     cash: {
-      create: '申请提现',
+      create: '申请提现'
     },
     order: {
-      create: '创建订单',
+      create: '创建订单'
     },
     user: {
       view: '查看某个用户信息权限',
-      edit: '编辑用户状态',
+      edit: '编辑用户状态'
     },
     userFollow: {
-      create: '关注用户',
+      create: '关注用户'
     },
     group: {
-      edit: '编辑用户组',
+      edit: '编辑用户组'
     },
     viewSiteInfo: '站点信息',
     createInvite: '管理-邀请加入',
     dialog: {
-      create: '发布私信 ',
+      create: '发布私信 '
     },
     showGroups: '显示用户组名',
     trade: {
       pay: {
-        order: '订单支付',
-      },
-    },
+        order: '订单支付'
+      }
+    }
   },
   // 我的和个人主页
   profile: {
@@ -656,7 +656,7 @@ export default {
     uploadtimenotup: '上传头像频繁，一天仅允许上传一次头像',
     validationerror: '验证错误',
     filedownloadtips: '因iPhone系统限制，您的手机无法下载文件。请使用安卓手机或电脑访问下载',
-    filedownloadtipswx: '因系统限制，无法下载文件。请使用安卓手机或电脑访问H5版进行下载',
+    filedownloadtipswx: '因系统限制，无法下载文件。请使用安卓手机或电脑访问H5版进行下载'
   },
   site: {
     circleintroduction: '站点介绍',
@@ -685,7 +685,7 @@ export default {
       '该邀请码已经过期，请联系站长获取新的邀请码，若继续注册将以默认角色加入本站！是否继续注册？',
     codenotfound:
       '该邀请码不存在，请联系站长获取新的邀请码，若继续注册将以默认角色加入本站！是否继续注册？',
-    codeforbid: '您当前已登录了帐号，无法使用邀请码进行注册，请退出后重试。',
+    codeforbid: '您当前已登录了帐号，无法使用邀请码进行注册，请退出后重试。'
   },
   // 搜索
   search: {
@@ -701,14 +701,14 @@ export default {
     noFollowers: '暂无关注用户，请搜索',
     themes: '主题',
     searchmorethemes: '搜索更多主题',
-    norelatedthemesfound: '没有找到相关主题',
+    norelatedthemesfound: '没有找到相关主题'
   },
   // 登录注册
   user: {
-    status:'记住我的登录状态',
-    userlogin:'用户名登录',
-    phonelogin:'手机号登录',
-    quicklogin:'快速登录',
+    status: '记住我的登录状态',
+    userlogin: '用户名登录',
+    phonelogin: '手机号登录',
+    quicklogin: '快速登录',
     login: '登录',
     register: '注册',
     registerReason: '注册原因',
@@ -718,7 +718,7 @@ export default {
     reason: '请输入注册原因',
     phoneNumber: '输入手机号码',
     pwd: '请输密码',
-    verification:'验证码',
+    verification: '验证码',
     verificationCode: '请输验证码',
     exist: '已有账号? 登录一下',
     noexist: '没有账号? 注册一下',
@@ -736,6 +736,6 @@ export default {
     registerSuccess: '注册成功',
     registerBindSuccess: '注册绑定成功',
     loginSuccess: '登录成功',
-    loginBindSuccess: '登录绑定成功',
-  },
-};
+    loginBindSuccess: '登录绑定成功'
+  }
+}
