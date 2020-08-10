@@ -3,7 +3,7 @@ import Qs from 'qs'
 // import store from '@/store'
 // 创建 Axios 实例
 
-const isDev = process.env.NODE_ENV === 'development'
+// const isDev = process.env.NODE_ENV === 'development'
 const service = axios.create({
   // baseURL: process.env.VUE_APP_BASE_API,
   baseURL: process.env.baseURL,
@@ -18,6 +18,7 @@ const service = axios.create({
 service.interceptors.request.use(
   oConfig => {
     oConfig.headers['Accept'] = 'application/vnd.api+json'
+    // oConfig.headers['Authorization'] = `Bearer ${localStorage.getItem('access_token')}`
     return oConfig
   },
   oError => {
@@ -27,7 +28,6 @@ service.interceptors.request.use(
 // Respone 拦截器
 service.interceptors.response.use(
   oRes => {
-    
     return oRes
   },
   oError => {

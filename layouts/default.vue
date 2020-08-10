@@ -1,10 +1,10 @@
 <template>
   <div>
-    <Header :head-img="info.set_site ? info.set_site.site_header_logo : ''" :key="this.$route.path"/>
+    <Header :key="this.$route.path" :head-img="info.set_site ? info.set_site.site_header_logo : ''" />
     <div class="app-cont">
-      <Nuxt/>
+      <Nuxt />
     </div>
-    <Footer/>
+    <Footer />
   </div>
 </template>
 
@@ -16,15 +16,15 @@ export default {
     }
   },
   mounted() {
-     const _params = {
+    const _params = {
       _jv: {
-        type: 'forum',
-      },
-    };
-      this.$store.dispatch('jv/get', _params).then(data => {
-        console.log('user data => ', data)
-        this.info = data
-      });
+        type: 'forum'
+      }
+    }
+    this.$store.dispatch('jv/get', _params).then(data => {
+      console.log('user data => ', data)
+      this.info = data
+    })
   }
 }
 </script>

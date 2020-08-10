@@ -14,7 +14,7 @@ import { utils } from './index'
 
 export default (conf) => {
   // Short var name
-  let jvtag = conf['jvtag']
+  const jvtag = conf['jvtag']
   return {
     /**
      * Get record(s) from the store
@@ -59,7 +59,7 @@ export default (conf) => {
         const filtered = JSONPath({ path: jsonpath, json: result })
         if (Array.isArray(filtered)) {
           result = {}
-          for (let item of filtered) {
+          for (const item of filtered) {
             result[item[jvtag]['id']] = item
           }
         }
@@ -78,13 +78,14 @@ export default (conf) => {
     getRelated: (state, getters) => (data, seen) => {
       const [type, id] = utils.getTypeId(data)
       if (!type || !id) {
+        // eslint-disable-next-line no-throw-literal
         throw 'No type/id specified'
       }
-      let parent = get(state, [type, id])
+      const parent = get(state, [type, id])
       if (parent) {
         return utils.getRelationships(getters, parent, seen)
       }
       return {}
-    },
+    }
   }
 }

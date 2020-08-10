@@ -34,7 +34,7 @@ export default {
         wed: 'Wed',
         thu: 'Thu',
         fri: 'Fri',
-        sat: 'Sat',
+        sat: 'Sat'
       },
       months: {
         jan: 'Jan',
@@ -48,48 +48,48 @@ export default {
         sep: 'Sep',
         oct: 'Oct',
         nov: 'Nov',
-        dec: 'Dec',
+        dec: 'Dec'
       },
       morning: 'morning',
-      afternoon: 'afternoon',
+      afternoon: 'afternoon'
     },
     // 列表加载提示相关
     list: {
       loading: 'Loading',
       noMatch: 'No matching data',
       noData: 'No data',
-      noMoreData: 'No more data！',
+      noMoreData: 'No more data！'
     },
     // 提示框
     msgbox: {
       title: 'Message',
       confirm: 'OK',
-      cancel: 'Cancel',
+      cancel: 'Cancel'
     },
     // 上传
     upload: {
       delete: 'Delete',
       preview: 'Preview',
-      continue: 'Continue',
+      continue: 'Continue'
     },
     // 图片
     image: {
       error: 'FAILED',
-      imageUploading: 'Image uploading...',
+      imageUploading: 'Image uploading...'
     },
     // 导航
     pageHeader: {
-      title: 'Back',
+      title: 'Back'
     },
     // @人员页面
     atMember: {
       atTitle: 'Select @ member',
       selectedMember: 'Selected member',
       notSelected: 'Not selected',
-      selected: '@ Selected',
+      selected: '@ Selected'
     },
     role: {
-      noRole: 'No role',
+      noRole: 'No role'
     },
     // 发布页
     post: {
@@ -112,7 +112,7 @@ export default {
       videoCannotBeEmpty: 'Video cannot be empty',
       pleaseWaitForTheVideoUploadToComplete: 'Please wait for the video upload to complete',
       failedToObtainSignature: 'Failed to obtain signature',
-      fromWeChatApplet: 'From WeChat applet',
+      fromWeChatApplet: 'From WeChat applet'
     },
     // 站点管理页面
     manage: {
@@ -146,7 +146,7 @@ export default {
       myauthority: 'myauthority',
       setting: 'setting',
       noContent: 'No Content',
-      contentMaxLength: 'No more than 450 words',
+      contentMaxLength: 'No more than 450 words'
     },
     // 消息页面
     notice: {
@@ -167,8 +167,8 @@ export default {
       emptycontent: 'the content can not be empty',
       approved: 'Your withdrawal has been approved, please note that check.',
       unapproved:
-        'Your withdrawal review has been rejected, the reason for rejection: the review did not pass.',
-    },
+        'Your withdrawal review has been rejected, the reason for rejection: the review did not pass.'
+    }
   },
   // 我的和个人主页
   profile: {
@@ -257,7 +257,7 @@ export default {
     personalhomepage: 'Personal homepage',
     successfullyuploadedtheavatar: 'Successfully uploaded the Avatar',
     validationerror: 'Validation error',
-    uploadtimenotup: 'Upload time not up',
+    uploadtimenotup: 'Upload time not up'
   },
   site: {
     circleintroduction: 'Circle introduction',
@@ -275,7 +275,7 @@ export default {
     inviteyouas: 'Invite you as',
     join: 'Join',
     accepttheinvitationandbecome: 'Accept the invitation and become',
-    continueResgister: 'Continue resgister',
+    continueResgister: 'Continue resgister'
   },
   // 搜索
   search: {
@@ -290,10 +290,14 @@ export default {
     norelatedusersfound: 'No related users found',
     themes: 'Themes',
     searchmorethemes: 'Search more themes',
-    norelatedthemesfound: 'No related themes found',
+    norelatedthemesfound: 'No related themes found'
   },
   // 登录注册
   user: {
+    status: 'remember my status',
+    phonelogin: 'PhoneLogin',
+    userlogin: 'UserLogin',
+    quicklogin: 'QuickLogin',
     login: 'Login',
     register: 'Register',
     registerReason: 'Register reason',
@@ -303,6 +307,7 @@ export default {
     reason: 'Please input reason',
     phoneNumber: 'Please input phoneNumber',
     pwd: 'Please input password',
+    verification: 'verificationCode',
     verificationCode: 'Please input verificationCode',
     exist: 'An existing account? Login',
     noexist: 'There is no account? Register',
@@ -314,6 +319,6 @@ export default {
     registerBindId: 'Register and bind WeChat ID',
     registerBind: 'Register and bind WeChat',
     loginBindId: 'Login and bind WeChat ID',
-    loginBind: 'Login and bind WeChat',
-  },
-};
+    loginBind: 'Login and bind WeChat'
+  }
+}

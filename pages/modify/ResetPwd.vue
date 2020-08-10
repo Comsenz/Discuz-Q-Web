@@ -10,14 +10,14 @@
         <input type="text" :placeholder="$t('modify.enterNewRepeat')">
       </label>
     </div>
-    <button class="submit">{{$t('modify.submit')}}</button>
+    <button class="submit">{{ $t('modify.submit') }}</button>
   </div>
 </template>
 
 <script>
-  export default {
-    name: 'ResetPwd',
-  }
+export default {
+  name: 'ResetPwd'
+}
 </script>
 
 <style lang="scss" scoped>

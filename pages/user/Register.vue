@@ -1,94 +1,121 @@
 <template>
-  <div class='register'>
+  <div class="register">
     <h2 class="register-title">注册新用户</h2>
-    <el-tabs type="border-card"
-             class="register-select">
+    <el-tabs
+      type="border-card"
+      class="register-select"
+    >
       <el-tab-pane label="用户名注册">
-        <span class="title">用户名&nbsp&nbsp&nbsp</span>
-        <el-input placeholder="请输入内容"
-                  v-model="userName"
-                  class="reg-input">
-        </el-input>
+        <span class="title">用户名&nbsp;&nbsp;&nbsp;</span>
+        <el-input
+          v-model="userName"
+          placeholder="请输入内容"
+          class="reg-input"
+        />
         <span class="title2">输入密码</span>
-        <el-input placeholder="请输入内容"
-                  v-model="passWord"
-                  type="password"
-                  class="reg-input">
-        </el-input>
+        <el-input
+          v-model="passWord"
+          placeholder="请输入内容"
+          type="password"
+          class="reg-input"
+          @keyup.enter.native="Register"
+        />
         <span class="title2">重复密码</span>
-        <el-input placeholder="请输入内容"
-                  v-model="repeatPassWord"
-                  type="password"
-                  class="reg-input">
-        </el-input>
+        <el-input
+          v-model="repeatPassWord"
+          placeholder="请输入内容"
+          type="password"
+          class="reg-input"
+        />
         <span class="title2">注册原因</span>
-        <el-input placeholder="请输入内容"
-                  v-model="Reason"
-                  class="reg-input">
-        </el-input>
+        <el-input
+          v-model="Reason"
+          placeholder="请输入内容"
+          class="reg-input"
+        />
         <div class="agreement">
           <el-checkbox v-model="checked">
             <span class="agree">我已阅读并同意 </span>
-            <nuxt-link to="agreement"
-                       class="agreement_text">《用户服务隐私协议》</nuxt-link>
+            <nuxt-link
+              to="agreement"
+              class="agreement_text"
+            >《用户服务隐私协议》</nuxt-link>
           </el-checkbox>
         </div>
-        <el-button type="primary"
-                   class="r-button">{{ $t('user.register') }}</el-button>
+        <el-button
+          type="primary"
+          class="r-button"
+        >{{ $t('user.register') }}</el-button>
       </el-tab-pane>
       <el-tab-pane label="手机号码注册">
         <span class="title2">手机号码</span>
-        <el-input placeholder="请输入内容"
-                  v-model="repeatPassWord"
-                  type="password"
-                  class="phone-input">
-        </el-input>
+        <el-input
+          v-model="repeatPassWord"
+          placeholder="请输入内容"
+          type="password"
+          class="phone-input"
+        />
 
-        <el-button class="count-b"
-                   @click="coutDown"
-                   :class="{disabled: !this.canClick}">{{content}}</el-button>
+        <el-button
+          class="count-b"
+          :class="{disabled: !canClick}"
+          @click="coutDown"
+        >{{ content }}</el-button>
 
-        <span class="title">验证码&nbsp&nbsp&nbsp</span>
-        <el-input placeholder="请输入内容"
-                  v-model="userName"
-                  class="reg-input">
-        </el-input>
+        <span class="title">验证码&nbsp;&nbsp;&nbsp;</span>
+        <el-input
+          v-model="userName"
+          placeholder="请输入内容"
+          class="reg-input"
+        />
         <div class="agreement">
           <el-checkbox v-model="checked">
             <span class="agree">我已阅读并同意 </span>
-            <nuxt-link to="agreement"
-                       class="agreement_text">《用户服务隐私协议》</nuxt-link>
+            <nuxt-link
+              to="agreement"
+              class="agreement_text"
+            >《用户服务隐私协议》</nuxt-link>
           </el-checkbox>
         </div>
-        <el-button type="primary"
-                   class="r-button">{{ $t('user.register') }}</el-button>
+        <el-button
+          type="primary"
+          class="r-button"
+        >{{ $t('user.register') }}</el-button>
       </el-tab-pane>
       <el-tab-pane label="快速注册">
         <div class="quick">
           <div class="quick-container">
             <div class="quick-title">
-              <img src="@/assets/wechat.png"
-                   alt="">
+              <img
+                src="@/assets/wechat.png"
+                alt=""
+              >
               <span>微信扫码注册</span>
             </div>
 
             <div class="qrcode">
-              <img src="@/assets/qrcode.png"
-                   alt="">
+              <img
+                src="@/assets/qrcode.png"
+                alt=""
+              >
 
             </div>
             <span>请用微信扫一扫扫码上方二维码</span>
           </div>
           <div class="quick-container">
             <div class="quick-title">
-              <img src="@/assets/qq.png"
-                   alt="">
+              <img
+                src="@/assets/qq.png"
+                alt=""
+              >
               <span>qq一键注册</span>
             </div>
 
             <div class="qrcode2">
-              <img src="@/assets/qq-big.png"
-                   alt="">
+              <img
+                src="@/assets/qq-big.png"
+                alt=""
+              >
 
             </div>
             <span>点击用QQ号码登陆注册</span>
@@ -102,7 +129,8 @@
 
 <script>
 export default {
-  data () {
+  name: 'Register',
+  data() {
     return {
       userName: '',
       passWord: '',
@@ -116,11 +144,11 @@ export default {
     }
   },
   methods: {
-    coutDown () {
+    coutDown() {
       if (!this.canClick) return
       this.canClick = false
       this.content = this.totalTime + 's后重新发送'
-      let clock = window.setInterval(() => {
+      const clock = window.setInterval(() => {
         this.totalTime--
         this.content = this.totalTime + 's后重新发送'
         if (this.totalTime < 0) {

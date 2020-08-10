@@ -23,5 +23,5 @@ export default {
   cleanPatch: false,
   cleanPatchProps: [],
   recurseRelationships: false,
-  maxStatusID: -1,
+  maxStatusID: -1
 }
