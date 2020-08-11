@@ -184,7 +184,7 @@ export default {
             //   uni.$emit('logind');
             //   resolve(resData);
             // };
-            this.$router.push('/')
+            this.$router.go(-1)
           }
         }, e => {
           const { response: { data: { errors }}} = e
@@ -216,7 +216,7 @@ export default {
         .then(res => {
           window.localStorage.setItem('access_token', res.access_token)
           this.$message.success('登录成功')
-          this.$router.push('/')
+          this.$router.go(-1)
         }, e => {
           const { response: { status }} = e
           if (status === 500) return this.$message.error('验证码不正确')

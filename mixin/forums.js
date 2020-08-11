@@ -1,12 +1,8 @@
-// import { SITE_PAY } from '@/common/const';
 
-const Forums = {
+module.exports = {
   computed: {
     forums() {
       return this.$store.getters['jv/get']('forums/1')
     }
   }
-}
-export default {
-  Forums
 }
