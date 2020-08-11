@@ -237,17 +237,14 @@ export default {
 
       const params = {
         _jv: {
-          type: 'oauth/wechat/web/user/search',
-          scene_str: 'this.scene_str'
+          type: encodeURI(`oauth/wechat/web/user/search?scene_str="${this.scene_str}"`)
+
         }
       }
       console.log(params)
-      this.$store.dispatch('jv/get', params).then(data => {
+      await this.$store.dispatch('jv/get', params).then(data => {
         console.log('user data => ', data)
       })
-    },
-    async QRcodeCheck() {
-
     }
 
   }

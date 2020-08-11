@@ -1,6 +1,9 @@
 <template>
   <div>
-    <Header :key="this.$route.path" :head-img="info.set_site ? info.set_site.site_header_logo : ''" />
+    <Header
+      :key="this.$route.path"
+      :head-img="info.set_site ? info.set_site.site_header_logo : ''"
+    />
     <div class="app-cont">
       <Nuxt />
     </div>

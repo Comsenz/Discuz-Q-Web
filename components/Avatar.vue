@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <div class="qui-avatar" @click="click">
     <img
       v-if="avatarUrl && !errorUrl"
@@ -57,27 +58,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .avatar-size-80 {
-    width: 80px;
-    height: 80px;
-  }
-  .avatar-size-70 {
-    width: 70px;
-    height: 70px;
-  }
-  .avatar-size-60 {
-    width: 60px;
-    height: 60px;
-  }
-  .avatar-size-50 {
-    width: 50px;
-    height: 50px;
-  }
+.avatar-size-80 {
+  width: 80px;
+  height: 80px;
+}
+.avatar-size-70 {
+  width: 70px;
+  height: 70px;
+}
+.avatar-size-60 {
+  width: 60px;
+  height: 60px;
+}
+.avatar-size-50 {
+  width: 50px;
+  height: 50px;
+}
 
-  .avatar {
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+.avatar {
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 </style>

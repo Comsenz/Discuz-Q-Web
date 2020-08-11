@@ -106,27 +106,35 @@ export default {
     width: 100%;
     display: flex;
     justify-content: space-between;
-
-    main {
-      background: #ffffff;
-      width: 690px;
-      padding: 20px;
+  main {
+    background: #ffffff;
+    width: 690px;
+    padding: 20px;
 
       > article {
         margin-top: 25px;
 
-        > .images {
-          margin-top: 30px;
+        .timer {
+          margin-top: 5px;
+          color: #8590a6;
+          font-size: 12px;
         }
       }
-
     }
 
-    aside {
-      background: #ffffff;
-      width: 300px;
-      min-height: 300px;
+    > article {
+      margin-top: 20px;
+
+      > .images {
+        margin-top: 30px;
+      }
     }
   }
 
+  aside {
+    background: #ffffff;
+    width: 300px;
+    min-height: 300px;
+  }
+}
 </style>
