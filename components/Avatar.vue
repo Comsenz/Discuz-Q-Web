@@ -1,10 +1,12 @@
 <template>
   <div class="qui-avatar" @click="click">
-    <img v-if="avatarUrl && !errorUrl"
+    <img
+      v-if="avatarUrl && !errorUrl"
       :src="avatarUrl"
       :class="'avatar-size-' + size"
       :alt="user.username"
-      @error="error" />
+      @error="error"
+    >
     <div v-else-if="styleText" :class="'avatar avatar-size-' + size" :style="styleText">
       {{ usernameAt }}
     </div>
@@ -12,46 +14,46 @@
 </template>
 
 <script>
-  import stringToColor from '@/utils/stringToColor';
+import stringToColor from '@/utils/stringToColor'
 
-  export default {
-    props: {
-      user: {
-        type: [Object, String],
-        default: () => {}
-      },
-      size: {
-        type: [Number, String],
-        default: 50,
-      },
+export default {
+  props: {
+    user: {
+      type: [Object, String],
+      default: () => {}
     },
-    data() {
-      return {
-        errorUrl: false,
-        sizes: {
-          80: 'font-size: 32px;line-height: 80px;border-radius: 14px',
-          70: 'font-size: 28px;line-height: 70px;border-radius: 12px',
-          60: 'font-size: 26px;line-height: 60px;border-radius: 10px',
-          50: 'font-size: 24px;line-height: 50px;border-radius: 8px',
-        }
+    size: {
+      type: [Number, String],
+      default: 50
+    }
+  },
+  data() {
+    return {
+      errorUrl: false,
+      sizes: {
+        80: 'font-size: 32px;line-height: 80px;border-radius: 14px',
+        70: 'font-size: 28px;line-height: 70px;border-radius: 12px',
+        60: 'font-size: 26px;line-height: 60px;border-radius: 10px',
+        50: 'font-size: 24px;line-height: 50px;border-radius: 8px'
       }
+    }
+  },
+  computed: {
+    avatarUrl() {
+      return this.user.avatarUrl && this.user.avatarUrl.indexOf('/static/noavatar.gif') !== 0
     },
-    computed: {
-      avatarUrl() {
-        return this.user.avatarUrl && this.user.avatarUrl.indexOf('/static/noavatar.gif') !== 0;
-      },
-      usernameAt() {
-        return this.user.username ? this.user.username.charAt(0).toUpperCase() : this.$t('core.noAvatar');
-      },
-      styleText() {
-        return `background-color: #${stringToColor(this.usernameAt)};${this.sizes[this.size]}`;
-      }
+    usernameAt() {
+      return this.user.username ? this.user.username.charAt(0).toUpperCase() : this.$t('core.noAvatar')
     },
-    methods: {
-      error() { this.errorUrl = true; },
-      click() { this.$emit('click'); },
-    },
-  };
+    styleText() {
+      return `background-color: #${stringToColor(this.usernameAt)};${this.sizes[this.size]}`
+    }
+  },
+  methods: {
+    error() { this.errorUrl = true },
+    click() { this.$emit('click') }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -15,7 +15,7 @@ export const modules = {
     {
       preserveJson: true,
       mergeRecords: true,
-      followRelationshipsData: false
+      followRelationshipsData: true
     }
   )
 }

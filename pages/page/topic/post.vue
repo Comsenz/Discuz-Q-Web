@@ -1,16 +1,9 @@
 <template>
-  <div class="page-post">
+  <div v-loading="loading" element-loading-background="#fff" class="page-post">
     <main>
-      <div class="title">
-        <Avatar :user="author"></Avatar>
-        <!--        <img class="avatar" :src="author.avatarUrl" :alt="author.username">-->
-        <div class="title-info">
-          <div class="author-name">{{ author.username }}</div>
-          <div class="timer">发布于 {{ formatDate(article.createdAt) }}（编辑于 {{ formatDate(article.updatedAt) }}）</div>
-        </div>
-      </div>
+      <PostHeader :author="author" :article="article" :management-list="managementList" />
       <article>
-        <div class="content" v-html="article.contentHtml"/>
+        <div class="content" v-html="article.contentHtml" />
         <div class="images">
           <el-image
             v-for="(image, index) in article.images"
@@ -22,46 +15,92 @@
           />
         </div>
       </article>
-      <div class="tags"/>
-      <div class="actions"/>
+      <div class="tags" />
+      <div class="actions" />
     </main>
     <aside>我是一个伟大的侧栏</aside>
   </div>
 </template>
 
 <script>
-  import dayjs from 'dayjs'
+import PostHeader from '../../../components/PostHeader'
 
-  export default {
-    name: 'Post',
-    data() {
-      return {
-        author: {},
-        article: {}
-      }
+export default {
+  name: 'Post',
+  components: { PostHeader },
+  data() {
+    return {
+      author: {},
+      article: {},
+      managementList: [
+        { name: 'canEdit', isStatus: false, text: this.$t('topic.edit'), type: '0' },
+        { name: 'canEssence', isStatus: false, text: this.$t('topic.essence'), type: '1' },
+        { name: 'canSticky', isStatus: false, text: this.$t('topic.sticky'), type: '2' },
+        { name: 'canHide', isStatus: false, text: this.$t('topic.delete'), type: '3' }
+      ], // 管理菜单
+      loading: true
+    }
+  },
+  created() {
+    this.getPost()
+  },
+  methods: {
+    getPost() {
+      const id = 1796 // 以后需要从导航取
+      // const params = {
+      //   include: [
+      //     'posts.replyUser',
+      //     'user.groups',
+      //     'user',
+      //     'posts',
+      //     'posts.user',
+      //     'posts.likedUsers',
+      //     'posts.images',
+      //     'firstPost',
+      //     'firstPost.likedUsers',
+      //     'firstPost.images',
+      //     'firstPost.attachments',
+      //     'rewardedUsers',
+      //     'category',
+      //     'threadVideo',
+      //     'paidUsers'
+      //   ]
+      // }
+      this.$store.dispatch('jv/get', `threads/${id}`).then(data => {
+        this.author = data.user
+        this.article = data.firstPost
+        this.loading = false
+        console.log('data', data)
+        console.log('author', this.author)
+        console.log('article', this.article)
+        this.initManagementList(data)
+      })
     },
-    created() {
-      this.getPost()
-    },
-    methods: {
-      getPost() {
-        const id = 1766 // 以后需要从导航取
-        const params = {_jv: {type: `/threads/${id}`}}
-        this.$store.dispatch('jv/get', params).then(data => {
-          this.author = data.user
-          this.article = data.firstPost
-          console.log('author', this.author)
-          console.log('article', this.article)
-        })
-      },
-      formatDate(date) {
-        return dayjs(date).format('YYYY-MM-DD HH:mm')
-      }
+    initManagementList(data) {
+      this.managementList.forEach(item => {
+        item.canOpera = data[item.name]
+        if (item.name === 'canEssence') {
+          item.isStatus = data.isEssence
+          item.isStatus ? item.text = this.$t('cancelEssence') : item.text
+        } else if (item.name === 'canSticky') {
+          item.isStatus = data.isSticky
+          item.isStatus ? item.text = this.$t('cancelSticky') : item.text
+        }
+      })
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>
+  $fontColor: #8590A6;
+  $activeColor: #1878F3;
+
+  .el-dropdown-menu__item:hover {
+    background: #ffffff;
+    color: $activeColor;
+  }
+
   .page-post {
     background: #F4F5F6;
     width: 100%;
@@ -73,32 +112,8 @@
       width: 690px;
       padding: 20px;
 
-      > .title {
-        height: 50px;
-        display: flex;
-
-        > .avatar {
-          width: 50px;
-        }
-
-        > .title-info {
-          margin-left: 6px;
-
-          .author-name {
-            font-size: 16px;
-            font-weight: bold;
-          }
-
-          .timer {
-            margin-top: 5px;
-            color: #8590A6;
-            font-size: 12px;
-          }
-        }
-      }
-
       > article {
-        margin-top: 20px;
+        margin-top: 25px;
 
         > .images {
           margin-top: 30px;
