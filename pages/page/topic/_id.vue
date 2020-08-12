@@ -25,6 +25,8 @@
 <script>
 import PostHeader from '../../../components/PostHeader'
 
+const include = 'posts.replyUser,user.groups,user,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers'
+
 export default {
   name: 'Post',
   components: { PostHeader },
@@ -49,31 +51,13 @@ export default {
   },
   methods: {
     getPost() {
-      // const params = {
-      //   include: [
-      //     'posts.replyUser',
-      //     'user.groups',
-      //     'user',
-      //     'posts',
-      //     'posts.user',
-      //     'posts.likedUsers',
-      //     'posts.images',
-      //     'firstPost',
-      //     'firstPost.likedUsers',
-      //     'firstPost.images',
-      //     'firstPost.attachments',
-      //     'rewardedUsers',
-      //     'category',
-      //     'threadVideo',
-      //     'paidUsers'
-      //   ]
-      // }
-      this.$store.dispatch('jv/get', `threads/${this.threadId}`).then(data => {
+      this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include }}]).then(data => {
         if (data.isDeleted) return this.$router.push('/demo')
         this.author = data.user
         this.article = data.firstPost
         this.loading = false
         console.log('data', data)
+        console.log('article', this.article)
         this.initManagementList(data)
       })
     },
