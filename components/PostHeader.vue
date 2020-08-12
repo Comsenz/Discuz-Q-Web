@@ -6,6 +6,7 @@
       <div class="timer">发布于 {{ formatDate(article.createdAt) }}（编辑于 {{ formatDate(article.updatedAt) }}）</div>
     </div>
     <el-dropdown
+      v-show="managementList.some(item => item.canOpera)"
       class="dropdown"
       placement="bottom"
       trigger="click"
@@ -20,13 +21,15 @@
         <el-dropdown-item
           v-for="(item, index) in managementList"
           :key="index"
-          :command="item.name"
+          :command="{command: item.command ,isStatus: item.isStatus}"
           style="border-bottom: 1px solid #EDEDED; width: 98px; text-align: center"
         >{{ item.text }}
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
-    <img src="@/static/essence.jpg" class="essence" width="20px" alt="essence">
+    <div v-if="managementList[1].isStatus || false" class="essence">
+      <svg-icon style="font-size: 50px;" type="essence" />
+    </div>
   </div>
 </template>
 
@@ -47,6 +50,10 @@ export default {
     managementList: {
       type: Array,
       default: () => []
+    },
+    threadId: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -58,8 +65,31 @@ export default {
     formatDate(date) {
       return dayjs(date).format('YYYY-MM-DD HH:mm')
     },
-    handleCommand(command) {
-      console.log('你点击了', command)
+    handleCommand({ command, isStatus }) {
+      if (command === 'toEdit') return console.log('去发帖页面')
+      if (command === 'isDeleted') return this.open(command, isStatus)
+      this.postCommand(command, isStatus)
+    },
+    postCommand(command, isStatus) {
+      const params = { _jv: { type: `threads`, id: this.threadId }}
+      params[command] = !isStatus
+      return this.$store.dispatch('jv/patch', params).then(data => {
+        this.$emit('managementSelected', data)
+      })
+    },
+    open(command, isStatus) {
+      this.$confirm(this.$t('topic.confirmDelete'), this.$t('discuzq.msgBox.title'), {
+        confirmButtonText: this.$t('discuzq.msgBox.confirm'),
+        cancelButtonText: this.$t('discuzq.msgBox.cancel'),
+        type: 'warning'
+      }).then(() => {
+        this.postCommand(command, isStatus).then(() => {
+          this.$message({ type: 'success', message: this.$t('topic.deleteSuccessAndJumpToBack') })
+          setTimeout(() => { this.$router.push('/demo') }, 1500)
+        }).catch(() => {
+          this.$message({ type: 'warning', message: this.$t('topic.deleteFail') })
+        })
+      }, () => console.log('cancel delete opera'))
     }
   }
 }
@@ -68,6 +98,11 @@ export default {
 <style lang="scss" scoped>
   $fontColor: #8590A6;
   $activeColor: #1878F3;
+
+  .el-dropdown-menu__item:hover {
+    background: #ffffff;
+    color: $activeColor;
+  }
   .title {
     height: 50px;
     display: flex;
@@ -107,7 +142,6 @@ export default {
       }
     }
     > .essence {
-      margin-left: 20px;
       transform: translateY(-20px);
     }
 

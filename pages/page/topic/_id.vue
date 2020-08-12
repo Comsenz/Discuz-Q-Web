@@ -1,7 +1,7 @@
 <template>
   <div v-loading="loading" element-loading-background="#fff" class="page-post">
     <main>
-      <PostHeader :author="author" :article="article" :management-list="managementList" />
+      <PostHeader :author="author" :article="article" :management-list="managementList" :thread-id="threadId" @managementSelected="initManagementList" />
       <article>
         <div class="content" v-html="article.contentHtml" />
         <div class="images">
@@ -33,20 +33,22 @@ export default {
       author: {},
       article: {},
       managementList: [
-        { name: 'canEdit', isStatus: false, text: this.$t('topic.edit'), type: '0' },
-        { name: 'canEssence', isStatus: false, text: this.$t('topic.essence'), type: '1' },
-        { name: 'canSticky', isStatus: false, text: this.$t('topic.sticky'), type: '2' },
-        { name: 'canHide', isStatus: false, text: this.$t('topic.delete'), type: '3' }
+        { name: 'canEdit', command: 'toEdit', isStatus: false, text: this.$t('topic.edit'), type: '0' },
+        { name: 'canEssence', command: 'isEssence', isStatus: false, text: this.$t('topic.essence'), type: '1' },
+        { name: 'canSticky', command: 'isSticky', isStatus: false, text: this.$t('topic.sticky'), type: '2' },
+        { name: 'canHide', command: 'isDeleted', isStatus: false, text: this.$t('topic.delete'), type: '3' }
       ], // 管理菜单
       loading: true
     }
+  },
+  computed: {
+    threadId() { return this.$route.params.id }
   },
   created() {
     this.getPost()
   },
   methods: {
     getPost() {
-      const id = 1796 // 以后需要从导航取
       // const params = {
       //   include: [
       //     'posts.replyUser',
@@ -66,13 +68,12 @@ export default {
       //     'paidUsers'
       //   ]
       // }
-      this.$store.dispatch('jv/get', `threads/${id}`).then(data => {
+      this.$store.dispatch('jv/get', `threads/${this.threadId}`).then(data => {
+        if (data.isDeleted) return this.$router.push('/demo')
         this.author = data.user
         this.article = data.firstPost
         this.loading = false
         console.log('data', data)
-        console.log('author', this.author)
-        console.log('article', this.article)
         this.initManagementList(data)
       })
     },
@@ -81,10 +82,10 @@ export default {
         item.canOpera = data[item.name]
         if (item.name === 'canEssence') {
           item.isStatus = data.isEssence
-          item.isStatus ? item.text = this.$t('cancelEssence') : item.text
+          item.text = item.isStatus ? this.$t('topic.cancelEssence') : this.$t('topic.essence')
         } else if (item.name === 'canSticky') {
           item.isStatus = data.isSticky
-          item.isStatus ? item.text = this.$t('cancelSticky') : item.text
+          item.text = item.isStatus ? this.$t('topic.cancelSticky') : this.$t('topic.sticky')
         }
       })
     }
@@ -95,11 +96,6 @@ export default {
 <style lang="scss" scoped>
   $fontColor: #8590A6;
   $activeColor: #1878F3;
-
-  .el-dropdown-menu__item:hover {
-    background: #ffffff;
-    color: $activeColor;
-  }
 
   .page-post {
     background: #F4F5F6;
@@ -136,5 +132,4 @@ export default {
     width: 300px;
     min-height: 300px;
   }
-}
 </style>

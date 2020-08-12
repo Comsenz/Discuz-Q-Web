@@ -1,9 +1,8 @@
 <template>
-<<<<<<< HEAD
   <div class="qui-avatar" @click="click">
     <img
       v-if="avatarUrl && !errorUrl"
-      :src="avatarUrl"
+      :src="user.avatarUrl"
       :class="'avatar-size-' + size"
       :alt="user.username"
       @error="error"

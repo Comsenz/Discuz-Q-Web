@@ -7,6 +7,7 @@ import {
   Input,
   Image,
   Message,
+  MessageBox,
   Tabs,
   TabPane,
   Checkbox,
@@ -27,3 +28,4 @@ Vue.use(Dropdown, { locale })
 Vue.use(DropdownMenu, { locale })
 Vue.use(DropdownItem, { locale })
 Vue.prototype.$message = Message
+Vue.prototype.$confirm = MessageBox.confirm
