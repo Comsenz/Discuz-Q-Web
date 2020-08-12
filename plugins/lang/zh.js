@@ -61,7 +61,7 @@ export default {
       noMoreData: '没有更多数据了！'
     },
     // 提示框
-    msgbox: {
+    msgBox: {
       title: '提示',
       confirm: '确定',
       cancel: '取消',
@@ -269,7 +269,8 @@ export default {
     cancelEssence: '取消精华',
     sticky: '置顶',
     cancelSticky: '取消置顶',
-    deleteSuccessAndJumpToHome: '删除成功，跳转到首页',
+    confirmDelete: '确定删除此篇内容吗？',
+    deleteFail: '取消失败，请联系管理员操作',
     deleteSuccessAndJumpToBack: '删除成功，跳转到上一级',
     imageNumLimit: '评论只允许上传3张图片',
     noReplyPermission: '没有回复权限',
