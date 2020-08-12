@@ -1,20 +1,18 @@
 <template>
   <div v-loading="loading" element-loading-background="#fff" class="page-post">
     <main>
-      <PostHeader :author="author" :article="article" :management-list="managementList" :thread-id="threadId" @managementSelected="initManagementList" />
-      <article>
-        <div class="content" v-html="article.contentHtml" />
-        <div class="images">
-          <el-image
-            v-for="(image, index) in article.images"
-            :key="index"
-            style="max-width: 100%"
-            :src="image.thumbUrl"
-            :alt="image.filename"
-            fit="fill"
-          />
-        </div>
-      </article>
+      <topic-header
+        :author="author"
+        :article="article"
+        :management-list="managementList"
+        :thread-id="threadId"
+        @managementSelected="initManagementList"
+      />
+      <topic-content
+        :article="article"
+        :title="title"
+        :video="threadVideo"
+      />
       <div class="tags" />
       <div class="actions" />
     </main>
@@ -23,17 +21,17 @@
 </template>
 
 <script>
-import PostHeader from '../../../components/PostHeader'
-
 const include = 'posts.replyUser,user.groups,user,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers'
 
 export default {
+  layout: 'custom_layout',
   name: 'Post',
-  components: { PostHeader },
   data() {
     return {
       author: {},
       article: {},
+      title: '',
+      threadVideo: {},
       managementList: [
         { name: 'canEdit', command: 'toEdit', isStatus: false, text: this.$t('topic.edit'), type: '0' },
         { name: 'canEssence', command: 'isEssence', isStatus: false, text: this.$t('topic.essence'), type: '1' },
@@ -44,7 +42,9 @@ export default {
     }
   },
   computed: {
-    threadId() { return this.$route.params.id }
+    threadId() {
+      return this.$route.params.id
+    }
   },
   created() {
     this.getPost()
@@ -55,9 +55,12 @@ export default {
         if (data.isDeleted) return this.$router.push('/demo')
         this.author = data.user
         this.article = data.firstPost
+        this.title = data.title
+        this.threadVideo = data.threadVideo || {}
         this.loading = false
         console.log('data', data)
         console.log('article', this.article)
+        console.log('video', this.threadVideo)
         this.initManagementList(data)
       })
     },
@@ -86,10 +89,11 @@ export default {
     width: 100%;
     display: flex;
     justify-content: space-between;
-  main {
-    background: #ffffff;
-    width: 690px;
-    padding: 20px;
+
+    main {
+      background: #ffffff;
+      width: 690px;
+      padding: 20px;
 
       > article {
         margin-top: 25px;
@@ -102,13 +106,6 @@ export default {
       }
     }
 
-    > article {
-      margin-top: 20px;
-
-      > .images {
-        margin-top: 30px;
-      }
-    }
   }
 
   aside {

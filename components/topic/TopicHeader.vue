@@ -37,7 +37,7 @@
 import dayjs from 'dayjs'
 
 export default {
-  name: 'PostHeader',
+  name: 'TopicHeader',
   props: {
     author: {
       type: Object,
