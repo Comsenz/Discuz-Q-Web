@@ -117,6 +117,7 @@ export default {
     // 站点管理页面
     manage: {
       payJoin: 'Pay Join',
+      payInfoTitle: 'You need to pay for visit',
       inviteMembers: 'Invite members',
       siteMembers: 'site of members',
       siteManagement: 'master of management',
