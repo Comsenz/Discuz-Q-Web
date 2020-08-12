@@ -42,6 +42,7 @@
       <!-- 手机号登录 -->
       <el-tab-pane :label="$t('user.phonelogin')">
         <span class="title2">{{ $t('profile.mobile') }}</span>
+
         <el-input
           v-model="phoneNumber"
           :placeholder="$t('user.phoneNumber')"
@@ -51,8 +52,26 @@
         <el-button
           class="count-b"
           :class="{disabled: !canClick}"
+          size="middle"
           @click="sendVerifyCode"
         >{{ content }}</el-button>
+
+        <!-- <div class="retrieve-inputs">
+          <label>
+            <input
+              v-model="phoneNumber"
+              maxlength="11"
+              type="text"
+              :placeholder="$t('user.phoneNumber')"
+            >
+            <button
+              :class="{disabled: !canClick}"
+              @click="sendVerifyCode"
+            >
+              {{ content }}
+            </button>
+          </label>
+        </div> -->
 
         <span class="title3">{{ $t('user.verification') }}</span>
         <el-input
@@ -147,13 +166,13 @@ export default {
     countDown(interval) {
       if (!this.canClick) return
       this.canClick = false
-      this.content = interval + 's后重新发送'
+      this.content = interval + 's后重发'
       const clock = window.setInterval(() => {
         interval--
-        this.content = interval + 's后重新发送'
+        this.content = interval + 's后发送'
         if (interval < 0) {
           window.clearInterval(clock)
-          this.content = '重新发送验证码'
+          this.content = '重发验证码'
           // this.totalTime = 60
           this.canClick = true
         }
@@ -187,7 +206,11 @@ export default {
             this.$router.go(-1)
           }
         }, e => {
-          const { response: { data: { errors }}} = e
+          const {
+            response: {
+              data: { errors }
+            }
+          } = e
           if (errors[0]) return this.$message.error(errors[0].detail[0])
         })
     },
@@ -201,7 +224,12 @@ export default {
         .then(res => {
           if (res.interval) this.countDown(res.interval)
         }, e => {
-          const { response: { data: { errors }}} = e
+          const {
+            response: {
+              data: {
+                errors }
+            }
+          } = e
           if (errors[0]) return this.$message.error(errors[0].detail[0])
         })
     },
@@ -218,7 +246,9 @@ export default {
           this.$message.success('登录成功')
           this.$router.go(-1)
         }, e => {
-          const { response: { status }} = e
+          const {
+            response: { status }
+          } = e
           if (status === 500) return this.$message.error('验证码不正确')
         })
     },
@@ -272,6 +302,36 @@ export default {
     border: none;
     background: transparent;
     box-shadow: none;
+    .retrieve-inputs {
+      margin-top: 40px;
+
+      > .el-input {
+        margin-bottom: 20px;
+        color: #c0c4cc;
+      }
+
+      > label {
+        width: 100%;
+        height: 40px;
+        display: flex;
+        justify-content: space-between;
+        border: 1px solid #dcdfe6;
+        margin-bottom: 20px;
+
+        > button {
+          color: #1878f3;
+          width: 90px;
+          border-left: 1px solid #dcdfe6;
+        }
+
+        > input {
+          flex: 1;
+          border: none;
+          padding: 0 16px;
+          color: #c0c4cc;
+        }
+      }
+    }
     .title {
       margin-left: 10px;
     }
@@ -368,13 +428,17 @@ export default {
   .phone-input {
     width: 209px;
     margin-bottom: 20px;
+    ::v-deep.el-input__inner {
+      border-right: none;
+    }
   }
   .count-b {
     width: 90px;
     height: 40px;
-    padding: 16px 10px;
-    margin-left: -5px;
-    font-size: 10px;
+    // padding: 15.5px 10px;
+    padding:0;
+    margin-left: -4px;
+    // font-size: 10px;
   }
   .disabled {
     background-color: #ddd;

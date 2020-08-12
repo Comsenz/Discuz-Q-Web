@@ -2,20 +2,9 @@
   <div class="info">
     <!-- 有偿加入 -->
     <h2 class="info-title">{{ $t('manage.payJoin') }}</h2>
-    <!-- 付费信息部分 -->
-    <div class="payinfo">
-      <p class="payinfo-title">{{ $t('manage.payInfoTitle') }}</p>
-      <p>
-        <span class="color">{{ $t('discuzq.post.paymentAmount') }}</span><span class="paymoney">{{ '¥' + ((forums.set_site && forums.set_site.site_price) || 0) }}元</span>
-      </p>
-      <p>
-        <span class="date color">{{ $t('site.periodvalidity') }}</span><span class="workdate">{{ forums.set_site && forums.set_site.site_expire
-          ? (forums.set_site && forums.set_site.site_expire) + $t('site.day')
-          : $t('site.permanent') }}</span>
-      </p>
-    </div>
     <!-- 站点内容部分-->
     <div class="content-info abs">
+      <p class="payinfo-title">{{ $t('manage.payInfoTitle') }}</p>
       <p>
         <span class="color">{{ $t('site.creationtime') }}</span><span class="workdate">2018年01月01日</span>
       </p>
@@ -46,11 +35,28 @@
         <span class="date color ">{{ $t('manage.contents') }}</span><span class="workdate">{{ forums.other && forums.other.count_threads }}</span>
       </p>
       <p>
+        <span class="date color ">{{ $t('site.circlemode') }}</span>
+        <span class="workdate">
+          {{ forums.set_site && forums.set_site.site_mode === 'pay' ? $t('site.paymentmode') +'， ' + '¥'+ ((forums.set_site && forums.set_site.site_price) || 0)+$t('post.yuan')+'， ' + $t('site.periodvalidity') +
+            ((forums.set_site && forums.set_site.site_expire) || 0 )+ $t('site.day'):$t('site.publicmode') }}
+        </span>
+      </p>
+      <p>
+        <span class="date color rel">{{ $t('site.myauthority') }}</span>
+        <span
+          v-for="(item, index) in permission"
+          :key="index"
+          class="workdate3"
+        >
+          {{ $t(`permission.${item.attributes.permission}`) }}
+        </span>
+      </p>
+      <p>
         <span class="date color rel">{{ $t('manage.siteintroduction') }}</span>
         <span class="workdate2">{{ forums.set_site && forums.set_site.site_introduction }}</span>
       </p>
     </div>
-    <p
+    <!-- <p
       v-if="isLogin"
       v-cloak
     >
@@ -78,11 +84,27 @@
         type="primary"
         class="r-button"
       >{{ $t('site.join') }}{{ $t('site.site') }}</el-button>
+    </p> -->
+    <p>
+      {{ inviteData.user && inviteData.user.username }}
+      {{ `[ ${inviteData.group && inviteData.group.name} ]` }}
+      {{ forums.set_site && forums.set_site.site_name }}
+      {{ $t('site.site') }}
+    </p>
+    <p>
+      <el-button
+        type="primary"
+        class="r-button"
+      >
+        {{ $t('site.accepttheinvitationandbecome') }}
+        {{ inviteData.group && inviteData.group.name }}
+      </el-button>
     </p>
   </div>
 </template>
 
 <script>
+import { status } from '@/library/jsonapi-vuex/index'
 import forums from '@/mixin/forums'
 export default {
   mixins: [
@@ -94,13 +116,17 @@ export default {
       pageSize: 20,
       pageNum: 1,
       userList: [],
-      searchText: ''
+      searchText: '',
+      permission: [], // 权利
+      inviteData: {} // 邀请信息
 
     }
   },
   mounted() {
     this.isLoginh()
-    this.searchUser()
+    this.searchUser() // 站点数据没有用户数据，这里自行请求user接口
+    this.getInviteInfo(this.$route.query)
+    console.log(this.$route.query)
   },
   methods: {
     isLoginh() {
@@ -122,80 +148,21 @@ export default {
           }
         })
       }
+    },
+    async getInviteInfo(code) {
+      await status
+        .run(() => this.$store.dispatch('jv/get', `invite/bEwmC2YrhEiKSIE6G9oEsO7MesQsjH36`)
+          .then(res => {
+            this.inviteData = res
+            res._jv.json.included.splice(0, 2)
+            this.permission = res._jv.json.included
+            console.log(this.permission)
+            console.log(res._jv.json.included[0].attributes.permission)
+            console.log(res)
+          })
+        )
     }
   }
-  // async onLaunch() {
-  //   const init = async () => {
-  //     const forums = await this.$store.dispatch('jv/get', [
-  //       'forum',
-  //       {
-  //         params: {
-  //           include: 'users'
-  //         }
-  //       }
-  //     ])
-  //     const userId = this.$store.getters['session/get']('userId')
-  //     let user = {}
-  //     if (userId) {
-  //       const params = {
-  //         include: 'groups,wechat'
-  //       }
-  //       user = await this.$store.dispatch('jv/get', [`users/${userId}`, { params }])
-  //       uni.setStorageSync(STORGE_GET_USER_TIME, new Date().getTime())
-  //     }
-  //     this.statisticsCode = forums.set_site.site_stat
-  //     uni.$emit('stat', {
-  //       statisticsCode: this.statisticsCode
-  //     })
-  //     let currentPage = {}
-  //     const pages = getCurrentPages()
-  //     if (pages.length > 0) {
-  //       currentPage = pages[pages.length - 1]
-  //     }
-  //     if (forums.set_site.site_mode === SITE_PAY && currentPage.route !== 'pages/site/partner-invite') {
-  //       // #ifndef H5
-  //       const res = uni.getSystemInfoSync()
-  //       if (res.platform === 'ios') {
-  //         this.$store.dispatch('forum/setError', { loading: false, code: 'dataerro' })
-  //         return
-  //       }
-  //       // #endif
-  //       if (pages.length > 0) {
-  //         currentPage = pages[pages.length - 1]
-  //         if (!user.paid && currentPage.route !== 'pages/site/info') {
-  //           uni.redirectTo({
-  //             url: '/pages/site/info'
-  //           })
-  //         }
-  //       } else if (!user.paid) {
-  //         uni.redirectTo({
-  //           url: '/pages/site/info'
-  //         })
-  //       }
-  //     }
-  //     // #ifdef H5
-  //     this.globalData.appLoadedStatus = true
-  //     uni.$emit('apploaded')
-  //     // #endif
-  //     if (!this.$store.state.forum.error.code) {
-  //       this.$store.dispatch('forum/setError', { loading: false })
-  //     }
-  //   }
-  //   try {
-  //     await init()
-  //   } catch (errs) {
-  //     if (errs && errs.data && errs.data.errors) {
-  //       if (errs.data.errors[0].code === 'access_denied') {
-  //         this.$store.dispatch('session/logout').then(init)
-  //       } else {
-  //         this.$store.dispatch('forum/setError', {
-  //           loading: false,
-  //           ...errs.data.errors[0]
-  //         })
-  //       }
-  //     }
-  //   }
-  // }
 }
 </script>
 <style lang='scss' scoped>
@@ -227,11 +194,11 @@ export default {
     margin-top: 34px;
     color: #000000;
     padding-bottom: 30px;
-    .payinfo-title {
-      font-size: 18px;
-      font-family: Microsoft YaHei;
-      font-weight: 400;
-    }
+  }
+  .payinfo-title {
+    font-size: 18px;
+    font-family: Microsoft YaHei;
+    font-weight: 400;
   }
   .date {
     width: 56px;
@@ -258,7 +225,7 @@ export default {
   }
   .workdate2 {
     // position: absolute;
-    width: 326px;
+    // width: 326px;
     font-weight: 400;
     word-break: break-all;
     font-family: Microsoft YaHei;
@@ -266,8 +233,20 @@ export default {
     font-size: 14px;
     margin-left: 75px;
   }
+  .workdate3 {
+    // position: absolute;
+    // width: 326px;
+    font-weight: 400;
+    word-break: break-all;
+    font-family: Microsoft YaHei;
+    color: #6d6d6d;
+    font-size: 12px;
+    margin-left: 75px;
+    background: #efefef;
+    margin-top: 5px;
+  }
   .content-info {
-    margin-top: 16px;
+    margin-top: 34px;
     // min-height: 330px;
     .img {
       width: 30px;
@@ -280,7 +259,7 @@ export default {
       img {
         border-radius: 50%;
         width: 30px;
-      // height: 30px;
+        // height: 30px;
       }
     }
     .member-img {

@@ -1,20 +1,13 @@
 <template>
-  <div
-    class="qui-avatar"
-    @click="click"
-  >
+  <div class="qui-avatar" @click="click">
     <img
       v-if="avatarUrl && !errorUrl"
-      :src="avatarUrl"
+      :src="user.avatarUrl"
       :class="'avatar-size-' + size"
       :alt="user.username"
       @error="error"
     >
-    <div
-      v-else-if="styleText"
-      :class="'avatar avatar-size-' + size"
-      :style="styleText"
-    >
+    <div v-else-if="styleText" :class="'avatar avatar-size-' + size" :style="styleText">
       {{ usernameAt }}
     </div>
   </div>
@@ -27,7 +20,7 @@ export default {
   props: {
     user: {
       type: [Object, String],
-      default: () => { }
+      default: () => {}
     },
     size: {
       type: [Number, String],
@@ -47,29 +40,18 @@ export default {
   },
   computed: {
     avatarUrl() {
-      return (
-        this.user.avatarUrl &&
-        this.user.avatarUrl.indexOf('/static/noavatar.gif') !== 0
-      )
+      return this.user.avatarUrl && this.user.avatarUrl.indexOf('/static/noavatar.gif') !== 0
     },
     usernameAt() {
-      return this.user.username
-        ? this.user.username.charAt(0).toUpperCase()
-        : this.$t('core.noAvatar')
+      return this.user.username ? this.user.username.charAt(0).toUpperCase() : this.$t('core.noAvatar')
     },
     styleText() {
-      return `background-color: #${stringToColor(this.usernameAt)};${
-        this.sizes[this.size]
-      }`
+      return `background-color: #${stringToColor(this.usernameAt)};${this.sizes[this.size]}`
     }
   },
   methods: {
-    error() {
-      this.errorUrl = true
-    },
-    click() {
-      this.$emit('click')
-    }
+    error() { this.errorUrl = true },
+    click() { this.$emit('click') }
   }
 }
 </script>

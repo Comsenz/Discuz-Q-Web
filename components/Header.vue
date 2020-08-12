@@ -84,6 +84,7 @@ export default {
     },
     ExitLogin() {
       this.isLogin = window.localStorage.removeItem('access_token')
+      this.$router.go(0)
     }
   }
 }

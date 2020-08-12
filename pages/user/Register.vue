@@ -147,13 +147,13 @@ export default {
     coutDown() {
       if (!this.canClick) return
       this.canClick = false
-      this.content = this.totalTime + 's后重新发送'
+      this.content = this.totalTime + 's后重发'
       const clock = window.setInterval(() => {
         this.totalTime--
-        this.content = this.totalTime + 's后重新发送'
+        this.content = this.totalTime + 's后重发'
         if (this.totalTime < 0) {
           window.clearInterval(clock)
-          this.content = '重新发送验证码'
+          this.content = '重发验证码'
           this.totalTime = 60
           this.canClick = true
         }
@@ -270,9 +270,9 @@ export default {
   .count-b {
     width: 90px;
     height: 40px;
-    padding: 16px 10px;
-    margin-left: -5px;
-    font-size: 10px;
+    // padding: 15.5px 10px;
+    padding:0;
+    margin-left: -4px;
   }
   .disabled {
     background-color: #ddd;
@@ -307,6 +307,7 @@ export default {
   }
   .el-input__inner {
     border-radius: 0px;
+    border-right: none;
   }
   .el-button {
     border-radius: 0px;
