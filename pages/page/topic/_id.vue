@@ -2,18 +2,19 @@
   <div v-loading="loading" element-loading-background="#fff" class="page-post">
     <main>
       <topic-header
-        :author="author"
-        :article="article"
+        :author="thread.user || {}"
+        :article="thread.firstPost || {}"
         :management-list="managementList"
         :thread-id="threadId"
         @managementSelected="initManagementList"
       />
       <topic-content
-        :article="article"
-        :title="title"
-        :video="threadVideo"
+        :article="thread.firstPost || {}"
+        :title="thread.title || ''"
+        :video="thread.threadVideo || {}"
         :paid-information="paidInformation"
-        :thread-type="threadType"
+        :thread-type="thread.type || 0"
+        :category="thread.category || {}"
       />
       <div class="tags" />
       <div class="actions" />
@@ -30,11 +31,7 @@ export default {
   name: 'Post',
   data() {
     return {
-      author: {},
-      article: {},
-      threadType: 0,
-      title: '',
-      threadVideo: {},
+      thread: {},
       paidInformation: {
         price: 0,
         paid: false,
@@ -51,9 +48,7 @@ export default {
     }
   },
   computed: {
-    threadId() {
-      return this.$route.params.id
-    }
+    threadId() { return this.$route.params.id }
   },
   created() {
     this.getPost()
@@ -62,17 +57,11 @@ export default {
     getPost() {
       this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include }}]).then(data => {
         if (data.isDeleted) return this.$router.push('/demo')
-        this.author = data.user
-        this.article = data.firstPost
-        this.title = data.title
-        this.threadType = data.type
-        this.threadVideo = data.threadVideo || {}
+        this.thread = data
         this.loading = false
         this.initManagementList(data)
         this.initPaidInformation(data)
         console.log('data', data)
-        console.log('article', this.article)
-        console.log('video', this.threadVideo)
         console.log(this.paidInformation, 'paidInformation')
       })
     },

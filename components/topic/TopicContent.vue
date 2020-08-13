@@ -1,7 +1,7 @@
 <template>
   <article class="global">
     <h2 class="title">{{ title }}</h2>
-    <div class="content-html" v-html="article.contentHtml || '' " />
+    <div class="content-html" v-html="formatTopicTab(article.contentHtml || '')" />
     <img
       v-if="video.cover_url"
       class="video-img-cover"
@@ -9,7 +9,7 @@
       :alt="video.file_name"
       @click.stop="openVideo"
     >
-    <div class="images">
+    <div v-if="article.images && article.images.length > 0" class="images">
       <el-image
         v-for="(image, index) in article.images"
         :key="index"
@@ -21,6 +21,7 @@
       />
     </div>
     <div v-if="unpaid && threadType === 1" class="hide-content-tip">{{ $t('pay.contentHide') }}</div>
+    <div class="tag" @click="skipIndexPage">{{ category.name }}</div>
   </article>
 </template>
 
@@ -31,7 +32,8 @@ export default {
   props: {
     article: {
       type: Object,
-      default: () => {}
+      default: () => {
+      }
     },
     title: {
       type: String,
@@ -39,39 +41,44 @@ export default {
     },
     video: {
       type: Object,
-      default: () => {}
+      default: () => {
+      }
     },
     paidInformation: {
       type: Object,
-      default: () => {}
+      default: () => {
+      }
     },
     threadType: {
       type: Number,
       default: 0
+    },
+    category: {
+      type: Object,
+      default: () => {
+      }
     }
   },
   computed: {
-    unpaid() {
-      return !(this.paidInformation.paid || parseInt(this.paidInformation.price) === 0)
-    }
+    unpaid() { return !(this.paidInformation.paid || parseInt(this.paidInformation.price) === 0) }
   },
   watch: {
     article: {
       handler() {
-        this.$nextTick(() => {
-          this.formatTopicTab()
-          this.addTextHideCover()
-        })
+        this.$nextTick(this.addTextHideCover)
       },
       deep: true
     }
   },
   methods: {
-    formatTopicTab() {
-      const topic = document.getElementById('topic')
-      if (topic) {
-        topic.innerHTML = `<a href=/pages/topic/content?id=${topic.getAttribute('value')}>${topic.innerText}</a>`
-      }
+    formatTopicTab(text) {
+      const regexp = /<span\s*id="topic"\s*value="(?<value>\w+)"\s*>(?<string>[^<]+)<\/span>/igum
+      return text.replace(regexp, match => {
+        return match.replace(regexp, (content, value, text) => {
+          const href = `/pages/topic/content?id=${value}`
+          return `<a href="${href}" class="content-topic">${text}</a> `
+        })
+      })
     },
     addTextHideCover() {
       if (!this.unpaid && this.threadType === 1) return
@@ -93,10 +100,15 @@ export default {
     },
     removeVideoPop(e) {
       let pass = true
-      e.path.forEach(item => { if (item.id === 'video-pop') pass = false })
+      e.path.forEach(item => {
+        if (item.id === 'video-pop') pass = false
+      })
       if (!pass) return
       document.querySelector('.cover').remove()
       document.removeEventListener('click', this.removeVideoPop)
+    },
+    skipIndexPage() {
+      console.log('跳到首页的某个地方')
     }
   }
 
@@ -150,6 +162,7 @@ export default {
     }
 
     > .video-img-cover {
+      display: block;
       margin-top: 30px;
       width: 400px;
       cursor: pointer;
@@ -158,6 +171,20 @@ export default {
     > .hide-content-tip {
       font-size: 16px;
       text-align: center;
+    }
+
+    > .tag {
+      height: 25px;
+      line-height: 25px;
+      text-align: center;
+      padding: 0 8px;
+      display: inline-block;
+      border-radius: 12.5px;
+      margin-right: 15px;
+      margin-top: 35px;
+      background: #F7F7F7;
+      color: #777;
+      font-size: 12px;
     }
 
     ::v-deep .cover {
