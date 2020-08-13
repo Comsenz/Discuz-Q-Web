@@ -12,6 +12,8 @@
         :article="article"
         :title="title"
         :video="threadVideo"
+        :paid-information="paidInformation"
+        :thread-type="threadType"
       />
       <div class="tags" />
       <div class="actions" />
@@ -30,8 +32,15 @@ export default {
     return {
       author: {},
       article: {},
+      threadType: 0,
       title: '',
       threadVideo: {},
+      paidInformation: {
+        price: 0,
+        paid: false,
+        paidUsers: [],
+        paidCount: 0
+      },
       managementList: [
         { name: 'canEdit', command: 'toEdit', isStatus: false, text: this.$t('topic.edit'), type: '0' },
         { name: 'canEssence', command: 'isEssence', isStatus: false, text: this.$t('topic.essence'), type: '1' },
@@ -56,13 +65,19 @@ export default {
         this.author = data.user
         this.article = data.firstPost
         this.title = data.title
+        this.threadType = data.type
         this.threadVideo = data.threadVideo || {}
         this.loading = false
+        this.initManagementList(data)
+        this.initPaidInformation(data)
         console.log('data', data)
         console.log('article', this.article)
         console.log('video', this.threadVideo)
-        this.initManagementList(data)
+        console.log(this.paidInformation, 'paidInformation')
       })
+    },
+    initPaidInformation(data) {
+      for (const key in this.paidInformation) { this.paidInformation[key] = data[key] }
     },
     initManagementList(data) {
       this.managementList.forEach(item => {

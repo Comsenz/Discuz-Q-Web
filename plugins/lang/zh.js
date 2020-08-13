@@ -295,7 +295,7 @@ export default {
     sumOfMoney: '金额',
     inputComplete: '输入完成',
     surplus: '剩余',
-    contentHide: '内容已隐藏',
+    contentHide: '剩余内容已隐藏',
     payHave: '支付作者，获得',
     pay: '支付',
     rmb: '元',

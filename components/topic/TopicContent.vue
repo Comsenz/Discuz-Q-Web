@@ -2,17 +2,25 @@
   <article class="global">
     <h2 class="title">{{ title }}</h2>
     <div class="content-html" v-html="article.contentHtml || '' " />
+    <img
+      v-if="video.cover_url"
+      class="video-img-cover"
+      :src="video.cover_url"
+      :alt="video.file_name"
+      @click.stop="openVideo"
+    >
     <div class="images">
       <el-image
         v-for="(image, index) in article.images"
         :key="index"
-        style="max-width: 100%"
+        style="width: 200px; height: 200px;border-radius: 5px; margin-right: 20px"
         :src="image.thumbUrl"
         :alt="image.filename"
-        fit="fill"
+        :preview-src-list="unpaid ? [] : [...article.images.map(item => item.thumbUrl)]"
+        fit="contain"
       />
     </div>
-    <img v-if="video.cover_url" class="video-img-cover" :src="video.cover_url" :alt="video.file_name" @click.stop="openVideo">
+    <div v-if="unpaid && threadType === 1" class="hide-content-tip">{{ $t('pay.contentHide') }}</div>
   </article>
 </template>
 
@@ -23,8 +31,7 @@ export default {
   props: {
     article: {
       type: Object,
-      default: () => {
-      }
+      default: () => {}
     },
     title: {
       type: String,
@@ -32,14 +39,29 @@ export default {
     },
     video: {
       type: Object,
-      default: () => {
-      }
+      default: () => {}
+    },
+    paidInformation: {
+      type: Object,
+      default: () => {}
+    },
+    threadType: {
+      type: Number,
+      default: 0
+    }
+  },
+  computed: {
+    unpaid() {
+      return !(this.paidInformation.paid || parseInt(this.paidInformation.price) === 0)
     }
   },
   watch: {
     article: {
       handler() {
-        this.$nextTick(this.formatTopicTab)
+        this.$nextTick(() => {
+          this.formatTopicTab()
+          this.addTextHideCover()
+        })
       },
       deep: true
     }
@@ -51,7 +73,13 @@ export default {
         topic.innerHTML = `<a href=/pages/topic/content?id=${topic.getAttribute('value')}>${topic.innerText}</a>`
       }
     },
+    addTextHideCover() {
+      if (!this.unpaid && this.threadType === 1) return
+      const contentHtml = document.querySelector('.content-html')
+      if (parseInt(contentHtml.offsetHeight) > 100) contentHtml.classList.add('hide-cover')
+    },
     openVideo() {
+      if (this.unpaid) return alert('大哥，请付费')
       if (document.getElementById('video-pop')) return
       const div = document.createElement('div')
       div.innerHTML = `<div id="video-pop" class="video-pop">
@@ -88,6 +116,21 @@ export default {
     > .content-html {
       margin-top: 22px;
 
+      &.hide-cover {
+        position: relative;
+
+        &:after {
+          position: absolute;
+          display: block;
+          left: 0;
+          bottom: 0;
+          content: '';
+          width: 100%;
+          height: 100px;
+          background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+        }
+      }
+
       ::v-deep p {
         font-size: 16px;
       }
@@ -103,11 +146,18 @@ export default {
 
     > .images {
       margin-top: 30px;
+      width: 660px;
     }
 
     > .video-img-cover {
+      margin-top: 30px;
       width: 400px;
       cursor: pointer;
+    }
+
+    > .hide-content-tip {
+      font-size: 16px;
+      text-align: center;
     }
 
     ::v-deep .cover {
