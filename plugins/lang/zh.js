@@ -295,7 +295,7 @@ export default {
     sumOfMoney: '金额',
     inputComplete: '输入完成',
     surplus: '剩余',
-    contentHide: '内容已隐藏',
+    contentHide: '剩余内容已隐藏',
     payHave: '支付作者，获得',
     pay: '支付',
     rmb: '元',
@@ -355,6 +355,7 @@ export default {
   manage: {
     payJoin: '有偿加入',
     payInfoTitle: '访问圈子内容需要您付费加入',
+    inviteInfoTitle: '您已被邀请加入',
     inviteMembers: '邀请成员',
     siteMembers: '站点成员',
     siteManagement: '站点管理',

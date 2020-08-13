@@ -2,17 +2,21 @@
   <div v-loading="loading" element-loading-background="#fff" class="page-post">
     <main>
       <topic-header
-        :author="author"
-        :article="article"
+        :author="thread.user || {}"
+        :article="thread.firstPost || {}"
         :management-list="managementList"
         :thread-id="threadId"
         @managementSelected="initManagementList"
       />
       <topic-content
-        :article="article"
-        :title="title"
-        :video="threadVideo"
+        :article="thread.firstPost || {}"
+        :title="thread.title || ''"
+        :video="thread.threadVideo || {}"
+        :paid-information="paidInformation"
+        :thread-type="thread.type || 0"
+        :category="thread.category || {}"
       />
+      <topic-actions />
       <div class="tags" />
       <div class="actions" />
     </main>
@@ -28,10 +32,15 @@ export default {
   name: 'Post',
   data() {
     return {
-      author: {},
-      article: {},
-      title: '',
-      threadVideo: {},
+      thread: {},
+      // TODO 后端数据不完整，留着后面做
+      actions: [
+        { text: '阅读', count: 0, command: '' },
+        { text: '点赞', count: 0, command: 'isLiked', isStatus: false },
+        { text: '收藏', count: 0, command: 'isFavorite', isStatus: false },
+        { text: '分享', count: 0, command: 'showLink' }
+      ],
+      paidInformation: { price: 0, paid: false, paidUsers: [], paidCount: 0 },
       managementList: [
         { name: 'canEdit', command: 'toEdit', isStatus: false, text: this.$t('topic.edit'), type: '0' },
         { name: 'canEssence', command: 'isEssence', isStatus: false, text: this.$t('topic.essence'), type: '1' },
@@ -42,9 +51,7 @@ export default {
     }
   },
   computed: {
-    threadId() {
-      return this.$route.params.id
-    }
+    threadId() { return this.$route.params.id }
   },
   created() {
     this.getPost()
@@ -53,16 +60,17 @@ export default {
     getPost() {
       this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include }}]).then(data => {
         if (data.isDeleted) return this.$router.push('/demo')
-        this.author = data.user
-        this.article = data.firstPost
-        this.title = data.title
-        this.threadVideo = data.threadVideo || {}
+        this.thread = data
         this.loading = false
-        console.log('data', data)
-        console.log('article', this.article)
-        console.log('video', this.threadVideo)
         this.initManagementList(data)
+        this.initPaidInformation(data)
+        this.initActions(data)
+        console.log('data', data)
+        console.log(this.paidInformation, 'paidInformation')
       })
+    },
+    initPaidInformation(data) {
+      for (const key in this.paidInformation) { this.paidInformation[key] = data[key] }
     },
     initManagementList(data) {
       this.managementList.forEach(item => {
@@ -75,6 +83,17 @@ export default {
           item.text = item.isStatus ? this.$t('topic.cancelSticky') : this.$t('topic.sticky')
         }
       })
+    },
+    initActions(data) {
+      // TODO 后端数据不完整，留着后面做
+      this.actions[1].count = data.firstPost.likeCount
+      this.actions[0].count = data.viewCount
+      this.actions[1].count = data.firstPost.likeCount
+      this.actions[1].isStatus = data.firstPost.isLiked
+      this.actions[2].count = 1000
+      this.actions[2].isStatus = data.isFavorite
+      this.actions[3].count = 157
+      console.log(this.actions, 'actions')
     }
   }
 }

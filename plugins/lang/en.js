@@ -118,6 +118,7 @@ export default {
     manage: {
       payJoin: 'Pay Join',
       payInfoTitle: 'You need to pay for visit',
+      inviteInfoTitle: 'You are invite to visit',
       inviteMembers: 'Invite members',
       siteMembers: 'site of members',
       siteManagement: 'master of management',

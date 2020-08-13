@@ -17,7 +17,8 @@
     <!-- 站点内容部分-->
     <div class="content-info abs">
       <p>
-        <span class="color">{{ $t('site.creationtime') }}</span><span class="workdate">2018年01月01日</span>
+        <span class="color">{{ $t('site.creationtime') }}</span>
+        <span class="workdate">{{ forums.set_site && forums.set_site.site_install }}</span>
       </p>
       <p>
         <span class="date color">{{ $t('site.circlemaster') }}</span>
@@ -28,7 +29,8 @@
           ></span><span class="workdate">{{ forums.set_site && forums.set_site.site_author.username }}</span>
       </p>
       <p>
-        <span class="date color">{{ $t('home.theme') }}</span><span class="workdate">{{ forums.other && forums.other.count_users }}</span>
+        <span class="date color">{{ $t('home.theme') }}</span>
+        <span class="workdate bold">{{ forums.other && forums.other.count_users }}</span>
       </p>
       <p class="member-img">
         <span
@@ -43,7 +45,8 @@
         </span>
       </p>
       <p>
-        <span class="date color ">{{ $t('manage.contents') }}</span><span class="workdate">{{ forums.other && forums.other.count_threads }}</span>
+        <span class="date color ">{{ $t('manage.contents') }}</span>
+        <span class="workdate bold">{{ forums.other && forums.other.count_threads }}</span>
       </p>
       <p>
         <span class="date color rel">{{ $t('manage.siteintroduction') }}</span>
@@ -55,13 +58,14 @@
       v-cloak
     >
       <span>{{ $t('site.justonelaststepjoinnow') }}</span>
-      <span class="site-invite__detail__bold">
+      <span class="bold">
         {{ forums.set_site && forums.set_site.site_name }}
       </span>
       <span>{{ $t('site.site') }}</span>
       <el-button
         type="primary"
         class="r-button"
+        @click="paysureShow"
       >{{ $t('site.paynow') }}，¥{{ (forums.set_site && forums.set_site.site_price) || 0 }}
         {{
           forums.set_site && forums.set_site.site_expire
@@ -74,16 +78,39 @@
       v-if="!isLogin"
       v-cloak
     >
-      <el-button
-        type="primary"
-        class="r-button"
-      >{{ $t('site.join') }}{{ $t('site.site') }}</el-button>
+      <nuxt-link to="/user/login">
+        <el-button
+          type="primary"
+          class="r-button"
+        >{{ $t('site.join') }}{{ $t('site.site') }}</el-button>
+      </nuxt-link>
+
     </p>
+    <div
+      v-if="qrcodeShow"
+      class="qrco-overlay"
+    />
+    <el-dialog
+      :title="`扫码支付${(forums.set_site &&forums.set_site.site_price) ? forums.set_site.site_price : 1}元加入${forums.set_site && forums.set_site.site_name}`"
+      :visible.sync="qrcodeShow"
+      width="15%"
+      class="model"
+      :show-close="false"
+    >
+
+      <img
+        :src="codeUrl"
+        alt=""
+      >
+
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import forums from '@/mixin/forums'
+let payWechat = null
 export default {
   mixins: [
     forums
@@ -94,7 +121,12 @@ export default {
       pageSize: 20,
       pageNum: 1,
       userList: [],
-      searchText: ''
+      searchText: '',
+      isAnonymous: '0',
+      qrcodeShow: false,
+      payStatus: false, // 订单支付状态
+      orderSn: '', // 订单编号
+      codeUrl: '' // 二维码支付url，base64
 
     }
   },
@@ -106,6 +138,9 @@ export default {
     isLoginh() {
       this.isLogin = !!window.localStorage.getItem('access_token')
       console.log(this.isLogin)
+      var a = 1001
+      var b = 1000
+      console.log(a > b ? `${a % 1000}k` : '原来的价格')
     },
     async searchUser() {
       const params = {
@@ -122,8 +157,84 @@ export default {
           }
         })
       }
+    },
+    // 支付方式选择完成点击确定时
+    paysureShow() {
+      console.log(this.forums)
+      this.creatOrder(this.forums.set_site.site_price, 1, this.value)
+    },
+    // 创建订单
+    creatOrder(amount, type, value) {
+      const params = {
+        _jv: {
+          type: 'orders'
+        },
+        type,
+        amount,
+        is_anonymous: this.isAnonymous
+      }
+      this.$store.dispatch('jv/post', params).then(res => {
+        console.log('---order info ---', res)
+        this.orderSn = res.order_sn
+        this.orderPay(10, value, this.orderSn, '3') // pc浏览器
+      })
+    },
+    // 订单支付
+    orderPay(type, value, orderSn, browserType) {
+      let params = {}
+      params = {
+        _jv: {
+          type: `trade/pay/order/${orderSn}`
+        },
+        payment_type: type
+      }
+      this.$store.dispatch('jv/post', params).then(res => {
+        this.wxRes = res
+        if (browserType === '3') {
+          if (res) {
+            this.codeUrl = res.wechat_qrcode
+            this.payShowStatus = false
+            // this.$refs.codePopup.open()
+            this.qrcodeShow = true
+            payWechat = setInterval(() => {
+              if (this.payStatus === 1) {
+                clearInterval(payWechat)
+                return
+              }
+              this.getOrderStatus(this.orderSn, browserType)
+              // uni.hideLoading()
+            }, 3000)
+          }
+        }
+      })
+    },
+    // 查询订单支状 browserType: 0是小程序，1是微信浏览器，2是h5，3是pc
+    getOrderStatus(orderSn, browserType) {
+      this.$store
+        .dispatch('jv/get', [`orders/${orderSn}`, {
+          custom: { loading: false }
+        }])
+        .then(res => {
+          this.payStatus = res.status
+          if (this.payStatus === 1) {
+            this.payShowStatus = false
+            this.coverLoading = false
+            if (browserType === '3') {
+              // 这是pc扫码支付完成
+              // this.$refs.codePopup.close()
+              this.qrcodeShow = false
+            }
+            window.location.href = '/'
+            // this.$refs.toast.show({ message: this.p.paySuccess })
+          }
+        })
+        .catch(() => {
+          this.coverLoading = false
+          // this.$refs.toast.show({ message: this.pay.payFail })
+        })
     }
   }
+  // 用于全局判断站点是否是付费
   // async onLaunch() {
   //   const init = async () => {
   //     const forums = await this.$store.dispatch('jv/get', [
@@ -199,8 +310,28 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
+.qrco-overlay {
+  background: transparent;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  position: fixed;
+  margin: auto;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+}
+::v-deep .model {
+  .el-dialog__body {
+    padding: 0;
+  }
+}
 [v-cloak] {
   display: none;
+}
+.bold {
+  font-weight: bold;
 }
 .abs {
   position: relative;
@@ -253,13 +384,11 @@ export default {
     // width: 130px;
     text-align: center;
     font-size: 16px;
-    font-weight: 400;
     font-family: Microsoft YaHei;
   }
   .workdate2 {
     // position: absolute;
     width: 326px;
-    font-weight: 400;
     word-break: break-all;
     font-family: Microsoft YaHei;
     color: #6d6d6d;
@@ -280,11 +409,11 @@ export default {
       img {
         border-radius: 50%;
         width: 30px;
-      // height: 30px;
+        // height: 30px;
       }
     }
     .member-img {
-      margin-left: 70px;
+      margin-left: 76px;
     }
   }
   .r-button {
