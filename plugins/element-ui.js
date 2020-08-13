@@ -14,7 +14,10 @@ import {
   Loading,
   Dropdown,
   DropdownMenu,
-  DropdownItem
+  DropdownItem,
+  Dialog,
+  Menu,
+  MenuItem
 } from 'element-ui'
 
 Vue.use(Button, { locale })
@@ -27,5 +30,8 @@ Vue.use(Loading, { locale })
 Vue.use(Dropdown, { locale })
 Vue.use(DropdownMenu, { locale })
 Vue.use(DropdownItem, { locale })
+Vue.use(Dialog, { locale })
+Vue.use(Menu, { locale })
+Vue.use(MenuItem, { locale })
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm

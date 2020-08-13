@@ -1,12 +1,14 @@
 <template>
   <div class="header">
     <div class="header-container">
-      <div class="logo">
-        <img
-          :src="headImg != '' && headImg != null ? headImg : require('static/logo.png')"
-          alt
-        >
-      </div>
+      <nuxt-link to="/">
+        <div class="logo">
+          <img
+            :src="headImg != '' && headImg != null ? headImg : require('static/logo.png')"
+            alt
+          >
+        </div>
+      </nuxt-link>
 
       <el-input
         v-model="inputVal"
@@ -44,6 +46,13 @@
         class="h-button"
       >
 
+        <!-- <el-button
+          type="primary"
+          plain
+          size="small"
+          class="h-button3"
+          @click="ExitLogin"
+        >{{ $t('user.logout') }}</el-button>
         <el-button
           type="primary"
           plain
@@ -51,6 +60,37 @@
           class="h-button3"
           @click="ExitLogin"
         >{{ $t('user.logout') }}</el-button>
+        <el-button
+          type="primary"
+          plain
+          size="small"
+          class="h-button3"
+          @click="ExitLogin"
+        >{{ $t('user.logout') }}</el-button>
+        <el-button
+          type="primary"
+          plain
+          size="small"
+          class="h-button3"
+          @click="ExitLogin"
+        >{{ $t('user.logout') }}</el-button> -->
+        <el-menu
+          :default-active="activeIndex"
+          class="el-menu-demo"
+          mode="horizontal"
+          @select="handleSelect"
+        >
+          <el-menu-item index="1" class="h-button3">处理中心</el-menu-item>
+          <el-menu-item
+            index="2"
+            class="h-button3"
+          >消息中心</el-menu-item>
+          <el-menu-item index="3" class="h-button3">
+            <a
+              href="https://www.ele.me"
+              target="_blank"
+            >订单管理</a></el-menu-item>
+        </el-menu>
 
       </div>
     </div>
@@ -70,7 +110,8 @@ export default {
   data() {
     return {
       inputVal: '',
-      isLogin: ''
+      isLogin: '',
+      activeIndex: '1'
 
     }
   },
@@ -78,6 +119,9 @@ export default {
     this.isLoginh()
   },
   methods: {
+    handleSelect(key, keyPath) {
+      console.log(key, keyPath)
+    },
     isLoginh() {
       this.isLogin = !!window.localStorage.getItem('access_token')
       console.log(this.isLogin)
