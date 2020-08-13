@@ -16,6 +16,7 @@
         :thread-type="thread.type || 0"
         :category="thread.category || {}"
       />
+      <topic-actions />
       <div class="tags" />
       <div class="actions" />
     </main>
@@ -32,12 +33,14 @@ export default {
   data() {
     return {
       thread: {},
-      paidInformation: {
-        price: 0,
-        paid: false,
-        paidUsers: [],
-        paidCount: 0
-      },
+      // TODO 后端数据不完整，留着后面做
+      actions: [
+        { text: '阅读', count: 0, command: '' },
+        { text: '点赞', count: 0, command: 'isLiked', isStatus: false },
+        { text: '收藏', count: 0, command: 'isFavorite', isStatus: false },
+        { text: '分享', count: 0, command: 'showLink' }
+      ],
+      paidInformation: { price: 0, paid: false, paidUsers: [], paidCount: 0 },
       managementList: [
         { name: 'canEdit', command: 'toEdit', isStatus: false, text: this.$t('topic.edit'), type: '0' },
         { name: 'canEssence', command: 'isEssence', isStatus: false, text: this.$t('topic.essence'), type: '1' },
@@ -61,6 +64,7 @@ export default {
         this.loading = false
         this.initManagementList(data)
         this.initPaidInformation(data)
+        this.initActions(data)
         console.log('data', data)
         console.log(this.paidInformation, 'paidInformation')
       })
@@ -79,6 +83,17 @@ export default {
           item.text = item.isStatus ? this.$t('topic.cancelSticky') : this.$t('topic.sticky')
         }
       })
+    },
+    initActions(data) {
+      // TODO 后端数据不完整，留着后面做
+      this.actions[1].count = data.firstPost.likeCount
+      this.actions[0].count = data.viewCount
+      this.actions[1].count = data.firstPost.likeCount
+      this.actions[1].isStatus = data.firstPost.isLiked
+      this.actions[2].count = 1000
+      this.actions[2].isStatus = data.isFavorite
+      this.actions[3].count = 157
+      console.log(this.actions, 'actions')
     }
   }
 }
