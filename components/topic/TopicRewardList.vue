@@ -6,9 +6,9 @@
       </div>
       <div v-if="userList.length > 0" class="person-list">
         <div class="first-show">
-          <a v-for="(user, index) in userList.slice(0, command[usersIndex].value)" :key="index" :href="'/profile/' + user.id">
-            <Avatar class="container-avatar" size="30" :user="user" />
-          </a>
+          <template v-for="(user, index) in userList.slice(0, command[usersIndex].value)">
+            <Avatar :key="index" class="container-avatar" size="30" :user="user" />
+          </template>
         </div>
       </div>
       <div

@@ -31,12 +31,10 @@
 </template>
 
 <script>
-import TopicRewardList from '../../../components/topic/TopicRewardList'
 const include = 'posts.replyUser,user.groups,user,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers'
 
 export default {
   name: 'Post',
-  components: { TopicRewardList },
   layout: 'custom_layout',
   data() {
     return {

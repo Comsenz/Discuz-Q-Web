@@ -57,6 +57,7 @@ function hsvToRgb(h, s, v) {
  * @return {String}
  */
 export default function stringToColor(string) {
+  if (string === '') return '#fff'
   let num = 0;
 
   // Convert the username into a number based on the ASCII value of each
