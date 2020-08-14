@@ -302,36 +302,6 @@ export default {
     border: none;
     background: transparent;
     box-shadow: none;
-    .retrieve-inputs {
-      margin-top: 40px;
-
-      > .el-input {
-        margin-bottom: 20px;
-        color: #c0c4cc;
-      }
-
-      > label {
-        width: 100%;
-        height: 40px;
-        display: flex;
-        justify-content: space-between;
-        border: 1px solid #dcdfe6;
-        margin-bottom: 20px;
-
-        > button {
-          color: #1878f3;
-          width: 90px;
-          border-left: 1px solid #dcdfe6;
-        }
-
-        > input {
-          flex: 1;
-          border: none;
-          padding: 0 16px;
-          color: #c0c4cc;
-        }
-      }
-    }
     .title {
       margin-left: 10px;
     }
