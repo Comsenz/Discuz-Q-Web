@@ -17,7 +17,9 @@ import {
   DropdownItem,
   Dialog,
   Menu,
-  MenuItem
+  MenuItem,
+  Submenu,
+  Container
 } from 'element-ui'
 
 Vue.use(Button, { locale })
@@ -33,5 +35,8 @@ Vue.use(DropdownItem, { locale })
 Vue.use(Dialog, { locale })
 Vue.use(Menu, { locale })
 Vue.use(MenuItem, { locale })
+Vue.use(Submenu, { locale })
+Vue.use(Container, { locale })
+
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm

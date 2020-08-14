@@ -164,7 +164,7 @@ export default {
     },
     async getInviteInfo(code) {
       await status
-        .run(() => this.$store.dispatch('jv/get', `invite/bEwmC2YrhEiKSIE6G9oEsO7MesQsjH36`)
+        .run(() => this.$store.dispatch('jv/get', `invite/${code}`)
           .then(res => {
             this.inviteData = res
             res._jv.json.included.splice(0, 2)

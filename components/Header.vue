@@ -45,52 +45,70 @@
         v-cloak
         class="h-button"
       >
-
-        <!-- <el-button
-          type="primary"
-          plain
-          size="small"
-          class="h-button3"
-          @click="ExitLogin"
-        >{{ $t('user.logout') }}</el-button>
-        <el-button
-          type="primary"
-          plain
-          size="small"
-          class="h-button3"
-          @click="ExitLogin"
-        >{{ $t('user.logout') }}</el-button>
-        <el-button
-          type="primary"
-          plain
-          size="small"
-          class="h-button3"
-          @click="ExitLogin"
-        >{{ $t('user.logout') }}</el-button>
-        <el-button
-          type="primary"
-          plain
-          size="small"
-          class="h-button3"
-          @click="ExitLogin"
-        >{{ $t('user.logout') }}</el-button> -->
-        <el-menu
+        <!-- <el-menu
           :default-active="activeIndex"
           class="el-menu-demo"
           mode="horizontal"
           @select="handleSelect"
         >
-          <el-menu-item index="1" class="h-button3">处理中心</el-menu-item>
+          <img
+            class="avatar"
+            src="@/static/logo.png"
+            alt=""
+          >
+
+          <el-menu-item
+            index="4"
+            class="h-button3"
+            @click="ExitLogin"
+          >
+            {{ $t('user.logout') }}</el-menu-item>
+          <el-menu-item
+            index="3"
+            class="h-button3"
+          >{{ $t('profile.personalhomepage') }}</el-menu-item>
+
           <el-menu-item
             index="2"
             class="h-button3"
-          >消息中心</el-menu-item>
-          <el-menu-item index="3" class="h-button3">
-            <a
-              href="https://www.ele.me"
-              target="_blank"
-            >订单管理</a></el-menu-item>
-        </el-menu>
+          >{{ $t('home.tabsNews') }}</el-menu-item>
+          <el-menu-item
+            index="1"
+            class="h-button3"
+          >
+            bruceluo</el-menu-item>
+
+        </el-menu> -->
+        <img
+          class="avatar"
+          src="@/static/logo.png"
+          alt=""
+        >
+
+        <el-button
+          type="primary"
+          size="small"
+          class="h-button4 marleft"
+        >bruceluo</el-button>
+
+        <el-button
+          type="primary"
+          size="small"
+          class="h-button4"
+        >{{ $t('home.tabsNews') }}</el-button>
+
+        <el-button
+          type="primary"
+          size="small"
+          class="h-button4"
+        >{{ $t('profile.personalhomepage') }}</el-button>
+
+        <el-button
+          type="primary"
+          size="small"
+          class="h-button4"
+          @click="ExitLogin"
+        >{{ $t('user.logout') }}</el-button>
 
       </div>
     </div>
@@ -98,9 +116,12 @@
 </template>
 
 <script>
-
+import forums from '@/mixin/forums'
 export default {
   name: 'Header',
+  mixins: [
+    forums
+  ],
   props: {
     headImg: {
       type: String,
@@ -115,27 +136,45 @@ export default {
 
     }
   },
+  // 从store中获取userid获取userinfo，但getters这个方法没起作用
+  computed: {
+    userId() {
+      return this.$store.getters['session/get']('userId')
+    },
+    userInfo() {
+      console.log(this.userId)
+      const userInfo = this.$store.getters['jv/get'](`users/${this.userId}`)
+      console.log('userInfo', userInfo)
+      userInfo.groupsName = userInfo.groups ? userInfo.groups[0].name : ''
+      // this.setNum(userInfo)
+      return userInfo
+    }
+  },
   mounted() {
     this.isLoginh()
+    // console.log(this.forums)
   },
   methods: {
     handleSelect(key, keyPath) {
       console.log(key, keyPath)
+      console.log(this.forums)
     },
     isLoginh() {
       this.isLogin = !!window.localStorage.getItem('access_token')
       console.log(this.isLogin)
+      console.log('userinfo', this.userInfo)
     },
     ExitLogin() {
-      this.isLogin = window.localStorage.removeItem('access_token')
       this.$router.go(0)
+
+      this.isLogin = window.localStorage.removeItem('access_token')
     }
   }
 }
 </script>
 <style lang="scss" scoped>
 [v-cloak] {
-  display: none;
+  display: none !important;
 }
 .header {
   min-width: 1032px;
@@ -157,15 +196,15 @@ export default {
         height: 100%;
       }
     }
-    .h-search {
+    ::v-deep.h-search {
       margin-left: 30px;
       width: 298px;
       height: 36px;
-      background: rgba(255, 255, 255, 1);
-      border: 1px solid rgba(237, 237, 237, 1);
-      opacity: 0.66;
-      border-radius: 4px;
+      // border-radius: 0px;
       float: left;
+      .el-input__inner{
+        border-radius: 0px;
+      }
       /* background: yellow; */
     }
     .h-button {
@@ -176,6 +215,8 @@ export default {
         color: #1878f3;
         background: #ffffff;
         border-color: #1878f3;
+        font-size: 14px;
+        border-radius: 0px;
       }
       .h-button2 {
         width: 60px;
@@ -183,33 +224,80 @@ export default {
         color: #ffff;
         background: #1878f3;
         border-color: #1878f3;
+        font-size: 14px;
+        border-radius: 0px;
       }
       .h-button3 {
+        // width: 60px;
+        // height: 35px;
+        padding: 9px 15px;
+        color: #6d6d6d;
+        background: #ffffff;
+        // border-color: #1878f3;
+      }
+      .h-button4 {
         width: 60px;
         height: 35px;
-        padding: 9px 6px;
-        color: #1878f3;
-        background: #ffffff;
-        border-color: #1878f3;
+        padding: 0;
+        border: none;
+        background-color: #ffffff;
+        color: #6d6d6d;
+        font-size: 16px;
+        /* margin-top: -5px; */
+        margin-left: 30px;
       }
+      .marleft {
+        margin-left: 10px;
+      }
+      .h-button4:hover {
+        background: none;
+        background-color: none;
+        color: black;
+      }
+      .h-button4:active {
+        background: none;
+        background-color: none;
+        color: black;
+      }
+      ::v-deep .el-menu--horizontal > .el-menu-item {
+        float: right;
+        height: 40px;
+        line-height: unset;
+        /* margin: 0; */
+        //  border-bottom: 2px solid transparent;
+        // color: #909399;
+      }
+
+      ::v-deep.el-menu.el-menu--horizontal {
+        border-bottom: none;
+      }
+      ::v-deep.el-menu--horizontal > .el-menu-item.is-active {
+        border-bottom: none;
+      }
+    }
+    .avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      vertical-align: bottom;
     }
   }
 }
 
-.h-search-input {
-  width: 255px;
-  border: none;
-  height: 100%;
-  /* outline-color: lightskyblue; */
-  outline: none;
-  padding-left: 16px;
+// .h-search-input {
+//   width: 255px;
+//   border: none;
+//   height: 100%;
+//   /* outline-color: lightskyblue; */
+//   outline: none;
+//   padding-left: 16px;
 
-  font-size: 14px;
-  font-family: Microsoft YaHei;
-  font-weight: 400;
-  line-height: 19px;
-  color: rgba(208, 212, 220, 1);
-}
+//   font-size: 14px;
+//   font-family: Microsoft YaHei;
+//   font-weight: 400;
+//   line-height: 19px;
+//   color: rgba(208, 212, 220, 1);
+// }
 .search-logo {
   width: 14px;
   height: 14px;

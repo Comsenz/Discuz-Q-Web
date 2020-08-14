@@ -178,40 +178,66 @@ export default {
         }
       }, 1000)
     },
-    async UserLogin() {
+    // 更换了login方式，将用户信息存储到vuex中，但vuex中localstorage为未定义，所以存储不了
+    // 另外报错信息也只能在session.js中获取,后面打算错误信息放在输入框显示
+    UserLogin() {
       console.log(this.userName)
       console.log(this.passWord)
       const params = {
-        _jv: { type: '/login' },
-        username: this.userName,
-        password: this.passWord
+        // _jv: { type: '/login' },
+        // username: this.userName,
+        // password: this.passWord
+        data: {
+          attributes: {
+            username: this.userName,
+            password: this.passWord
+          }
+        }
       }
-      await status.run(() => this.$store.dispatch('jv/post', params))
+      // await status.run(() => this.$store.dispatch('jv/post', params))
+      //   .then(res => {
+      //     console.log('登录信息', res)
+      //     if (res.access_token !== '') {
+      //       this.userName = ''
+      //       this.passWord = ''
+      //       window.localStorage.setItem('access_token', res.access_token)
+      //       this.$message.success('登录成功')
+      //       // 先存参考session.js和api-request
+      //       // const setUserInfoStore = (context, results, resolve) => {
+      //       //   const resData = utils.jsonapiToNorm(results.data.data);
+      //       //   context.commit(SET_USER_ID, resData._jv.id);
+      //       //   context.commit(CHECK_SESSION, true);
+      //       //   context.commit(SET_ACCESS_TOKEN, resData.access_token);
+      //       //   uni.$emit('logind');
+      //       //   resolve(resData);
+      //       // };
+      //       this.$router.go(-1)
+      //     }
+      //   }, e => {
+      //     const {
+      //       response: {
+      //         data: { errors }
+      //       }
+      //     } = e
+      //     if (errors[0]) return this.$message.error(errors[0].detail[0])
+      //   })
+
+      this.$store.dispatch('session/h5Login', params)
         .then(res => {
-          console.log(res)
-          if (res.access_token !== '') {
-            this.userName = ''
-            this.passWord = ''
-            window.localStorage.setItem('access_token', res.access_token)
+          console.log('登录成功', res)
+          // console.log(this.$store.getters['session/get']('userId'))
+          // this.logind();
+          this.userName = ''
+          this.passWord = ''
+          if (res.data.data.attributes.access_token !== ' ') {
+            window.localStorage.setItem('access_token', res.data.data.attributes.access_token)
             this.$message.success('登录成功')
-            // 先存参考session.js和api-request
-            // const setUserInfoStore = (context, results, resolve) => {
-            //   const resData = utils.jsonapiToNorm(results.data.data);
-            //   context.commit(SET_USER_ID, resData._jv.id);
-            //   context.commit(CHECK_SESSION, true);
-            //   context.commit(SET_ACCESS_TOKEN, resData.access_token);
-            //   uni.$emit('logind');
-            //   resolve(resData);
-            // };
             this.$router.go(-1)
           }
-        }, e => {
-          const {
-            response: {
-              data: { errors }
-            }
-          } = e
-          if (errors[0]) return this.$message.error(errors[0].detail[0])
+        }).catch(error => {
+          this.$message.error(error)
+
+          console.log('error', error)
         })
     },
     async sendVerifyCode() {
@@ -406,7 +432,7 @@ export default {
     width: 90px;
     height: 40px;
     // padding: 15.5px 10px;
-    padding:0;
+    padding: 0;
     margin-left: -4px;
     // font-size: 10px;
   }

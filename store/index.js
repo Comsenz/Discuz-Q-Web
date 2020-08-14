@@ -8,6 +8,8 @@ export const mutations = {
 
 // https://github.com/mrichar1/jsonapi-vuex
 import { jsonapiModule } from '../library/jsonapi-vuex/index'
+import session from '../store/modules/session'
+
 import service from '../api/request'
 export const modules = {
   jv: jsonapiModule(
@@ -17,5 +19,6 @@ export const modules = {
       mergeRecords: true,
       followRelationshipsData: true
     }
-  )
+  ),
+  session
 }
