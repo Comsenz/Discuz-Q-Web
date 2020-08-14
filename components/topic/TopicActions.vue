@@ -25,15 +25,14 @@
 
 <script>
 export default {
-  name: 'TopicActions',
-  props: {}
+  name: 'TopicActions'
 }
 </script>
 
 <style lang="scss" scoped>
   $defaultColor: #8590A6;
   .actions {
-    margin: 0 auto;
+    margin: 15px auto 0;
     padding: 0 25px;
     display: flex;
     justify-content: space-between;

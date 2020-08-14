@@ -3,18 +3,24 @@
     <main>
       <topic-header
         :author="thread.user || {}"
-        :article="thread.firstPost || {}"
+        :article="article"
         :management-list="managementList"
         :thread-id="threadId"
         @managementSelected="initManagementList"
       />
       <topic-content
-        :article="thread.firstPost || {}"
+        :article="article"
         :title="thread.title || ''"
         :video="thread.threadVideo || {}"
         :paid-information="paidInformation"
         :thread-type="thread.type || 0"
         :category="thread.category || {}"
+      />
+      <topic-reward-list
+        :paid-information="paidInformation"
+        :thread-type="thread.type || 0"
+        :user-lists="[thread.paidUsers || [], thread.rewardedUsers || [], article.likedUsers || []]"
+        @payOrReward="onPayOrReward"
       />
       <topic-actions />
       <div class="tags" />
@@ -25,14 +31,17 @@
 </template>
 
 <script>
+import TopicRewardList from '../../../components/topic/TopicRewardList'
 const include = 'posts.replyUser,user.groups,user,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers'
 
 export default {
-  layout: 'custom_layout',
   name: 'Post',
+  components: { TopicRewardList },
+  layout: 'custom_layout',
   data() {
     return {
       thread: {},
+      article: {},
       // TODO 后端数据不完整，留着后面做
       actions: [
         { text: '阅读', count: 0, command: '' },
@@ -51,7 +60,9 @@ export default {
     }
   },
   computed: {
-    threadId() { return this.$route.params.id }
+    threadId() {
+      return this.$route.params.id
+    }
   },
   created() {
     this.getPost()
@@ -61,6 +72,7 @@ export default {
       this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include }}]).then(data => {
         if (data.isDeleted) return this.$router.push('/demo')
         this.thread = data
+        this.article = data.firstPost
         this.loading = false
         this.initManagementList(data)
         this.initPaidInformation(data)
@@ -70,7 +82,9 @@ export default {
       })
     },
     initPaidInformation(data) {
-      for (const key in this.paidInformation) { this.paidInformation[key] = data[key] }
+      for (const key in this.paidInformation) {
+        this.paidInformation[key] = data[key]
+      }
     },
     initManagementList(data) {
       this.managementList.forEach(item => {
@@ -84,6 +98,9 @@ export default {
         }
       })
     },
+    onPayOrReward(e) {
+      console.log(e, 'pay or reward')
+    },
     initActions(data) {
       // TODO 后端数据不完整，留着后面做
       this.actions[1].count = data.firstPost.likeCount
@@ -93,8 +110,8 @@ export default {
       this.actions[2].count = 1000
       this.actions[2].isStatus = data.isFavorite
       this.actions[3].count = 157
-      console.log(this.actions, 'actions')
     }
+
   }
 }
 </script>

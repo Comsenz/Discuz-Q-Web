@@ -60,7 +60,7 @@ export default {
     }
   },
   computed: {
-    unpaid() { return !(this.paidInformation.paid || parseInt(this.paidInformation.price) === 0) }
+    unpaid() { return !(this.paidInformation.paid || parseFloat(this.paidInformation.price) === 0) }
   },
   watch: {
     article: {
@@ -72,6 +72,7 @@ export default {
   },
   methods: {
     formatTopicTab(text) {
+      console.log(text)
       const regexp = /<span\s*id="topic"\s*value="(?<value>\w+)"\s*>(?<string>[^<]+)<\/span>/igum
       return text.replace(regexp, match => {
         return match.replace(regexp, (content, value, text) => {

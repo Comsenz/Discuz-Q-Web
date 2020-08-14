@@ -1,5 +1,5 @@
 <template>
-  <div class="qui-avatar" @click="click">
+  <div @click="click">
     <img
       v-if="avatarUrl && !errorUrl"
       :src="user.avatarUrl"
