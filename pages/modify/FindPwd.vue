@@ -89,22 +89,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-    color: #C0C4CC;
-  }
-
-  ::-moz-placeholder { /* Firefox 19+ */
-    color: #C0C4CC;
-  }
-
-  :-ms-input-placeholder { /* IE 10+ */
-    color: #C0C4CC;
-  }
-
-  :-moz-placeholder { /* Firefox 18- */
-    color: #C0C4CC;
-  }
-
   .page-find-pwd {
     margin: 60px auto;
     width: 300px;

@@ -20,11 +20,18 @@
         :paid-information="paidInformation"
         :thread-type="thread.type || 0"
         :user-lists="[thread.paidUsers || [], thread.rewardedUsers || [], article.likedUsers || []]"
-        @payOrReward="onPayOrReward"
+        @payOrReward="showCheckoutCounter = true"
       />
       <topic-actions />
-      <div class="tags" />
-      <div class="actions" />
+      <topic-checkout-counter
+        v-if="showCheckoutCounter"
+        :thread-type="thread.type || 0"
+        :user="thread.user || {}"
+        :amount="thread.price || 0"
+        :content="article.summaryText || ''"
+        @close="showCheckoutCounter = false"
+        @paying="paying"
+      />
     </main>
     <aside>我是一个伟大的侧栏</aside>
   </div>
@@ -53,7 +60,8 @@ export default {
         { name: 'canEssence', command: 'isEssence', isStatus: false, text: this.$t('topic.essence'), type: '1' },
         { name: 'canSticky', command: 'isSticky', isStatus: false, text: this.$t('topic.sticky'), type: '2' },
         { name: 'canHide', command: 'isDeleted', isStatus: false, text: this.$t('topic.delete'), type: '3' }
-      ], // 管理菜单
+      ],
+      showCheckoutCounter: false,
       loading: true
     }
   },
@@ -96,8 +104,8 @@ export default {
         }
       })
     },
-    onPayOrReward(e) {
-      console.log(e, 'pay or reward')
+    paying({ payWay, hideAvatar }) {
+      console.log('准备支付啦', payWay, hideAvatar)
     },
     initActions(data) {
       // TODO 后端数据不完整，留着后面做

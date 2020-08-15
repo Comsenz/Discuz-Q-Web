@@ -1,0 +1,321 @@
+<template>
+  <div>
+    <Cover />
+    <div class="checkout-counter">
+      <div class="top">
+        <div class="container-title">
+          <div class="title">{{ $t('pay.checkoutCounter') }}</div>
+          <svg-icon style="font-size: 14px" type="close" @click="$emit('close')" />
+        </div>
+        <div class="row">
+          <div class="head">{{ $t('pay.payProduct') }}</div>
+          <div class="body product-information">
+            <span
+              class="title"
+            >{{ $t('pay.supportAuthor') + $t(`pay.${text[threadType]}`) + $t('pay.getRight') }}</span>
+            <span>{{ $t('topic.author') + ': ' + (user.username || '') }}</span>
+            <span>{{ $t('topic.content') + ': ' + content }}</span>
+          </div>
+          <div class="amount">￥{{ amount }}</div>
+        </div>
+        <div class="row">
+          <div class="head reward">{{ $t('topic.reward') + $t('pay.sumOfMoney') }}</div>
+          <div class="body reward">
+            <label>
+              <span>￥</span>
+              <input v-model="rewardAmount" placeholder="请输入您打赏的金额" type="text">
+            </label>
+            <div class="default-amounts">
+              <button
+                v-for="(item, index) in defaultAmounts"
+                :key="index"
+                :class="{selected: item === rewardAmount}"
+                @click="rewardAmount = item"
+              >￥{{ item }}
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="head">{{ $t('pay.hideAvatar') }}</div>
+          <div class="body hide-avatar" @click="hideAvatar = !hideAvatar">
+            <svg-icon v-if="hideAvatar" style="font-size: 18px" type="checked" />
+            <svg-icon v-else style="font-size: 18px;" type="unchecked" />
+            <span>{{ $t('pay.hideMyAvatar') }}</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="head">{{ $t('pay.payType') }}</div>
+          <div class="body pay-way">
+            <div class="pay-card" :class="{'pay-card': true, 'selected': payWay === 'wxPay'}" @click="payWay = 'wxPay'">
+              <img class="qr-code" src="https://www.liantu.com/images/2013/weixin.png" alt="">
+              <div class="detail">
+                <div class="pay-title">
+                  <svg-icon style="font-size: 18px" type="wechat" />
+                  <span>{{ $t('pay.wxPay') }}</span>
+                </div>
+                <div class="pay-amount">￥ {{ amount }}</div>
+                <div class="pay-tip">
+                  <div>
+                    <span>{{ $t('pay.wxPayTipUse') }}</span>
+                    <span style="color: #09BB07; font-weight: bold">{{ $t('pay.wxPayTipScan') }}</span>
+                  </div>
+                  <span>{{ $t('pay.wxPayTipPay') }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="body pay-way">
+            <div
+              class="pay-card"
+              :class="{'pay-card': true, 'selected': payWay === 'walletPay'}"
+              @click="payWay = 'walletPay'"
+            >
+              <svg-icon style="font-size: 100px" type="wallet-logo" />
+              <div class="detail">
+                <div class="pay-title">
+                  <svg-icon style="font-size: 18px" type="wallet" />
+                  <span>{{ $t('pay.walletPay') }}</span>
+                </div>
+                <div class="pay-amount">￥ {{ amount }}</div>
+                <div class="pay-tip">
+                  <span>{{ $t('pay.walletBalance') }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <span>￥ {{ amount + $t('pay.rmb') + $t('pay.payTo') + '，' + user.username || '' }} {{ $t('pay.ofAccount') }}</span>
+        <el-button size="medium" type="primary" @click="$emit('paying', { payWay, hideAvatar })">{{ $t('pay.surePay')
+        }}
+        </el-button>
+      </div>
+    </div>
+  </div>
+
+</template>
+
+<script>
+export default {
+  name: 'TopicCheckoutCounter',
+  props: {
+    threadType: {
+      type: Number,
+      default: 0
+    },
+    user: {
+      type: Object,
+      default: () => {}
+    },
+    amount: {
+      type: [String, Number],
+      default: ''
+    },
+    content: {
+      type: String,
+      default: ''
+    }
+  },
+  data() {
+    return {
+      hideAvatar: false,
+      text: ['remainingContent', 'remainingContent', 'video', 'picture'],
+      payWay: 'wxPay',
+      rewardAmount: '',
+      defaultAmounts: ['1', '2', '5', '10', '20', '50', '88', '128']
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+  $fontColor: #8590A6;
+  .checkout-counter {
+    z-index: 100;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 3px;
+    width: 820px;
+    background: #ffffff;
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    > .top {
+      padding: 20px;
+
+      > .container-title {
+        display: flex;
+        justify-content: space-between;
+        color: #6D6D6D;
+        margin-bottom: 30px;
+
+        > .title {
+          font-size: 16px;
+          font-weight: bold;
+        }
+      }
+
+      > .row {
+        margin-top: 20px;
+        padding: 0 0 20px 20px;
+        display: flex;
+        border-bottom: 1px solid #E4E4E4;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        > .head {
+          margin-left: 10px;
+          width: 65px;
+          color: #000000;
+
+          &.reward {
+            line-height: 50px;
+          }
+        }
+
+        > .body {
+          margin-left: 15px;
+          flex: 1;
+
+          &.product-information {
+            span {
+              display: block;
+              line-height: 22.5px;
+              color: $fontColor;
+
+              &.title {
+                color: #1878F3;
+              }
+            }
+          }
+
+          &.reward {
+            > label {
+              width: 430px;
+              height: 50px;
+              border: 1px solid #EDEDED;
+              display: flex;
+
+              > span {
+                text-align: center;
+                line-height: 50px;
+                font-size: 16px;
+                display: block;
+                width: 40px;
+              }
+
+              > input {
+                flex: 1;
+                border: none;
+                color: #C0C4CC;
+              }
+            }
+
+            > .default-amounts {
+              width: 660px;
+              display: flex;
+              flex-wrap: wrap;
+
+              > button {
+                font-size: 16px;
+                margin-top: 10px;
+                margin-right: 10px;
+                width: 100px;
+                height: 50px;
+                border: 1px solid #EDEDED;
+                text-align: center;
+                line-height: 50px;
+
+                &.selected {
+                  border: 1px solid #1878F3;
+                }
+              }
+            }
+          }
+
+          &.hide-avatar {
+            span {
+              margin-left: 10px;
+            }
+          }
+
+          &.pay-way {
+            > .pay-card {
+              display: flex;
+              align-items: center;
+              height: 120px;
+              width: 320px;
+              padding: 10px;
+              border: 1px solid #EDEDED;
+              border-radius: 3px;
+
+              &.selected {
+                border: 1px solid #1878F3;
+              }
+
+              > .qr-code {
+                width: 100px;
+                height: 100px;
+              }
+
+              > .detail {
+                height: 100%;
+                margin-left: 10px;
+                font-size: 16px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+
+                > .pay-title {
+                  span {
+                    margin-left: 10px;
+                  }
+                }
+
+                > .pay-amount {
+                  font-size: 24px;
+                }
+
+                > .pay-tip {
+                  color: $fontColor;
+
+                  > span {
+                    display: block;
+                  }
+                }
+              }
+            }
+
+          }
+        }
+
+        > .amount {
+          color: $fontColor;
+        }
+      }
+    }
+
+    > .bottom {
+      height: 55px;
+      display: inline-flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0 20px;
+      background: #F5F6F7;
+      margin-top: 30px;
+
+      > span {
+        margin-right: 20px;
+      }
+    }
+  }
+
+</style>

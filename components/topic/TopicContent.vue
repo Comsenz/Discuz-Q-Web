@@ -72,7 +72,6 @@ export default {
   },
   methods: {
     formatTopicTab(text) {
-      console.log(text)
       const regexp = /<span\s*id="topic"\s*value="(?<value>\w+)"\s*>(?<string>[^<]+)<\/span>/igum
       return text.replace(regexp, match => {
         return match.replace(regexp, (content, value, text) => {
@@ -170,6 +169,7 @@ export default {
     }
 
     > .hide-content-tip {
+      margin-top: 20px;
       font-size: 16px;
       text-align: center;
     }

@@ -1,3 +1,15 @@
+<template>
+  <svg
+    :class="'svg-icon svg-icon-' + type"
+    role="img"
+    :title="type"
+    aria-hidden="true"
+    @click="$emit('click')"
+  >
+    <use :xlink:href="'#' + type" />
+  </svg>
+</template>
+
 <script>
 export default {
   name: 'SvgIcon',
@@ -6,18 +18,6 @@ export default {
       type: String,
       default: ''
     }
-  },
-  render() {
-    return (
-      <svg
-        class={'svg-icon svg-icon-' + this.type}
-        role='img'
-        title={this.type}
-        aria-hidden='true'
-      >
-        <use xlinkHref={'#' + this.type} />
-      </svg>
-    )
   }
 }
 </script>
