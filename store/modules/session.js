@@ -15,14 +15,12 @@ import {
 } from '@/store/types/session'
 
 const accessToken = 'aaa'
-//  localStorage.setItem('access_token')
 
 const setUserInfoStore = (context, results, resolve) => {
   const resData = utils.jsonapiToNorm(results.data.data)
   context.commit(SET_USER_ID, resData._jv.id)
   context.commit(CHECK_SESSION, true)
   context.commit(SET_ACCESS_TOKEN, resData.access_token)
-  // uni.$emit('logind')
   resolve(resData)
 }
 
@@ -185,14 +183,14 @@ const actions = {
 
 const mutations = {
   [SET_USER_ID](state, payload) {
-    // localStorage.setItem('user_id', payload)
+    if (process.client) localStorage.setItem('user_id', payload)
     state.userId = payload
   },
   [CHECK_SESSION](state, payload) {
     state.wxLogin = payload
   },
   [SET_ACCESS_TOKEN](state, payload) {
-    // localStorage.setItem('access_token', payload)
+    if (process.client) localStorage.setItem('access_token', payload)
     state.accessToken = payload
   },
   [SET_AUTH](state, payload) {
@@ -205,11 +203,11 @@ const mutations = {
     state.categoryIndex = payload
   },
   [DELETE_USER_ID](state) {
-    // localStorage.setItem('user_id')
+    if (process.client) localStorage.removeItem('user_id')
     state.userId = 0
   },
   [DELETE_ACCESS_TOKEN](state) {
-    // localStorage.removeItem('access_token')
+    if (process.client) localStorage.removeItem('access_token')
     state.accessToken = ''
   }
 }
@@ -219,7 +217,6 @@ const getters = {
     return data => {
       switch (data) {
         case 'userId':
-          // state.userId = localStorage.setItem('user_id') || 0
           return state.userId
         case 'isWxLogin':
           return state.wxLogin

@@ -29,8 +29,16 @@
         :user="thread.user || {}"
         :amount="thread.price || 0"
         :content="article.summaryText || ''"
+        :user-wallet="userWallet"
+        :reward-or-pay="rewardOrPay"
         @close="showCheckoutCounter = false"
         @paying="paying"
+      />
+      <topic-password
+        v-if="showPasswordInput"
+        :price="thread.price || 0"
+        @close="showPasswordInput = false"
+        @password="payOrder"
       />
     </main>
     <aside>我是一个伟大的侧栏</aside>
@@ -54,7 +62,10 @@ export default {
         { text: '收藏', count: 0, command: 'isFavorite', isStatus: false },
         { text: '分享', count: 0, command: 'showLink' }
       ],
-      paidInformation: { price: 0, paid: false, paidUsers: [], paidCount: 0 },
+      paidInformation: { price: '0', paid: false, paidUsers: [], paidCount: 0 },
+      payment: { orderNo: '', payment_type: 0 },
+      userWallet: { availableAmount: '0.00', canWalletPay: false },
+      payPassword: { password: '', confirmPassword: '' },
       managementList: [
         { name: 'canEdit', command: 'toEdit', isStatus: false, text: this.$t('topic.edit'), type: '0' },
         { name: 'canEssence', command: 'isEssence', isStatus: false, text: this.$t('topic.essence'), type: '1' },
@@ -62,16 +73,24 @@ export default {
         { name: 'canHide', command: 'isDeleted', isStatus: false, text: this.$t('topic.delete'), type: '3' }
       ],
       showCheckoutCounter: false,
+      showPasswordInput: false,
       loading: true
     }
   },
   computed: {
     threadId() {
       return this.$route.params.id
+    },
+    userId() {
+      return this.$store.getters['session/get']('userId')
+    },
+    rewardOrPay() {
+      return parseFloat(this.paidInformation.price) > 0 ? 'pay' : 'reward'
     }
   },
   created() {
     this.getPost()
+    this.getWalletBalance()
   },
   methods: {
     getPost() {
@@ -84,7 +103,13 @@ export default {
         this.initPaidInformation(data)
         this.initActions(data)
         console.log('data', data)
-        console.log(this.paidInformation, 'paidInformation')
+      })
+    },
+    getWalletBalance() {
+      const params = { _jv: { type: `/wallet/user/${this.userId}` }}
+      this.$store.dispatch('jv/get', params).then(data => {
+        this.userWallet.availableAmount = data.available_amount
+        this.userWallet.canWalletPay = data.user.canWalletPay
       })
     },
     initPaidInformation(data) {
@@ -106,6 +131,53 @@ export default {
     },
     paying({ payWay, hideAvatar }) {
       console.log('准备支付啦', payWay, hideAvatar)
+      this.showCheckoutCounter = false
+      if (payWay === 'walletPay') {
+        if (!this.userWallet.canWalletPay) return this.setPayPassword() // 没设置初始密码
+        this.payment.payment_type = 20
+        this.showPasswordInput = true
+        this.createOrder()
+      } else if (payWay === 'wxPay') {
+        this.payment.payment_type = 10
+        alert('我想微信付款')
+      }
+    },
+    createOrder() {
+      const params = {
+        _jv: { type: `/orders` },
+        type: this.rewardOrPay === 'reward' ? '2' : '3',
+        thread_id: this.threadId
+      }
+      this.$store.dispatch('jv/post', params).then(data => {
+        this.payment.orderNo = data.order_sn
+      })
+    },
+    payOrder(password) {
+      console.log(password, 'onPassword')
+      const params = {
+        _jv: { type: `/trade/pay/order/${this.payment.orderNo}` },
+        order_sn: this.payment.orderNo,
+        payment_type: this.payment.payment_type,
+        pay_password: password
+      }
+      this.$store.dispatch('jv/post', params).then(data => {
+        console.log(data, 'pay')
+        this.$message.success('支付成功')
+      }, e => {
+        const { response: { data: { errors }}} = e
+        if (errors[0]) return this.$message.error(errors[0].detail[0])
+      }).finally(() => { this.showPasswordInput = false })
+    },
+    setPayPassword() {
+      const params = {
+        _jv: { type: `/users/${this.userId}` },
+        payPassword: '123456',
+        pay_password_confirmation: '123456',
+        pay_password_token: ''
+      }
+      this.$store.dispatch('jv/patch', params).then(data => {
+        console.log(data, 'data')
+      })
     },
     initActions(data) {
       // TODO 后端数据不完整，留着后面做
@@ -117,7 +189,6 @@ export default {
       this.actions[2].isStatus = data.isFavorite
       this.actions[3].count = 157
     }
-
   }
 }
 </script>
