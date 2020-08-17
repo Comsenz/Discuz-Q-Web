@@ -1,22 +1,25 @@
 <template>
-  <div class="index-filter">
-    <div v-for="(item, index) in filterQuery" :key="index" class="filter-btn" :class="{ 'active': query.filter === item.value }" @click="onClickFilter(item.value)">{{ item.label }}</div>
-    <el-dropdown class="filter-dropdown" placement="bottom" @command="handleCommandType">
-      <span class="el-dropdown-link">
-        {{ $t('home.filterType') }}<i class="el-icon-arrow-down el-icon--right" />
-      </span>
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item v-for="(item,index) in filterType" :key="index" :command="item.value" :class="{'active': item.value === query.filterType}">{{ item.label }}</el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
-    <el-dropdown class="filter-dropdown" placement="bottom" @command="handleCommandSort">
-      <span class="el-dropdown-link">
-        {{ $t('core.sort') }}<i class="el-icon-arrow-down el-icon--right" />
-      </span>
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item v-for="(item,index) in filterSort" :key="index" :command="item.value" :class="{'active': item.value === query.filterSort}">{{ item.label }}</el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
+  <div class="index-top-conttainer">
+    <div class="index-filter">
+      <div v-for="(item, index) in filterQuery" :key="index" class="filter-btn" :class="{ 'active': query.filter === item.value }" @click="onClickFilter(item.value)">{{ item.label }}</div>
+      <el-dropdown class="filter-dropdown" placement="bottom" @command="handleCommandType">
+        <span class="el-dropdown-link" :class="{'active': query.filterType !== ''}">
+          {{ $t('home.filterType') }}<i class="el-icon-arrow-down el-icon--right" />
+        </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item v-for="(item,index) in filterType" :key="index" :command="item.value" :class="{'active': item.value === query.filterType}">{{ item.label }}</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+      <el-dropdown class="filter-dropdown" placement="bottom" @command="handleCommandSort">
+        <span class="el-dropdown-link">
+          {{ $t('core.sort') }}<i class="el-icon-arrow-down el-icon--right" />
+        </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item v-for="(item,index) in filterSort" :key="index" :command="item.value" :class="{'active': item.value === query.filterSort}">{{ item.label }}</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+    </div>
+    <nuxt-link to="/" class="new-post">+发帖</nuxt-link>
   </div>
 </template>
 <script>
@@ -41,16 +44,16 @@ export default {
         value: ''
       }, {
         label: this.$t('home.text'),
-        value: 'text'
+        value: 0
       }, {
         label: this.$t('home.invitation'),
-        value: 'invitation'
+        value: 1
       }, {
         label: this.$t('home.video'),
-        value: 'video'
+        value: 2
       }, {
         label: this.$t('home.picture'),
-        value: 'picture'
+        value: 3
       }],
       filterSort: [{
         label: '不限',
@@ -72,21 +75,29 @@ export default {
   methods: {
     onClickFilter(val) {
       this.query.filter = val
+      this.$emit('onChangeFilter', val)
     },
     handleCommandType(command) {
       this.query.filterType = command
+      this.$emit('onChangeType', command)
     },
     handleCommandSort(command) {
       this.query.filterSort = command
+      this.$emit('onChangeSort', command)
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+.index-top-conttainer{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+}
 .index-filter{
   display: flex;
   align-items: center;
-  padding: 20px;
   line-height: 1;
   .filter-btn{
     color:#8590A6;
@@ -105,6 +116,22 @@ export default {
     padding:8px 14px;
     color: #8590A6;
   }
+}
+.el-dropdown-link{
+  outline: none;
+  &.active{
+    color:#1878F3;
+  }
+}
+
+.new-post{
+  background-color: #1878F3;
+  width:70px;
+  height:35px;
+  border-radius:2px;
+  color: #ffffff;
+  line-height: 35px;
+  text-align: center;
 }
 .el-dropdown-menu{
   padding: 0 10px;
