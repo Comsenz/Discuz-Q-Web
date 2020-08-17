@@ -97,11 +97,13 @@
           class="h-button4"
         >{{ $t('home.tabsNews') }}</el-button>
 
-        <el-button
-          type="primary"
-          size="small"
-          class="h-button4"
-        >{{ $t('profile.personalhomepage') }}</el-button>
+        <nuxt-link to="/my/profile">
+          <el-button
+            type="primary"
+            size="small"
+            class="h-button4"
+          >{{ $t('profile.personalhomepage') }}</el-button>
+        </nuxt-link>
 
         <el-button
           type="primary"
@@ -202,7 +204,7 @@ export default {
       height: 36px;
       // border-radius: 0px;
       float: left;
-      .el-input__inner{
+      .el-input__inner {
         border-radius: 0px;
       }
       /* background: yellow; */
