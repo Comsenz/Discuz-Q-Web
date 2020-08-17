@@ -1,6 +1,6 @@
 <template>
   <div class="code">
-    <span v-for="(item, index) in 6" :key="index" :style="{'--color': color}" class="code-item">{{ password[index] ? '*' : ' ' }}</span>
+    <span v-for="(item, index) in 6" :key="index" :class="{'code-item': true, 'filled': password[index], 'error': error}">{{ password[index] ? '*' : ' ' }}</span>
   </div>
 </template>
 
@@ -8,9 +8,9 @@
 export default {
   name: 'PasswordInput',
   props: {
-    color: {
-      type: String,
-      default: '#C5CAD5'
+    error: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -42,10 +42,16 @@ export default {
     font-weight: bold;
     height: 50px;
     width: 36px;
-    border-bottom: 1px solid var(--color);
+    border-bottom: 1px solid #C5CAD5;
     margin-top: 10px;
     margin-right: 10px;
     margin-bottom: 10px;
+    &.filled {
+      border-bottom: 1px solid #000;
+    }
+    &.error {
+      border-bottom: 1px solid #FF0000;
+    }
   &:last-child {
      margin-right: 0;
    }
