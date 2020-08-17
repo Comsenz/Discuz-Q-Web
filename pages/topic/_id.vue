@@ -40,6 +40,12 @@
         @close="showPasswordInput = false"
         @password="payOrder"
       />
+      <topic-wx-pay
+        v-if="showWxPay"
+        :qr-code="payment.wechat_qrcode"
+        @close="showWxPay = false"
+      />
+
     </main>
     <aside>我是一个伟大的侧栏</aside>
   </div>
@@ -47,10 +53,12 @@
 
 <script>
 const include = 'posts.replyUser,user.groups,user,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers'
+import forums from '@/mixin/forums'
 
 export default {
   name: 'Post',
   layout: 'custom_layout',
+  mixins: [forums],
   data() {
     return {
       thread: {},
@@ -63,7 +71,7 @@ export default {
         { text: '分享', count: 0, command: 'showLink' }
       ],
       paidInformation: { price: '0', paid: false, paidUsers: [], paidCount: 0 },
-      payment: { orderNo: '', payment_type: 0 },
+      payment: { orderNo: '', payment_type: 0, status: 0, wechat_qrcode: '' },
       userWallet: { availableAmount: '0.00', canWalletPay: false },
       payPassword: { password: '', confirmPassword: '' },
       managementList: [
@@ -74,6 +82,7 @@ export default {
       ],
       showCheckoutCounter: false,
       showPasswordInput: false,
+      showWxPay: false,
       loading: true
     }
   },
@@ -139,21 +148,24 @@ export default {
         this.createOrder()
       } else if (payWay === 'wxPay') {
         this.payment.payment_type = 10
-        alert('我想微信付款')
+        console.log(this.forums, 'forums')
+        if (this.forums.paycenter.wxpay_close) return this.$message.warning('微信支付功能已关闭')
+        // loading
+        this.createOrder().then(() => {
+          this.payOrder('')
+        })
       }
     },
     createOrder() {
-      const params = {
-        _jv: { type: `/orders` },
-        type: this.rewardOrPay === 'reward' ? '2' : '3',
-        thread_id: this.threadId
-      }
-      this.$store.dispatch('jv/post', params).then(data => {
+      const params = { _jv: { type: `/orders` }, type: this.rewardOrPay === 'reward' ? '2' : '3', thread_id: this.threadId }
+      return this.$store.dispatch('jv/post', params).then(data => {
         this.payment.orderNo = data.order_sn
+      }, e => {
+        const { response: { data: { errors }}} = e
+        if (errors[0]) return this.$message.error(errors[0].detail[0])
       })
     },
     payOrder(password) {
-      console.log(password, 'onPassword')
       const params = {
         _jv: { type: `/trade/pay/order/${this.payment.orderNo}` },
         order_sn: this.payment.orderNo,
@@ -161,12 +173,36 @@ export default {
         pay_password: password
       }
       this.$store.dispatch('jv/post', params).then(data => {
-        console.log(data, 'pay')
-        this.$message.success('支付成功')
+        if (this.payment.payment_type === 10) {
+          this.wxPayActive(data)
+        } else {
+          this.$message.success('支付成功')
+          this.getPost()
+        }
       }, e => {
         const { response: { data: { errors }}} = e
         if (errors[0]) return this.$message.error(errors[0].detail[0])
       }).finally(() => { this.showPasswordInput = false })
+    },
+    wxPayActive(data) {
+      this.payment.wechat_qrcode = data.wechat_qrcode
+      this.showWxPay = true
+      if (process.client) {
+        const id = setInterval(() => {
+          if (this.payment.status === 1) {
+            clearInterval(id)
+            this.$message.success('支付成功')
+            this.showWxPay = false
+            this.getPost()
+          }
+          if (!this.showWxPay) clearInterval(id)
+          this.getOrderStatus()
+        }, 3000)
+      }
+    },
+    getOrderStatus() {
+      const params = { _jv: { type: `/orders/${this.payment.orderNo}` }, orderNo: this.payment.orderNo }
+      return this.$store.dispatch('jv/get', params).then(data => { this.payment.status = data.status })
     },
     setPayPassword() {
       const params = {
