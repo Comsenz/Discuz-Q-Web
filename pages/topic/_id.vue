@@ -29,6 +29,8 @@
         :user="thread.user || {}"
         :amount="thread.price || 0"
         :content="article.summaryText || ''"
+        :user-wallet="userWallet"
+        :reward-or-pay="rewardOrPay"
         @close="showCheckoutCounter = false"
         @paying="paying"
       />
@@ -54,7 +56,8 @@ export default {
         { text: '收藏', count: 0, command: 'isFavorite', isStatus: false },
         { text: '分享', count: 0, command: 'showLink' }
       ],
-      paidInformation: { price: 0, paid: false, paidUsers: [], paidCount: 0 },
+      paidInformation: { price: '0', paid: false, paidUsers: [], paidCount: 0 },
+      userWallet: { availableAmount: '0.00', canWalletPay: false },
       managementList: [
         { name: 'canEdit', command: 'toEdit', isStatus: false, text: this.$t('topic.edit'), type: '0' },
         { name: 'canEssence', command: 'isEssence', isStatus: false, text: this.$t('topic.essence'), type: '1' },
@@ -68,10 +71,17 @@ export default {
   computed: {
     threadId() {
       return this.$route.params.id
+    },
+    userId() {
+      return this.$store.getters['session/get']('userId')
+    },
+    rewardOrPay() {
+      return parseFloat(this.paidInformation.price) > 0 ? 'pay' : 'reward'
     }
   },
   created() {
     this.getPost()
+    this.getWalletBalance()
   },
   methods: {
     getPost() {
@@ -84,7 +94,14 @@ export default {
         this.initPaidInformation(data)
         this.initActions(data)
         console.log('data', data)
-        console.log(this.paidInformation, 'paidInformation')
+      })
+    },
+    getWalletBalance() {
+      const params = { _jv: { type: `/wallet/user/${this.userId}` }}
+      this.$store.dispatch('jv/get', params).then(data => {
+        console.log(data, 'dddd')
+        this.userWallet.availableAmount = data.available_amount
+        this.userWallet.canWalletPay = data.user.canWalletPay
       })
     },
     initPaidInformation(data) {
@@ -106,6 +123,20 @@ export default {
     },
     paying({ payWay, hideAvatar }) {
       console.log('准备支付啦', payWay, hideAvatar)
+      if (payWay === 'walletPay' && !this.userWallet.canWalletPay) { // 没设置初始密码
+        this.setPayPassword()
+      }
+    },
+    setPayPassword() {
+      const params = {
+        _jv: { type: `/users/${this.userId}` },
+        payPassword: '123456',
+        pay_password_confirmation: '123456',
+        pay_password_token: ''
+      }
+      this.$store.dispatch('jv/patch', params).then(data => {
+        console.log(data, 'data')
+      })
     },
     initActions(data) {
       // TODO 后端数据不完整，留着后面做
@@ -117,7 +148,6 @@ export default {
       this.actions[2].isStatus = data.isFavorite
       this.actions[3].count = 157
     }
-
   }
 }
 </script>

@@ -10,20 +10,19 @@
         <div class="row">
           <div class="head">{{ $t('pay.payProduct') }}</div>
           <div class="body product-information">
-            <span
-              class="title"
-            >{{ $t('pay.supportAuthor') + $t(`pay.${text[threadType]}`) + $t('pay.getRight') }}</span>
+            <span v-if="rewardOrPay === 'reward'" class="title"> {{ $t('pay.supportAuthor') + $t('pay.keepWriting') }}</span>
+            <span v-else class="title"> {{ $t('pay.supportAuthor') + $t(`pay.${text[threadType]}`) + $t('pay.getRight') }}</span>
             <span>{{ $t('topic.author') + ': ' + (user.username || '') }}</span>
             <span>{{ $t('topic.content') + ': ' + content }}</span>
           </div>
-          <div class="amount">￥{{ amount }}</div>
+          <div class="amount">￥{{ showAmount }}</div>
         </div>
-        <div class="row">
+        <div v-if="rewardOrPay === 'reward'" class="row">
           <div class="head reward">{{ $t('topic.reward') + $t('pay.sumOfMoney') }}</div>
           <div class="body reward">
             <label>
               <span>￥</span>
-              <input v-model="rewardAmount" placeholder="请输入您打赏的金额" type="text">
+              <input v-model="rewardAmount" :placeholder="$t('pay.inputRewardAmount')" type="text">
             </label>
             <div class="default-amounts">
               <button
@@ -48,20 +47,19 @@
           <div class="head">{{ $t('pay.payType') }}</div>
           <div class="body pay-way">
             <div class="pay-card" :class="{'pay-card': true, 'selected': payWay === 'wxPay'}" @click="payWay = 'wxPay'">
-              <img class="qr-code" src="https://www.liantu.com/images/2013/weixin.png" alt="">
               <div class="detail">
                 <div class="pay-title">
-                  <svg-icon style="font-size: 18px" type="wechat" />
+                  <svg-icon class="active-svg-wx" style="fill: #8590A6;font-size: 18px" type="wechat" />
                   <span>{{ $t('pay.wxPay') }}</span>
-                </div>
-                <div class="pay-amount">￥ {{ amount }}</div>
-                <div class="pay-tip">
-                  <div>
-                    <span>{{ $t('pay.wxPayTipUse') }}</span>
-                    <span style="color: #09BB07; font-weight: bold">{{ $t('pay.wxPayTipScan') }}</span>
+                  <div class="pay-tip">
+                    <div>
+                      <span>{{ $t('pay.wxPayTipUse') }}</span>
+                      <span class="active-tip" style="font-weight: bold">{{ $t('pay.wxPayTipScan') }}</span>
+                    </div>
+                    <span>{{ $t('pay.wxPayTipPay') }}</span>
                   </div>
-                  <span>{{ $t('pay.wxPayTipPay') }}</span>
                 </div>
+                <div class="pay-amount">￥{{ showAmount }}</div>
               </div>
             </div>
           </div>
@@ -71,23 +69,24 @@
               :class="{'pay-card': true, 'selected': payWay === 'walletPay'}"
               @click="payWay = 'walletPay'"
             >
-              <svg-icon style="font-size: 100px" type="wallet-logo" />
               <div class="detail">
                 <div class="pay-title">
-                  <svg-icon style="font-size: 18px" type="wallet" />
+                  <svg-icon class="active-svg-wallet" style="fill: #8590a6;font-size: 18px" type="wallet" />
                   <span>{{ $t('pay.walletPay') }}</span>
+                  <div class="pay-tip">
+                    <span>{{ $t('pay.walletBalance') }}</span>
+                    <span v-if="!userWallet.canWalletPay">需要设置支付密码</span>
+                    <span v-else>{{ userWallet.availableAmount }}</span>
+                  </div>
                 </div>
-                <div class="pay-amount">￥ {{ amount }}</div>
-                <div class="pay-tip">
-                  <span>{{ $t('pay.walletBalance') }}</span>
-                </div>
+                <div class="pay-amount">￥{{ showAmount }}</div>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="bottom">
-        <span>￥ {{ amount + $t('pay.rmb') + $t('pay.payTo') + '，' + user.username || '' }} {{ $t('pay.ofAccount') }}</span>
+        <span>￥ {{ showAmount + $t('pay.rmb') + $t('pay.payTo') + '，' + user.username || '' }} {{ $t('pay.ofAccount') }}</span>
         <el-button size="medium" type="primary" @click="$emit('paying', { payWay, hideAvatar })">{{ $t('pay.surePay')
         }}
         </el-button>
@@ -116,15 +115,28 @@ export default {
     content: {
       type: String,
       default: ''
+    },
+    rewardOrPay: {
+      type: String,
+      default: ''
+    },
+    userWallet: {
+      type: Object,
+      default: () => {}
     }
   },
   data() {
     return {
       hideAvatar: false,
-      text: ['remainingContent', 'remainingContent', 'video', 'picture'],
+      text: ['getRemainingContent', 'getRemainingContent', 'getVideo', 'getPicture'],
       payWay: 'wxPay',
       rewardAmount: '',
       defaultAmounts: ['1', '2', '5', '10', '20', '50', '88', '128']
+    }
+  },
+  computed: {
+    showAmount() {
+      return this.rewardOrPay === 'reward' ? this.rewardAmount : this.amount
     }
   }
 }
@@ -259,6 +271,15 @@ export default {
 
               &.selected {
                 border: 1px solid #1878F3;
+                .active-tip {
+                  color: #09BB07;
+                }
+                .active-svg-wx {
+                  fill: #09BB07 !important;
+                }
+                .active-svg-wallet {
+                  fill: #1878F3 !important;
+                }
               }
 
               > .qr-code {
@@ -267,29 +288,33 @@ export default {
               }
 
               > .detail {
+                width: 100%;
                 height: 100%;
                 margin-left: 10px;
                 font-size: 16px;
                 display: flex;
-                flex-direction: column;
-                justify-content: space-between;
 
                 > .pay-title {
-                  span {
+                  flex: 1;
+                  > span {
                     margin-left: 10px;
+                  }
+                  > .pay-tip {
+                    margin-top: 10px;
+                    color: $fontColor;
+                    > span {
+                      display: block;
+                    }
                   }
                 }
 
                 > .pay-amount {
-                  font-size: 24px;
-                }
-
-                > .pay-tip {
-                  color: $fontColor;
-
-                  > span {
-                    display: block;
-                  }
+                  width: 140px;
+                  overflow: auto;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 30px;
                 }
               }
             }

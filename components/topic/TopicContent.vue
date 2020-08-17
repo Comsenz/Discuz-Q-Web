@@ -22,6 +22,26 @@
     </div>
     <div v-if="unpaid && threadType === 1" class="hide-content-tip">{{ $t('pay.contentHide') }}</div>
     <div class="tag" @click="skipIndexPage">{{ category.name }}</div>
+    <div v-if="showVideoPop" class="video-pop">
+      <Cover />
+      <video
+        controls
+        :poster="video.cover_url"
+        preload="auto"
+        bindpause="handlepause"
+        playsinline
+        webkit-playsinline
+        x5-playsinline
+        show-fullscreen-btn="true"
+        show-play-btn="true"
+        auto-pause-if-open-native="true"
+        auto-pause-if-navigate="true"
+        enable-play-gesture="false"
+        object-fit="cover"
+        :src="video.media_url"
+      />
+      <div />
+    </div>
   </article>
 </template>
 
@@ -59,8 +79,15 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      showVideoPop: false
+    }
+  },
   computed: {
-    unpaid() { return !(this.paidInformation.paid || parseFloat(this.paidInformation.price) === 0) }
+    unpaid() {
+      return !(this.paidInformation.paid || parseFloat(this.paidInformation.price) === 0)
+    }
   },
   watch: {
     article: {
@@ -87,15 +114,7 @@ export default {
     },
     openVideo() {
       if (this.unpaid) return alert('大哥，请付费')
-      if (document.getElementById('video-pop')) return
-      const div = document.createElement('div')
-      div.innerHTML = `<div id="video-pop" class="video-pop">
-        <video controls poster="${this.video.cover_url}" preload="auto" bindpause="handlepause" playsinline webkit-playsinline x5-playsinline
-          show-fullscreen-btn="true" show-play-btn="true" auto-pause-if-open-native="true" auto-pause-if-navigate="true" enable-play-gesture="false"
-          object-fit="cover" src="${this.video.media_url}" />
-       <div/>`
-      div.classList.add('cover')
-      document.querySelector('.global').appendChild(div)
+      this.showVideoPop = true
       document.addEventListener('click', this.removeVideoPop)
     },
     removeVideoPop(e) {
@@ -104,7 +123,7 @@ export default {
         if (item.id === 'video-pop') pass = false
       })
       if (!pass) return
-      document.querySelector('.cover').remove()
+      this.showVideoPop = false
       document.removeEventListener('click', this.removeVideoPop)
     },
     skipIndexPage() {
@@ -188,27 +207,18 @@ export default {
       font-size: 12px;
     }
 
-    ::v-deep .cover {
-      position: absolute;
-      top: 0;
-      left: 0;
-      background: rgba(0, 0, 0, 0.45);
-      z-index: 5;
-      width: 100%;
-      height: 100%;
+    > .video-pop {
+      z-index: 100;
+      background: #ffffff;
+      padding: 15px;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 760px;
 
-      .video-pop {
-        background: #ffffff;
-        padding: 15px;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 760px;
-
-        > video {
-          width: 730px;
-        }
+      > video {
+        width: 730px;
       }
     }
 

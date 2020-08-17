@@ -18,6 +18,9 @@ export default {
       info: ''
     }
   },
+  created() {
+    if (process.client) this.$store.commit('session/SET_USER_ID', localStorage.getItem('user_id') || '0')
+  },
   mounted() {
     const _params = {
       _jv: {
