@@ -312,5 +312,26 @@ export default {
   .el-button {
     border-radius: 0px;
   }
+  .el-input__inner:focus{
+    border-color: #DCDFE6;
+  }
+  .el-input__inner:hover{
+    border-color: #DCDFE6;
+  }
+   .el-button:focus{
+    background: #FFF;
+    border: 1px solid #DCDFE6;
+    color: #606266;
+  }
+   .el-button:hover{
+    background: #FFF;
+    border: 1px solid #DCDFE6;
+    color: #606266;
+  }
+   .el-button:active{
+    background: #FFF;
+    border: 1px solid #DCDFE6;
+    color: #606266;
+  }
 }
 </style>
