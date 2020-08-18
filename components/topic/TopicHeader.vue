@@ -21,7 +21,7 @@
         <el-dropdown-item
           v-for="(item, index) in managementList"
           :key="index"
-          :command="{command: item.command ,isStatus: item.isStatus}"
+          :command="{command: item.command ,item}"
           style="border-bottom: 1px solid #EDEDED; width: 98px; text-align: center"
         >{{ item.text }}
         </el-dropdown-item>
@@ -65,31 +65,18 @@ export default {
     formatDate(date) {
       return dayjs(date).format('YYYY-MM-DD HH:mm')
     },
-    handleCommand({ command, isStatus }) {
-      if (command === 'toEdit') return console.log('去发帖页面')
-      if (command === 'isDeleted') return this.open(command, isStatus)
-      this.postCommand(command, isStatus)
+    handleCommand({ command, item }) {
+      // TODO 去发帖
+      if (command === 'toEdit') return alert('去发帖页面')
+      if (command === 'isDeleted') return this.deleteConfirm(item)
+      this.$emit('managementSelected', item)
     },
-    postCommand(command, isStatus) {
-      const params = { _jv: { type: `threads`, id: this.threadId }}
-      params[command] = !isStatus
-      return this.$store.dispatch('jv/patch', params).then(data => {
-        this.$emit('managementSelected', data)
-      })
-    },
-    open(command, isStatus) {
+    deleteConfirm(item) {
       this.$confirm(this.$t('topic.confirmDelete'), this.$t('discuzq.msgBox.title'), {
         confirmButtonText: this.$t('discuzq.msgBox.confirm'),
         cancelButtonText: this.$t('discuzq.msgBox.cancel'),
         type: 'warning'
-      }).then(() => {
-        this.postCommand(command, isStatus).then(() => {
-          this.$message({ type: 'success', message: this.$t('topic.deleteSuccessAndJumpToBack') })
-          setTimeout(() => { this.$router.push('/demo') }, 1500)
-        }).catch(() => {
-          this.$message({ type: 'warning', message: this.$t('topic.deleteFail') })
-        })
-      }, () => console.log('cancel delete opera'))
+      }).then(() => this.$emit('managementSelected', item))
     }
   }
 }

@@ -74,9 +74,11 @@
                 <svg-icon class="active-svg-wallet" style="fill: #8590a6;font-size: 18px" type="wallet" />
                 <span>{{ $t('pay.walletPay') }}</span>
                 <div class="pay-tip">
-                  <span>{{ $t('pay.walletBalance') }}</span>
-                  <span v-if="!userWallet.canWalletPay">需要设置支付密码</span>
-                  <span v-else>{{ userWallet.availableAmount }}</span>
+                  <span v-if="enoughBalance">{{ $t('pay.walletBalance') }}</span>
+                  <!--TODO 去改密码-->
+                  <a v-else href="/" style="color: red">{{ $t('pay.walletBalanceNo') }}</a>
+                  <span v-if="!userWallet.canWalletPay">{{ $t('pay.needToResetPassword') }}</span>
+                  <span v-else>￥ {{ userWallet.availableAmount }}</span>
                 </div>
               </div>
               <div class="pay-amount">￥{{ showAmount }}</div>
@@ -87,7 +89,8 @@
     </div>
     <div class="bottom">
       <span>￥ {{ showAmount + $t('pay.rmb') + $t('pay.payTo') + '，' + user.username || '' }} {{ $t('pay.ofAccount') }}</span>
-      <el-button size="medium" type="primary" @click="$emit('paying', { payWay, hideAvatar })">{{ $t('pay.surePay') }} </el-button>
+      <el-button v-if="payWay === 'wxPay'" size="medium" type="primary" @click="$emit('paying', { payWay, hideAvatar })">{{ $t('pay.scanPay') }}</el-button>
+      <el-button v-if="payWay === 'walletPay'" :disabled="!enoughBalance" size="medium" type="primary" @click="$emit('paying', { payWay, hideAvatar, rewardAmount })">{{ $t('pay.surePay') }}</el-button>
     </div>
   </message-box>
 </template>
@@ -135,12 +138,20 @@ export default {
   computed: {
     showAmount() {
       return this.rewardOrPay === 'reward' ? this.rewardAmount : this.amount
+    },
+    enoughBalance() {
+      if (this.rewardOrPay === 'reward') {
+        return parseFloat(this.rewardAmount || '0') < parseFloat(this.userWallet.availableAmount)
+      } else {
+        return parseFloat(this.amount) < parseFloat(this.userWallet.availableAmount)
+      }
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+  @import '@/assets/css/variable/color.scss';
   $fontColor: #8590A6;
   .top {
     padding: 20px;
@@ -148,7 +159,7 @@ export default {
       margin-top: 20px;
       padding: 0 0 20px 20px;
       display: flex;
-      border-bottom: 1px solid #E4E4E4;
+      border-bottom: 1px solid $border-color-base;
 
       &:last-child {
         border-bottom: none;
@@ -279,7 +290,8 @@ export default {
                   margin-top: 10px;
                   color: $fontColor;
 
-                  > span {
+                  > span, a {
+                    line-height: 22px;
                     display: block;
                   }
                 }

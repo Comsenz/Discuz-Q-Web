@@ -21,7 +21,8 @@ import {
   Submenu,
   Container,
   Collapse,
-  CollapseItem
+  CollapseItem,
+  Popover
 } from 'element-ui'
 
 Vue.use(Button, { locale })
@@ -41,6 +42,7 @@ Vue.use(Submenu, { locale })
 Vue.use(Container, { locale })
 Vue.use(Collapse, { locale })
 Vue.use(CollapseItem, { locale })
+Vue.use(Popover, { locale })
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
