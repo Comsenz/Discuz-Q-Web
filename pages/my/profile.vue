@@ -1,6 +1,9 @@
 <template>
   <div class="myprofile">
-    <div class="myprofile-c">
+    <div
+      class="myprofile-c"
+      style="padding-bottom:0px"
+    >
       <div class="myprofile-top">
         <Avatar
           :user="userInfo"
@@ -15,9 +18,22 @@
               alt=""
             ></span>
 
-          <span class="usrid">{{ userInfo && userInfo.groupsName ? userINfo.groupsName : '默认用户' }}</span>
+          <span class="usrid">{{ userInfo && userInfo.groupsName ? userInfo.groupsName : '默认用户' }}</span>
         </div>
-        <span class="iden">{{ userInfo && userInfo.isReal ? '已实名认证' :'未实名认证' }}</span>
+        <span
+          v-if="userInfo && userInfo.isReal"
+          class="iden"
+        >已实名认证
+        </span>
+        <span
+          v-else
+          class="iden"
+        >
+          <svg-icon
+            style="width:16px; height:16px"
+            type="warning"
+          /> <span style="margin-left:2px; color:#FA5151;">未实名认证</span>
+        </span>
         <span class="setavatar">设置头像</span>
       </div>
       <div class="myprofile-bottom">
@@ -40,10 +56,7 @@
       </div>
     </div>
     <!-- 签名 -->
-    <div
-      class="myprofile-c"
-      style="padding-bottom:21px"
-    >
+    <div class="myprofile-c">
       <div class="myprofile-top">
         <span class="sig">{{ $t('modify.signaturetitle') }}</span>
         <span
@@ -76,7 +89,7 @@
                 margin-left: 15px;
                 width: 300px;
                 background: #1878f3;
-                margin-bottom:48px"
+                margin-bottom:48px;"
           @click="sigComfirm"
         >确定修改</el-button>
       </div>
@@ -101,7 +114,7 @@
           <el-input
             ref="oldphone"
             v-model="oldVerifyCode"
-            :placeholder="$t('modify.phonbound')"
+            placeholder="请输入旧手机验证码"
             class="phone-input"
           />
 
@@ -137,11 +150,11 @@
           style="
                 display: block;
                 width: 300px;
-                background: #1878f3;"
+                background: #1878f3;
+                margin-bottom:48px;"
           @click="mobileComfirm"
         >确定修改</el-button>
       </div>
-
     </div>
     <!-- 密码 -->
     <div class="myprofile-c">
@@ -183,19 +196,85 @@
                 display: block;
                 width: 300px;
                 background: #1878f3;
-                margin-top:20px;
+                margin-top:10px;
                 margin-bottom:48px"
           @click="passSub"
         >确定修改</el-button>
       </div>
     </div>
-  </div>
 
+    <!-- 微信 -->
+    <div class="myprofile-c">
+      <div class="myprofile-top">
+        <span class="sig">{{ $t('profile.wechat') }}</span>
+        <span
+          class="setavatar"
+          @click="wechatModify"
+        >{{ (!isWechatModify ? $t('profile.modify') : '取消修改') }}</span>
+      </div>
+      <div v-show="!isWechatModify" class="myprofile-btom" style="color:#8590A6">
+        {{ userInfo && userInfo.wechat ?userInfo.wechat.nickname :'未绑定微信' }}
+      </div>
+    </div>
+
+    <!-- 实名验证 -->
+    <!-- qcloud_faceid是否开启实名认证 -->
+    <div v-if="!userInfo.realname && forums.qcloud && forums.qcloud.qcloud_faceid" class="myprofile-c">
+      <div class="myprofile-top">
+        <span class="sig">{{ $t('modify.realnametitle') }}</span>
+        <span
+          class="setavatar"
+          @click="realModify"
+        >{{ (!isRealModify ? $t('profile.tocertification') : '暂不认证') }}</span>
+      </div>
+      <div v-show="!isRealModify" class="myprofile-btom" style="color:#8590A6">
+        {{ userInfo && userInfo.realname ?'已设置':'未实名认证' }}
+      </div>
+      <div v-show="isRealModify" class="myprofile-btom">
+
+        <div>
+          <el-input
+            ref="realname"
+            v-model="realName"
+            :placeholder="$t('modify.realname')"
+            class="passbtom"
+          />
+          <el-input
+            v-model="idNumber"
+            :placeholder="$t('modify.enteridnumber')"
+            class="passbtom"
+          />
+
+        </div>
+
+        <el-button
+          type="primary"
+          style="
+                display: block;
+                width: 300px;
+                background: #1878f3;
+                margin-top:10px;
+                margin-bottom:48px"
+          @click="realSub"
+        >确定提交</el-button>
+      </div>
+    </div>
+    <div v-if="userInfo.realname && forums.qcloud && forums.qcloud.qcloud_faceid" class="myprofile-c">
+      <div class="myprofile-top">
+        <span class="sig">{{ $t('modify.realnametitle') }}</span>
+      </div>
+      <div class="myprofile-btom" style="color:#8590A6">
+        {{ userInfo && userInfo.realname ?userInfo.realname:'未实名认证2' }}
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
+import forums from '@/mixin/forums'
 export default {
+  mixins: [forums],
   data() {
     return {
       userId: '',
@@ -211,9 +290,13 @@ export default {
       oldPassWord: '',
       newPassWord: '',
       renewPassword: '', // 重复新密码
+      realName: '',
+      idNumber: '',
       isSignModify: false,
       isMobileModify: false,
-      isPassModify: false
+      isPassModify: false,
+      isWechatModify: false,
+      isRealModify: false
     }
   },
   computed: {
@@ -259,19 +342,24 @@ export default {
     },
     // 使用计算属性获取不到userinfo,直接请求接口就可以了但没有group的数据
     userinfo() {
-      // this.userId = this.$store.getters['session/get']('userId')
-      this.userId = localStorage.getItem('uid')
+      this.userId = this.$store.getters['session/get']('userId')
+      // this.userId = localStorage.getItem('uid')
       console.log('userid', this.userId)
+      // const params = {
+      //   // _jv: { type: `/users/${this.userId}` }
+      //   _jv: {
+      //     type: 'users',
+      //     id: this.userId
+      //   },
+      //   include: 'groups'
+      // }
+      // this.$store.dispatch('jv/get', params).then(res => {
+      // })
       const params = {
-        // _jv: { type: `/users/${this.userId}` }
-        _jv: {
-          type: 'users',
-          id: this.userId
-        },
-        include: 'groups'
+        include: 'groups,wechat'
       }
-      this.$store.dispatch('jv/get', params).then(res => {
-        console.log('userinfo', res)
+      this.$store.dispatch('jv/get', [`users/${this.userId}`, { params }]).then(res => {
+        console.log('useriinfo', res)
         this.userInfo = res
         this.signcontent = this.userInfo.signature
         this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
@@ -318,7 +406,7 @@ export default {
       const params = {
         _jv: { type: 'sms/send' },
         mobile: this.userInfo.originalMobile,
-        type: 'rebind'
+        type: 'verify'
       }
       console.log('oldphone', params)
       await status.run(() => this.$store.dispatch('jv/post', params))
@@ -339,7 +427,7 @@ export default {
       const params = {
         _jv: { type: 'sms/send' },
         mobile: this.newPhoneNumber,
-        type: 'bind'
+        type: 'rebind'
       }
       await status.run(() => this.$store.dispatch('jv/post', params))
         .then(res => {
@@ -369,7 +457,7 @@ export default {
         _jv: { type: 'sms/verify' },
         mobile: this.userInfo.originalMobile,
         code: this.oldVerifyCode,
-        type: 'rebind'
+        type: 'verify'
       }
       await status.run(() => this.$store.dispatch('jv/post', params))
         .then(res => {
@@ -386,7 +474,7 @@ export default {
         _jv: { type: 'sms/verify' },
         mobile: this.newPhoneNumber,
         code: this.newVerifyCode,
-        type: 'bind'
+        type: 'rebind'
       }
       await status.run(() => this.$store.dispatch('jv/post', params))
         .then(res => {
@@ -431,13 +519,19 @@ export default {
       postphon
         .then(res => {
           if (res) {
+            console.log('passsuccess', res)
             this.$message.success(this.$t('modify.titlepassword'))
+            this.isPassModify = !this.isPassModify
           }
         })
-        .catch(err => {
+        // 错误能输出却拿不到，需要在request.js添加响应时的错误处理
+        .catch(error => {
+          console.log(error.request)
+          console.log(error.message)
+          console.log(error.config)
           this.disab = true
           this.styledisbla = 'default'
-          if (err.statusCode === 422) {
+          if (error.statusCode === 422) {
             if (this.valuetone === this.valuenew) {
               this.judge2 = true
               this.judge3 = false
@@ -445,23 +539,121 @@ export default {
                 {
                   detail: [sun]
                 }
-              ] = err.data.errors
+              ] = error.data.errors
               this.text1 = sun
             } else {
               this.judge3 = true
               this.judge2 = false
               this.disab = true
             }
-          } else if (err.statusCode === 500) {
+          } else if (error.request.status === 500) {
             this.judge2 = false
             this.judge3 = false
+            this.judge = true
+            const err = { 'errors': [{ 'status': 500, 'code': 'user_update_error', 'detail': ['\u539f\u5bc6\u7801\u4e0d\u5339\u914d'] }] }
+            console.log(err.errors[0].detail)
+            // if (error.request.response) {
+            //   console.log(error.request.response.errors[0].detail[0])
+            // }
+
+            if (err.errors[0].detail[0]) return this.$message.error(err.errors[0].detail[0])
+          }
+        })
+    },
+    // 微信
+    wechatModify() {
+      console.log('hhhh')
+      this.isWechatModify = !this.isWechatModify
+    },
+    // 实名认证
+    realModify() {
+      this.isRealModify = !this.isRealModify
+      this.$nextTick(() => {
+        this.$refs.realname.focus()
+      })
+    },
+    // 实名不为空验证
+    realSub() {
+      if (this.realName && this.idNumber) {
+        this.authentication()
+      } else if (!this.realName) {
+        this.$message.error(this.$t('modify.emptyname'))
+      } else if (!this.idNumber) {
+        this.$message.error(this.$t('modify.idcardisempty'))
+      }
+    },
+    authentication() {
+      const _this = this
+      const params = {
+        _jv: {
+          type: 'users/real'
+        },
+        identity: this.realName,
+        realname: this.idNumber
+      }
+      const patchname = status.run(() => this.$store.dispatch('jv/patch', params))
+      patchname
+        .then(res => {
+          if (res) {
+            console.log('实名成功信息', res)
+            const param = {
+              _jv: {
+                type: 'forum'
+              }
+            }
+            _this.$store.dispatch('jv/get', param).then((res) => {
+              // console.log(1, 'froums');
+              console.log('实名后获取站点数据', res)
+            })
+            const promsget = {
+              _jv: {
+                type: 'users',
+                id: this.userid
+              }
+              // include: 'groups',
+            }
+            _this.$store.dispatch('jv/get', promsget).then((res) => {
+              console.log('实名后获取用户个人信息', res)
+            })
+            this.$message({
+              title: this.$t('modify.nameauthensucc'),
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+        .catch(err => {
+          console.log(err)
+          if (err.statusCode === 422) {
             this.judge = true
             const [
               {
                 detail: [sun]
               }
             ] = err.data.errors
-            this.text = sun
+            this.title1 = sun
+            // uni.showToast({
+            //   icon: 'none',
+            //   title: this.title1,
+            //   duration: 2000
+            // })
+          } else if (err.statusCode === 500) {
+            this.judge = true
+            if (err.data.errors[0].detail === this.i18n.t('modify.idtitl')) {
+              this.title1 = err.data.errors[0].detail
+              // uni.showToast({
+              //   icon: 'none',
+              //   title: this.title1,
+              //   duration: 2000
+              // })
+            } else {
+              this.title2 = err.data.errors[0].detail
+              // uni.showToast({
+              //   icon: 'none',
+              //   title: this.title2,
+              //   duration: 2000
+              // })
+            }
           }
         })
     }
@@ -475,6 +667,7 @@ export default {
   display: flex;
   flex-direction: column;
   border-bottom: 1px solid #e4e4e4;
+  padding-bottom: 20px;
   .disnone {
     display: none;
   }
@@ -507,7 +700,7 @@ export default {
       }
     }
     .iden {
-      margin-left: 15px;
+      margin-left: 10px;
     }
     .setavatar {
       flex: 1;
