@@ -56,23 +56,6 @@
           @click="sendVerifyCode"
         >{{ content }}</el-button>
 
-        <!-- <div class="retrieve-inputs">
-          <label>
-            <input
-              v-model="phoneNumber"
-              maxlength="11"
-              type="text"
-              :placeholder="$t('user.phoneNumber')"
-            >
-            <button
-              :class="{disabled: !canClick}"
-              @click="sendVerifyCode"
-            >
-              {{ content }}
-            </button>
-          </label>
-        </div> -->
-
         <span class="title3">{{ $t('user.verification') }}</span>
         <el-input
           v-model="verifyCode"
@@ -231,6 +214,7 @@ export default {
           this.passWord = ''
           if (res.data.data.attributes.access_token !== ' ') {
             window.localStorage.setItem('access_token', res.data.data.attributes.access_token)
+            window.localStorage.setItem('uid', res.data.data.id)
             this.$message.success('登录成功')
             this.$router.go(-1)
           }
@@ -472,6 +456,27 @@ export default {
   }
   .el-button {
     border-radius: 0px;
+  }
+   .el-input__inner:focus{
+    border-color: #DCDFE6;
+  }
+  .el-input__inner:hover{
+    border-color: #DCDFE6;
+  }
+   .el-button:focus{
+    background: #FFF;
+    border: 1px solid #DCDFE6;
+    color: #606266;
+  }
+   .el-button:hover{
+    background: #FFF;
+    border: 1px solid #DCDFE6;
+    color: #606266;
+  }
+   .el-button:active{
+    background: #FFF;
+    border: 1px solid #DCDFE6;
+    color: #606266;
   }
 }
 ::v-deep .el-tabs__content {

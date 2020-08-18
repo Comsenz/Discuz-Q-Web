@@ -79,17 +79,17 @@
             bruceluo</el-menu-item>
 
         </el-menu> -->
-        <img
+        <Avatar
+          :user="userInfo"
+          :size="35"
           class="avatar"
-          src="@/static/logo.png"
-          alt=""
-        >
+        />
 
         <el-button
           type="primary"
           size="small"
           class="h-button4 marleft"
-        >bruceluo</el-button>
+        >{{ userInfo.username }}</el-button>
 
         <el-button
           type="primary"
@@ -134,27 +134,28 @@ export default {
     return {
       inputVal: '',
       isLogin: '',
-      activeIndex: '1'
+      activeIndex: '1',
+      userInfo: ''
 
     }
   },
   // 从store中获取userid获取userinfo，但getters这个方法没起作用
   computed: {
-    userId() {
-      return this.$store.getters['session/get']('userId')
-    },
-    userInfo() {
-      console.log(this.userId)
-      const userInfo = this.$store.getters['jv/get'](`users/${this.userId}`)
-      console.log('userInfo', userInfo)
-      userInfo.groupsName = userInfo.groups ? userInfo.groups[0].name : ''
-      // this.setNum(userInfo)
-      return userInfo
-    }
+    // userId() {
+    //   return this.$store.getters['session/get']('userId')
+    // },
+    // userInfo() {
+    //   console.log(this.userId)
+    //   const userInfo = this.$store.getters['jv/get'](`/users/${this.userId}`)
+    //   console.log('userInfo', userInfo)
+    //   userInfo.groupsName = userInfo.groups ? userInfo.groups[0].name : ''
+    //   // this.setNum(userInfo)
+    //   return userInfo
+    // }
   },
   mounted() {
     this.isLoginh()
-    // console.log(this.forums)
+    this.userinfo()
   },
   methods: {
     handleSelect(key, keyPath) {
@@ -167,9 +168,22 @@ export default {
       console.log('userinfo', this.userInfo)
     },
     ExitLogin() {
-      this.$router.go(0)
-
       this.isLogin = window.localStorage.removeItem('access_token')
+      window.localStorage.removeItem('uid')
+      this.$router.go(0)
+    },
+    userinfo() {
+      // this.userId = this.$store.getters['session/get']('userId')
+      this.userId = localStorage.getItem('uid')
+      console.log('userid', this.userId)
+      const params = {
+        _jv: { type: `/users/${this.userId}` }
+      }
+      this.$store.dispatch('jv/get', params).then(res => {
+        console.log('userinfo', res)
+        this.userInfo = res
+        this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
+      })
     }
   }
 }
@@ -282,6 +296,7 @@ export default {
       height: 35px;
       border-radius: 50%;
       vertical-align: bottom;
+      display: inline-block !important;
     }
   }
 }

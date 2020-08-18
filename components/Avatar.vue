@@ -36,7 +36,10 @@ export default {
         70: 'font-size: 28px;line-height: 70px;border-radius: 12px',
         60: 'font-size: 26px;line-height: 60px;border-radius: 10px',
         50: 'font-size: 24px;line-height: 50px;border-radius: 8px',
-        30: 'font-size: 18px;line-height: 30px;border-radius: 50%'
+        51: 'font-size: 24px;line-height: 50px;border-radius: 50%',
+        30: 'font-size: 18px;line-height: 30px;border-radius: 50%',
+        35: 'font-size: 18px;line-height: 30px;border-radius: 50%'
+
       }
     }
   },
@@ -79,10 +82,19 @@ export default {
     width: 50px;
     height: 50px;
   }
+  .avatar-size-51 {
+    width: 50px;
+    height: 50px;
+  }
 
   .avatar-size-30 {
     width: 30px;
     height: 30px;
+    border-radius: 50%;
+  }
+  .avatar-size-35 {
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
   }
 
