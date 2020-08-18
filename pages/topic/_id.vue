@@ -36,7 +36,7 @@
       />
       <topic-password
         v-if="showPasswordInput"
-        :price="thread.price || 0"
+        :price="payment.rewardAmount ? payment.rewardAmount : (thread.price || 0)"
         @close="showPasswordInput = false"
         @password="payOrder"
       />
@@ -54,11 +54,12 @@
 <script>
 const include = 'posts.replyUser,user.groups,user,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers'
 import forums from '@/mixin/forums'
+import handleError from '@/mixin/handleError'
 
 export default {
   name: 'Post',
   layout: 'custom_layout',
-  mixins: [forums],
+  mixins: [forums, handleError],
   data() {
     return {
       thread: {},
@@ -71,7 +72,7 @@ export default {
         { text: '分享', count: 0, command: 'showLink' }
       ],
       paidInformation: { price: '0', paid: false, paidUsers: [], paidCount: 0 },
-      payment: { orderNo: '', payment_type: 0, status: 0, wechat_qrcode: '' },
+      payment: { orderNo: '', payment_type: 0, status: 0, wechat_qrcode: '', rewardAmount: '' },
       userWallet: { availableAmount: '0.00', canWalletPay: false },
       payPassword: { password: '', confirmPassword: '' },
       managementList: [
@@ -112,19 +113,17 @@ export default {
         this.initPaidInformation(data)
         this.initActions(data)
         console.log('data', data)
-      })
+      }, e => this.handleError(e))
     },
     getWalletBalance() {
       const params = { _jv: { type: `/wallet/user/${this.userId}` }}
       this.$store.dispatch('jv/get', params).then(data => {
         this.userWallet.availableAmount = data.available_amount
         this.userWallet.canWalletPay = data.user.canWalletPay
-      })
+      }, e => this.handleError(e))
     },
     initPaidInformation(data) {
-      for (const key in this.paidInformation) {
-        this.paidInformation[key] = data[key]
-      }
+      for (const key in this.paidInformation) this.paidInformation[key] = data[key]
     },
     initManagementList(data) {
       this.managementList.forEach(item => {
@@ -138,34 +137,33 @@ export default {
         }
       })
     },
-    paying({ payWay, hideAvatar }) {
-      console.log('准备支付啦', payWay, hideAvatar)
+    paying({ payWay, hideAvatar, rewardAmount }) {
+      this.payment.rewardAmount = rewardAmount
       this.showCheckoutCounter = false
       if (payWay === 'walletPay') {
-        if (!this.userWallet.canWalletPay) return this.setPayPassword() // 没设置初始密码
         this.payment.payment_type = 20
         this.showPasswordInput = true
-        this.createOrder()
+        this.createOrder(hideAvatar, this.rewardOrPay === 'reward' ? rewardAmount : this.thread.price)
       } else if (payWay === 'wxPay') {
         this.payment.payment_type = 10
-        console.log(this.forums, 'forums')
         if (this.forums.paycenter.wxpay_close) return this.$message.warning('微信支付功能已关闭')
-        // loading
-        this.createOrder().then(() => {
-          this.payOrder('')
-        })
+        // TODO Loading
+        this.createOrder(hideAvatar, this.rewardOrPay === 'reward' ? rewardAmount : this.thread.price).then(() => this.payOrder())
       }
     },
-    createOrder() {
-      const params = { _jv: { type: `/orders` }, type: this.rewardOrPay === 'reward' ? '2' : '3', thread_id: this.threadId }
+    createOrder(hideAvatar, amount = 0) {
+      const params = {
+        _jv: { type: `/orders` },
+        type: this.rewardOrPay === 'reward' ? '2' : '3',
+        thread_id: this.threadId,
+        is_anonymous: hideAvatar,
+        amount
+      }
       return this.$store.dispatch('jv/post', params).then(data => {
         this.payment.orderNo = data.order_sn
-      }, e => {
-        const { response: { data: { errors }}} = e
-        if (errors[0]) return this.$message.error(errors[0].detail[0])
-      })
+      }, e => this.handleError(e))
     },
-    payOrder(password) {
+    payOrder(password = '') {
       const params = {
         _jv: { type: `/trade/pay/order/${this.payment.orderNo}` },
         order_sn: this.payment.orderNo,
@@ -179,10 +177,7 @@ export default {
           this.$message.success('支付成功')
           this.getPost()
         }
-      }, e => {
-        const { response: { data: { errors }}} = e
-        if (errors[0]) return this.$message.error(errors[0].detail[0])
-      }).finally(() => { this.showPasswordInput = false })
+      }, e => this.handleError(e)).finally(() => { this.showPasswordInput = false })
     },
     wxPayActive(data) {
       this.payment.wechat_qrcode = data.wechat_qrcode
@@ -202,18 +197,7 @@ export default {
     },
     getOrderStatus() {
       const params = { _jv: { type: `/orders/${this.payment.orderNo}` }, orderNo: this.payment.orderNo }
-      return this.$store.dispatch('jv/get', params).then(data => { this.payment.status = data.status })
-    },
-    setPayPassword() {
-      const params = {
-        _jv: { type: `/users/${this.userId}` },
-        payPassword: '123456',
-        pay_password_confirmation: '123456',
-        pay_password_token: ''
-      }
-      this.$store.dispatch('jv/patch', params).then(data => {
-        console.log(data, 'data')
-      })
+      return this.$store.dispatch('jv/get', params).then(data => { this.payment.status = data.status }, e => this.handleError(e))
     },
     initActions(data) {
       // TODO 后端数据不完整，留着后面做

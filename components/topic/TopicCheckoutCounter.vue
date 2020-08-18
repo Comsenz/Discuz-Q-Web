@@ -89,7 +89,7 @@
     <div class="bottom">
       <span>￥ {{ showAmount + $t('pay.rmb') + $t('pay.payTo') + '，' + user.username || '' }} {{ $t('pay.ofAccount') }}</span>
       <el-button v-if="payWay === 'wxPay'" size="medium" type="primary" @click="$emit('paying', { payWay, hideAvatar })">{{ $t('pay.scanPay') }}</el-button>
-      <el-button v-if="payWay === 'walletPay'" :disabled="!enoughBalance" size="medium" type="primary" @click="$emit('paying', { payWay, hideAvatar })">{{ $t('pay.surePay') }}</el-button>
+      <el-button v-if="payWay === 'walletPay'" :disabled="!enoughBalance" size="medium" type="primary" @click="$emit('paying', { payWay, hideAvatar, rewardAmount })">{{ $t('pay.surePay') }}</el-button>
     </div>
   </message-box>
 </template>
@@ -139,7 +139,11 @@ export default {
       return this.rewardOrPay === 'reward' ? this.rewardAmount : this.amount
     },
     enoughBalance() {
-      return parseFloat(this.amount) < parseFloat(this.userWallet.availableAmount)
+      if (this.rewardOrPay === 'reward') {
+        return parseFloat(this.rewardAmount || '0') < parseFloat(this.userWallet.availableAmount)
+      } else {
+        return parseFloat(this.amount) < parseFloat(this.userWallet.availableAmount)
+      }
     }
   }
 }
