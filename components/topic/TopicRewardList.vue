@@ -60,7 +60,7 @@ export default {
         },
         {
           value: 24,
-          title: 'giveLike'
+          title: 'like'
         }]
     }
   },
