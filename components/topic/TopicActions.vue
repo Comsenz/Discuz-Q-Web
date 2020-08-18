@@ -1,6 +1,12 @@
 <template>
   <div class="actions">
-    <button v-for="(action, index) in actions.slice(0, 3)" :key="index" :disabled="!action.canOpera" :class="{ 'action': true, 'disabled': !action.canOpera }" @click="onClick(action)">
+    <button
+      v-for="(action, index) in actions.slice(0, 3)"
+      :key="index"
+      :disabled="!action.canOpera"
+      :class="{ 'action': true, 'disabled': !action.canOpera }"
+      @click="onClick(action)"
+    >
       <svg-icon class="action-icon" :type="action.icon" />
       <span class="content">
         <span>{{ action.text }}</span>
@@ -13,20 +19,26 @@
         width="120"
         trigger="click"
       >
-        <div style="display: flex; flex-direction: column; align-items: center; color: #6D6D6D; font-size: 14px; text-align: center;">
+        <div
+          style="display: flex; flex-direction: column; align-items: center; color: #6D6D6D; font-size: 14px; text-align: center;"
+        >
           <div style="width: 100%;border-bottom: 1px solid #EDEDED; padding: 10px 0; cursor: pointer" @click="copyLink">
             <svg-icon style="margin-right: 6px;" type="copy-link" />
-            <span>复制链接</span>
+            <span>{{ $t('core.copyLink') }}</span>
           </div>
           <div class="qr-code">
             <div style="width: 100%; padding: 10px 0;">
               <svg-icon style="font-size: 18px;margin-right: 6px;" type="wechat-logo" />
-              <span>微信分享</span>
+              <span>{{ $t('core.wxShare') }}</span>
             </div>
             <div style="width: 88px; height: 88px; border: 1px solid red">二维码</div>
           </div>
         </div>
-        <button slot="reference" :disabled="!actions[3].canOpera" :class="{ 'action': true, 'disabled': !actions[3].canOpera }">
+        <button
+          slot="reference"
+          :disabled="!actions[3].canOpera"
+          :class="{ 'action': true, 'disabled': !actions[3].canOpera }"
+        >
           <svg-icon class="action-icon" :type="actions[3].icon" />
           <span class="content">
             <span>{{ actions[3].text }}</span>
@@ -90,25 +102,29 @@ export default {
 
 <style lang="scss" scoped>
   $defaultColor: #8590A6;
- .actions {
-    margin: 15px auto 0;
+  .actions {
+    margin: 15px auto 70px;
     padding: 0 25px;
     display: flex;
     justify-content: space-between;
-     .action {
+
+    .action {
       cursor: pointer;
       flex: 1;
       display: flex;
       align-items: center;
       flex-direction: column;
       color: $defaultColor;
+
       &.disabled {
         cursor: not-allowed;
       }
+
       > .action-icon {
         font-size: 20px;
         fill: $defaultColor;
       }
+
       > .content {
         margin-top: 10px;
         font-size: 12px;

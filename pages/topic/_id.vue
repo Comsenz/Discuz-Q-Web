@@ -46,6 +46,7 @@
         :qr-code="payment.wechat_qrcode"
         @close="showWxPay = false"
       />
+      <comment-header :comment-count="thread.postCount" :is-positive-sort.sync="isPositiveSort" />
     </main>
     <aside>我是一个伟大的侧栏</aside>
   </div>
@@ -84,6 +85,7 @@ export default {
       showCheckoutCounter: false,
       showPasswordInput: false,
       showWxPay: false,
+      isPositiveSort: false,
       loading: true
     }
   },

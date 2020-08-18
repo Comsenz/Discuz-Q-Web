@@ -151,6 +151,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import '@/assets/css/variable/color.scss';
   $fontColor: #8590A6;
   .top {
     padding: 20px;
@@ -158,7 +159,7 @@ export default {
       margin-top: 20px;
       padding: 0 0 20px 20px;
       display: flex;
-      border-bottom: 1px solid #E4E4E4;
+      border-bottom: 1px solid $border-color-base;
 
       &:last-child {
         border-bottom: none;
