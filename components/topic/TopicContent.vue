@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import s9e from '@/utils/s9e'
 
 export default {
   name: 'TopicContent',
@@ -98,14 +99,8 @@ export default {
     }
   },
   methods: {
-    formatTopicTab(text) {
-      const regexp = /<span\s*id="topic"\s*value="(?<value>\w+)"\s*>(?<string>[^<]+)<\/span>/igum
-      return text.replace(regexp, match => {
-        return match.replace(regexp, (content, value, text) => {
-          const href = `content?id=${value}`
-          return `<a href="${href}" class="content-topic">${text}</a> `
-        })
-      })
+    formatTopicTab(html) {
+      return s9e.parse(html)
     },
     addTextHideCover() {
       if (!this.unpaid && this.threadType === 1) return
@@ -113,20 +108,19 @@ export default {
       if (parseInt(contentHtml.offsetHeight) > 100) contentHtml.classList.add('hide-cover')
     },
     openVideo() {
-      if (this.unpaid) return alert('大哥，请付费')
+      if (this.unpaid) return this.$emit('payForVideo')
       this.showVideoPop = true
       document.addEventListener('click', this.removeVideoPop)
     },
     removeVideoPop(e) {
       let pass = true
-      e.path.forEach(item => {
-        if (item.id === 'video-pop') pass = false
-      })
+      e.path.forEach(item => { if (item.id === 'video-pop') pass = false })
       if (!pass) return
       this.showVideoPop = false
       document.removeEventListener('click', this.removeVideoPop)
     },
     skipIndexPage() {
+      // TODO
       console.log('跳到首页的某个地方')
     }
   }

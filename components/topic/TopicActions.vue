@@ -1,31 +1,30 @@
 <template>
   <div class="actions">
-    <div class="action">
-      <svg-icon class="action-icon" type="book" />
-      <span class="key">阅读</span>
-      <span class="value">2198</span>
-    </div>
-    <div class="action">
-      <svg-icon class="action-icon" type="like" />
-      <span class="key">点赞</span>
-      <span class="value">870,2</span>
-    </div>
-    <div class="action">
-      <svg-icon class="action-icon" type="favor" />
-      <span class="key">收藏</span>
-      <span class="value">121,12</span>
-    </div>
-    <div class="action">
-      <svg-icon class="action-icon" type="link" />
-      <span class="key">分享</span>
-      <span class="value">157</span>
-    </div>
+    <button v-for="(action, index) in actions" :key="index" :disabled="!action.canOpera" :class="{ 'action': true, 'disabled': !action.canOpera }" @click="onClick(action)">
+      <svg-icon class="action-icon" :type="action.icon" />
+      <span class="content">
+        <span>{{ action.text }}</span>
+        <span v-if="action.count"> ({{ action.count }})</span>
+      </span>
+    </button>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'TopicActions'
+  name: 'TopicActions',
+  props: {
+    actions: {
+      type: Array,
+      default: () => []
+    }
+  },
+  methods: {
+    onClick(action) {
+      if (action.command === 'showLink') return alert('showLink')
+      if (action.command) this.$emit('clickAction', action)
+    }
+  }
 }
 </script>
 
@@ -37,22 +36,22 @@ export default {
     display: flex;
     justify-content: space-between;
     > .action {
+      cursor: pointer;
       flex: 1;
       display: flex;
       align-items: center;
       flex-direction: column;
       color: $defaultColor;
+      &.disabled {
+        cursor: not-allowed;
+      }
       > .action-icon {
         font-size: 20px;
         fill: $defaultColor;
       }
-      > .key {
+      > .content {
         margin-top: 10px;
         font-size: 12px;
-      }
-      > .value {
-        font-size: 16px;
-        line-height: 20px;
       }
     }
   }

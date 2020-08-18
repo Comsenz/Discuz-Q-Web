@@ -6,7 +6,7 @@
         :article="article"
         :management-list="managementList"
         :thread-id="threadId"
-        @managementSelected="initManagementList"
+        @managementSelected="postCommand"
       />
       <topic-content
         :article="article"
@@ -15,6 +15,7 @@
         :paid-information="paidInformation"
         :thread-type="thread.type || 0"
         :category="thread.category || {}"
+        @payForVideo="showCheckoutCounter = true"
       />
       <topic-reward-list
         :paid-information="paidInformation"
@@ -22,7 +23,7 @@
         :user-lists="[thread.paidUsers || [], thread.rewardedUsers || [], article.likedUsers || []]"
         @payOrReward="showCheckoutCounter = true"
       />
-      <topic-actions />
+      <topic-actions :actions="actions || []" @clickAction="postCommand" />
       <topic-checkout-counter
         v-if="showCheckoutCounter"
         :thread-type="thread.type || 0"
@@ -45,7 +46,6 @@
         :qr-code="payment.wechat_qrcode"
         @close="showWxPay = false"
       />
-
     </main>
     <aside>我是一个伟大的侧栏</aside>
   </div>
@@ -66,20 +66,20 @@ export default {
       article: {},
       // TODO 后端数据不完整，留着后面做
       actions: [
-        { text: '阅读', count: 0, command: '' },
-        { text: '点赞', count: 0, command: 'isLiked', isStatus: false },
-        { text: '收藏', count: 0, command: 'isFavorite', isStatus: false },
-        { text: '分享', count: 0, command: 'showLink' }
+        { text: this.$t('topic.read'), count: 0, command: '', canOpera: false, icon: 'book' },
+        { text: this.$t('topic.like'), count: 0, command: 'isLiked', canOpera: false, isStatus: false, icon: 'like' },
+        { text: this.$t('topic.collection'), command: 'isFavorite', canOpera: false, isStatus: false, icon: 'favor' },
+        { text: this.$t('topic.share'), command: 'showLink', canOpera: true, icon: 'link' }
       ],
       paidInformation: { price: '0', paid: false, paidUsers: [], paidCount: 0 },
       payment: { orderNo: '', payment_type: 0, status: 0, wechat_qrcode: '', rewardAmount: '' },
       userWallet: { availableAmount: '0.00', canWalletPay: false },
       payPassword: { password: '', confirmPassword: '' },
       managementList: [
-        { name: 'canEdit', command: 'toEdit', isStatus: false, text: this.$t('topic.edit'), type: '0' },
-        { name: 'canEssence', command: 'isEssence', isStatus: false, text: this.$t('topic.essence'), type: '1' },
-        { name: 'canSticky', command: 'isSticky', isStatus: false, text: this.$t('topic.sticky'), type: '2' },
-        { name: 'canHide', command: 'isDeleted', isStatus: false, text: this.$t('topic.delete'), type: '3' }
+        { name: 'canEdit', command: 'toEdit', isStatus: false, canOpera: false, text: this.$t('topic.edit'), type: '0' },
+        { name: 'canEssence', command: 'isEssence', isStatus: false, canOpera: false, text: this.$t('topic.essence'), type: '1' },
+        { name: 'canSticky', command: 'isSticky', isStatus: false, canOpera: false, text: this.$t('topic.sticky'), type: '2' },
+        { name: 'canHide', command: 'isDeleted', isStatus: false, canOpera: false, text: this.$t('topic.delete'), type: '3' }
       ],
       showCheckoutCounter: false,
       showPasswordInput: false,
@@ -111,7 +111,7 @@ export default {
         this.loading = false
         this.initManagementList(data)
         this.initPaidInformation(data)
-        this.initActions(data)
+        this.initActions(data, data.firstPost)
         console.log('data', data)
       }, e => this.handleError(e))
     },
@@ -136,6 +136,22 @@ export default {
           item.text = item.isStatus ? this.$t('topic.cancelSticky') : this.$t('topic.sticky')
         }
       })
+    },
+    initActions(data, firstPost) {
+      if (data) {
+        this.actions[0].count = data.viewCount
+        this.actions[2].isStatus = data.isFavorite
+        this.actions[2].text = this.actions[2].isStatus ? this.$t('topic.collectionAlready') : this.$t('topic.collection')
+        this.actions[2].icon = this.actions[2].isStatus ? 'favored' : 'favor'
+        this.actions[2].canOpera = data.canFavorite
+      }
+      if (firstPost) {
+        this.actions[1].count = firstPost.likeCount
+        this.actions[1].isStatus = firstPost.isLiked
+        this.actions[1].canOpera = firstPost.canLike
+        this.actions[1].text = this.actions[1].isStatus ? this.$t('topic.liked') : this.$t('topic.like')
+        this.actions[1].icon = this.actions[1].isStatus ? 'liked' : 'like'
+      }
     },
     paying({ payWay, hideAvatar, rewardAmount }) {
       this.payment.rewardAmount = rewardAmount
@@ -199,15 +215,18 @@ export default {
       const params = { _jv: { type: `/orders/${this.payment.orderNo}` }, orderNo: this.payment.orderNo }
       return this.$store.dispatch('jv/get', params).then(data => { this.payment.status = data.status }, e => this.handleError(e))
     },
-    initActions(data) {
-      // TODO 后端数据不完整，留着后面做
-      this.actions[1].count = data.firstPost.likeCount
-      this.actions[0].count = data.viewCount
-      this.actions[1].count = data.firstPost.likeCount
-      this.actions[1].isStatus = data.firstPost.isLiked
-      this.actions[2].count = 1000
-      this.actions[2].isStatus = data.isFavorite
-      this.actions[3].count = 157
+    postCommand(item) {
+      const params = item.command === 'isLiked' ? { _jv: { type: `posts`, id: this.thread.firstPost._jv.id }} : { _jv: { type: `threads`, id: this.threadId }}
+      params[item.command] = !item.isStatus
+      return this.$store.dispatch('jv/patch', params).then(data => {
+        this.initManagementList(data)
+        item.command === 'isLiked' ? this.initActions(null, data) : this.initActions(data)
+        if (item.command === 'isDeleted') return this.afterDeleted()
+      }, e => this.handleError(e))
+    },
+    afterDeleted() {
+      this.$message({ type: 'success', message: this.$t('topic.deleteSuccessAndJumpToBack') })
+      setTimeout(() => { this.$router.push('/') }, 1500)
     }
   }
 }

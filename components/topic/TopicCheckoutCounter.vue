@@ -75,6 +75,7 @@
                 <span>{{ $t('pay.walletPay') }}</span>
                 <div class="pay-tip">
                   <span v-if="enoughBalance">{{ $t('pay.walletBalance') }}</span>
+                  <!--TODO 去改密码-->
                   <a v-else href="/" style="color: red">{{ $t('pay.walletBalanceNo') }}</a>
                   <span v-if="!userWallet.canWalletPay">{{ $t('pay.needToResetPassword') }}</span>
                   <span v-else>￥ {{ userWallet.availableAmount }}</span>
