@@ -46,8 +46,7 @@
         :qr-code="payment.wechat_qrcode"
         @close="showWxPay = false"
       />
-      <comment-header :comment-count="thread.postCount - 1" :is-positive-sort.sync="isPositiveSort" />
-      <comment-list :comment-list="commentList || []" />
+      <comment :thread-id="threadId" :post-id="postId" />
     </main>
     <aside>我是一个伟大的侧栏</aside>
   </div>
@@ -55,7 +54,6 @@
 
 <script>
 const threadInclude = 'posts.replyUser,user.groups,user,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers'
-const postInclude = 'user,replyUser,images,thread,user.groups,thread.category,thread.firstPost,lastThreeComments,lastThreeComments.user,lastThreeComments.replyUser,deletedUser,lastDeletedLog'
 import forums from '@/mixin/forums'
 import handleError from '@/mixin/handleError'
 
@@ -71,7 +69,7 @@ export default {
       // TODO 后端数据不完整，留着后面做
       actions: [
         { text: this.$t('topic.read'), count: 0, command: '', canOpera: false, icon: 'book' },
-        { text: this.$t('topic.like'), count: 0, command: 'isLiked', canOpera: false, isStatus: false, icon: 'like' },
+        { text: this.$t('topic.getLike'), count: 0, command: 'isLiked', canOpera: false, isStatus: false, icon: 'like' },
         { text: this.$t('topic.collection'), command: 'isFavorite', canOpera: false, isStatus: false, icon: 'favor' },
         { text: this.$t('topic.share'), command: 'showLink', canOpera: true, icon: 'link' }
       ],
@@ -79,7 +77,6 @@ export default {
       payment: { orderNo: '', payment_type: 0, status: 0, wechat_qrcode: '', rewardAmount: '' },
       userWallet: { availableAmount: '0.00', canWalletPay: false },
       payPassword: { password: '', confirmPassword: '' },
-      commentList: [],
       managementList: [
         { name: 'canEdit', command: 'toEdit', isStatus: false, canOpera: false, text: this.$t('topic.edit'), type: '0' },
         { name: 'canEssence', command: 'isEssence', isStatus: false, canOpera: false, text: this.$t('topic.essence'), type: '1' },
@@ -89,7 +86,6 @@ export default {
       showCheckoutCounter: false,
       showPasswordInput: false,
       showWxPay: false,
-      isPositiveSort: false,
       loading: true
     }
   },
@@ -105,7 +101,7 @@ export default {
     }
   },
   created() {
-    this.getThread().then(this.getComment)
+    this.getThread()
     this.getWalletBalance()
   },
   methods: {
@@ -127,19 +123,6 @@ export default {
       this.$store.dispatch('jv/get', params).then(data => {
         this.userWallet.availableAmount = data.available_amount
         this.userWallet.canWalletPay = data.user.canWalletPay
-      }, e => this.handleError(e))
-    },
-    getComment() {
-      this.$store.dispatch('jv/get', [`posts`, { params: {
-        'filter[isApproved]': 1,
-        'filter[thread]': this.threadId,
-        'filter[reply]': this.commentId,
-        'filter[isDeleted]': 'no',
-        'filter[isComment]': 'no',
-        include: postInclude
-      }}]).then(data => {
-        console.log(data, 'comment-data')
-        this.commentList = data
       }, e => this.handleError(e))
     },
     initPaidInformation(data) {
@@ -169,7 +152,7 @@ export default {
         this.actions[1].count = firstPost.likeCount
         this.actions[1].isStatus = firstPost.isLiked
         this.actions[1].canOpera = firstPost.canLike
-        this.actions[1].text = this.actions[1].isStatus ? this.$t('topic.liked') : this.$t('topic.like')
+        this.actions[1].text = this.actions[1].isStatus ? this.$t('topic.liked') : this.$t('topic.getLike')
         this.actions[1].icon = this.actions[1].isStatus ? 'liked' : 'like'
       }
     },

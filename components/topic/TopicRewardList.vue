@@ -7,7 +7,7 @@
       <div v-if="userList.length > 0" class="person-list">
         <div class="first-show">
           <template v-for="(user, index) in userList.slice(0, command[usersIndex].value)">
-            <Avatar :key="index" class="container-avatar" size="30" :user="user" />
+            <Avatar :key="index" class="container-avatar" size="30" round :user="user" />
           </template>
         </div>
       </div>
