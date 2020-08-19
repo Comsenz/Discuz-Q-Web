@@ -186,7 +186,7 @@ export default {
             color: $fontColor;
 
             &.title {
-              color: #1878F3;
+              color: $color-blue-base;
             }
           }
         }
@@ -229,7 +229,7 @@ export default {
               line-height: 50px;
 
               &.selected {
-                border: 1px solid #1878F3;
+                border: 1px solid $color-blue-base;
               }
             }
           }
@@ -252,7 +252,7 @@ export default {
             border-radius: 3px;
 
             &.selected {
-              border: 1px solid #1878F3;
+              border: 1px solid $color-blue-base;
 
               .active-tip {
                 color: #09BB07;
@@ -263,7 +263,7 @@ export default {
               }
 
               .active-svg-wallet {
-                fill: #1878F3 !important;
+                fill: $color-blue-base !important;
               }
             }
 

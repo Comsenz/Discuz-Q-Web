@@ -3,7 +3,7 @@
     <Avatar :user="author" />
     <div class="title-info">
       <div class="author-name">{{ author.username }}</div>
-      <div class="timer">发布于 {{ formatDate(article.createdAt) }}（编辑于 {{ formatDate(article.updatedAt) }}）</div>
+      <div class="timer">{{ $t('topic.publishAt') }} {{ formatDate(article.createdAt) }}（{{ $t('topic.editAt') }} {{ formatDate(article.updatedAt) }}）</div>
     </div>
     <el-dropdown
       v-show="managementList.some(item => item.canOpera)"
@@ -83,19 +83,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import '@/assets/css/variable/color.scss';
   $fontColor: #8590A6;
-  $activeColor: #1878F3;
 
   .el-dropdown-menu__item:hover {
     background: #ffffff;
-    color: $activeColor;
+    color: $color-blue-base;
   }
   .title {
     height: 50px;
     display: flex;
 
     > .title-info {
-      margin-left: 6px;
+      margin-left: 15px;
       margin-top: 5px;
       flex: 1;
 
@@ -124,7 +124,7 @@ export default {
         }
 
         &.on-drop {
-          color: $activeColor;
+          color: $color-blue-base;
         }
       }
     }

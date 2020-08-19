@@ -265,6 +265,8 @@ export default {
     canWrite: '还能输入',
     word: '个字',
     publish: '发布',
+    publishAt: '发布于',
+    editAt: '编辑于',
     replyContentCannotBeEmpty: '回复内容不能为空',
     supportTheAuthorToCreate: '支持作者继续创作',
     enterTheRewardPaymeAmount: '输入打赏付费金额',

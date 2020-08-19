@@ -89,6 +89,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import '@/assets/css/variable/color.scss';
   .page-find-pwd {
     margin: 60px auto;
     width: 300px;
@@ -122,7 +123,7 @@ export default {
         margin-bottom: 20px;
 
         > button {
-          color: #1878F3;
+          color: $color-blue-base;
           width: 90px;
           border-left: 1px solid #DCDFE6;
         }
@@ -140,7 +141,7 @@ export default {
     > .submit {
       width: 100%;
       height: 40px;
-      background: #1878F3;
+      background: $color-blue-base;
       text-align: center;
       line-height: 40px;
       color: white;

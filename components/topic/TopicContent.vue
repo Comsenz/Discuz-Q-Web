@@ -129,7 +129,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  $colorBlue: #1878F3;
+  @import '@/assets/css/variable/color.scss';
 
   article {
     margin-top: 20px;
@@ -165,7 +165,7 @@ export default {
       }
 
       ::v-deep a {
-        color: $colorBlue;
+        color: $color-blue-base;
       }
     }
 

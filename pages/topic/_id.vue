@@ -46,14 +46,16 @@
         :qr-code="payment.wechat_qrcode"
         @close="showWxPay = false"
       />
-      <comment-header :comment-count="thread.postCount" :is-positive-sort.sync="isPositiveSort" />
+      <comment-header :comment-count="thread.postCount - 1" :is-positive-sort.sync="isPositiveSort" />
+      <comment-list :comment-list="commentList || []" />
     </main>
     <aside>我是一个伟大的侧栏</aside>
   </div>
 </template>
 
 <script>
-const include = 'posts.replyUser,user.groups,user,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers'
+const threadInclude = 'posts.replyUser,user.groups,user,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers'
+const postInclude = 'user,replyUser,images,thread,user.groups,thread.category,thread.firstPost,lastThreeComments,lastThreeComments.user,lastThreeComments.replyUser,deletedUser,lastDeletedLog'
 import forums from '@/mixin/forums'
 import handleError from '@/mixin/handleError'
 
@@ -65,6 +67,7 @@ export default {
     return {
       thread: {},
       article: {},
+      postId: 0,
       // TODO 后端数据不完整，留着后面做
       actions: [
         { text: this.$t('topic.read'), count: 0, command: '', canOpera: false, icon: 'book' },
@@ -76,6 +79,7 @@ export default {
       payment: { orderNo: '', payment_type: 0, status: 0, wechat_qrcode: '', rewardAmount: '' },
       userWallet: { availableAmount: '0.00', canWalletPay: false },
       payPassword: { password: '', confirmPassword: '' },
+      commentList: [],
       managementList: [
         { name: 'canEdit', command: 'toEdit', isStatus: false, canOpera: false, text: this.$t('topic.edit'), type: '0' },
         { name: 'canEssence', command: 'isEssence', isStatus: false, canOpera: false, text: this.$t('topic.essence'), type: '1' },
@@ -101,19 +105,20 @@ export default {
     }
   },
   created() {
-    this.getPost()
+    this.getThread().then(this.getComment)
     this.getWalletBalance()
   },
   methods: {
-    getPost() {
-      this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include }}]).then(data => {
+    getThread() {
+      return this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include: threadInclude }}]).then(data => {
         if (data.isDeleted) return this.$router.push('/demo')
         this.thread = data
         this.article = data.firstPost
         this.loading = false
+        this.postId = this.article._jv.id
         this.initManagementList(data)
         this.initPaidInformation(data)
-        this.initActions(data, data.firstPost)
+        this.initActions(data, this.article)
         console.log('data', data)
       }, e => this.handleError(e))
     },
@@ -122,6 +127,19 @@ export default {
       this.$store.dispatch('jv/get', params).then(data => {
         this.userWallet.availableAmount = data.available_amount
         this.userWallet.canWalletPay = data.user.canWalletPay
+      }, e => this.handleError(e))
+    },
+    getComment() {
+      this.$store.dispatch('jv/get', [`posts`, { params: {
+        'filter[isApproved]': 1,
+        'filter[thread]': this.threadId,
+        'filter[reply]': this.commentId,
+        'filter[isDeleted]': 'no',
+        'filter[isComment]': 'no',
+        include: postInclude
+      }}]).then(data => {
+        console.log(data, 'comment-data')
+        this.commentList = data
       }, e => this.handleError(e))
     },
     initPaidInformation(data) {
@@ -193,7 +211,7 @@ export default {
           this.wxPayActive(data)
         } else {
           this.$message.success('支付成功')
-          this.getPost()
+          this.getThread()
         }
       }, e => this.handleError(e)).finally(() => { this.showPasswordInput = false })
     },
@@ -206,7 +224,7 @@ export default {
             clearInterval(id)
             this.$message.success('支付成功')
             this.showWxPay = false
-            this.getPost()
+            this.getThread()
           }
           if (!this.showWxPay) clearInterval(id)
           this.getOrderStatus()
@@ -218,7 +236,7 @@ export default {
       return this.$store.dispatch('jv/get', params).then(data => { this.payment.status = data.status }, e => this.handleError(e))
     },
     postCommand(item) {
-      const params = item.command === 'isLiked' ? { _jv: { type: `posts`, id: this.thread.firstPost._jv.id }} : { _jv: { type: `threads`, id: this.threadId }}
+      const params = item.command === 'isLiked' ? { _jv: { type: `posts`, id: this.postId }} : { _jv: { type: `threads`, id: this.threadId }}
       params[item.command] = !item.isStatus
       return this.$store.dispatch('jv/patch', params).then(data => {
         this.initManagementList(data)
@@ -236,7 +254,6 @@ export default {
 
 <style lang="scss" scoped>
   $fontColor: #8590A6;
-  $activeColor: #1878F3;
 
   .page-post {
     background: #F4F5F6;
