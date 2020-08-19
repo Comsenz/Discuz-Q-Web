@@ -22,7 +22,13 @@ import {
   Container,
   Collapse,
   CollapseItem,
-  Popover
+  Popover,
+  DatePicker,
+  Select,
+  Option,
+  Table,
+  TableColumn,
+  Pagination
 } from 'element-ui'
 
 Vue.use(Button, { locale })
@@ -43,6 +49,12 @@ Vue.use(Container, { locale })
 Vue.use(Collapse, { locale })
 Vue.use(CollapseItem, { locale })
 Vue.use(Popover, { locale })
+Vue.use(DatePicker, { locale })
+Vue.use(Select, { locale })
+Vue.use(Option, { locale })
+Vue.use(Table, { locale })
+Vue.use(TableColumn, { locale })
+Vue.use(Pagination, { locale })
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm

@@ -219,7 +219,7 @@
 
     <!-- 实名验证 -->
     <!-- qcloud_faceid是否开启实名认证 -->
-    <div v-if="!userInfo.realname && forums.qcloud && forums.qcloud.qcloud_faceid" class="myprofile-c">
+    <div v-if="!userInfo.realname && forums.qcloud && forums.qcloud.qcloud_faceid" class="myprofile-c" style="border-bottom:0px;">
       <div class="myprofile-top">
         <span class="sig">{{ $t('modify.realnametitle') }}</span>
         <span

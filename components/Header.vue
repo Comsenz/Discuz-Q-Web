@@ -17,7 +17,7 @@
         suffix-icon="el-icon-search"
         class="h-search"
       />
-
+      <!-- 登陆状态 -->
       <div
         v-if="!isLogin"
         v-cloak
@@ -45,40 +45,6 @@
         v-cloak
         class="h-button"
       >
-        <!-- <el-menu
-          :default-active="activeIndex"
-          class="el-menu-demo"
-          mode="horizontal"
-          @select="handleSelect"
-        >
-          <img
-            class="avatar"
-            src="@/static/logo.png"
-            alt=""
-          >
-
-          <el-menu-item
-            index="4"
-            class="h-button3"
-            @click="ExitLogin"
-          >
-            {{ $t('user.logout') }}</el-menu-item>
-          <el-menu-item
-            index="3"
-            class="h-button3"
-          >{{ $t('profile.personalhomepage') }}</el-menu-item>
-
-          <el-menu-item
-            index="2"
-            class="h-button3"
-          >{{ $t('home.tabsNews') }}</el-menu-item>
-          <el-menu-item
-            index="1"
-            class="h-button3"
-          >
-            bruceluo</el-menu-item>
-
-        </el-menu> -->
         <Avatar
           :user="userInfo"
           :size="35"
@@ -170,6 +136,7 @@ export default {
     ExitLogin() {
       this.isLogin = window.localStorage.removeItem('access_token')
       window.localStorage.removeItem('uid')
+      window.localStorage.removeItem('user_id')
       this.$router.go(0)
     },
     userinfo() {
