@@ -3,11 +3,11 @@
     <img
       v-if="avatarUrl && !errorUrl"
       :src="user.avatarUrl"
-      :class="'avatar-size-' + size"
+      :class="[sizeClass, roundClass]"
       :alt="user.username"
       @error="error"
     >
-    <div v-else-if="styleText" :class="'avatar avatar-size-' + size" :style="styleText">
+    <div v-else-if="styleText" :class="['avatar', sizeClass, roundClass]" :style="styleText">
       {{ usernameAt }}
     </div>
   </a>
@@ -26,6 +26,10 @@ export default {
     size: {
       type: [Number, String],
       default: 50
+    },
+    round: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -36,11 +40,9 @@ export default {
         70: 'font-size: 28px;line-height: 70px;border-radius: 12px',
         60: 'font-size: 26px;line-height: 60px;border-radius: 10px',
         50: 'font-size: 24px;line-height: 50px;border-radius: 8px',
-        51: 'font-size: 24px;line-height: 50px;border-radius: 50%',
-        45: 'font-size: 22px;line-height: 45px; border-radius: 8px',
-        30: 'font-size: 18px;line-height: 30px;border-radius: 50%',
-        35: 'font-size: 18px;line-height: 30px;border-radius: 50%'
-
+        45: 'font-size: 22px;line-height: 45px;border-radius: 8px',
+        30: 'font-size: 18px;line-height: 30px;border-radius: 6px',
+        35: 'font-size: 18px;line-height: 30px;border-radius: 6px'
       }
     }
   },
@@ -53,6 +55,12 @@ export default {
     },
     styleText() {
       return `background-color: #${stringToColor(this.usernameAt)};${this.sizes[this.size]}`
+    },
+    sizeClass() {
+      return 'avatar-size-' + this.size
+    },
+    roundClass() {
+      return this.round ? 'round' : ''
     }
   },
   methods: {
@@ -67,39 +75,43 @@ export default {
   .avatar-size-80 {
     width: 80px;
     height: 80px;
+    border-radius: 14px;
   }
 
   .avatar-size-70 {
     width: 70px;
     height: 70px;
+    border-radius: 12px;
   }
 
   .avatar-size-60 {
     width: 60px;
     height: 60px;
+    border-radius: 10px;
   }
-
   .avatar-size-50 {
     width: 50px;
     height: 50px;
-  }
-  .avatar-size-51 {
-    width: 50px;
-    height: 50px;
+    border-radius: 8px;
   }
   .avatar-size-45 {
     width: 45px;
     height: 45px;
-  }
-  .avatar-size-30 {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
+    border-radius: 8px;
   }
   .avatar-size-35 {
     width: 35px;
     height: 35px;
-    border-radius: 50%;
+    border-radius: 6px;
+  }
+  .avatar-size-30 {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+  }
+
+  .round {
+    border-radius: 50% !important;
   }
 
   .avatar {
