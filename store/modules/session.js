@@ -14,7 +14,7 @@ import {
   DELETE_ACCESS_TOKEN
 } from '@/store/types/session'
 
-const accessToken = 'aaa'
+const accessToken = process.client ? localStorage.getItem('access_token') : ''
 
 const setUserInfoStore = (context, results, resolve) => {
   const resData = utils.jsonapiToNorm(results.data.data)

@@ -173,8 +173,8 @@ export default {
       this.$router.go(0)
     },
     userinfo() {
-      // this.userId = this.$store.getters['session/get']('userId')
-      this.userId = localStorage.getItem('uid')
+      this.userId = this.$store.getters['session/get']('userId')
+      // this.userId = localStorage.getItem('uid')
       console.log('userid', this.userId)
       const params = {
         _jv: { type: `/users/${this.userId}` }
