@@ -36,13 +36,7 @@
       <!-- 提现记录 -->
       <el-tab-pane :label="$t('profile.withdrawalslist')">
         <div class="selector">
-          <el-date-picker
-            v-model="value1"
-            type="monthrange"
-            range-separator="至"
-            start-placeholder="开始月份"
-            end-placeholder="结束月份"
-          />
+
           <el-date-picker
             v-model="date"
             type="month"
@@ -68,7 +62,7 @@
         <!-- 提现记录表格 -->
         <el-table
           ref="multipleTable"
-          :data="tableData"
+          :data="dataList.slice((pageNum-1)*pageSize,pageNum*pageSize)"
           tooltip-effect="red"
           style="width: 100%"
           @selection-change="handleSelectionChange"
@@ -90,13 +84,14 @@
           <el-table-column
             label="时间"
             width="177"
-          >
-            <template slot-scope="scope">{{ scope.row.date }}</template>
-          </el-table-column>
+            prop="created_at"
+            :ormatter="dateFormat"
+          />
           <el-table-column
-            prop="name"
+            prop="cash_status"
             label="状态"
             width="97"
+            :formatter="statusFormat"
           />
           <el-table-column
             prop="money"
@@ -112,7 +107,7 @@
           :page-sizes="[10, 20, 30, 40]"
           :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="400"
+          :total="dataList.length"
           style="margin-top:15px;"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -132,25 +127,26 @@
             suffix-icon="el-icon-arrow"
             format="yyyy 年 MM 月 "
             value-format="yyyy-MM"
-            @change="bindDateChange"
+            @change="bindDateChange2"
           />
           <el-select
             v-model="value"
             placeholder="请选择"
-            @change="confirm"
+            @change="confirm2"
           >
             <el-option
-              v-for="item in options"
+              v-for="item in options2"
               :key="item.value"
               :label="item.label"
               :value="item.value"
             />
           </el-select>
+          {{ $t('profile.total') }}{{ total2 }} {{ $t('profile.records') }},{{ $t('profile.amountinvolved') }}￥
         </div>
-        <!-- 提现记录表格 -->
+        <!-- 钱包记录表格 -->
         <el-table
           ref="multipleTable"
-          :data="tableData"
+          :data="dataList2.slice((pageNum2-1)*pageSize2,pageNum2*pageSize2)"
           tooltip-effect="red"
           style="width: 100%"
           @selection-change="handleSelectionChange"
@@ -165,39 +161,43 @@
             width="55"
           />
           <el-table-column
-            prop="address"
+            prop="change_desc"
             label="记录描述"
             width="332"
           />
           <el-table-column
             label="时间"
             width="177"
-          >
-            <template slot-scope="scope">{{ scope.row.date }}</template>
-          </el-table-column>
-          <el-table-column
-            prop="name"
-            label="状态"
-            width="97"
+            prop="created_at"
+            :formatter="dateFormat"
           />
           <el-table-column
-            prop="money"
+            prop="change_type"
+            label="状态"
+            width="97"
+            :formatter="statusFormat2"
+          />
+          <el-table-column
             label="金额"
             width="113"
             sortable
-          />
+            :sort-method="sortAmount"
+          >
+            <template slot-scope="scope">
+              <span v-html="amountFormat(scope.row.change_available_amount)" />
+            </template></el-table-column>
         </el-table>
         <!-- 分页器 -->
         <el-pagination
           background
-          :current-page="pageNum"
+          :current-page="pageNum2"
           :page-sizes="[10, 20, 30, 40]"
-          :page-size="pageSize"
+          :page-size="pageSize2"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="400"
+          :total="dataList2.length"
           style="margin-top:15px;"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
+          @size-change="handleSizeChange2"
+          @current-change="handleCurrentChange2"
         />
       </el-tab-pane>
       <!-- 订单明细 -->
@@ -212,6 +212,7 @@
 
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
+import { time2MinuteOrHour } from '@/utils/time'
 
 export default {
   data() {
@@ -221,17 +222,25 @@ export default {
     month = month < 10 ? `0${month}` : month
     const currentDate = `${year}-${month}`
     return {
-      value: '', // 被选择到的类型id
-      value1: '', // 月份范围默认值
-      pageSize: 20, // 每页展示的数目
-      pageNum: 1, // 当前页数
+      value: '', // 提现记录被选择到的类型id
+      pageSize: 20, // 提现记录每页展示的数目
+      pageNum: 1, // 提现当前页数
+      pageSize2: 20, // 钱包明细每页展示的数目
+      pageNum2: 1, // 钱包明细当前页数
       loadingType: '', // 读取状态
       dataInfo: {}, // 钱包信息
-      date: currentDate, // 日期
-      filterSelected: '', // 选择过滤查看内容的id
+      date: currentDate, // 提现记录日期
+      date2: currentDate, // 钱包明细日期
+      filterSelected: '', // 提现记录状态过滤内容的id
+      filterSelected2: '', // 钱包明细状态过滤内容的id
+      dataList: [], // 提现记录数据
+      dataList2: [], // 钱包明细数据
+      total: 0, // 提现记录总记录数
+      total2: 0, // 钱包qi记录总记录数
+      sumMoney: 0, // 钱包涉及到的总金额
       hasPassword: false,
       userId: this.$store.getters['session/get']('userId'), // 获取当前登陆用户的ID
-      // 过滤选择器的文字内容
+      // 提现过滤选择器的文字内容
       options: [{
         value: '',
         label: this.$t('profile.all')
@@ -260,89 +269,49 @@ export default {
         label: this.$t('profile.paymentfailed')
 
       }],
-      // 表格mock数据
-      tableData: [{
-        id: '1111',
-        date: '2016-05-03 07:33',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-        money: '1111'
+      // 钱包明细状态选择文本
+      options2: [{
+        value: '',
+        label: this.$t('profile.all')
       }, {
-        id: '1111',
-        date: '2016-05-02 07:33',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-        money: '113451'
+        value: '10',
+        label: this.$t('profile.withdrawalfreeze')
 
       }, {
-        id: '1111',
-        date: '2016-05-04 07:33',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-        money: '1141'
+        value: '11',
+        label: this.$t('profile.withdrawalsucceed')
 
       }, {
-        id: '1111',
-        date: '2016-05-01 07:33',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-        money: '11431'
+        value: '12',
+        label: this.$t('profile.withdrawalunfreeze')
 
       }, {
-        id: '1111',
-        date: '2016-05-08 07:33',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-        money: '143511'
+        value: '30',
+        label: this.$t('profile.registeredincome')
 
       }, {
-        id: '1111',
-        date: '2016-05-06 07:33',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-        money: '111'
+        value: '31',
+        label: this.$t('profile.rewardincome')
 
       }, {
-        id: '1111',
-        date: '2016-05-07 07:33',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-        money: '111'
+        value: '32',
+        label: this.$t('profile.laborincome')
 
       }, {
-        id: '1111',
-        date: '2016-05-06 07:33',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-        money: '111'
+        value: '50',
+        label: this.$t('profile.laborexpenditure')
 
       }, {
-        id: '1111',
-        date: '2016-05-06 07:33',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-        money: '111'
+        value: '41',
+        label: this.$t('profile.givearewardforthetheme')
 
       }, {
-        id: '1111',
-        date: '2016-05-06 07:33',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-        money: '111'
+        value: '60',
+        label: this.$t('profile.paidtoseeyourtheme')
 
       }, {
-        id: '1111',
-        date: '2016-05-06 07:33',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-        money: '111'
-
-      }, {
-        id: '1111',
-        date: '2016-05-06 07:33',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-        money: '111'
+        value: '61',
+        label: this.$t('profile.paidtoview')
 
       }],
       multipleSelection: []
@@ -351,6 +320,7 @@ export default {
   mounted() {
     this.getInfo()
     this.getList()
+    this.getList2()
   },
   methods: {
     // 获取钱包信息
@@ -363,12 +333,73 @@ export default {
           console.log(this.dataInfo)
         })
     },
-    // 日期选中
+    // 金额排序
+    sortAmount(str1, str2) {
+      console.log(str1, str2)
+
+      return str1.change_available_amount * 1 - str2.change_available_amount * 1
+    },
+    // 处理时间
+    timeHandle(time) {
+      return time2MinuteOrHour(time)
+    },
+    // 提现状态格式化
+    statusFormat(row) {
+      switch (row.change_type) {
+        case 1: return `<font style="color:#25A9F6">${this.$t('profile.tobereviewed')}</font>`
+        case 2: return `<font style="color:#09BB07">${this.$t('profile.approved')}</font>`
+        case 3: return `<font style="color:#FA5151">${this.$t('profile.auditfailed')}</font>`
+        case 4: return this.$t('profile.paymenttobemade')
+        case 5: return this.$t('profile.paymentsucceed')
+        case 6: return this.$t('profile.paymentfailed')
+        default: return '未知状态'
+      }
+    },
+    // 钱包状态格式化
+    statusFormat2(row) {
+      switch (row.change_type) {
+        case 10: return this.$t('profile.withdrawalfreeze')
+        case 11: return this.$t('profile.withdrawalsucceed')
+        case 12: return this.$t('profile.withdrawalunfreeze')
+        case 30: return this.$t('profile.registeredincome')
+        case 31: return this.$t('profile.rewardincome')
+        case 32: return this.$t('profile.laborincome')
+        case 50: return this.$t('profile.laborexpenditure')
+        case 41: return this.$t('profile.givearewardforthetheme')
+        case 60: return this.$t('profile.paidtoseeyourtheme')
+        case 61: return this.$t('profile.paidtoview')
+
+        default: return '未知状态'
+      }
+    },
+    // 时间格式化
+    dateFormat(row) {
+      return this.timeHandle(row.created_at)
+    },
+    // 金额格式化
+    amountFormat(row) {
+      if (row > 0) {
+        return `<font color="09BB07">+￥${row}</font>`
+      } else {
+        return `<font style="color:#FA5151">-￥${row.substr(1)}</font>`
+      }
+    },
+    // 提现日期选中
     bindDateChange(e) {
       this.date = e
       console.log('选中的日期', this.date)
       if (this.date !== null) {
         this.getList('filter')
+      } else {
+        console.log('日期已经为空')
+      }
+    },
+    // 钱包明细日期选中
+    bindDateChange2(e) {
+      this.date2 = e
+      console.log('选中的日期', this.date2)
+      if (this.date2 !== null) {
+        this.getList2('filter')
       } else {
         console.log('日期已经为空')
       }
@@ -380,6 +411,13 @@ export default {
       // console.log(this.filterSelected)
       this.getList('filter')
     },
+    // 钱包明细状态筛选类型
+    confirm2(e) {
+      console.log('hhh', e)
+      this.filterSelected2 = e
+      // console.log(this.filterSelected)
+      this.getList2('filter')
+    },
     // 获取提现数据
     getList(type) {
       this.loadingType = 'loading'
@@ -387,9 +425,9 @@ export default {
       const days = new Date(dateArr[0], dateArr[1], 0).getDate()
       // cash_status(1-6) '待审核', '审核通过', '审核不通过', '待打款', '已打款', '打款失败'
       const params = {
-        'filter[user]': 20,
-        'page[number]': this.pageNum,
-        'page[limit]': this.pageSize,
+        'filter[user]': this.userId,
+        'page[number]': this.pageNum2,
+        'page[limit]': this.pageSize2,
         'filter[start_time]': `${this.date}-01-00-00-00`,
         'filter[end_time]': `${this.date}-${days}-00-00-00`
       }
@@ -399,7 +437,7 @@ export default {
         this.dataList = []
       }
       // 当有选择某个分类类型时，添加新的过滤参数
-      if (this.filterSelected) {
+      if (this.filterSelected !== '') {
         params['filter[cash_status]'] = this.filterSelected
       }
       status
@@ -411,17 +449,142 @@ export default {
           }
           this.loadingType = res.length === this.pageSize ? 'more' : 'nomore'
           this.dataList = [...this.dataList, ...res]
+          this.total = this.dataList.length
           console.log(this.dataList)
         })
+    },
+    // 获取提现数据
+    getList2(type) {
+      this.loadingType = 'loading'
+      const dateArr = this.date2.split('-')
+      const days = new Date(dateArr[0], dateArr[1], 0).getDate()
+      // change_type 10提现冻结，11提现成功，12提现解冻，30注册收入，31打赏收入，32人工收入，50人工支出
+      const params = {
+        include: ['user', 'order.user', 'order.thread', 'order.thread.firstPost'],
+        'filter[user]': this.userId,
+        'page[number]': this.pageNum,
+        'page[limit]': this.pageSize,
+        'filter[start_time]': `${this.date}-01-00-00-00`,
+        'filter[end_time]': `${this.date}-${days}-00-00-00`
+      }
+      // 过滤时间或查看类型，重新设置当前页码和提现数据
+      if (type && type === 'filter') {
+        params.pageNum = 1
+        this.dataList2 = []
+      }
+      // 当有选择某个分类类型时，添加新的过滤参数
+      if (this.filterSelected2) {
+        params['filter[change_type]'] = this.filterSelected2
+      }
+      status
+        .run(() => this.$store.dispatch('jv/get', ['wallet/log', { params }]))
+        .then(res => {
+          console.log(res)
+          if (res._jv) {
+            delete res._jv
+          }
+          // 处理文字
+          const result = this.handleHandle(res)
+          console.log(result[0])
+
+          for (var i = 0; result.length; i++) {
+            var arr = []
+            arr[i] = this.dataList2[0][i].change_available_amount.replace(/\+|\-|\*|\?/g, '')
+          }
+          console.log(arr)
+          this.sumMoney = result.reduce((total, item) => {
+            const num = parseFloat(item.change_available_amount.replace(/\+|\-|\*|\?/g, ''))
+            return total + num
+          })
+          console.log(this.sumMoney)
+          this.loadingType = result.length === this.pageSize ? 'more' : 'nomore'
+          this.dataList2 = [...this.dataList2, ...result]
+          this.total2 = this.dataList2.length
+          console.log(this.dataList2)
+        })
+    },
+    // 处理文字
+    handleHandle(res) {
+      const results = JSON.parse(JSON.stringify(res))
+      console.log('results', results)
+      console.log('res', res)
+      results.forEach((item, index) => {
+        let desc = this.handleTitle(item)
+        // 截取42个字
+        if (desc.length > 42) {
+          desc = `${desc.substr(0, 42)}...`
+        }
+        results[index]['change_desc'] = desc
+      })
+      return results
+    },
+    // 处理主题相关的数据
+    handleTitle(item) {
+      switch (item.change_type) {
+        case 31: {
+          // 打赏收入
+          const user = item.order.user
+            ? item.order.user.username
+            : this.$t('profile.theuserwasdeleted')
+          const regex = /(<([^>]+)>)/gi
+          const thread = item.order.thread
+            ? item.order.thread.firstPost.summary.replace(regex, '')
+            : this.$t('profile.thethemewasdeleted')
+          return `${user} ${this.$t('profile.givearewardforyourtheme')} ${thread}`
+        }
+        case 41: {
+          // 打赏支出
+          const regex = /(<([^>]+)>)/gi
+          const thread = item.order.thread
+            ? item.order.thread.firstPost.summary.replace(regex, '')
+            : this.$t('profile.thethemewasdeleted')
+          return `${this.$t('profile.givearewardforthetheme')} ${thread}`
+        }
+        case 60: {
+          // 付费主题收入
+          const user = item.order.user
+            ? item.order.user.username
+            : this.i18n.t('profile.theuserwasdeleted')
+          const regex = /(<([^>]+)>)/gi
+          const thread = item.order.thread
+            ? item.order.thread.firstPost.summary.replace(regex, '')
+            : this.$t('profile.givearewardforthetheme')
+          return `${user} ${this.$t('profile.paidtoseeyourtheme')} ${thread}`
+        }
+        case 61: {
+          // 付费主题支出
+          const regex = /(<([^>]+)>)/gi
+          const thread = item.order.thread
+            ? item.order.thread.firstPost.summary.replace(regex, '')
+            : this.$t('profile.thethemewasdeleted')
+          return `${this.$t('profile.paidtoview')} ${thread}`
+        }
+        default:
+          return item.change_desc
+      }
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
+    // 提现分页
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
+      this.pageSize = val
     },
+    // 钱包分页
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
+      this.pageNum = val
+    },
+    // 钱包分页
+    handleSizeChange2(val) {
+      console.log(`每页 ${val} 条`)
+      this.pageSize2 = val
+    },
+    // 钱包分页
+    handleCurrentChange2(val) {
+      console.log(`当前页: ${val}`)
+      this.pageNum2 = val
     }
   }
 
@@ -514,5 +677,9 @@ export default {
 }
 ::v-deep .el-pagination .btn-prev {
   margin-left: 110px;
+}
+::v-deep .el-pagination__jump {
+  position: absolute;
+  right: 10px;
 }
 </style>
