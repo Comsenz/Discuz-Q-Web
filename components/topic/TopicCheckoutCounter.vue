@@ -152,7 +152,6 @@ export default {
 
 <style lang="scss" scoped>
   @import '@/assets/css/variable/color.scss';
-  $fontColor: #8590A6;
   .top {
     padding: 20px;
     > .row {
@@ -183,7 +182,7 @@ export default {
           span {
             display: block;
             line-height: 22.5px;
-            color: $fontColor;
+            color: $font-color-grey;
 
             &.title {
               color: $color-blue-base;
@@ -288,7 +287,7 @@ export default {
 
                 > .pay-tip {
                   margin-top: 10px;
-                  color: $fontColor;
+                  color: $font-color-grey;
 
                   > span, a {
                     line-height: 22px;
@@ -312,7 +311,7 @@ export default {
       }
 
       > .amount {
-        color: $fontColor;
+        color: $font-color-grey;
       }
     }
   }

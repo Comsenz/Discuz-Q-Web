@@ -10,18 +10,32 @@
       </div>
       <div class="container-detail">
         <div class="content-html" @click="showAll($event, index, commentList)" v-html="formatSummary(comment)" />
+        <div v-if="comment.images && comment.images.length > 0" class="images">
+          <el-image
+            v-for="(image, imageIndex) in comment.images"
+            :key="imageIndex"
+            style="width: 100px; height: 100px;border-radius: 5px; margin-right: 10px"
+            :src="image.thumbUrl"
+            :alt="image.filename"
+            :preview-src-list="[...comment.images.map(item => item.thumbUrl)]"
+            fit="contain"
+          />
+        </div>
         <div class="actions">
-          <span @click="$emit('like', comment)">
-            <svg-icon :type="comment.isLiked ? 'liked' : 'like'" style="font-size: 14px" />
-            <span class="text">{{ $t('topic.like') }} {{ comment.likeCount > 0 ? comment.likeCount : '' }}</span>
-          </span>
-          <span @click="commentTa">
-            <svg-icon type="comment" style="font-size: 14px" />
-            <span class="text">回复“Ta”</span>
-          </span>
-          <span>
-            <span class="text">已有回复 {{ comment.replyCount > 0 ? comment.replyCount : '' }}</span>
-          </span>
+          <div class="left">
+            <span v-if="comment.canLike" @click="$emit('like', {comment, index})">
+              <svg-icon :type="comment.isLiked ? 'liked' : 'like'" style="font-size: 14px" />
+              <span class="text">{{ $t('topic.like') }} {{ comment.likeCount > 0 ? comment.likeCount : '' }}</span>
+            </span>
+            <span @click="commentTa">
+              <svg-icon type="comment" style="font-size: 14px" />
+              <span class="text">{{ $t('topic.replyTa') }}</span>
+            </span>
+            <span>
+              <span v-if="comment.replyCount > 0 " class="text">{{ $t('topic.replyAlready') + ' ' + comment.replyCount }}</span>
+            </span>
+          </div>
+          <div v-if="comment.canDelete" class="right" @click="$emit('deleteComment', comment._jv.id)">{{ $t('topic.delete') }}</div>
         </div>
       </div>
       <div class="reply-list">
@@ -30,21 +44,38 @@
             <Avatar :user="reply.user || {}" size="30" />
             <div class="title-info">
               <span class="author-name">{{ reply.user ? reply.user.username : '' }}</span>
-              <span class="text">回复</span>
+              <span class="text">{{ $t('topic.reply') }}</span>
               <span class="text">{{ comment.user ? comment.user.username : '' }}   </span>
               <span class="timer">{{ formatDate(reply.updatedAt) }}</span>
+              <span v-if="reply.canDelete" class="delete-reply" @click="$emit('deleteComment', reply._jv.id)">{{ $t('topic.delete') }}</span>
             </div>
           </div>
           <div class="content-html" @click="showAll($event, replyIndex, replyList)" v-html="formatSummary(reply)" />
+          <div v-if="reply.images && reply.images.length > 0" class="images">
+            <el-image
+              v-for="(image, imageIndex) in reply.images"
+              :key="imageIndex"
+              style="width: 100px; height: 100px;border-radius: 5px; margin-right: 10px"
+              :src="image.thumbUrl"
+              :alt="image.filename"
+              :preview-src-list="[...reply.images.map(item => item.thumbUrl)]"
+              fit="contain"
+            />
+          </div>
         </div>
-        <div v-if="comment.replyCount > 3" class="show-all-reply" @click="getReply(comment._jv.id, index)">展开其他 {{ comment.replyCount - 3 }} 条回复</div>
+        <div v-if="comment.replyCount > 3">
+          <div v-if="comment.replyCount !== (replyList[index] || []).length" class="show-all-reply" @click="getReply(comment._jv.id, index)">
+            {{ $t('topic.showOther') }} {{ comment.replyCount - 3 }} {{ $t('topic.item') + $t('topic.reply') }}
+          </div>
+          <div v-else class="show-all-reply" @click="foldReply(index)">{{ $t('topic.foldReply') }}</div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-const commentInclude = 'commentPosts,commentPosts.user'
+const commentInclude = 'commentPosts,commentPosts.user,images'
 import handleError from '@/mixin/handleError'
 import dayjs from 'dayjs'
 
@@ -59,13 +90,14 @@ export default {
   },
   data() {
     return {
-      replyList: []
+      replyList: [],
+      showAllReplay: false
     }
   },
   watch: {
     commentList: {
       handler(val) {
-        this.replyList = val.map(item => item.lastThreeComments)
+        if (!this.showAllReplay) this.replyList = val.map(item => item.lastThreeComments)
       },
       deep: true
     }
@@ -86,9 +118,14 @@ export default {
       if (e.target.matches('.showAllComment')) e.target.parentElement.innerHTML = contentList[index].contentHtml
     },
     getReply(id, index) {
+      this.showAllReplay = true
       this.$store.dispatch('jv/get', [`posts/${id}`, { params: { include: commentInclude }}]).then(data => {
         this.$set(this.replyList, index, data.commentPosts.reverse())
       }, e => this.handleError(e))
+    },
+    foldReply(index) {
+      this.showAllReplay = false
+      this.$set(this.replyList, index, this.commentList[index].lastThreeComments)
     },
     commentTa() {
       alert('回复评论')
@@ -100,7 +137,6 @@ export default {
 <style lang="scss" scoped>
   @import '@/assets/css/variable/color.scss';
 
-  $fontColor: #8590A6;
   .comment {
     padding-top: 20px;
     border-top: 1px solid $border-color-base;
@@ -127,7 +163,7 @@ export default {
 
         .timer {
           margin-top: 5px;
-          color: $fontColor;
+          color: $font-color-grey;
           font-size: 12px;
         }
       }
@@ -152,26 +188,41 @@ export default {
         }
       }
 
+      > .images {
+        margin-top: 20px;
+        width: 330px;
+      }
+
       > .actions {
         margin-top: 20px;
         margin-bottom: 20px;
-        width: 320px;
+        width: 100%;
         display: flex;
         justify-content: space-between;
-        color: $fontColor;
+        color: $font-color-grey;
 
-        > span {
-          flex: 1;
-          cursor: pointer;
+        > .left {
+          width: 320px;
+          display: flex;
+          justify-content: space-between;
+          > span {
+            flex: 1;
+            cursor: pointer;
 
-          &:last-child {
-            cursor: default;
-          }
+            &:last-child {
+              cursor: default;
+            }
 
-          > .text {
-            margin-left: 5px;
+            > .text {
+              margin-left: 5px;
+            }
           }
         }
+        > .right {
+          cursor: pointer;
+          color: $color-blue-base;
+        }
+
       }
     }
 
@@ -199,14 +250,27 @@ export default {
             }
 
             > .text {
-              color: $fontColor;
+              color: $font-color-grey;
             }
 
-            .timer {
+            > .delete-reply {
+              cursor: pointer;
+              font-size: 14px;
+              color: $color-blue-base;
+              float: right;
+            }
+
+            > .timer {
               margin-top: 5px;
-              color: $fontColor;
+              color: $font-color-grey;
               font-size: 12px;
             }
+          }
+        }
+
+        &:last-child {
+          > .content-html {
+            border-bottom: none;
           }
         }
 
@@ -229,9 +293,9 @@ export default {
           }
         }
       }
-      > .show-all-reply {
+      .show-all-reply {
         cursor: pointer;
-        color: $fontColor;
+        color: $font-color-grey;
         margin: 20px 0 20px 40px;
       }
     }

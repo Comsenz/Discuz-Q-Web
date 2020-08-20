@@ -3,9 +3,8 @@
     <main>
       <topic-header
         :author="thread.user || {}"
-        :article="article"
+        :thread="thread"
         :management-list="managementList"
-        :thread-id="threadId"
         @managementSelected="postCommand"
       />
       <topic-content
@@ -46,7 +45,7 @@
         :qr-code="payment.wechat_qrcode"
         @close="showWxPay = false"
       />
-      <comment :thread-id="threadId" :post-id="postId" />
+      <comment :thread-id="threadId" />
     </main>
     <aside>我是一个伟大的侧栏</aside>
   </div>
@@ -236,7 +235,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  $fontColor: #8590A6;
+  @import '@/assets/css/variable/color.scss';
 
   .page-post {
     background: #F4F5F6;
@@ -254,7 +253,7 @@ export default {
 
         .timer {
           margin-top: 5px;
-          color: #8590a6;
+          color: $font-color-grey;
           font-size: 12px;
         }
       }

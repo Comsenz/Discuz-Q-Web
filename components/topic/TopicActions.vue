@@ -101,7 +101,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  $defaultColor: #8590A6;
+  @import '@/assets/css/variable/color.scss';
   .actions {
     margin: 15px auto 70px;
     padding: 0 25px;
@@ -114,7 +114,7 @@ export default {
       display: flex;
       align-items: center;
       flex-direction: column;
-      color: $defaultColor;
+      color: $font-color-grey;
 
       &.disabled {
         cursor: not-allowed;
@@ -122,7 +122,7 @@ export default {
 
       > .action-icon {
         font-size: 20px;
-        fill: $defaultColor;
+        fill: $font-color-grey;
       }
 
       > .content {

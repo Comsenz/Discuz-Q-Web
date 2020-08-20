@@ -3,7 +3,7 @@
     <Avatar :user="author" />
     <div class="title-info">
       <div class="author-name">{{ author.username }}</div>
-      <div class="timer">{{ $t('topic.publishAt') }} {{ formatDate(article.createdAt) }}（{{ $t('topic.editAt') }} {{ formatDate(article.updatedAt) }}）</div>
+      <div class="timer">{{ $t('topic.publishAt') }} {{ formatDate(thread.createdAt) }}（{{ $t('topic.editAt') }} {{ formatDate(thread.updatedAt) }}）</div>
     </div>
     <el-dropdown
       v-show="managementList.some(item => item.canOpera)"
@@ -43,17 +43,13 @@ export default {
       type: Object,
       default: () => {}
     },
-    article: {
+    thread: {
       type: Object,
       default: () => {}
     },
     managementList: {
       type: Array,
       default: () => []
-    },
-    threadId: {
-      type: String,
-      default: ''
     }
   },
   data() {
@@ -84,7 +80,6 @@ export default {
 
 <style lang="scss" scoped>
   @import '@/assets/css/variable/color.scss';
-  $fontColor: #8590A6;
 
   .el-dropdown-menu__item:hover {
     background: #ffffff;
@@ -106,7 +101,7 @@ export default {
 
       .timer {
         margin-top: 5px;
-        color: $fontColor;
+        color: $font-color-grey;
         font-size: 12px;
       }
     }
@@ -116,7 +111,7 @@ export default {
 
       > .management {
         cursor: pointer;
-        color: $fontColor;
+        color: $font-color-grey;
 
         &:focus {
           border: none;

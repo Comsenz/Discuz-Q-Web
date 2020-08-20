@@ -25,7 +25,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  $fontColor: #8590A6;
   .checkout-counter {
     z-index: 100;
     position: fixed;

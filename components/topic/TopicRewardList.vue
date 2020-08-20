@@ -85,7 +85,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  $fontColor: #8590A6;
+  @import '@/assets/css/variable/color.scss';
+
   .global {
     > .group {
       margin-top: 20px;
@@ -94,7 +95,7 @@ export default {
       align-items: center;
 
       > .title {
-        color: $fontColor;
+        color: $font-color-grey;
         font-size: 14px;
       }
 

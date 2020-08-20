@@ -1,7 +1,20 @@
 <template>
   <div>
-    <comment-header :comment-count="commentList.length" :is-positive-sort.sync="isPositiveSort" />
-    <comment-list :comment-list="commentList" @like="onLike" />
+    <template v-if="commentList.length > 0">
+      <comment-header :comment-count="commentList.length" :is-positive-sort.sync="isPositiveSort" />
+      <!-- 深拷贝后 reverse() 是为了防止无限更新   -->
+      <comment-list
+        :comment-list="isPositiveSort ? [...commentList].reverse() : [...commentList]"
+        @deleteComment="deleteComment"
+        @deleteReply="deleteReply"
+        @like="onLike"
+      />
+      <div v-if="(postCount - 1) > pageLimit" class="container-show-more">
+        <button v-if=" (postCount - 1) !== commentList.length" class="show-more" @click="showMore">{{ $t('topic.showMore') }}</button>
+        <button v-else class="show-more" @click="foldComment">{{ $t('topic.foldComment') }}</button>
+      </div>
+    </template>
+    <div v-else class="without-comment">{{ $t('topic.noComment') }}</div>
   </div>
 </template>
 
@@ -15,48 +28,94 @@ export default {
     threadId: {
       type: String,
       default: '0'
-    },
-    postId: {
-      type: [Number, String],
-      default: 0
     }
   },
   data() {
     return {
       commentList: [],
-      isPositiveSort: false
+      isPositiveSort: false,
+      pageCount: 1,
+      pageLimit: 2
     }
   },
   created() {
     this.getComment()
   },
   methods: {
-    getComment() {
+    getComment(fold = false) {
       this.$store.dispatch('jv/get', [`posts`, { params: {
         'filter[isApproved]': 1,
         'filter[thread]': this.threadId,
         'filter[isDeleted]': 'no',
         'filter[isComment]': 'no',
+        'page[number]': this.pageCount,
+        'page[limit]': this.pageLimit,
         include: postInclude
       }}]).then(data => {
         console.log(data, 'comment-data')
-        this.commentList = data
+        fold ? this.commentList = data : this.commentList.push(...data)
       }, e => this.handleError(e))
     },
-    onLike(comment) {
+    showMore() {
+      this.pageCount += 1
+      this.getComment()
+    },
+    foldComment() {
+      this.pageCount = 1
+      this.getComment(true)
+    },
+    onLike({ comment, index }) {
       const params = {
         _jv: { type: `posts`, id: comment._jv.id },
-        isLiked: !comment.isLiked
+        isLiked: !comment.isLiked,
+        include: postInclude
       }
       return this.$store.dispatch('jv/patch', params).then(data => {
-        this.getComment()
-        console.log(data, 'comment-like')
+        this.$set(this.commentList, index, data)
       }, e => this.handleError(e))
+    },
+    deleteComment(id) {
+      const params = {
+        _jv: { type: `posts`, id },
+        isDeleted: true
+      }
+      this.$confirm(this.$t('topic.confirmDelete'), this.$t('discuzq.msgBox.title'), {
+        confirmButtonText: this.$t('discuzq.msgBox.confirm'),
+        cancelButtonText: this.$t('discuzq.msgBox.cancel'),
+        type: 'warning'
+      }).then(() => {
+        return this.$store.dispatch('jv/patch', params).then(() => {
+          this.pageCount = 1
+          this.getComment(true)
+        }, e => this.handleError(e))
+      }, () => console.log('取消删除'))
+    },
+    deleteReply() {
+      alert('删除回复')
     }
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+  @import '@/assets/css/variable/color.scss';
+
+  .container-show-more {
+    padding-top: 20px;
+    border-top: 1px solid $border-color-base;
+    .show-more {
+      width: 100%;
+      border: 1px solid $color-blue-base;
+      border-radius: 3px;
+      font-size: 16px;
+      height: 45px;
+      line-height: 45px;
+      color: $color-blue-base;
+    }
+  }
+  .without-comment {
+    color: $font-color-grey;
+    text-align: center;
+  }
 
 </style>
