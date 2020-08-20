@@ -47,7 +47,7 @@
       />
       <comment :thread-id="threadId" />
     </main>
-    <aside>我是一个伟大的侧栏</aside>
+    <topic-aside :author="thread.user || {}" :forums="forums || {}" />
   </div>
 </template>
 
@@ -261,9 +261,4 @@ export default {
 
   }
 
-  aside {
-    background: #ffffff;
-    width: 300px;
-    min-height: 300px;
-  }
 </style>

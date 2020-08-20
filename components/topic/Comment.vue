@@ -1,6 +1,6 @@
 <template>
   <div>
-    <template v-if="commentList.length > 0">
+    <template v-if="(postCount - 1) > 0">
       <comment-header :comment-count="commentList.length" :is-positive-sort.sync="isPositiveSort" />
       <!-- 深拷贝后 reverse() 是为了防止无限更新   -->
       <comment-list
@@ -10,7 +10,7 @@
         @like="onLike"
       />
       <div v-if="(postCount - 1) > pageLimit" class="container-show-more">
-        <button v-if=" (postCount - 1) !== commentList.length" class="show-more" @click="showMore">{{ $t('topic.showMore') }}</button>
+        <button v-if="(postCount - 1) !== commentList.length" class="show-more" @click="showMore">{{ $t('topic.showMore') }}</button>
         <button v-else class="show-more" @click="foldComment">{{ $t('topic.foldComment') }}</button>
       </div>
     </template>
@@ -33,6 +33,7 @@ export default {
   data() {
     return {
       commentList: [],
+      postCount: 0,
       isPositiveSort: false,
       pageCount: 1,
       pageLimit: 2
@@ -54,6 +55,7 @@ export default {
       }}]).then(data => {
         console.log(data, 'comment-data')
         fold ? this.commentList = data : this.commentList.push(...data)
+        if (data.length > 0) this.postCount = data[0].thread.postCount
       }, e => this.handleError(e))
     },
     showMore() {
