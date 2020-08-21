@@ -20,6 +20,8 @@ export default {
     align-items: center;
     padding: 20px;
     background: #ffffff;
+    border-radius: 3px;
+    margin-top: 15px;
 
     .qrcode {
       width: 70px;

@@ -1,12 +1,12 @@
 <template>
   <div class="global">
-    <aside-header :author="author" :billboard="billboard" />
+    <aside-header :author="author" :billboard="billboard" :followed="followed" @follow="follow" @unFollow="unFollow" @chat="chat" />
     <div class="recommend block">
-      <div class="title">相关推荐</div>
+      <div class="title">{{ $t('topic.recommend') }}</div>
       <div v-for="(item, index) in threeEssenceThread" :key="index" class="container-post">
         <div class="content-html" v-html="item.firstPost.summaryText" />
-        <span class="view-count">{{ item.viewCount }} 读过</span>
-        <a :href="'/topic/' + item._jv.id">去看看</a>
+        <span class="view-count">{{ item.viewCount }} {{ $t('topic.readAlready') }}</span>
+        <a :href="'/topic/' + item._jv.id">{{ $t('topic.toWatch') }}</a>
       </div>
     </div>
     <advertising />
@@ -28,25 +28,26 @@ export default {
     },
     forums: {
       type: Object,
-      default: () => {
-      }
+      default: () => {}
     }
   },
   data() {
     return {
       threeEssenceThread: [],
       EssenceThread: [],
+      followed: false,
       billboard: [
-        { key: 'threadCount', count: '', text: '主题' },
-        { key: 'likedCount', count: '', text: '点赞' },
-        { key: 'fansCount', count: '', text: '粉丝' },
-        { key: 'followCount', count: '', text: '关注了' }
+        { key: 'threadCount', count: '', text: this.$t('home.thread') },
+        { key: 'likedCount', count: '', text: this.$t('topic.getLike') },
+        { key: 'fansCount', count: '', text: this.$t('profile.followers') },
+        { key: 'followCount', count: '', text: this.$t('home.followed') }
       ]
     }
   },
   watch: {
     author: {
       handler(val) {
+        this.followed = (val.follow === 1)
         this.billboard.forEach(item => {
           item.count = val[item.key]
         })
@@ -66,7 +67,6 @@ export default {
           'filter[isDeleted]': 'no'
         }
       }]).then(data => {
-        console.log('Essence thread', data)
         this.EssenceThread = [...data]
         while (this.threeEssenceThread.length < 3) {
           const index = this.getRandom(this.EssenceThread.length)
@@ -77,6 +77,23 @@ export default {
     },
     getRandom(length) {
       return Math.floor(Math.random() * length)
+    },
+    follow() {
+      const params = { _jv: { type: `follow` }, 'to_user_id': this.author.id.toString() }
+      return this.$store.dispatch('jv/post', params).then(() => {
+        this.followed = true
+      }, e => this.handleError(e))
+    },
+    unFollow() {
+      return this.$store.dispatch('jv/delete', [`follow/${this.author.id}/1`, {
+        params: {}
+      }]).then(() => {
+        this.followed = false
+      }, e => this.handleError(e))
+    },
+    chat() {
+      // TODO 实时聊天
+      alert('chat')
     }
   }
 }
@@ -86,26 +103,20 @@ export default {
   @import '@/assets/css/variable/color.scss';
 
   .global {
+    width: 300px;
     margin-left: 15px;
     background: transparent;
 
-    > .block {
+    > .recommend {
+      border-radius: 3px;
       margin-top: 15px;
       background: #fff;
       padding: 20px;
-
       > .title {
         font-size: 16px;
         font-weight: bolder;
         color: #6D6D6D;
       }
-
-      &:last-child {
-        background: transparent;
-      }
-    }
-
-    > .recommend {
       > .container-post {
         padding-bottom: 20px;
         border-bottom: 1px solid $border-color-base;

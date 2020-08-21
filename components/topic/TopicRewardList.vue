@@ -89,12 +89,12 @@ export default {
 
   .global {
     > .group {
-      margin-top: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
 
       > .title {
+        margin-top: 20px;
         color: $font-color-grey;
         font-size: 14px;
       }

@@ -1,51 +1,53 @@
 <template>
   <div v-loading="loading" element-loading-background="#fff" class="page-post">
     <main>
-      <topic-header
-        :author="thread.user || {}"
-        :thread="thread"
-        :management-list="managementList"
-        @managementSelected="postCommand"
-      />
-      <topic-content
-        :article="article"
-        :title="thread.title || ''"
-        :video="thread.threadVideo || {}"
-        :paid-information="paidInformation"
-        :thread-type="thread.type || 0"
-        :category="thread.category || {}"
-        @payForVideo="showCheckoutCounter = true"
-      />
-      <topic-reward-list
-        :paid-information="paidInformation"
-        :thread-type="thread.type || 0"
-        :user-lists="[thread.paidUsers || [], thread.rewardedUsers || [], article.likedUsers || []]"
-        @payOrReward="showCheckoutCounter = true"
-      />
-      <topic-actions :actions="actions || []" @clickAction="postCommand" />
-      <topic-checkout-counter
-        v-if="showCheckoutCounter"
-        :thread-type="thread.type || 0"
-        :user="thread.user || {}"
-        :amount="thread.price || 0"
-        :content="article.summaryText || ''"
-        :user-wallet="userWallet"
-        :reward-or-pay="rewardOrPay"
-        @close="showCheckoutCounter = false"
-        @paying="paying"
-      />
-      <topic-password
-        v-if="showPasswordInput"
-        :price="payment.rewardAmount ? payment.rewardAmount : (thread.price || 0)"
-        @close="showPasswordInput = false"
-        @password="payOrder"
-      />
-      <topic-wx-pay
-        v-if="showWxPay"
-        :qr-code="payment.wechat_qrcode"
-        @close="showWxPay = false"
-      />
-      <comment :thread-id="threadId" />
+      <div class="container-post">
+        <topic-header
+          :author="thread.user || {}"
+          :thread="thread"
+          :management-list="managementList"
+          @managementSelected="postCommand"
+        />
+        <topic-content
+          :article="article"
+          :title="thread.title || ''"
+          :video="thread.threadVideo || {}"
+          :paid-information="paidInformation"
+          :thread-type="thread.type || 0"
+          :category="thread.category || {}"
+          @payForVideo="showCheckoutCounter = true"
+        />
+        <topic-reward-list
+          :paid-information="paidInformation"
+          :thread-type="thread.type || 0"
+          :user-lists="[thread.paidUsers || [], thread.rewardedUsers || [], article.likedUsers || []]"
+          @payOrReward="showCheckoutCounter = true"
+        />
+        <topic-actions :actions="actions || []" @clickAction="postCommand" />
+        <topic-checkout-counter
+          v-if="showCheckoutCounter"
+          :thread-type="thread.type || 0"
+          :user="thread.user || {}"
+          :amount="thread.price || 0"
+          :content="article.summaryText || ''"
+          :user-wallet="userWallet"
+          :reward-or-pay="rewardOrPay"
+          @close="showCheckoutCounter = false"
+          @paying="paying"
+        />
+        <topic-password
+          v-if="showPasswordInput"
+          :price="payment.rewardAmount ? payment.rewardAmount : (thread.price || 0)"
+          @close="showPasswordInput = false"
+          @password="payOrder"
+        />
+        <topic-wx-pay
+          v-if="showWxPay"
+          :qr-code="payment.wechat_qrcode"
+          @close="showWxPay = false"
+        />
+        <comment :thread-id="threadId" />
+      </div>
     </main>
     <topic-aside :author="thread.user || {}" :forums="forums || {}" />
   </div>
@@ -244,21 +246,15 @@ export default {
     justify-content: space-between;
 
     main {
-      background: #ffffff;
-      width: 690px;
-      padding: 20px;
-
-      > article {
-        margin-top: 25px;
-
-        .timer {
-          margin-top: 5px;
-          color: $font-color-grey;
-          font-size: 12px;
-        }
+      background: transparent;
+      flex: 1;
+      > .container-post {
+        border-radius: 3px;
+        padding: 20px;
+        width: 100%;
+        background: #ffffff;
       }
     }
-
   }
 
 </style>

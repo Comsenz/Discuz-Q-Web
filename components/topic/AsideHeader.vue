@@ -1,11 +1,11 @@
 <template>
   <div class="author">
-    <div class="title">关于作者</div>
+    <div class="title">{{ $t('topic.aboutAuthor') }}</div>
     <div class="author-info">
       <Avatar :user="author" size="50" />
       <div class="name">
         <div class="author-name">{{ author.username }}</div>
-        <div class="timer">活跃于 1 分钟前</div>
+        <div class="timer">{{ $t('topic.activeAt') }} {{ timerDiff(author.loginAt) }}{{ $t('topic.before') }}</div>
       </div>
     </div>
     <div class="signature">{{ author.signature }}</div>
@@ -16,15 +16,17 @@
       </div>
     </div>
     <div class="buttons">
-      <button>+ 关注“Ta"</button>
-      <button>发消息</button>
+      <button @click="followed ? $emit('unFollow') : $emit('follow')">{{ followed ? $t('home.followed') : $t('home.follow') }}</button>
+      <button @click="$emit('chat')">{{ $t('topic.sendMessage') }}</button>
     </div>
   </div>
 </template>
 
 <script>
+import timerDiff from '@/mixin/timerDiff'
 export default {
   name: 'AsideHeader',
+  mixins: [timerDiff],
   props: {
     author: {
       type: Object,
@@ -33,6 +35,10 @@ export default {
     billboard: {
       type: Array,
       default: () => []
+    },
+    followed: {
+      type: Boolean,
+      default: false
     }
   }
 }
@@ -45,6 +51,13 @@ export default {
     margin-top: 0;
     padding: 20px;
     background: #ffffff;
+    border-radius: 3px;
+
+    > .title {
+      font-size: 16px;
+      font-weight: bolder;
+      color: #6D6D6D;
+    }
 
     > .author-info {
       margin-top: 10px;
