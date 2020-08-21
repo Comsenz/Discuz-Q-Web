@@ -8,8 +8,8 @@
     <div>分享 / 交流 / 共融</div>
     <div class="id">
       <div>{{ forums.set_site ? forums.set_site.site_record : '' }}</div>
-      <span>成员: {{ forums.other ? forums.other.count_users : '' }}</span>
-      <span>帖子: {{ forums.other ? forums.other.count_threads : '' }}</span>
+      <span>{{ $t('home.theme') }}: {{ forums.other ? forums.other.count_users : '' }}</span>
+      <span>{{ $t('home.invitation') }}: {{ forums.other ? forums.other.count_threads : '' }}</span>
     </div>
   </div>
 </template>

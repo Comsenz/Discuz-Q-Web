@@ -13,6 +13,11 @@ export default {
     date: {
       now: '此刻',
       today: '今天',
+      sec: '秒',
+      min: '分钟',
+      day: '天',
+      hour: '小时',
+      mon: '月',
       year: '年',
       month1: '1 月',
       month2: '2 月',
@@ -246,6 +251,7 @@ export default {
     reward: '打赏',
     pay: '支付',
     read: '阅读',
+    readAlready: '读过',
     collection: '收藏',
     collectionAlready: '已收藏',
     item: '条',
@@ -298,7 +304,13 @@ export default {
     hot: '热度',
     sortTimeSequence: '评论时间正序',
     sortTimeReverse: '评论时间倒序',
-    itsAlreadyWantedSort: '已经是你想要的顺序了哦'
+    itsAlreadyWantedSort: '已经是你想要的顺序了哦',
+    aboutAuthor: '关于作者',
+    activeAt: '活跃于',
+    before: '前',
+    sendMessage: '发消息',
+    recommend: '相关推荐',
+    toWatch: '去看看'
   },
   pay: {
     checkoutCounter: '收银台',
@@ -350,6 +362,7 @@ export default {
   home: {
     all: '所有',
     theme: '成员',
+    thread: '主题',
     homecontent: '内容',
     share: '分享',
     confirmText: '筛选',
@@ -366,6 +379,7 @@ export default {
     picture: '图片',
     essence: '精华',
     followed: '已关注',
+    follow: '+ 关注“Ta”',
     generatePoster: '生成海报',
     wxShare: '微信分享',
     word: '文字',
