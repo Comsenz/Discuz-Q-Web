@@ -5,7 +5,7 @@
         <Avatar :user="comment.user || {}" size="45" />
         <div class="title-info">
           <div class="author-name">{{ comment.user ? comment.user.username : '' }}</div>
-          <div class="timer">{{ formatDate(comment.updatedAt) }}</div>
+          <div class="timer">{{ timerDiff(comment.updatedAt) + $t('topic.before') }}..</div>
         </div>
       </div>
       <div class="container-detail">
@@ -77,11 +77,12 @@
 <script>
 const commentInclude = 'commentPosts,commentPosts.user,images'
 import handleError from '@/mixin/handleError'
+import timerDiff from '@/mixin/timerDiff'
 import dayjs from 'dayjs'
 
 export default {
   name: 'CommentList',
-  mixins: [handleError],
+  mixins: [handleError, timerDiff],
   props: {
     commentList: {
       type: Array,

@@ -3,7 +3,10 @@
     <Avatar :user="author" />
     <div class="title-info">
       <div class="author-name">{{ author.username }}</div>
-      <div class="timer">{{ $t('topic.publishAt') }} {{ formatDate(thread.createdAt) }}（{{ $t('topic.editAt') }} {{ formatDate(thread.updatedAt) }}）</div>
+      <div class="timer">
+        {{ $t('topic.publishAt') }} {{ timerDiff(thread.createdAt) + $t('topic.before') }} ..
+        （{{ $t('topic.editAt') }} {{ timerDiff(thread.updatedAt) + $t('topic.before') }}）
+      </div>
     </div>
     <el-dropdown
       v-show="managementList.some(item => item.canOpera)"
@@ -35,9 +38,11 @@
 
 <script>
 import dayjs from 'dayjs'
+import timerDiff from '@/mixin/timerDiff'
 
 export default {
   name: 'TopicHeader',
+  mixins: [timerDiff],
   props: {
     author: {
       type: Object,

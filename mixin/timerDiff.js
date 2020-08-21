@@ -4,9 +4,9 @@ module.exports = {
       diffModulus: [
         [1000, 60, this.$t('discuzq.date.sec')],
         [1000 * 60, 60, this.$t('discuzq.date.min')],
-        [1000 * 60 * 60, 60, this.$t('discuzq.date.hour')],
-        [1000 * 60 * 60 * 24, 24, this.$t('discuzq.date.day')],
-        [1000 * 60 * 60 * 24 * 30, 30, this.$t('discuzq.date.mon')],
+        [1000 * 60 * 60, 24, this.$t('discuzq.date.hour')],
+        [1000 * 60 * 60 * 24, 30, this.$t('discuzq.date.day')],
+        [1000 * 60 * 60 * 24 * 30, 12, this.$t('discuzq.date.mon')],
         [1000 * 60 * 60 * 24 * 30 * 12, 1000000, this.$t('discuzq.date.year')]
       ]
     }
@@ -20,7 +20,7 @@ module.exports = {
       for (let i = 0; i < this.diffModulus.length; i++) {
         const item = this.diffModulus[i]
         if (diff / item[0] < item[1]) {
-          value = Math.floor(diff / item[0]) + ' ' + item[2]
+          value = Math.ceil(diff / item[0]) + ' ' + item[2]
           break
         }
       }
