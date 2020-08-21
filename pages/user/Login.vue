@@ -219,7 +219,7 @@ export default {
             this.$router.go(-1)
           }
         }).catch(error => {
-          this.$message.error(error)
+          this.$message.error('fddsf')
 
           console.log('error', error)
         })
