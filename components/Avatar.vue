@@ -36,6 +36,7 @@ export default {
     return {
       errorUrl: false,
       sizes: {
+        100: 'font-size: 40px;line-height: 100px;border-radius: 18px',
         80: 'font-size: 32px;line-height: 80px;border-radius: 14px',
         70: 'font-size: 28px;line-height: 70px;border-radius: 12px',
         60: 'font-size: 26px;line-height: 60px;border-radius: 10px',
@@ -72,6 +73,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+ .avatar-size-100 {
+    width: 100px;
+    height: 100px;
+    border-radius: 18px;
+  }
   .avatar-size-80 {
     width: 80px;
     height: 80px;

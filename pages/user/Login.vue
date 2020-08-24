@@ -463,21 +463,21 @@ export default {
   .el-input__inner:hover {
     border-color: #dcdfe6;
   }
-  .el-button:focus {
-    background: #fff;
-    border: 1px solid #dcdfe6;
-    color: #606266;
-  }
-  .el-button:hover {
-    background: #fff;
-    border: 1px solid #dcdfe6;
-    color: #606266;
-  }
-  .el-button:active {
-    background: #fff;
-    border: 1px solid #dcdfe6;
-    color: #606266;
-  }
+  // .el-button:focus {
+  //   background: #fff;
+  //   border: 1px solid #dcdfe6;
+  //   color: #606266;
+  // }
+  // .el-button:hover {
+  //   background: #fff;
+  //   border: 1px solid #dcdfe6;
+  //   color: #606266;
+  // }
+  // .el-button:active {
+  //   background: #fff;
+  //   border: 1px solid #dcdfe6;
+  //   color: #606266;
+  // }
 }
 ::v-deep .el-tabs__content {
   padding: 15px 5px;

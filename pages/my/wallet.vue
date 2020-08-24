@@ -1,5 +1,6 @@
 <template>
   <div class="mywallet">
+    <!-- 钱包信息 -->
     <div class="mywallet-top">
       <div class="mywallet-topitem">
         <span class="margbtm">{{ $t('profile.availableamount') }}</span>
@@ -34,14 +35,42 @@
           <svg-icon
             style="width:16px; height:16px;margin-right:5px;"
             type="warning"
-          />{{ $t('profile.setpaypassword') }} </span>
+          />{{ $t('profile.setpaypassword') }}
+        </span>
       </div>
-      <wallet-password
-        v-if="showPasswordInput"
-        :error="passError"
-        @close="showPasswordInput = false"
-        @password="validatePass"
-      />
+      <div v-if="hasPassword">
+        <wallet-password
+          v-if="showPasswordInput"
+          :error="passError"
+          @close="showPasswordInput = false"
+          @password="validatePass"
+        />
+        <set-newpassword
+          v-if="showNewverify"
+          :error="codeError"
+          @close="showNewverify = false"
+          @password="checkpass"
+        />
+        <repeat-newpassword
+          v-if="showNewverify2"
+          :error="codeError"
+          @close="showNewverify2 = false"
+          @password="checkpass2"
+        />
+      </div>
+      <div v-else>
+        <set-password
+          v-if="setPasswordInput"
+          @close="setPasswordInput = false"
+          @password="setPass"
+        />
+        <repeat-password
+          v-if="repPasswordInput"
+          :error="codeError"
+          @close="repPasswordInput = false"
+          @password="setPass2"
+        />
+      </div>
     </div>
     <el-tabs
       type="border-card"
@@ -402,8 +431,15 @@ export default {
     month = month < 10 ? `0${month}` : month
     const currentDate = `${year}-${month}`
     return {
-      showPasswordInput: false, // 密码框
-      passError: false,
+      inputpas: '', // 第一次新密码
+      usertokenid: '', // 原密码验证成功id
+      showNewverify: false, // 新密码验证码框
+      showNewverify2: false, // 新密码验证码框
+      setPasswordInput: false, // 设置密码框
+      repPasswordInput: false, // 设置重复密码框
+      showPasswordInput: false, // 修改密码框
+      passError: false, // 修改原密码
+      codeError: false, // 再次输入密码错误判断
       value: '', // 提现记录被选择到的类型id
       pageSize: 20, // 提现记录每页展示的数目
       pageNum: 1, // 提现当前页数
@@ -547,13 +583,13 @@ export default {
   methods: {
     // 设置密码框展示
     setPassword() {
-      this.showPasswordInput = true
+      this.setPasswordInput = true
     },
     // 修改密码框展示
     changePassword() {
       this.showPasswordInput = true
     },
-    // 密码判断
+    // 原密码判断
     validatePass(password = '') {
       const params = {
         _jv: {
@@ -567,10 +603,12 @@ export default {
           console.log('支付密码验证', res)
           if (res._jv.json.data.id) {
             this.passError = false
-            this.$message.success({
-              title: this.$t('modify.authensucceeded')
-            })
-            // const tokenid = res._jv.json.data.id
+            this.showPasswordInput = false
+            this.$message.success(
+              this.$t('modify.authensucceeded')
+            )
+            this.showNewverify = true
+            this.usertokenid = res._jv.json.data.id
             // uni.navigateTo({
             //   url: `/pages/modify/paypwd?token=${tokenid}&id=${this.userid}`
             // })
@@ -596,6 +634,80 @@ export default {
           // this.empty()
         })
       console.log('password', password)
+    },
+    // 存第一次新密码
+    checkpass(num) {
+      if (num.length >= 6) {
+        console.log('hhhhhhh')
+
+        this.inputpas = num
+        console.log('新密码', this.inputpas)
+        this.showNewverify = false
+        this.showNewverify2 = true
+      }
+    },
+    // 重复输入新密码
+    checkpass2(sum) {
+      if (sum.length >= 6) {
+        console.log('重复新密码', sum)
+        this.validateVerify(sum)
+      }
+    },
+    // 新密码判断
+    validateVerify(password = '') {
+      console.log('password', password)
+      const params = {
+        _jv: {
+          type: 'users',
+          id: this.userId
+        },
+        pay_password_token: this.usertokenid, // 初始化密码不需要
+        payPassword: this.inputpas,
+        pay_password_confirmation: password
+      }
+      const postphon = status.run(() => this.$store.dispatch('jv/patch', params))
+      postphon
+        .then(res => {
+          console.log('密码修改成功', res)
+          if (res) {
+            this.$message.success(this.$t('modify.paymentsucceed'))
+            this.showNewverify2 = false
+          }
+        })
+        .catch(err => {
+          console.log(err)
+          this.codeError = true
+          if (err.statusCode === 422) {
+            if (this.inputpas !== password) {
+              this.$message.error(this.$t('modify.reenter'))
+              this.codeError = true
+            } else if (this.inputpas === password) {
+              this.$message.error(this.$t('modify.modification'))
+
+              this.codeError = true
+            }
+          }
+        })
+    },
+    // 获取初始化密码
+    setPass(password) {
+      if (password.length >= 6) {
+        this.firstpas = password
+        console.log('hhhh')
+        this.setPasswordInput = false
+        this.repPasswordInput = true
+      }
+    },
+    // 重复初始化密码
+    setPass2(password) {
+      if (password.length >= 6) {
+        console.log('重复密码', password)
+        this.validateVerify(password)
+      }
+    },
+    // 初始化密码校验
+    validateVerify2(password = '') {
+
     },
     // 获取钱包信息
     getInfo() {

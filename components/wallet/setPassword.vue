@@ -1,13 +1,13 @@
 <template>
   <message-box
-    :title="$t('profile.editpaypassword')"
+    :title="$t('profile.setpaypassword')"
     @close="$emit('close')"
   >
     <div class="container">
       <div class="block show-amount">
-        <div class="title">{{ $t('profile.orignpassword') }}</div>
+        <div class="title">{{ $t('profile.setpaypassword') }}</div>
         <div class="amount">
-          <span>{{ $t('modify.editpasswordtip') }}</span>
+          <span>{{ $t('modify.setpasswordtip') }}</span>
         </div>
       </div>
       <div class="block input-password">
@@ -15,10 +15,10 @@
           :error="error"
           @password="password => $emit('password', password)"
         />
-        <div
+        <!-- <div
           v-if="error"
           class="amount"
-        >{{ $t('modify.passwordinputerro') }}</div>
+        >{{ $t('modify.passwordinputerro') }}</div> -->
       </div>
     </div>
   </message-box>

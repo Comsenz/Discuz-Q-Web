@@ -5,9 +5,9 @@
   >
     <div class="container">
       <div class="block show-amount">
-        <div class="title">{{ $t('profile.orignpassword') }}</div>
+        <div class="title">{{ $t('modify.editphonecode')+userInfo.mobile+ $t('user.verification') }}</div>
         <div class="amount">
-          <span>{{ $t('modify.editpasswordtip') }}</span>
+          <span>{{ $t('modify.editphonewordtip') }}</span>
         </div>
       </div>
       <div class="block input-password">
@@ -18,7 +18,7 @@
         <div
           v-if="error"
           class="amount"
-        >{{ $t('modify.passwordinputerro') }}</div>
+        >{{ $t('core.sms_verify_error') }}</div>
       </div>
     </div>
   </message-box>
@@ -26,7 +26,7 @@
 
 <script>
 export default {
-  name: 'WalletPassword',
+  name: 'SetNewpasword',
   props: {
     price: {
       type: [Number, String],

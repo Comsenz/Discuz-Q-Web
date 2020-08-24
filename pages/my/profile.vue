@@ -340,21 +340,11 @@ export default {
         }
       }, 1000)
     },
-    // 使用计算属性获取不到userinfo,直接请求接口就可以了但没有group的数据
+    // 使用计算属性获取不到userinfo,直接请求接口就可以了
     userinfo() {
       this.userId = this.$store.getters['session/get']('userId')
       // this.userId = localStorage.getItem('uid')
       console.log('userid', this.userId)
-      // const params = {
-      //   // _jv: { type: `/users/${this.userId}` }
-      //   _jv: {
-      //     type: 'users',
-      //     id: this.userId
-      //   },
-      //   include: 'groups'
-      // }
-      // this.$store.dispatch('jv/get', params).then(res => {
-      // })
       const params = {
         include: 'groups,wechat'
       }
