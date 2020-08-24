@@ -24,15 +24,7 @@ export default {
     getCategoryList() {
       this.$store.dispatch('jv/get', ['categories', {}]).then(res => {
         const resData = [...res] || []
-        this.list = [
-          {
-            _jv: {
-              id: 0
-            },
-            name: this.$t('topic.whole')
-          },
-          ...resData
-        ]
+        this.list = [{ _jv: { id: 0 }, name: this.$t('topic.whole') }, ...resData]
         console.log(this.list)
       }, e => {
         this.$message.error('列表加载失败')
