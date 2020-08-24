@@ -12,8 +12,6 @@
           :placeholder="$t('discuzq.post.placeholder')"
           :maxlength="10000"
         />
-        <!--focus="focusEvent"-->
-        <!--:focus="type !== 1"-->
       </label>
       <span class="tip">还能输入 500 字</span>
       <div class="emojiList">
@@ -26,8 +24,8 @@
           </template>
         </div>
         <div class="block">
-          <template v-for="(icon, index) in markdown">
-            <svg-icon :key="index" :type="'markdown-' + icon" class="svg" style="font-size: 20px" @click="editMarkdown(icon)" />
+          <template v-for="(markdown, index) in markdownList">
+            <svg-icon :key="index" :type="'markdown-' + markdown.icon" class="svg" style="font-size: 20px" @click="editMarkdown(markdown)" />
           </template>
         </div>
       </div>
@@ -49,7 +47,17 @@ export default {
       selectionEnd: 0,
       showEmoji: false,
       actions: ['emoji', 'call', 'tag'],
-      markdown: ['bold', 'header', 'italics', 'code', 'more-code', 'link', 'list', 'order-list']
+      markdownList: [
+        { icon: 'bold', tip: '粗体文字', code: '**', fn: 'markdownWrap' },
+        { icon: 'header', tip: '标题', code: '### ', fn: 'markdownPrefix' },
+        { icon: 'italics', tip: '斜体文字', code: '__', fn: 'markdownWrap' },
+        { icon: 'quote', tip: '引用', code: '> ', fn: 'markdownPrefix' },
+        { icon: 'code', tip: '代码块', code: '`', fn: 'markdownWrap' },
+        { icon: 'delete-line', tip: '删除线', code: '~~', fn: 'markdownWrap' },
+        { icon: 'link', tip: '链接', code: '[链接名](链接url)', fn: 'markdownUrl' },
+        { icon: 'list', tip: '无序列表', code: '*', fn: 'markdownPrefix' },
+        { icon: 'order-list', tip: '有序列表', code: '1. ', fn: 'markdownPrefix' }
+      ]
     }
   },
   mounted() {
@@ -64,20 +72,44 @@ export default {
         this.style.height = this.scrollHeight + 'px'
       }
     },
+    getSelection() {
+      this.selectionStart = document.getElementById('textarea').selectionStart
+      this.selectionEnd = document.getElementById('textarea').selectionEnd
+    },
     onActions(command) {
       switch (command) {
         case 'emoji' :
           this.showEmoji = !this.showEmoji
           break
+        case 'call' :
+          alert('call')
+          break
+        case 'tag' :
+          alert('tag')
+          break
       }
     },
-    editMarkdown(command) {
-      alert(command)
+    editMarkdown(markdown) {
+      this.getSelection()
+      const frontText = this.text.slice(0, this.selectionStart)
+      const centerText = this.text.slice(this.selectionStart, this.selectionEnd)
+      const behindText = this.text.slice(this.selectionEnd, this.text.length)
+      this[markdown.fn](frontText, centerText, behindText, markdown.code, markdown.tip)
+    },
+    markdownWrap(frontText, centerText, behindText, code, tip) {
+      centerText = centerText || tip
+      this.text = frontText + code + centerText + code + behindText
+    },
+    markdownPrefix(frontText, centerText, behindText, code, tip) {
+      const content = (centerText + behindText) || tip
+      frontText = frontText ? frontText + '\n' : ''
+      this.text = frontText + code + content
+    },
+    markdownUrl(frontText, centerText, behindText, code, tip) {
+      this.text = frontText + code + centerText + behindText
     },
     selectEmoji(code) {
-      this.selectionStart = document.getElementById('textarea').selectionStart
-      this.selectionEnd = document.getElementById('textarea').selectionEnd
-      console.log(this.selectionStart, this.selectionEnd)
+      this.getSelection()
       this.text = this.text.slice(0, this.selectionStart) + code + this.text.slice(this.selectionStart, this.text.length)
       this.showEmoji = false
     },
