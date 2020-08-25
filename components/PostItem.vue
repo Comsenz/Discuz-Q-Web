@@ -4,14 +4,19 @@
     <div class="main-cont">
       <div class="top-flex">
         <div class="user-name">{{ detail.user && detail.user.username }}</div>
-        <div class="time">发布于{{ formatDate(detail.createdAt) }}</div>
+        <div class="time">发布于{{ timerDiff(detail.createdAt) }}</div>
       </div>
       <template v-if="detail.firstPost">
         <nuxt-link :to="`./topic/${detail._jv.id}`" class="content">
           <div v-html="detail.firstPost.contentHtml" />
         </nuxt-link>
         <div class="bottom-handle">
-          <div class="btn like" :class="{'liked': detail.firstPost.isLiked}">{{ detail.firstPost.isLiked ? $t('topic.giveLikeAlready') : $t('topic.like') }} {{ detail.firstPost.likeCount > 0 ? detail.firstPost.likeCount : '' }}</div>
+          <div v-permission:handleLike="''" class="btn like" :class="{'liked': detail.firstPost.isLiked}">
+            <svg-icon type="like" class="icon" />
+            {{ $t('topic.like') }} {{ detail.firstPost.likeCount > 0 ? detail.firstPost.likeCount : '' }}</div>
+          <div class="btn comment">
+            <svg-icon type="comment" class="icon" />
+            {{ $t('topic.comment') }} {{ detail.firstPost.comment > 0 ? detail.firstPost.comment : '' }}</div>
         </div>
       </template>
     </div>
@@ -19,7 +24,9 @@
 </template>
 <script>
 import dayjs from 'dayjs'
+import timerDiff from '@/mixin/timerDiff'
 export default {
+  mixins: [timerDiff],
   props: {
     detail: {
       type: Object,
@@ -27,6 +34,9 @@ export default {
     }
   },
   methods: {
+    handleLike() {
+      console.log('like===>')
+    },
     formatDate(date) {
       return dayjs(date).format('YYYY-MM-DD HH:mm')
     }
@@ -77,6 +87,11 @@ export default {
       margin-top: 20px;
       .btn{
         color: #8590A6;
+        margin-right:20px;
+        cursor: pointer;
+      }
+      .icon{
+        margin-right: 3px;
       }
       .like{
         padding: 7px 15px;

@@ -43,21 +43,23 @@ export default {
   layout: 'custom_layout',
   name: 'Index',
   // 异步数据用法
-  async asyncData({ params, store }) {
-    const threadsStickyParams = {
-      'filter[isSticky]': 'yes',
-      'filter[isApproved]': 1,
-      'filter[isDeleted]': 'no'
-    }
-    const threadsParams = {
-      'filter[isSticky]': 'no',
-      'filter[isApproved]': 1,
-      'filter[isDeleted]': 'no'
-    }
-    const threadsStickyData = await store.dispatch('jv/get', ['threads', { threadsStickyParams }])
-    const threadsData = await store.dispatch('jv/get', ['threads', { threadsParams }])
-    return { stickyList: threadsStickyData, threadsList: threadsData }
-  },
+  // async asyncData({ params, store }) {
+  //   const threadsStickyParams = {
+  //     'filter[isSticky]': 'yes',
+  //     'filter[isApproved]': 1,
+  //     'filter[isDeleted]': 'no',
+  //     include: ['firstPost']
+  //   }
+  //   const threadsParams = {
+  //     include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
+  //     'filter[isSticky]': 'no',
+  //     'filter[isApproved]': 1,
+  //     'filter[isDeleted]': 'no'
+  //   }
+  //   const threadsStickyData = await store.dispatch('jv/get', ['threads', { threadsStickyParams }])
+  //   const threadsData = await store.dispatch('jv/get', ['threads', { threadsParams }])
+  //   return { stickyList: threadsStickyData, threadsList: threadsData }
+  // },
   data() {
     return {
       loading: false,

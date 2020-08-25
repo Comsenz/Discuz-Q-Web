@@ -14,12 +14,18 @@ import { Message } from 'element-ui'
  */
 function callback(binding, vnode) {
   return () => {
-    const token = localStorage.getItem('access_token')
-    console.log('token', token)
+    let token = ''
+    if (process.client && localStorage.getItem('access_token')) {
+      token = localStorage.getItem('access_token')
+    }
     if (!token) {
       // store.commit('login/SHOW_LOGIN')
       // 后期再处理
-      Message.error('请登录后再操作')
+      if (process.client) {
+        Message.error('请登录后再操作')
+      } else {
+        console.log('请登录后再操作')
+      }
     } else {
       const that = vnode.context
       that[binding.arg](binding.value)
