@@ -48,6 +48,7 @@
         <Avatar
           :user="userInfo"
           :size="35"
+          :round="true"
           class="avatar"
         />
 
@@ -135,9 +136,9 @@ export default {
     },
     ExitLogin() {
       this.isLogin = window.localStorage.removeItem('access_token')
-      window.localStorage.removeItem('uid')
-      window.localStorage.removeItem('user_id')
-      this.$router.go(0)
+      // window.localStorage.removeItem('user_id')
+      // this.$router.go(0)
+      this.$store.dispatch('session/logout').then(() => window.location.reload())
     },
     userinfo() {
       this.userId = this.$store.getters['session/get']('userId')

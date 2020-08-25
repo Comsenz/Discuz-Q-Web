@@ -7,17 +7,13 @@
       <div class="myprofile-top">
         <Avatar
           :user="userInfo"
-          :size="51"
+          :size="50"
+          :round="true"
           class="avatar"
         />
 
         <div class="usr">
-          <span class="usrname">{{ userInfo.username }}
-            <img
-              src=""
-              alt=""
-            ></span>
-
+          <span class="usrname">{{ userInfo.username }}</span>
           <span class="usrid">{{ userInfo && userInfo.groupsName ? userInfo.groupsName : '默认用户' }}</span>
         </div>
         <span
@@ -667,15 +663,6 @@ export default {
     .sig {
       font-size: 16px;
       color: #6d6d6d;
-    }
-    .avatar1 {
-      border-radius: 50% !important;
-    }
-    img {
-      width: 50px;
-      height: 50px;
-      background: red;
-      border-radius: 50%;
     }
     .usr {
       display: flex;

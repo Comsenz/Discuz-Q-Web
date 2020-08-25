@@ -47,7 +47,7 @@
     <div class="bottom">
       <div class="container">
         <span class="text">{{ $t('post.chosen') + ' ' + selectedFriends.length + ' ' + $t('topic.personUnit') }}</span>
-        <el-button size="medium" type="primary" @click="$emit('selectedCaller', selectedFriends)">{{ $t('post.confirmChoice') }}</el-button>
+        <el-button size="medium" type="primary" @click="$emit('selectedCaller', formatValue())">{{ $t('post.confirmChoice') }}</el-button>
       </div>
     </div>
   </message-box>
@@ -100,10 +100,10 @@ export default {
       }, e => this.handleError(e))
     },
     searchUser(e) {
-      if (this.setTimeoutId) window.clearTimeout(this.setTimeoutId)
       this.searchValue = e.target.value
       this.pageNumber = 1
       this.searchList = []
+      if (this.setTimeoutId) window.clearTimeout(this.setTimeoutId)
       if (!this.searchValue) return
       this.setTimeoutId = setTimeout(() => {
         this.loading = true
@@ -132,6 +132,11 @@ export default {
         this.pageNumber += 1
         this.getSearchList()
       }
+    },
+    formatValue() {
+      let callerList = [...this.selectedFriends]
+      callerList = callerList.map(item => item + ' ')
+      return ' @' + callerList.join('@')
     }
   }
 }

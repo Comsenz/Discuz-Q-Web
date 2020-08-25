@@ -7,7 +7,7 @@
     >
       <!-- 用户名登录 -->
       <el-tab-pane :label="$t('user.userlogin')">
-        <span class="title">用户名/邮箱</span>
+        <span class="title">用户名</span>
         <el-input
           v-model="userName"
           :placeholder="$t('user.username')"
@@ -26,7 +26,7 @@
             <span class="agree">{{ $t('user.status') }} </span>
           </el-checkbox>
           <div class="logorreg">
-            <span>尚无账号，立即<nuxt-link to="/user/register">{{ $t('user.register') }}</nuxt-link></span>
+            <span v-if="register">尚无账号，立即<nuxt-link to="/user/register">{{ $t('user.register') }}</nuxt-link></span>
             <nuxt-link
               to="/modify/findpwd"
               class="findpass"
@@ -47,6 +47,8 @@
           v-model="phoneNumber"
           :placeholder="$t('user.phoneNumber')"
           class="phone-input"
+          maxlength="11"
+          @input="changeinput"
         />
 
         <el-button
@@ -107,7 +109,10 @@
               <span>qq一键登录</span>
             </div>
 
-            <div class="qrcode2">
+            <div
+              class="qrcode2"
+              @click="qqLogin"
+            >
               <img
                 src="@/assets/qq-big.png"
                 alt=""
@@ -125,165 +130,283 @@
 
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
+import forums from '@/mixin/forums'
+import handleError from '@/mixin/handleError'
+import { SITE_PAY } from '@/common/const'
+
+// let QuickLogin = null
 export default {
   name: 'Login',
+  mixins: [forums, handleError],
+  // async asyncData({ params, store }) {
+  //   const _params = {
+  //     _jv: {
+  //       type: 'oauth/wechat/web/user'
+  //     }
+  //   }
+  //   const data = await store.dispatch('jv/get', _params)
+  //   return { info: data, scene_str: data.scene_str }
+  // },
   data() {
     return {
       userName: '',
       passWord: '',
       phoneNumber: '',
-      Reason: '',
       checked: true,
-      content: '获取验证码',
-      canClick: true,
+      content: this.$t('modify.sendVerifyCode'),
+      canClick: false,
       verifyCode: '',
-      info: '',
-      scene_str: ''
+      info: '', // 微信二维码数据
+      scene_str: '',
+      loginStatus: false, // 登录状态
+      register: true, // 默认展示注册链接
+      validate: false, // 开启注册审核
+      site_mode: '', // 站点模式
+      isPaid: false, // 是否付费
+      qcloud_sms: false, // 默认不开启短信功能
+      code: '', // 注册邀请码
+      token: '' // token
 
     }
   },
-  mounted() {
+  created() {
+    const { url, validate, register, token, code } = this.$route.query
+    console.log('query', this.$route.query)
+    if (url) {
+      this.url = url
+    }
+    if (validate) {
+      this.validate = JSON.parse(validate)
+    }
+    if (register) {
+      this.register = JSON.parse(register)
+    }
+    if (code !== 'undefined') {
+      this.code = code
+    }
+    if (token) {
+      this.token = token
+    }
+    console.log('----this.forums-----', this.forums)
+    if (this.forums && this.forums.set_site && this.forums.set_site.site_mode) {
+      this.site_mode = this.forums.set_site.site_mode
+    }
+    if (this.forums && this.forums.qcloud) {
+      this.qcloud_sms = this.forums.qcloud.qcloud_sms
+    }
     this.QRcode()
   },
   methods: {
     countDown(interval) {
       if (!this.canClick) return
       this.canClick = false
-      this.content = interval + 's后重发'
+      this.content = interval + this.$t('modify.retransmission')
       const clock = window.setInterval(() => {
         interval--
-        this.content = interval + 's后发送'
+        this.content = interval + this.$t('modify.retransmission')
         if (interval < 0) {
           window.clearInterval(clock)
-          this.content = '重发验证码'
+          this.content = this.$t('modify.sendVerifyCode')
           // this.totalTime = 60
           this.canClick = true
         }
       }, 1000)
     },
-    // 更换了login方式，将用户信息存储到vuex中，但vuex中localstorage为未定义，所以存储不了
-    // 另外报错信息也只能在session.js中获取,后面打算错误信息放在输入框显示
+    changeinput() {
+      setTimeout(() => {
+        this.phoneNumber = this.phoneNumber.replace(/[^\d]/g, '')
+      }, 30)
+      if (this.phoneNumber.length === 11) {
+        this.canClick = true
+      } else {
+        this.canClick = false
+      }
+    },
+    // 用户名登录
     UserLogin() {
       console.log(this.userName)
       console.log(this.passWord)
-      const params = {
-        // _jv: { type: '/login' },
-        // username: this.userName,
-        // password: this.passWord
-        data: {
-          attributes: {
-            username: this.userName,
-            password: this.passWord
+      if (this.username === '') {
+        this.$message.error('用户名不能为空')
+      } else if (this.password === '') {
+        this.$message.error('密码不能为空')
+      } else {
+        const params = {
+          // _jv: { type: '/login' },
+          // username: this.userName,
+          // password: this.passWord
+          data: {
+            attributes: {
+              username: this.userName,
+              password: this.passWord
+            }
           }
         }
-      }
-      // await status.run(() => this.$store.dispatch('jv/post', params))
-      //   .then(res => {
-      //     console.log('登录信息', res)
-      //     if (res.access_token !== '') {
-      //       this.userName = ''
-      //       this.passWord = ''
-      //       window.localStorage.setItem('access_token', res.access_token)
-      //       this.$message.success('登录成功')
-      //       // 先存参考session.js和api-request
-      //       // const setUserInfoStore = (context, results, resolve) => {
-      //       //   const resData = utils.jsonapiToNorm(results.data.data);
-      //       //   context.commit(SET_USER_ID, resData._jv.id);
-      //       //   context.commit(CHECK_SESSION, true);
-      //       //   context.commit(SET_ACCESS_TOKEN, resData.access_token);
-      //       //   uni.$emit('logind');
-      //       //   resolve(resData);
-      //       // };
-      //       this.$router.go(-1)
-      //     }
-      //   }, e => {
-      //     const {
-      //       response: {
-      //         data: { errors }
-      //       }
-      //     } = e
-      //     if (errors[0]) return this.$message.error(errors[0].detail[0])
-      //   })
+        // await status.run(() => this.$store.dispatch('jv/post', params))
+        //   .then(res => {
+        //     console.log('登录信息', res)
+        //     if (res.access_token !== '') {
+        //       window.localStorage.setItem('access_token', res.access_token)
+        //       this.$message.success('登录成功')
+        //       this.$router.go(-1)
+        //     }
+        //   }, e => {
+        //     const {
+        //       response: {
+        //         data: { errors }
+        //       }
+        //     } = e
+        //     if (errors[0]) return this.$message.error(errors[0].detail[0])
+        //   })
 
-      this.$store.dispatch('session/h5Login', params)
-        .then(res => {
-          console.log('登录成功', res)
-          // console.log(this.$store.getters['session/get']('userId'))
-          // this.logind();
-          this.userName = ''
-          this.passWord = ''
-          if (res.data.data.attributes.access_token !== ' ') {
-            window.localStorage.setItem('access_token', res.data.data.attributes.access_token)
-            window.localStorage.setItem('uid', res.data.data.id)
+        this.$store.dispatch('session/h5Login', params)
+          .then(res => {
+            console.log('登录成功', res)
+            // console.log(this.$store.getters['session/get']('userId'))
+            this.logind()
+            this.userName = ''
+            this.passWord = ''
             this.$message.success('登录成功')
-            this.$router.go(-1)
-          }
-        }).catch(error => {
-          this.$message.error('fddsf')
-
-          console.log('error', error)
-        })
+            // if (res.data.data.attributes.access_token !== ' ') {
+            //   window.localStorage.setItem('access_token', res.data.data.attributes.access_token)
+            //   this.$message.success('登录成功')
+            //   this.$router.go(-1)
+            // }
+          }, e => this.handleError(e))
+      }
     },
-    async sendVerifyCode() {
+    logind() {
+      const userId = this.$store.getters['session/get']('userId')
+      if (!userId) return
+      console.log('hhhhhhhhhh')
+      // this.$store.dispatch('jv/get', [
+      //   'forum',
+      //   {
+      //     params: {
+      //       include: 'users',
+      //     },
+      //   },
+      // ]);
+
+      const params = {
+        include: 'groups,wechat'
+      }
+
+      this.$store.dispatch('jv/get', [`users/${userId}`, { params }]).then(val => {
+        this.user = val
+        if (this.user && this.user.paid) {
+          this.isPaid = this.user.paid
+        }
+        console.log('----this.user-----', this.user)
+        if (this.site_mode !== SITE_PAY || this.isPaid) {
+          this.$router.push('/')
+        }
+        if (this.site_mode === SITE_PAY && !this.isPaid) {
+          this.$router.push('/site/info')
+        }
+      })
+      this.$store.dispatch('forum/setError', { loading: false })
+    },
+    sendVerifyCode() {
       const params = {
         _jv: { type: 'sms/send' },
         mobile: this.phoneNumber,
         type: 'login'
       }
-      await status.run(() => this.$store.dispatch('jv/post', params))
+      status.run(() => this.$store.dispatch('jv/post', params))
         .then(res => {
           if (res.interval) this.countDown(res.interval)
-        }, e => {
-          const {
-            response: {
-              data: {
-                errors }
+        }, e => this.handleError(e))
+    },
+    PhoneLogin() {
+      if (this.phoneNumber === '') {
+        this.$message.error('手机号不能为空')
+      } else if (this.verifyCode === '') {
+        this.$message.error('验证码不能为空')
+      } else {
+        // const params = {
+        //   _jv: { type: 'sms/verify' },
+        //   mobile: this.phoneNumber,
+        //   code: this.verifyCode,
+        //   type: 'login'
+        // }
+        // status.run(() => this.$store.dispatch('jv/post', params))
+        //   .then(res => {
+        //     window.localStorage.setItem('access_token', res.access_token)
+        //     this.$message.success('登录成功')
+        //     this.$router.go(-1)
+        //   }, e => this.handleError(e))
+
+        const params = {
+          data: {
+            attributes: {
+              mobile: this.phoneNumber,
+              code: this.verifyCode,
+              type: 'login'
             }
-          } = e
-          if (errors[0]) return this.$message.error(errors[0].detail[0])
-        })
-    },
-    async PhoneLogin() {
-      const params = {
-        _jv: { type: 'sms/verify' },
-        mobile: this.phoneNumber,
-        code: this.verifyCode,
-        type: 'login'
+          }
+        }
+        // if (this.token && this.token !== '') {
+        //   params.data.attributes.token = this.token
+        // }
+        // if (this.code && this.code !== 'undefined') {
+        //   params.data.attributes.inviteCode = this.code
+        // }
+        this.$store
+          .dispatch('session/verificationCodeh5Login', params)
+          .then(res => {
+            console.log('手机号验证成功', res)
+            this.logind()
+            this.$message.$t('user.loginSuccess')
+          })
+          .catch(err => {
+            console.log(err)
+          })
       }
-      await status.run(() => this.$store.dispatch('jv/post', params))
-        .then(res => {
-          window.localStorage.setItem('access_token', res.access_token)
-          this.$message.success('登录成功')
-          this.$router.go(-1)
-        }, e => {
-          const {
-            response: { status }
-          } = e
-          if (status === 500) return this.$message.error('验证码不正确')
-        })
     },
-    async QRcode() {
+    // 微信二维码
+    QRcode() {
       const _params = {
         _jv: {
           type: 'oauth/wechat/web/user'
         }
       }
-      await this.$store.dispatch('jv/get', _params).then(data => {
+      this.$store.dispatch('jv/get', _params).then(data => {
         // console.log('user data => ', data)
-        this.info = data
-        this.scene_str = data.scene_str
-        console.log(this.scene_str)
+        if (data) {
+          this.info = data
+          this.scene_str = data.scene_str
+          console.log(this.scene_str)
+          // QuickLogin = setInterval(() => {
+          //   if (this.loginStatus) {
+          //     clearInterval(QuickLogin)
+          //     return
+          //   }
+          //   this.getLoginStatus(this.scene_str)
+          // }, 3000)
+        }
       })
-
+    },
+    // 微信扫码登录状态
+    getLoginStatus(scene_str) {
       const params = {
         _jv: {
-          type: encodeURI(`oauth/wechat/web/user/search?scene_str="${this.scene_str}"`)
+          type: encodeURI(`oauth/wechat/web/user/search?scene_str="${scene_str}"`)
 
         }
       }
       console.log(params)
-      await this.$store.dispatch('jv/get', params).then(data => {
+      this.$store.dispatch('jv/get', params).then(data => {
         console.log('user data => ', data)
+      })
+    },
+    // qq登录
+    qqLogin() {
+      const params = {
+        _jv: { type: `/oauth/qq` }
+      }
+      this.$store.dispatch('jv/get', params).then(res => {
+        console.log('qq登陆', res)
       })
     }
 
@@ -312,19 +435,22 @@ export default {
     border: none;
     background: transparent;
     box-shadow: none;
-    .title {
-      margin-left: 10px;
+   .title {
+      width: 66px;
+      text-align: center;
+      display: inline-block;
     }
     .title2 {
-      margin-right: 15px;
-      margin-left: 15px;
+      margin-right: 10px;
+      // margin-right: 15px;
+      // margin-left: 15px;
     }
     .title3 {
-      margin-left: 31px;
+      margin-left: 12px;
       margin-right: 12px;
     }
-    .title:first-child {
-      margin-right: 2px;
+   .title:first-child {
+      margin-right: 0px;
     }
     .reg-input {
       width: 300px;
@@ -380,7 +506,8 @@ export default {
   }
   .agreement {
     width: 300px;
-    margin-left: 85px;
+    // margin-left: 90px;
+    margin-left: 70px;
     margin-top: 5px;
     font-size: 14px;
     a {
@@ -401,7 +528,8 @@ export default {
   }
   .r-button {
     width: 300px;
-    margin-left: 85px;
+    // margin-left: 90px;
+    margin-left: 70px;
     margin-top: 15px;
     background: #1878f3;
   }
@@ -479,7 +607,7 @@ export default {
   //   color: #606266;
   // }
 }
-::v-deep .el-tabs__content {
-  padding: 15px 5px;
-}
+// ::v-deep .el-tabs__content {
+//   padding: 15px 5px;
+// }
 </style>

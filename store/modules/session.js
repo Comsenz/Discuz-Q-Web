@@ -130,14 +130,37 @@ const actions = {
     console.log('payload', payload)
     return new Promise(resolve => {
       // console.log('http', http)
-      return this.$store
-        .dispatch('jv/post', payload)
-        .then(results => setUserInfoStore(context, results, resolve))
+      console.log(this)
+      // return this.$store
+      //   .dispatch('jv/post', payload)
+      //   .then(results => setUserInfoStore(context, results, resolve))
+
+      return service
+        .post('sms/verify', payload)
+        .then(results => {
+          resolve(results)
+          setUserInfoStore(context, results, resolve)
+        })
+        .catch(error => {
+          console.log('hhh')
+          const {
+            response: {
+              data: { errors }
+            }
+          } = error
+          if (errors[0]) {
+            const error = errors[0].detail
+              ? errors[0].detail[0]
+              : errors[0].code
+            Message.error(error)
+          }
+        })
     })
   },
   // #endif
   // #ifdef H5
   h5Login: (context, payload = {}) => {
+    console.log('context', context)
     console.log('payload', payload)
     return new Promise(resolve => {
       // console.log('http--hhhhhhhh', http)
@@ -149,26 +172,55 @@ const actions = {
         })
         .catch(error => {
           console.log('hhh')
-          // this.$message.error(error.data.errors[0].detail[0])
-          Message.error(`${error}`)
-          console.log('error', error)
+          const {
+            response: {
+              data: { errors }
+            }
+          } = error
+          if (errors[0]) {
+            const error = errors[0].detail
+              ? errors[0].detail[0]
+              : errors[0].code
+            Message.error(error)
+          }
         })
     })
   },
   // #endif
   // #ifdef H5
   h5Register: (context, payload = {}) => {
-    const options = { custom: { showTost: false }}
+    // const options = { custom: { showTost: false }}
     console.log('payload', payload)
     return new Promise(resolve => {
       // console.log('http', http)
-      return this.$store
-        .dispatch('jv/post', payload, options)
+      // return this.$store
+      //   .dispatch('jv/post', payload, options)
+      //   .then(results => {
+      //     resolve(results)
+      //     setUserInfoStore(context, results, resolve)
+      //   })
+      //   .catch(err => resolve(err))
+
+      return service
+        .post('register', payload)
         .then(results => {
           resolve(results)
           setUserInfoStore(context, results, resolve)
         })
-        .catch(err => resolve(err))
+        .catch(error => {
+          console.log('hhh')
+          const {
+            response: {
+              data: { errors }
+            }
+          } = error
+          if (errors[0]) {
+            const error = errors[0].detail
+              ? errors[0].detail[0]
+              : errors[0].code
+            Message.error(error)
+          }
+        })
     })
   },
   // #endif

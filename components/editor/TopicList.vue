@@ -1,13 +1,13 @@
 <template>
   <div class="container-search-list">
     <label>
-      <input type="text" class="input-topic" placeholder="请选择或直接输入#话题#" @input="searchTopics">
+      <input type="text" class="input-topic" :placeholder="$t('post.topicInputTip')" @input="searchTopics">
     </label>
     <div class="infinite-list-wrapper" style="overflow:auto">
       <ul v-infinite-scroll="load" infinite-scroll-disabled="disabled">
         <li v-if="searchList.length === 0 && searchValue && !loading" @click="$emit('selectedTopic', ' #' + searchValue + '# ')">
           <span>#{{ searchValue }}#</span>
-          <span>新话题</span>
+          <span>{{ $t('topic.newTopic') }}</span>
         </li>
         <li
           v-for="(topic, index) in searchList"
@@ -16,7 +16,7 @@
           @click="$emit('selectedTopic', ' #' + topic.content + '# ')"
         >
           <span>#{{ topic.content }}#</span>
-          <span>{{ topic.view_count }}热度</span>
+          <span>{{ topic.view_count + $t('topic.hot') }}</span>
         </li>
       </ul>
       <p v-if="loading" class="loading-tip">{{ $t('core.loading') }}</p>
@@ -79,7 +79,6 @@ export default {
         this.loading = false
         this.searchTotal = meta.total
         if (data.length > 0) this.searchList.push(...data)
-        console.log(this.searchList, 'searchLIst')
       }, e => this.handleError(e))
     },
     load() {
