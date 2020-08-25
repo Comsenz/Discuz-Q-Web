@@ -1,5 +1,5 @@
 <template>
-  <a style="display: block" :href="'/profile/' + user.id">
+  <a style="display: block" :href="preventJump ? 'javascript:void(0)' : ('/profile/' + user.id)" :class="[sizeClass]">
     <img
       v-if="avatarUrl && !errorUrl"
       :src="user.avatarUrl"
@@ -20,14 +20,17 @@ export default {
   props: {
     user: {
       type: [Object, String],
-      default: () => {
-      }
+      default: () => {}
     },
     size: {
       type: [Number, String],
       default: 50
     },
     round: {
+      type: Boolean,
+      default: false
+    },
+    preventJump: {
       type: Boolean,
       default: false
     }

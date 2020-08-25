@@ -28,7 +28,8 @@ import {
   Option,
   Table,
   TableColumn,
-  Pagination
+  Pagination,
+  InfiniteScroll
 } from 'element-ui'
 
 Vue.use(Button, { locale })
@@ -55,6 +56,7 @@ Vue.use(Option, { locale })
 Vue.use(Table, { locale })
 Vue.use(TableColumn, { locale })
 Vue.use(Pagination, { locale })
+Vue.use(InfiniteScroll, { locale })
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm

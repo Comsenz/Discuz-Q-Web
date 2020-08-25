@@ -10,10 +10,10 @@
           v-model="text"
           class="input-text"
           :placeholder="$t('discuzq.post.placeholder')"
-          :maxlength="10000"
+          :maxlength="textLimit"
         />
       </label>
-      <span class="tip">还能输入 500 字</span>
+      <span class="tip">还能输入 {{ textLimit - text.length }} 字</span>
       <div class="emojiList">
         <emoji-list v-show="showEmoji" @selectEmoji="selectEmoji" />
       </div>
@@ -30,7 +30,7 @@
         </div>
       </div>
     </div>
-
+    <caller />
   </div>
 </template>
 
@@ -43,6 +43,7 @@ export default {
       titleShow: true,
       title: '',
       text: '',
+      textLimit: 10000,
       selectionStart: 0,
       selectionEnd: 0,
       showEmoji: false,
@@ -78,14 +79,11 @@ export default {
     },
     onActions(command) {
       switch (command) {
-        case 'emoji' :
-          this.showEmoji = !this.showEmoji
+        case 'emoji' : this.showEmoji = !this.showEmoji
           break
-        case 'call' :
-          alert('call')
+        case 'call' : alert('call')
           break
-        case 'tag' :
-          alert('tag')
+        case 'tag' : alert('tag')
           break
       }
     },
@@ -128,7 +126,7 @@ export default {
 @import '@/assets/css/variable/color.scss';
  .editor {
    width: 100%;
-    margin-top: 20px;
+   margin-top: 20px;
    label {
      width: 100%;
      > input {
