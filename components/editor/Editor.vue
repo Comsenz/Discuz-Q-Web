@@ -1,7 +1,7 @@
 <template>
   <div class="editor">
     <label v-if="titleShow">
-      <input v-model="title" placeholder="请输入文章标题" class="input-title" type="text">
+      <input v-model="title" :placeholder="$t('post.pleaseInputPostTitle')" class="input-title" type="text">
     </label>
     <div class="container-textarea">
       <label v-show="textShow">
@@ -13,17 +13,19 @@
           :maxlength="textLimit"
         />
       </label>
-      <span class="tip">还能输入 {{ textLimit - text.length }} 字</span>
-      <div class="emojiList">
-        <emoji-list v-show="showEmoji" @selectEmoji="selectEmoji" />
+      <span class="tip">
+        {{ textLimit>=text.length ? $t('post.note', { num: textLimit - text.length }) : $t('post.exceed', { num: text.length - textLimit }) }}
+      </span>
+      <div class="emoji-list">
+        <emoji-list v-show="showEmoji" @selectEmoji="selectActions" />
       </div>
       <div class="topic-list">
-        <topic-list v-show="showTopic" @selectedTopic="selectTopic" />
+        <topic-list v-show="showTopic" @selectedTopic="selectActions" />
       </div>
       <div class="actions">
         <div class="block">
-          <template v-for="(icon, index) in actions">
-            <svg-icon :key="index" :type="icon" class="svg" style="font-size: 20px" @click="onActions(icon)" />
+          <template v-for="(action, index) in actions">
+            <svg-icon :key="index" :type="action.icon" class="svg" style="font-size: 20px" @click="onActions(action.toggle)" />
           </template>
         </div>
         <div class="block">
@@ -33,7 +35,7 @@
         </div>
       </div>
     </div>
-    <caller v-if="showCaller" @close="showCaller = false" @selectedCaller="selectedCaller" />
+    <caller v-if="showCaller" @close="showCaller = false" @selectedCaller="selectActions" />
   </div>
 </template>
 
@@ -52,7 +54,12 @@ export default {
       showEmoji: false,
       showTopic: false,
       showCaller: false,
-      actions: ['emoji', 'call', 'topic'],
+      listenerList: ['emoji-list', 'topic-list'],
+      actions: [
+        { icon: 'emoji', toggle: 'showEmoji' },
+        { icon: 'call', toggle: 'showCaller' },
+        { icon: 'topic', toggle: 'showTopic' }
+      ],
       markdownList: [
         { icon: 'bold', tip: '粗体文字', code: '**', fn: 'markdownWrap' },
         { icon: 'header', tip: '标题', code: '### ', fn: 'markdownPrefix' },
@@ -69,7 +76,6 @@ export default {
   mounted() {
     this.autoHeight()
     this.emojiListener()
-    this.topicListener()
   },
   methods: {
     autoHeight() {
@@ -83,15 +89,8 @@ export default {
       this.selectionStart = document.getElementById('textarea').selectionStart
       this.selectionEnd = document.getElementById('textarea').selectionEnd
     },
-    onActions(command) {
-      switch (command) {
-        case 'emoji' : this.showEmoji = !this.showEmoji
-          break
-        case 'call' : this.showCaller = true
-          break
-        case 'topic' : this.showTopic = !this.showTopic
-          break
-      }
+    onActions(toggle) {
+      this[toggle] = !this[toggle]
     },
     editMarkdown(markdown) {
       this.getSelection()
@@ -112,38 +111,26 @@ export default {
     markdownUrl(frontText, centerText, behindText, code, tip) {
       this.text = frontText + code + centerText + behindText
     },
-    selectEmoji(code) {
+    selectActions(code) {
       this.getSelection()
       this.text = this.text.slice(0, this.selectionStart) + code + this.text.slice(this.selectionStart, this.text.length)
       this.showEmoji = false
+      this.showTopic = false
+      this.showCaller = false
     },
     emojiListener() {
       document.addEventListener('click', e => {
         let pass = true
-        e.path.forEach(item => { if ((item.classList && item.classList.contains('emojiList')) || (item.classList && item.classList.contains('actions'))) pass = false })
-        if (pass) this.showEmoji = false
+        e.path.forEach(item => {
+          if (item.classList) {
+            if (item.classList.contains('emoji-list') || item.classList.contains('topic-list') || item.classList.contains('actions')) pass = false
+          }
+        })
+        if (pass) {
+          this.showTopic = false
+          this.showEmoji = false
+        }
       })
-    },
-    topicListener() {
-      document.addEventListener('click', e => {
-        let pass = true
-        e.path.forEach(item => { if ((item.classList && item.classList.contains('topic-list')) || (item.classList && item.classList.contains('actions'))) pass = false })
-        if (pass) this.showTopic = false
-      })
-    },
-    selectedCaller(callerList) {
-      // TODO 重复结构
-      this.getSelection()
-      callerList = callerList.map(item => item + ' ')
-      const callerText = ' @' + callerList.join('@')
-      this.text = this.text.slice(0, this.selectionStart) + callerText + this.text.slice(this.selectionStart, this.text.length)
-      this.showCaller = false
-      console.log(callerText, 'callers')
-    },
-    selectTopic(topic) {
-      this.getSelection()
-      this.text = this.text.slice(0, this.selectionStart) + topic + this.text.slice(this.selectionStart, this.text.length)
-      this.showTopic = false
     }
   }
 }
@@ -205,7 +192,7 @@ export default {
        right: 10px;
        color: #D0D4DC;
      }
-     > .emojiList {
+     > .emoji-list {
        position: absolute;
        bottom: -205px;
        left: 0;

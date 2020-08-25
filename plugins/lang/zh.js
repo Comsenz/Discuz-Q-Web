@@ -202,6 +202,8 @@ export default {
     chosen: '已选择',
     confirmChoice: '确定选择',
     searchFriends: '请输入昵称，来搜索圈友',
+    topicInputTip: '请选择或直接输入#话题#',
+    pleaseInputPostTitle: '请输入文章标题',
     note: '还能输入{num}个字',
     exceed: '已超出{num}个字',
     word: '{num}字',
