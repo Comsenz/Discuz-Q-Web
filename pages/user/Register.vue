@@ -6,34 +6,43 @@
       class="register-select"
     >
       <!-- 用户名注册 -->
-      <el-tab-pane label="{{ $t('user.userregister') }}">
-        <span class="title">{{ $t('profile.username') }}&nbsp;&nbsp;&nbsp;</span>
-        <el-input
-          v-model="userName"
-          placeholder="请输入内容"
-          class="reg-input"
-        />
-        <span class="title2">输入密码</span>
-        <el-input
-          v-model="passWord"
-          placeholder="请输入内容"
-          type="password"
-          class="reg-input"
-          @keyup.enter.native="Register"
-        />
-        <span class="title2">重复密码</span>
-        <el-input
-          v-model="repeatPassWord"
-          placeholder="请输入内容"
-          type="password"
-          class="reg-input"
-        />
-        <span class="title2">注册原因</span>
-        <el-input
-          v-model="Reason"
-          placeholder="请输入内容"
-          class="reg-input"
-        />
+      <el-tab-pane :label="$t('user.userregister') ">
+        <div>
+          <span class="title">{{ $t('profile.username') }}</span>
+          <el-input
+            v-model="userName"
+            :placeholder="$t('user.username')"
+            class="reg-input"
+          />
+        </div>
+        <div>
+          <span class="title2">输入密码</span>
+          <el-input
+            v-model="passWord"
+            :placeholder="$t('user.password')"
+            type="password"
+            class="reg-input"
+            @keyup.enter.native="register"
+          />
+        </div>
+        <!-- <div>
+          <span class="title2">重复密码</span>
+          <el-input
+            v-model="repeatPassWord"
+            :placeholder="$t('user.password')"
+            type="password"
+            class="reg-input"
+          />
+        </div> -->
+        <div v-if="validate">
+          <span class="title2">注册原因</span>
+          <el-input
+            v-model="Reason"
+            :placeholder="$t('user.reason')"
+            class="reg-input"
+          />
+        </div>
+
         <div class="agreement">
           <el-checkbox v-model="checked">
             <span class="agree">我已阅读并同意 </span>
@@ -42,31 +51,38 @@
               class="agreement_text"
             >《用户服务隐私协议》</nuxt-link>
           </el-checkbox>
+          <div class="logorreg">
+            <span
+              v-if="register"
+              @click="jump2Login"
+            >已有账号，立即<nuxt-link to="/user/login">{{ $t('user.login') }}</nuxt-link> </span>
+          </div>
         </div>
         <el-button
           type="primary"
           class="r-button"
+          @click="register"
         >{{ $t('user.register') }}</el-button>
       </el-tab-pane>
-      <el-tab-pane label="手机号码注册">
-        <span class="title2">手机号码</span>
+      <!-- 手机号注册 -->
+      <el-tab-pane :label="$t('user.phoneregister')">
+        <span class="title2">{{ $t('user.phonenumber') }}</span>
         <el-input
-          v-model="repeatPassWord"
-          placeholder="请输入内容"
-          type="password"
+          v-model="phoneNumber"
+          :placeholder="$t('user.phoneNumber')"
           class="phone-input"
         />
 
         <el-button
           class="count-b"
           :class="{disabled: !canClick}"
-          @click="coutDown"
+          @click="sendVerifyCode"
         >{{ content }}</el-button>
 
-        <span class="title">验证码&nbsp;&nbsp;&nbsp;</span>
+        <span class="title">{{ $t('user.verification') }}</span>
         <el-input
-          v-model="userName"
-          placeholder="请输入内容"
+          v-model="verifyCode"
+          :placeholder="$t('user.verificationCode')"
           class="reg-input"
         />
         <div class="agreement">
@@ -81,6 +97,7 @@
         <el-button
           type="primary"
           class="r-button"
+          @click="PhoneLogin"
         >{{ $t('user.register') }}</el-button>
       </el-tab-pane>
       <el-tab-pane label="快速注册">
@@ -129,37 +146,276 @@
 </template>
 
 <script>
+import forums from '@/mixin/forums'
+import handleError from '@/mixin/handleError'
+import { status } from '@/library/jsonapi-vuex/index'
+import { SITE_PAY } from '@/common/const'
+
 export default {
   name: 'Register',
+  mixins: [
+    forums, handleError
+  ],
   data() {
     return {
       userName: '',
       passWord: '',
-      repeatPassWord: '',
-      Reason: '',
+      phoneNumber: '',
+      verifyCode: '',
+      Reason: '', // 注册原因
+      url: '', // 上一个页面的路径
+      validate: false, // 默认不开启注册审核
+      code: '', // 注册邀请码
+      register_captcha: false, // 默认不开启注册验证码
+      site_mode: '', // 站点模式
+      isPaid: false, // 是否付费
+      captcha: null, // 腾讯云验证码实例
+      captcha_ticket: '', // 腾讯云验证码返回票据
+      captcha_rand_str: '', // 腾讯云验证码返回随机字符串
+      ticket: '',
+      randstr: '',
       checked: true,
       content: '获取验证码',
-      totalTime: 60,
       canClick: true
 
     }
   },
+  created() {
+    const { url, validate, register, token, code } = this.$route.query
+    console.log('query', this.$route.query)
+    if (url) {
+      this.url = url
+    }
+    if (validate) {
+      this.validate = JSON.parse(validate)
+    }
+    if (register) {
+      this.register = JSON.parse(register)
+    }
+    if (code !== 'undefined') {
+      this.code = code
+    }
+    if (token) {
+      this.token = token
+    }
+    console.log('----this.forums-----', this.forums)
+    if (this.forums && this.forums.set_reg && this.forums.set_reg.register_captcha) {
+      this.register_captcha = this.forums.set_reg.register_captcha
+    }
+    if (this.forums && this.forums.set_site && this.forums.set_site.site_mode) {
+      this.site_mode = this.forums.set_site.site_mode
+    }
+    if (this.forums && this.forums.qcloud) {
+      this.qcloud_sms = this.forums.qcloud.qcloud_sms
+    }
+    // this.QRcode()
+  },
   methods: {
-    coutDown() {
+    countDown(interval) {
       if (!this.canClick) return
       this.canClick = false
-      this.content = this.totalTime + 's后重发'
+      this.content = interval + this.$t('modify.retransmission')
       const clock = window.setInterval(() => {
-        this.totalTime--
-        this.content = this.totalTime + 's后重发'
-        if (this.totalTime < 0) {
+        interval--
+        this.content = interval + this.$t('modify.retransmission')
+        if (interval < 0) {
           window.clearInterval(clock)
-          this.content = '重发验证码'
-          this.totalTime = 60
+          this.content = this.$t('modify.sendVerifyCode')
+          // this.totalTime = 60
           this.canClick = true
         }
       }, 1000)
+    },
+    // 注册成功后
+    logind() {
+      const userId = this.$store.getters['session/get']('userId')
+      if (!userId) return
+      console.log('hhhhhhhhhh')
+      // this.$store.dispatch('jv/get', [
+      //   'forum',
+      //   {
+      //     params: {
+      //       include: 'users',
+      //     },
+      //   },
+      // ]);
+
+      const params = {
+        include: 'groups,wechat'
+      }
+
+      this.$store.dispatch('jv/get', [`users/${userId}`, { params }]).then(val => {
+        this.user = val
+        if (this.user && this.user.paid) {
+          this.isPaid = this.user.paid
+        }
+        console.log('----this.user-----', this.user)
+        if (this.site_mode !== SITE_PAY || this.isPaid) {
+          this.$router.push('/')
+        }
+        if (this.site_mode === SITE_PAY && !this.isPaid) {
+          this.$router.push('/site/info')
+        }
+      })
+      this.$store.dispatch('forum/setError', { loading: false })
+    },
+    // 注册
+    register() {
+      if (this.userName === '') {
+        this.$message.error('用户名不能为空')
+      } else if (this.passWord === '') {
+        this.$message.error('密码不能为空')
+      } else if (this.forums && this.forums.set_reg && this.forums.set_reg.register_captcha) {
+        this.toTCaptcha()
+      } else {
+        this.registerClick()
+      }
+    },
+    jump2Login() {
+      console.log('跳转到登录页面')
+      this.$router.push(
+        `/user/login?url=${this.url}&validate=${this.validate}`
+      )
+    },
+    // 验证码
+    toTCaptcha() {
+      // #ifdef H5
+      console.log('---------验证码-------')
+      if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha_app_id) {
+        // eslint-disable-next-line no-undef
+        this.captcha = new TencentCaptcha(this.forums.qcloud.qcloud_captcha_app_id, res => {
+          console.log('h5验证码', res)
+          if (res.ret === 0) {
+            this.ticket = res.ticket
+            this.randstr = res.randstr
+            this.registerClick()
+          }
+          // if (res.ret === 2) {
+          //   uni.hideLoading()
+          // }
+        })
+        // 显示验证码
+        this.captcha.show()
+      }
+      // #endif
+    },
+    registerClick() {
+      const params = {
+        // _jv: { type: '/register' },
+        // username: this.userName,
+        // password: this.passWord
+        data: {
+          attributes: {
+            username: this.userName,
+            password: this.passWord
+          }
+        }
+      }
+      console.log(params)
+      // if (this.register_captcha && this.validate) {
+      //   params.data.attributes.register_reason = this.reason
+      //   params.data.attributes.captcha_ticket = this.ticket
+      //   params.data.attributes.captcha_rand_str = this.randstr
+      // }
+      // if (this.validate) {
+      //   params.data.attributes.register_reason = this.reason
+      // }
+      // if (this.register_captcha) {
+      //   params.data.attributes.captcha_ticket = this.ticket
+      //   params.data.attributes.captcha_rand_str = this.randstr
+      // }
+      // if (this.code !== '') {
+      //   params.data.attributes.code = this.code
+      // }
+      this.$store
+        .dispatch('session/h5Register', params)
+        .then(res => {
+          if (res && res.data && res.data.data && res.data.data.id) {
+            console.log('注册成功', res)
+            this.logind()
+            this.$t('user.registerSuccess')
+          }
+          if (
+            res &&
+            res.data &&
+            res.data.errors &&
+            res.data.errors[0].status === '422'
+          ) {
+            this.$message.error(res.data.errors[0].detail[0])
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
+      // status.run(() => this.$store.dispatch('jv/post', params)).then(res => {
+      //   console.log('注册', res)
+      //   if (res && res.data && res.data.data && res.data.data.id) {
+      //     console.log('注册成功', res)
+      //     this.logind()
+      //     this.$message.success(this.$t('user.registerSuccess'))
+      //   }
+      // }, e => this.handleError(e))
+    },
+    // 手机号注册
+    sendVerifyCode() {
+      const params = {
+        _jv: { type: 'sms/send' },
+        mobile: this.phoneNumber,
+        type: 'login'
+      }
+      status.run(() => this.$store.dispatch('jv/post', params))
+        .then(res => {
+          if (res.interval) this.countDown(res.interval)
+        }, e => this.handleError(e))
+    },
+    PhoneLogin() {
+      if (this.phoneNumber === '') {
+        this.$message.error('手机号不能为空')
+      } else if (this.verifyCode === '') {
+        this.$message.error('验证码不能为空')
+      } else {
+        // const params = {
+        //   _jv: { type: 'sms/verify' },
+        //   mobile: this.phoneNumber,
+        //   code: this.verifyCode,
+        //   type: 'login'
+        // }
+        // status.run(() => this.$store.dispatch('jv/post', params))
+        //   .then(res => {
+        //     window.localStorage.setItem('access_token', res.access_token)
+        //     this.$message.success('登录成功')
+        //     this.$router.go(-1)
+        //   }, e => this.handleError(e))
+
+        const params = {
+          data: {
+            attributes: {
+              mobile: this.phoneNumber,
+              code: this.verifyCode,
+              type: 'login'
+            }
+          }
+        }
+        // if (this.token && this.token !== '') {
+        //   params.data.attributes.token = this.token
+        // }
+        // if (this.code && this.code !== 'undefined') {
+        //   params.data.attributes.inviteCode = this.code
+        // }
+        this.$store
+          .dispatch('session/verificationCodeh5Login', params)
+          .then(res => {
+            console.log('手机号验证成功', res)
+            this.logind()
+            this.$message.$t('user.loginSuccess')
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      }
     }
+
   }
 }
 </script>
@@ -186,13 +442,15 @@ export default {
     background: transparent;
     box-shadow: none;
     .title {
-      margin-left: 10px;
+      width: 66px;
+      text-align: center;
+      display: inline-block;
     }
     .title2 {
       margin-right: 10px;
     }
     .title:first-child {
-      margin-right: 2px;
+      margin-right: 0px;
     }
     .reg-input {
       width: 300px;
@@ -251,6 +509,12 @@ export default {
     margin-left: 70px;
     margin-top: 5px;
     font-size: 14px;
+    a {
+      color: #1878f3;
+    }
+    .logorreg {
+      margin-top: 28px;
+    }
     .agree {
       color: #6d6d6d;
     }

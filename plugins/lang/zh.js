@@ -763,6 +763,8 @@ export default {
     userlogin: '用户名登录',
     userregister: '用户名注册',
     phonelogin: '手机号登录',
+    phonenumber: '手机号码',
+    phoneregister: '手机号码注册',
     quicklogin: '快速登录',
     login: '登录',
     register: '注册',

@@ -41,8 +41,8 @@ export default {
   },
   methods: {
     setCurrentRoute() {
-      console.log(this.$route)
-      this.currentNumber = this.$route.name
+      console.log('routtttt', this.$route)
+      this.currentNumber = this.switchCase(this.$route.path)
     },
     currentInfo(index) {
       this.currentNumber = index
@@ -50,6 +50,13 @@ export default {
     isActive(index) {
       // console.log('ddddd', index)
       return [this.currentNumber === index ? 'show' : 'hide']
+    },
+    switchCase(id) {
+      switch (id) {
+        case '/my/profile': return 0
+        case '/my/wallet': return 1
+        default: return 0
+      }
     }
   }
 }

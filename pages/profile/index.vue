@@ -140,12 +140,10 @@ export default {
     display: flex;
     padding: 20px;
     background: rgba(255, 255, 255, 1);
-    .avatar {
-    }
     .profile-info {
       flex: 4;
       margin-left: 20px;
-      margin-right: 70px;
+      margin-right: 0px;
       margin-top: 20px;
       .info-name {
         font-size: 18px;
