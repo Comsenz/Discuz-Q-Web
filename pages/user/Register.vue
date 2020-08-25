@@ -1,12 +1,13 @@
 <template>
   <div class="register">
-    <h2 class="register-title">注册新用户</h2>
+    <h2 class="register-title">{{ $t('user.userregister') }}</h2>
     <el-tabs
       type="border-card"
       class="register-select"
     >
-      <el-tab-pane label="用户名注册">
-        <span class="title">用户名&nbsp;&nbsp;&nbsp;</span>
+      <!-- 用户名注册 -->
+      <el-tab-pane label="{{ $t('user.userregister') }}">
+        <span class="title">{{ $t('profile.username') }}&nbsp;&nbsp;&nbsp;</span>
         <el-input
           v-model="userName"
           placeholder="请输入内容"
@@ -238,7 +239,7 @@ export default {
         height: 155px;
         border: 1px solid #ededed;
         margin-top: 26px;
-        img{
+        img {
           width: 40px;
           margin: 50px;
         }
@@ -247,7 +248,7 @@ export default {
   }
   .agreement {
     width: 300px;
-    margin-left: 85px;
+    margin-left: 70px;
     margin-top: 5px;
     font-size: 14px;
     .agree {
@@ -271,7 +272,7 @@ export default {
     width: 90px;
     height: 40px;
     // padding: 15.5px 10px;
-    padding:0;
+    padding: 0;
     margin-left: -4px;
   }
   .disabled {
@@ -305,33 +306,33 @@ export default {
   .el-tabs__nav-wrap {
     margin-bottom: 0px;
   }
-  .el-input__inner {
-    border-radius: 0px;
-    border-right: none;
-  }
+  // .el-input__inner {
+  //   border-radius: 0px;
+  //   border-right: none;
+  // }
   .el-button {
     border-radius: 0px;
   }
-  .el-input__inner:focus{
-    border-color: #DCDFE6;
+  .el-input__inner:focus {
+    border-color: #dcdfe6;
   }
-  .el-input__inner:hover{
-    border-color: #DCDFE6;
+  .el-input__inner:hover {
+    border-color: #dcdfe6;
   }
-   .el-button:focus{
-    background: #FFF;
-    border: 1px solid #DCDFE6;
-    color: #606266;
-  }
-   .el-button:hover{
-    background: #FFF;
-    border: 1px solid #DCDFE6;
-    color: #606266;
-  }
-   .el-button:active{
-    background: #FFF;
-    border: 1px solid #DCDFE6;
-    color: #606266;
-  }
+  //  .el-button:focus{
+  //   background: #FFF;
+  //   border: 1px solid #DCDFE6;
+  //   color: #606266;
+  // }
+  //  .el-button:hover{
+  //   background: #FFF;
+  //   border: 1px solid #DCDFE6;
+  //   color: #606266;
+  // }
+  //  .el-button:active{
+  //   background: #FFF;
+  //   border: 1px solid #DCDFE6;
+  //   color: #606266;
+  // }
 }
 </style>
