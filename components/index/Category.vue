@@ -1,5 +1,5 @@
 <template>
-  <div class="category-container">
+  <div v-if="list.length > 0" class="category-container">
     <div v-for="(item, index) in list" :key="index" class="category-item" :class="{'active': selectId === item._jv.id}" @click="onChange(item._jv.id)">
       <i v-if="selectId === item._jv.id" class="el-icon-arrow-left arrow-icon" />
       <div class="flex">
@@ -11,6 +11,11 @@
 </template>
 <script>
 export default {
+  // 异步数据用法
+  async asyncData({ params, store }) {
+    const data = await store.dispatch('jv/get', ['categories', {}])
+    return { list: data }
+  },
   data() {
     return {
       list: [],
@@ -24,15 +29,7 @@ export default {
     getCategoryList() {
       this.$store.dispatch('jv/get', ['categories', {}]).then(res => {
         const resData = [...res] || []
-        this.list = [
-          {
-            _jv: {
-              id: 0
-            },
-            name: this.$t('topic.whole')
-          },
-          ...resData
-        ]
+        this.list = [{ _jv: { id: 0 }, name: this.$t('topic.whole') }, ...resData]
         console.log(this.list)
       }, e => {
         this.$message.error('列表加载失败')
@@ -49,6 +46,7 @@ export default {
 $colurBlue: #1878F3;
 .category-container{
   padding: 0 20px;
+  margin-bottom: 16px;
   .category-item{
     position: relative;
     padding: 16px 0;

@@ -2,9 +2,9 @@
   <div class="recommend-user-container">
     <div class="recommend-user-title">推荐用户</div>
     <div class="user-item">
-      <div>123</div>
+      <avatar :user="user" :size="45" />
       <div class="user-info">
-        <div class="user-name text-hidden">李四李四李四李四李四李四李四李四李四李四李四李四</div>
+        <div class="user-name text-hidden">李四</div>
         <div class="user-fans">粉丝 2522</div>
       </div>
       <div class="follow">{{ $t('profile.following') }}</div>
@@ -18,6 +18,11 @@
 export default {
   data() {
     return {
+      user: {
+        avatarUrl: 'https://discuzq-1251099537.cos.ap-shanghai.myqcloud.com/public/avatar/13.png?sign=q-sign-algorithm%3Dsha1%26q-ak%3DAKIDjNmKJ3tqtiJeZFS4DG4cvymKcfTCdvvh%26q-sign-time%3D1598261028%3B1598264688%26q-key-time%3D1598261028%3B1598264688%26q-header-list%3Dhost%26q-url-param-list%3D%26q-signature%3D10bbbda1cef33422edad66f722a09c99ac4b5a6a',
+        id: 13,
+        username: '"xhltest"'
+      }
     }
   }
 }
