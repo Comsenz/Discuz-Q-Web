@@ -49,7 +49,8 @@ export default {
   */
   plugins: [
     '@/plugins/element-ui',
-    '@/plugins/svg-icon'
+    '@/plugins/svg-icon',
+    '@/directive/permission'
   ],
   /*
   ** Auto import components
