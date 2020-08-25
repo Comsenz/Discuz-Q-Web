@@ -9,7 +9,7 @@ function resolve(dir) {
 export default {
   // https://discuz.chat https://dq.comsenz-service.com
   env: {
-    baseURL: process.env.NODE_ENV !== 'production' ? 'https://dq.comsenz-service.com/api' : 'https://discuz.chat/api'
+    baseURL: process.env.NODE_ENV !== 'production' ? 'https://dq.comsenz-service.com/api' : '/api'
   },
   /*
   ** Nuxt rendering mode

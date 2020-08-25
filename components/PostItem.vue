@@ -7,9 +7,9 @@
         <div class="time">发布于{{ formatDate(detail.createdAt) }}</div>
       </div>
       <template v-if="detail.firstPost">
-        <div class="content">
+        <nuxt-link :to="`./topic/${detail._jv.id}`" class="content">
           <div v-html="detail.firstPost.contentHtml" />
-        </div>
+        </nuxt-link>
         <div class="bottom-handle">
           <div class="btn like" :class="{'liked': detail.firstPost.isLiked}">{{ detail.firstPost.isLiked ? $t('topic.giveLikeAlready') : $t('topic.like') }} {{ detail.firstPost.likeCount > 0 ? detail.firstPost.likeCount : '' }}</div>
         </div>

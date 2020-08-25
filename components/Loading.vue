@@ -16,6 +16,6 @@ export default {
 <style lang="scss" scoped>
 .loading-container{
   text-align: center;
-  padding:30px 0;
+  padding:20px 0;
 }
 </style>
