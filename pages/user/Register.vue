@@ -6,7 +6,7 @@
       class="register-select"
     >
       <!-- 用户名注册 -->
-      <el-tab-pane label="{{ $t('user.userregister') }}">
+      <el-tab-pane :label="$t('user.userregister')">
         <span class="title">{{ $t('profile.username') }}&nbsp;&nbsp;&nbsp;</span>
         <el-input
           v-model="userName"

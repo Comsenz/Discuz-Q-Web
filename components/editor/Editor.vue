@@ -9,13 +9,16 @@
           id="textarea"
           v-model="text"
           class="input-text"
-          :placeholder="$t('discuzq.post.placeholder')"
+          :placeholder="$t('post.placeholder')"
           :maxlength="textLimit"
         />
       </label>
       <span class="tip">还能输入 {{ textLimit - text.length }} 字</span>
       <div class="emojiList">
         <emoji-list v-show="showEmoji" @selectEmoji="selectEmoji" />
+      </div>
+      <div class="topic-list">
+        <topic-list v-show="showTopic" @selectedTopic="selectTopic" />
       </div>
       <div class="actions">
         <div class="block">
@@ -30,7 +33,7 @@
         </div>
       </div>
     </div>
-    <caller />
+    <caller v-if="showCaller" @close="showCaller = false" @selectedCaller="selectedCaller" />
   </div>
 </template>
 
@@ -47,7 +50,9 @@ export default {
       selectionStart: 0,
       selectionEnd: 0,
       showEmoji: false,
-      actions: ['emoji', 'call', 'tag'],
+      showTopic: false,
+      showCaller: false,
+      actions: ['emoji', 'call', 'topic'],
       markdownList: [
         { icon: 'bold', tip: '粗体文字', code: '**', fn: 'markdownWrap' },
         { icon: 'header', tip: '标题', code: '### ', fn: 'markdownPrefix' },
@@ -64,6 +69,7 @@ export default {
   mounted() {
     this.autoHeight()
     this.emojiListener()
+    this.topicListener()
   },
   methods: {
     autoHeight() {
@@ -81,9 +87,9 @@ export default {
       switch (command) {
         case 'emoji' : this.showEmoji = !this.showEmoji
           break
-        case 'call' : alert('call')
+        case 'call' : this.showCaller = true
           break
-        case 'tag' : alert('tag')
+        case 'topic' : this.showTopic = !this.showTopic
           break
       }
     },
@@ -117,6 +123,27 @@ export default {
         e.path.forEach(item => { if ((item.classList && item.classList.contains('emojiList')) || (item.classList && item.classList.contains('actions'))) pass = false })
         if (pass) this.showEmoji = false
       })
+    },
+    topicListener() {
+      document.addEventListener('click', e => {
+        let pass = true
+        e.path.forEach(item => { if ((item.classList && item.classList.contains('topic-list')) || (item.classList && item.classList.contains('actions'))) pass = false })
+        if (pass) this.showTopic = false
+      })
+    },
+    selectedCaller(callerList) {
+      // TODO 重复结构
+      this.getSelection()
+      callerList = callerList.map(item => item + ' ')
+      const callerText = ' @' + callerList.join('@')
+      this.text = this.text.slice(0, this.selectionStart) + callerText + this.text.slice(this.selectionStart, this.text.length)
+      this.showCaller = false
+      console.log(callerText, 'callers')
+    },
+    selectTopic(topic) {
+      this.getSelection()
+      this.text = this.text.slice(0, this.selectionStart) + topic + this.text.slice(this.selectionStart, this.text.length)
+      this.showTopic = false
     }
   }
 }
@@ -182,6 +209,11 @@ export default {
        position: absolute;
        bottom: -205px;
        left: 0;
+     }
+     > .topic-list {
+       position: absolute;
+       top: calc(100% + 5px);
+       left: 88px;
      }
    }
   }

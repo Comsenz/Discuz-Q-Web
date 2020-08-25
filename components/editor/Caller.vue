@@ -1,5 +1,5 @@
 <template>
-  <message-box title="@圈友">
+  <message-box :title="$t('post.callFriends')" @close="$emit('close')">
     <div class="top">
       <div class="container-selectedCaller">
         <div v-for="(username, index) in selectedFriends" :key="index" class="selectedCaller">
@@ -11,7 +11,7 @@
           />
         </div>
       </div>
-      <div class="tip">请输入昵称，来搜索圈友 </div>
+      <div class="tip">{{ $t('post.searchFriends') }}</div>
       <div class="container-search-list">
         <label>
           <input type="text" class="input-caller" @input="searchUser">
@@ -25,12 +25,12 @@
               @click="selectedFriends.indexOf(user.username) < 0 && selectedFriends.push(user.username)"
             >{{ user.username }}</li>
           </ul>
-          <p v-if="loading" class="loading-tip">加载中...</p>
-          <p v-if="noMore" class="loading-tip">没有更多了</p>
+          <p v-if="loading" class="loading-tip">{{ $t('core.loading') }}</p>
+          <p v-if="noMore" class="loading-tip">{{ $t('core.noMoreData') }}</p>
         </div>
       </div>
       <div class="friends">
-        <div class="title">我的好友</div>
+        <div class="title">{{ $t('post.myFriends') }}</div>
         <div v-loading="friendsLoading" class="container-caller">
           <div
             v-for="(user, index) in friends"
@@ -46,8 +46,8 @@
     </div>
     <div class="bottom">
       <div class="container">
-        <span class="text">已选择 2 人</span>
-        <el-button size="medium" type="primary">确认选择</el-button>
+        <span class="text">{{ $t('post.chosen') + ' ' + selectedFriends.length + ' ' + $t('topic.personUnit') }}</span>
+        <el-button size="medium" type="primary" @click="$emit('selectedCaller', selectedFriends)">{{ $t('post.confirmChoice') }}</el-button>
       </div>
     </div>
   </message-box>
@@ -126,6 +126,7 @@ export default {
       }, e => this.handleError(e))
     },
     load() {
+      // bug 避免无 searchList 是触发
       if (this.searchValue && this.searchList.length > 0) {
         this.loading = true
         this.pageNumber += 1
