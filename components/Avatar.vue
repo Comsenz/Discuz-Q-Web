@@ -1,5 +1,5 @@
 <template>
-  <a style="display: block" :href="preventJump ? 'javascript:void(0)' : ('/profile/' + user.id)" :class="[sizeClass]">
+  <a style="display: block" :href="preventJump ? 'javascript:void(0)' : ('/profile?userId=' + user.id)" :class="[sizeClass]">
     <img
       v-if="avatarUrl && !errorUrl"
       :src="user.avatarUrl"
@@ -45,6 +45,7 @@ export default {
         60: 'font-size: 26px;line-height: 60px;border-radius: 10px',
         50: 'font-size: 24px;line-height: 50px;border-radius: 8px',
         45: 'font-size: 22px;line-height: 45px;border-radius: 8px',
+        40: 'font-size: 20px;line-height: 40px;border-radius: 8px',
         30: 'font-size: 18px;line-height: 30px;border-radius: 6px',
         35: 'font-size: 18px;line-height: 30px;border-radius: 6px'
       }
@@ -106,6 +107,11 @@ export default {
   .avatar-size-45 {
     width: 45px;
     height: 45px;
+    border-radius: 8px;
+  }
+   .avatar-size-40 {
+    width: 40px;
+    height: 40px;
     border-radius: 8px;
   }
   .avatar-size-35 {

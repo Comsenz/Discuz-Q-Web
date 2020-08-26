@@ -273,8 +273,7 @@ const getters = {
         case 'isWxLogin':
           return state.wxLogin
         case 'isLogin':
-          return state.wxLogin
-        // return !!localStorage.setItem('access_token')
+          return !!localStorage.setItem('access_token')
         default:
           return state[data]
       }

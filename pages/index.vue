@@ -13,14 +13,16 @@
           </nuxt-link>
         </div>
       </div>
-      <div class="new-post">
+      <!-- <div class="new-post">
         <div class="new-post-cont">有 3 条新发布的内容 <span class="refresh">点击刷新</span></div>
-      </div>
+      </div> -->
       <div class="post-list">
-        <post-item v-for="(item, index) in threadsList" :key="index" :detail="item" />
+        <post-item v-for="(item, index) in threadsList" :key="index" :item="item" />
         <loading v-if="loading" />
-        <div v-else class="load-more" @click="loadMore">查看更多</div>
-        <div v-if="!hasMore" class="no-more">没有更多了</div>
+        <template v-else>
+          <div v-if="hasMore" class="load-more" @click="loadMore">查看更多</div>
+          <div v-else class="no-more">没有更多了</div>
+        </template>
       </div>
     </main>
     <aside class="cont-right">
@@ -70,7 +72,13 @@ export default {
       categoryId: 0, // 分类id 0全部
       threadType: '', // 主题类型 0普通 1长文 2视频 3图片（'' 不筛选）
       threadEssence: '', // 是否精华帖
+      fromUserId: '', // 关注人id
       hasMore: true
+    }
+  },
+  computed: {
+    userId() {
+      return this.$store.getters['session/get']('userId')
     }
   },
   created() {
@@ -102,6 +110,7 @@ export default {
         'filter[categoryId]': this.categoryId,
         'filter[type]': this.threadType,
         'filter[isEssence]': this.threadEssence,
+        'filter[fromUserId]': this.fromUserId,
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize
       }
@@ -113,7 +122,6 @@ export default {
       })
       this.$store.dispatch('jv/get', ['threads', { params }]).then(data => {
         this.hasMore = data.length === this.pageSize
-        delete data._jv
         if (this.pageNum === 1) {
           this.threadsList = data
         } else {
@@ -147,8 +155,11 @@ export default {
     onChangeFilter(val) {
       console.log('val', val)
       this.threadEssence = ''
+      this.fromUserId = ''
       if (val === 'isEssence') {
         this.threadEssence = 'yes'
+      } else if (val === 'followed') {
+        this.fromUserId = this.userId
       }
       this.reloadThreadsList()
     },
