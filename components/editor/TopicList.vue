@@ -122,7 +122,7 @@ export default {
       line-height: 45px;
       width: 100%;
       border: none;
-      background: transparent;
+      background: #ffffff;
       padding: 0 10px;
       color: #6D6D6D;
       font-size: 14px;
@@ -132,6 +132,7 @@ export default {
       background: #ffffff;
       min-width: 200px;
       max-height: 200px;
+      overscroll-behavior: contain;
       border-bottom-left-radius: 8px;
       border-bottom-right-radius: 8px;
       ul {

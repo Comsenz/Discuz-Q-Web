@@ -29,10 +29,16 @@
           </template>
         </div>
         <div class="block">
+          <template v-for="(resource, index) in resources">
+            <svg-icon :key="index" :type="resource.icon" class="svg" style="font-size: 20px" @click="addResource(resource.command)" />
+          </template>
+        </div>
+        <div class="block">
           <template v-for="(markdown, index) in markdownList">
             <svg-icon :key="index" :type="'markdown-' + markdown.icon" class="svg" style="font-size: 20px" @click="editMarkdown(markdown)" />
           </template>
         </div>
+        <el-button type="primary" size="small">发 布</el-button>
       </div>
     </div>
     <caller v-if="showCaller" @close="showCaller = false" @selectedCaller="selectActions" />
@@ -59,6 +65,10 @@ export default {
         { icon: 'emoji', toggle: 'showEmoji' },
         { icon: 'call', toggle: 'showCaller' },
         { icon: 'topic', toggle: 'showTopic' }
+      ],
+      resources: [
+        { icon: 'picture', command: 'addPicture' },
+        { icon: 'video', command: 'addVideo' }
       ],
       markdownList: [
         { icon: 'bold', tip: '粗体文字', code: '**', fn: 'markdownWrap' },
@@ -117,6 +127,9 @@ export default {
       this.showEmoji = false
       this.showTopic = false
       this.showCaller = false
+    },
+    addResource() {
+      alert('资源')
     },
     emojiListener() {
       document.addEventListener('click', e => {
@@ -180,15 +193,24 @@ export default {
        align-items: center;
        background: #ffffff;
        > .block {
+         padding: 0 10px;
+         border-left: 1px solid $border-color-base;
+         &:first-child {
+           border: 0;
+           margin-left: 10px;
+         }
          > .svg {
            cursor: pointer;
-           margin-left: 25px;
+           margin-left: 20px;
+           &:first-child {
+             margin-left: 0;
+           }
          }
        }
      }
      > .tip {
        position: absolute;
-       bottom: 12.5px;
+       bottom: 50px;
        right: 10px;
        color: #D0D4DC;
      }

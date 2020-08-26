@@ -120,9 +120,10 @@ export default {
       }
       this.$store.dispatch('jv/get', ['users', { params }]).then(data => {
         const { _jv: { json: { meta }}} = data
+        const { _jv: { json: { links }}} = data
         this.loading = false
         this.searchTotal = meta.total
-        if (data.length > 0) this.searchList.push(...data)
+        if (data.length > 0 && links.first.split('username')[1].split('%2A')[1] === this.searchValue) this.searchList.push(...data)
       }, e => this.handleError(e))
     },
     load() {
@@ -193,6 +194,7 @@ export default {
         max-height: 300px;
         box-shadow: 0 5px 10px rgba(0, 0, 0, .3);
         border-radius: 3px;
+        overscroll-behavior: contain;
         ul {
           > li {
             height: 50px;
