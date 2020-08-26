@@ -1,53 +1,122 @@
 <template>
   <div class="post-container">
-    <Avatar :user="detail.user" class="avatar" />
+    <div v-if="item.isEssence" class="essence">
+      <svg-icon type="index-essence" />
+    </div>
+    <Avatar :user="item.user" class="avatar" />
     <div class="main-cont">
       <div class="top-flex">
-        <div class="user-name">{{ detail.user && detail.user.username }}</div>
-        <div class="time">发布于{{ timerDiff(detail.createdAt) }}</div>
+        <div class="user-name">{{ item.user && item.user.username }}</div>
+        <div class="time">{{ $t('topic.publishAt') }}{{ timerDiff(item.createdAt) }}</div>
       </div>
-      <template v-if="detail.firstPost">
-        <nuxt-link :to="`./topic/${detail._jv.id}`" class="content">
-          <div v-html="detail.firstPost.contentHtml" />
+      <template v-if="item.firstPost">
+        <nuxt-link :to="`./topic/${item._jv.id}`" class="content">
+          <div v-html="item.firstPost.contentHtml" />
         </nuxt-link>
         <div class="bottom-handle">
-          <div v-permission:handleLike="''" class="btn like" :class="{'liked': detail.firstPost.isLiked}">
+          <div v-permission:handleLike="''" class="btn like" :class="{'liked': item.firstPost.isLiked}">
             <svg-icon type="like" class="icon" />
-            {{ $t('topic.like') }} {{ detail.firstPost.likeCount > 0 ? detail.firstPost.likeCount : '' }}</div>
-          <div class="btn comment">
+            {{ $t('topic.like') }} {{ item.firstPost.likeCount > 0 ? item.firstPost.likeCount : '' }}</div>
+          <nuxt-link :to="`./topic/${item._jv.id}`" class="btn comment">
             <svg-icon type="comment" class="icon" />
-            {{ $t('topic.comment') }} {{ detail.firstPost.comment > 0 ? detail.firstPost.comment : '' }}</div>
+            {{ $t('topic.comment') }} {{ item.firstPost.comment > 0 ? item.firstPost.comment : '' }}</nuxt-link>
+          <el-popover
+            placement="bottom"
+            width="120"
+            trigger="click"
+          >
+            <div
+              style="display: flex; flex-direction: column; align-items: center; color: #6D6D6D; font-size: 14px; text-align: center;"
+            >
+              <div style="width: 100%;border-bottom: 1px solid #EDEDED; padding: 10px 0; cursor: pointer" @click="copyLink">
+                <svg-icon style="margin-right: 6px;" type="copy-link" />
+                <span>{{ $t('core.copyLink') }}</span>
+              </div>
+              <div class="qr-code">
+                <div style="width: 100%; padding: 10px 0;">
+                  <svg-icon style="font-size: 18px;margin-right: 6px;" type="wechat-logo" />
+                  <span>{{ $t('core.wxShare') }}</span>
+                </div>
+                <div style="width: 88px; height: 88px; border: 1px solid red">二维码</div>
+              </div>
+            </div>
+            <div slot="reference" class="btn share">
+              <svg-icon type="link" class="icon" />
+              {{ $t('topic.share') }}</div>
+          </el-popover>
         </div>
       </template>
     </div>
   </div>
 </template>
 <script>
-import dayjs from 'dayjs'
 import timerDiff from '@/mixin/timerDiff'
+import handleError from '@/mixin/handleError'
+// const QRCode = process.client && require('qrcodejs2')
 export default {
-  mixins: [timerDiff],
+  mixins: [timerDiff, handleError],
   props: {
-    detail: {
+    item: {
       type: Object,
       default: () => {}
     }
   },
+  data() {
+    return {
+      loading: false
+    }
+  },
   methods: {
     handleLike() {
-      console.log('like===>')
+      if (this.loading) return
+      this.loading = true
+      const isLiked = !this.item.firstPost.isLiked
+      const params = {
+        _jv: {
+          type: 'posts',
+          id: this.item.firstPost && this.item.firstPost._jv && this.item.firstPost._jv.id
+        },
+        isLiked: isLiked
+      }
+      return this.$store.dispatch('jv/patch', params).then(data => {
+        this.loading = false
+      }, e => {
+        this.loading = false
+        this.handleError(e)
+      })
     },
-    formatDate(date) {
-      return dayjs(date).format('YYYY-MM-DD HH:mm')
+    copyLink() {
+      const oInput = document.createElement('input')
+      if (process.client) {
+        oInput.value = window.location.href + 'topic/' + this.item._jv.id
+        oInput.id = 'copyInput'
+        document.body.appendChild(oInput)
+        oInput.select()
+        document.execCommand('Copy')
+      }
+      this.$message.success('链接复制成功')
+      setTimeout(() => {
+        oInput.remove()
+      }, 100)
     }
   }
 }
 </script>
 <style lang="scss" scoped>
 .post-container{
+  position: relative;
   display: flex;
   padding:20px;
   border-bottom: 1px solid #E4E4E4;
+  // &:hover{
+  //   background: #E5F2FF;
+  // }
+  .essence{
+    position: absolute;
+    top:0;
+    right: 20px;
+    font-size: 20px;
+  }
   .main-cont{
     flex: 1;
     margin-left: 15px;
@@ -87,7 +156,7 @@ export default {
       margin-top: 20px;
       .btn{
         color: #8590A6;
-        margin-right:20px;
+        margin-right:36px;
         cursor: pointer;
       }
       .icon{

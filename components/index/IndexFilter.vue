@@ -19,7 +19,7 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <nuxt-link to="/" class="new-post">+发帖</nuxt-link>
+    <nuxt-link to="/" class="new-post">+{{ $t('profile.post') }}</nuxt-link>
   </div>
 </template>
 <script>
@@ -72,8 +72,21 @@ export default {
       }
     }
   },
+  computed: {
+    userId() {
+      return this.$store.getters['session/get']('userId')
+    }
+  },
   methods: {
     onClickFilter(val) {
+      if (val === 'followed' && (!this.userId || +this.userId === 0)) {
+        if (process.client) {
+          this.$message.error('请登录后再操作')
+        } else {
+          console.log('请登录后再操作')
+        }
+        return
+      }
       this.query.filter = val
       this.$emit('onChangeFilter', val)
     },
