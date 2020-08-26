@@ -6,12 +6,12 @@
         <span
           v-if="category.canCreateThread"
           :key="index"
-          :class="{ category: true, selected: categorySelected === category}"
-          @click="categorySelected = category"
+          :class="{ category: true, selected: categorySelectedId === category._jv.id}"
+          @click="selectCategory(category)"
         >{{ category.name }}</span>
       </template>
     </div>
-    <editor />
+    <editor :category-id="categorySelectedId" :type="type" />
   </div>
 </template>
 
@@ -23,7 +23,12 @@ export default {
   data() {
     return {
       categoryList: [],
-      categorySelected: {}
+      categorySelectedId: undefined
+    }
+  },
+  computed: {
+    type() {
+      return parseInt(this.$route.params.type)
     }
   },
   created() {
@@ -34,6 +39,9 @@ export default {
       this.$store.dispatch('jv/get', ['categories', {}]).then(res => {
         this.categoryList = res
       }, e => this.handleError(e))
+    },
+    selectCategory(category) {
+      this.categorySelectedId = category._jv.id
     }
   }
 }

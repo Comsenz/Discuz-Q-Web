@@ -208,7 +208,7 @@ export default {
     exceed: '已超出{num}个字',
     word: '{num}字',
     placeholder: '您想说的..',
-    post: '发布',
+    post: '发 布',
     paymentAmount: '付费金额',
     freeWordCount: '免费的查看字数',
     selectToViewFreeWordCount: '选择查看免费字数',

@@ -4,7 +4,7 @@
       <input v-model="title" :placeholder="$t('post.pleaseInputPostTitle')" class="input-title" type="text">
     </label>
     <div class="container-textarea">
-      <label v-show="textShow">
+      <label>
         <textarea
           id="textarea"
           v-model="text"
@@ -13,6 +13,54 @@
           :maxlength="textLimit"
         />
       </label>
+      <div v-if="showUploadImg || showUploadVideo" class="resources-list">
+        <el-upload
+          v-if="showUploadImg"
+          :action="url + '/api/attachments'"
+          :headers="header"
+          :data="{ type: 1 }"
+          multiple
+          name="file"
+          with-credentials
+          accept="image/png, image/jpeg"
+          :limit="9"
+          :disabled="imageIdList.length >= 9"
+          list-type="picture-card"
+          class="resources-upload"
+          :on-success="(response) => imageIdList.push(response.data.id)"
+          :on-preview="handlePictureCardPreview"
+          :on-remove="handlePictureRemove"
+          :on-error="() => $message.error('文件上传失败')"
+        >
+          <i class="el-icon-plus" />
+        </el-upload>
+        <div v-if="type === 2 && videoList[0]" class="video-upload">
+          <video
+            class="video"
+            :src="videoList[0].url"
+            :controls="false"
+          />
+          <svg-icon type="delete-red" class="icon-delete" style="font-size: 22px" @click="handleVideoRemove" />
+          <el-progress v-show="videoPercent < 1" :percentage="videoPercent * 100" color="red" :show-text="false" class="progress" />
+        </div>
+        <el-upload
+          v-if="showUploadVideo"
+          v-show="!videoList[0]"
+          ref="upload"
+          action=""
+          list-type="picture-card"
+          class="resources-upload"
+          :limit="1"
+          :disabled="videoList.length > 0"
+          :on-change="addVideo"
+          :on-error="() => $message.error('文件上传失败')"
+        >
+          <i class="el-icon-plus" />
+        </el-upload>
+        <el-dialog :visible.sync="dialogVisible">
+          <img width="100%" :src="dialogImageUrl" alt="">
+        </el-dialog>
+      </div>
       <span class="tip">
         {{ textLimit>=text.length ? $t('post.note', { num: textLimit - text.length }) : $t('post.exceed', { num: text.length - textLimit }) }}
       </span>
@@ -25,20 +73,38 @@
       <div class="actions">
         <div class="block">
           <template v-for="(action, index) in actions">
-            <svg-icon :key="index" :type="action.icon" class="svg" style="font-size: 20px" @click="onActions(action.toggle)" />
+            <svg-icon
+              :key="index"
+              :type="action.icon"
+              class="svg"
+              style="font-size: 20px"
+              @click="onActions(action.toggle)"
+            />
           </template>
         </div>
         <div class="block">
           <template v-for="(resource, index) in resources">
-            <svg-icon :key="index" :type="resource.icon" class="svg" style="font-size: 20px" @click="addResource(resource.command)" />
+            <svg-icon
+              :key="index"
+              :type="resource.icon"
+              class="svg"
+              style="font-size: 20px"
+              @click="addResource(resource.toggle)"
+            />
           </template>
         </div>
         <div class="block">
           <template v-for="(markdown, index) in markdownList">
-            <svg-icon :key="index" :type="'markdown-' + markdown.icon" class="svg" style="font-size: 20px" @click="editMarkdown(markdown)" />
+            <svg-icon
+              :key="index"
+              :type="'markdown-' + markdown.icon"
+              class="svg"
+              style="font-size: 20px"
+              @click="editMarkdown(markdown)"
+            />
           </template>
         </div>
-        <el-button type="primary" size="small">发 布</el-button>
+        <el-button class="button-publish" type="primary" size="small" @click="publish">{{ $t('post.post') }}</el-button>
       </div>
     </div>
     <caller v-if="showCaller" @close="showCaller = false" @selectedCaller="selectActions" />
@@ -46,20 +112,40 @@
 </template>
 
 <script>
+import handleError from '@/mixin/handleError'
+const TcVod = process.client ? require('vod-js-sdk-v6') : ''
+
 export default {
   name: 'Editor',
+  mixins: [handleError],
+  props: {
+    categoryId: {
+      type: String,
+      default: ''
+    },
+    type: {
+      type: Number,
+      default: 0
+    }
+  },
   data() {
     return {
-      textShow: true,
       titleShow: true,
       title: '',
       text: '',
       textLimit: 10000,
       selectionStart: 0,
       selectionEnd: 0,
+      dialogImageUrl: '',
+      dialogVisible: false,
       showEmoji: false,
       showTopic: false,
       showCaller: false,
+      showUploadImg: false,
+      showUploadVideo: false,
+      imageIdList: [],
+      videoList: [],
+      videoPercent: 0,
       listenerList: ['emoji-list', 'topic-list'],
       actions: [
         { icon: 'emoji', toggle: 'showEmoji' },
@@ -67,8 +153,8 @@ export default {
         { icon: 'topic', toggle: 'showTopic' }
       ],
       resources: [
-        { icon: 'picture', command: 'addPicture' },
-        { icon: 'video', command: 'addVideo' }
+        { icon: 'picture', toggle: 'showUploadImg' },
+        { icon: 'video', toggle: 'showUploadVideo' }
       ],
       markdownList: [
         { icon: 'bold', tip: '粗体文字', code: '**', fn: 'markdownWrap' },
@@ -83,6 +169,19 @@ export default {
       ]
     }
   },
+  computed: {
+    url() {
+      // if (process.client) return window.location.origin
+      return 'https://dq.comsenz-service.com'
+    },
+    header() {
+      if (process.client) {
+        const token = window.localStorage.getItem('access_token')
+        return { authorization: `Bearer ${token}` }
+      }
+      return ''
+    }
+  },
   mounted() {
     this.autoHeight()
     this.emojiListener()
@@ -95,13 +194,26 @@ export default {
         this.style.height = this.scrollHeight + 'px'
       }
     },
+    emojiListener() {
+      document.addEventListener('click', e => {
+        let pass = true
+        e.path.forEach(item => {
+          if (item.classList) {
+            if (item.classList.contains('emoji-list') || item.classList.contains('topic-list') || item.classList.contains('actions')) pass = false
+          }
+        })
+        if (pass) {
+          this.showTopic = false
+          this.showEmoji = false
+        }
+      })
+    },
     getSelection() {
       this.selectionStart = document.getElementById('textarea').selectionStart
       this.selectionEnd = document.getElementById('textarea').selectionEnd
     },
-    onActions(toggle) {
-      this[toggle] = !this[toggle]
-    },
+    onActions(toggle) { this[toggle] = !this[toggle] },
+    addResource(toggle) { this[toggle] = true },
     editMarkdown(markdown) {
       this.getSelection()
       const frontText = this.text.slice(0, this.selectionStart)
@@ -128,102 +240,239 @@ export default {
       this.showTopic = false
       this.showCaller = false
     },
-    addResource() {
-      alert('资源')
+    handlePictureRemove(file) {
+      const id = file.response.data.id
+      const params = { _jv: { type: `/attachments/${id}` }}
+      return this.$store.dispatch('jv/delete', params).then(data => {
+        const index = this.imageIdList.indexOf(id)
+        this.imageIdList.splice(index, 1)
+      }, e => this.handleError(e))
     },
-    emojiListener() {
-      document.addEventListener('click', e => {
-        let pass = true
-        e.path.forEach(item => {
-          if (item.classList) {
-            if (item.classList.contains('emoji-list') || item.classList.contains('topic-list') || item.classList.contains('actions')) pass = false
-          }
-        })
-        if (pass) {
-          this.showTopic = false
-          this.showEmoji = false
-        }
+    handleVideoRemove() {
+      this.videoList = []
+      this.videoPercent = 1
+      this.$refs.upload.clearFiles()
+    },
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
+    },
+    getSignature(callBack = null) {
+      this.$store.dispatch('jv/get', ['signature', {}]).then(res => {
+        callBack(() => res.signature)
       })
+    },
+    postVideo(fileId) {
+      console.log('post video')
+      const params = {
+        _jv: { type: 'thread/video' },
+        file_id: fileId
+      }
+      this.$store.dispatch('jv/post', params).then(data => {
+        console.log(data, 'data')
+        this.videoList[0].id = data.file_id
+      }, e => this.handleError(e))
+    },
+    addVideo(file) {
+      console.log(file)
+      this.videoList.push({
+        name: file.name,
+        url: file.url
+      })
+      this.getSignature(getSignature => {
+        // eslint-disable-next-line new-cap
+        new TcVod.default({ getSignature })
+          .upload({ mediaFile: file.raw })
+          .on('media_progress', info => {
+            this.videoPercent = info.percent
+          })
+          .done()
+          .then(doneResult => {
+            this.postVideo(doneResult.fileId)
+          })
+      })
+    },
+    publish() {
+      console.log(this.categoryId)
+      if (!this.categoryId) return
+
+      const params = {
+        _jv: {
+          type: `/threads`,
+          relationships: {
+            category: {
+              data: { type: 'categories', id: this.categoryId }
+            }
+          }
+        },
+        title: this.title,
+        content: this.text,
+        file_id: this.videoList[0].id,
+        file_name: this.videoList[0].name,
+        type: 2
+      }
+      if (this.imageIdList.length > 0) {
+        params._jv.relationships.attachments = {}
+        params._jv.relationships.attachments.data = this.imageIdList.splice(',').map(item => {
+          const obj = {}
+          obj.id = item
+          obj.type = 'attachments'
+          return obj
+        })
+      }
+      return this.$store.dispatch('jv/post', params).then(data => {
+        console.log(data, 'data')
+      }, e => this.handleError(e))
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/css/variable/color.scss';
- .editor {
-   width: 100%;
-   margin-top: 20px;
-   label {
-     width: 100%;
-     > input {
-       width: 100%;
-       background: #f7f7f7;
-     }
-     > .input-title {
-       height: 40px;
-       padding: 0 15px;
-       border-radius: 3px;
-       border: 1px solid $border-color-base;
-     }
-     > .input-text {
-       width: 100%;
-       background: #f7f7f7;
-       border: none;
-       display: block;
-       position: relative;
-       resize: none;
-       line-height: 16px;
-       padding: 15px;
-       min-height: 200px;
-       overflow: hidden;
-       transition: all 200ms linear;
-     }
+  @import '@/assets/css/variable/color.scss';
 
-   }
-   > .container-textarea {
-     border: 1px solid $border-color-base;
-     border-radius: 3px;
-     position: relative;
-     margin-top: 10px;
-     > .actions {
-       width: 100%;
-       height: 45px;
-       display: flex;
-       align-items: center;
-       background: #ffffff;
-       > .block {
-         padding: 0 10px;
-         border-left: 1px solid $border-color-base;
-         &:first-child {
-           border: 0;
-           margin-left: 10px;
-         }
-         > .svg {
-           cursor: pointer;
-           margin-left: 20px;
-           &:first-child {
-             margin-left: 0;
-           }
-         }
-       }
-     }
-     > .tip {
-       position: absolute;
-       bottom: 50px;
-       right: 10px;
-       color: #D0D4DC;
-     }
-     > .emoji-list {
-       position: absolute;
-       bottom: -205px;
-       left: 0;
-     }
-     > .topic-list {
-       position: absolute;
-       top: calc(100% + 5px);
-       left: 88px;
-     }
-   }
+  .editor {
+    width: 100%;
+    margin-top: 20px;
+
+    label {
+      width: 100%;
+
+      > input {
+        width: 100%;
+        background: #f7f7f7;
+      }
+
+      > .input-title {
+        height: 40px;
+        padding: 0 15px;
+        border-radius: 3px;
+        border: 1px solid $border-color-base;
+      }
+
+      > .input-text {
+        width: 100%;
+        background: #f7f7f7;
+        border: none;
+        display: block;
+        position: relative;
+        resize: none;
+        line-height: 16px;
+        padding: 15px;
+        min-height: 200px;
+        overflow: hidden;
+        transition: all 200ms linear;
+      }
+
+    }
+
+    > .container-textarea {
+      border: 1px solid $border-color-base;
+      border-radius: 3px;
+      position: relative;
+      margin-top: 10px;
+
+      > .resources-list {
+        background: #f7f7f7;
+        padding: 20px;
+        > .video-upload {
+          position: relative;
+          border: 1px solid $border-color-base;
+          border-radius: 5px;
+          display: inline-block;
+          background: #ffffff;
+          > .progress {
+            position: absolute;
+            top: 80px;
+            left: 10px;
+            width: 80px;
+            height: 2px;
+          }
+          > .icon-delete {
+            cursor: pointer;
+            position: absolute;
+            top: -11px;
+            right: -11px;
+          }
+          > .video {
+            width: 100px;
+            height: 100px;
+            display: inline-block;
+          }
+        }
+
+        > .resources-upload {
+          ::v-deep.el-upload-list {
+            > li {
+              width: 100px;
+              height: 100px;
+            }
+
+            .el-progress-circle {
+              height: 50px;
+              width: 50px;
+            }
+          }
+
+          ::v-deep.el-upload {
+            width: 100px;
+            height: 100px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+          }
+        }
+      }
+
+      > .actions {
+        width: 100%;
+        height: 45px;
+        display: flex;
+        padding: 0 10px;
+        align-items: center;
+        background: #ffffff;
+
+        > .block {
+          padding: 0 10px;
+          border-left: 1px solid $border-color-base;
+
+          &:first-child {
+            border: 0;
+          }
+
+          > .svg {
+            cursor: pointer;
+            margin-left: 20px;
+
+            &:first-child {
+              margin-left: 0;
+            }
+          }
+        }
+
+        > .button-publish {
+          margin-left: auto;
+        }
+      }
+
+      > .tip {
+        position: absolute;
+        bottom: 50px;
+        right: 10px;
+        color: #D0D4DC;
+      }
+
+      > .emoji-list {
+        position: absolute;
+        bottom: -205px;
+        left: 0;
+      }
+
+      > .topic-list {
+        position: absolute;
+        top: calc(100% + 5px);
+        left: 88px;
+      }
+    }
   }
 </style>
