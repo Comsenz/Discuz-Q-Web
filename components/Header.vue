@@ -51,11 +51,11 @@
           :round="true"
           class="avatar"
         />
-
         <el-button
           type="primary"
           size="small"
           class="h-button4 marleft"
+          @click="jumptoperson"
         >{{ userInfo.username }}</el-button>
 
         <el-button
@@ -102,7 +102,8 @@ export default {
       inputVal: '',
       isLogin: '',
       activeIndex: '1',
-      userInfo: ''
+      userInfo: '',
+      userId: ''
 
     }
   },
@@ -125,10 +126,6 @@ export default {
     this.userinfo()
   },
   methods: {
-    handleSelect(key, keyPath) {
-      console.log(key, keyPath)
-      console.log(this.forums)
-    },
     isLoginh() {
       this.isLogin = !!window.localStorage.getItem('access_token')
       console.log(this.isLogin)
@@ -152,6 +149,9 @@ export default {
         this.userInfo = res
         this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
       })
+    },
+    jumptoperson() {
+      this.$router.push(`/profile?userId=${this.userId}`)
     }
   }
 }
