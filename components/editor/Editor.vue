@@ -29,6 +29,7 @@
           class="resources-upload"
           :on-success="(response) => imageIdList.push(response.data.id)"
           :on-preview="handlePictureCardPreview"
+          :before-remove="handleRemoveConfirm"
           :on-remove="handlePictureRemove"
           :on-error="() => $message.error('文件上传失败')"
         >
@@ -230,7 +231,7 @@ export default {
       frontText = frontText ? frontText + '\n' : ''
       this.text = frontText + code + content
     },
-    markdownUrl(frontText, centerText, behindText, code, tip) {
+    markdownUrl(frontText, centerText, behindText, code) {
       this.text = frontText + code + centerText + behindText
     },
     selectActions(code) {
@@ -240,18 +241,33 @@ export default {
       this.showTopic = false
       this.showCaller = false
     },
+    handleRemoveConfirm() {
+      return this.$confirm(this.$t('topic.confirmDelete'), this.$t('discuzq.msgBox.title'), {
+        confirmButtonText: this.$t('discuzq.msgBox.confirm'),
+        cancelButtonText: this.$t('discuzq.msgBox.cancel'),
+        type: 'warning'
+      })
+    },
     handlePictureRemove(file) {
       const id = file.response.data.id
       const params = { _jv: { type: `/attachments/${id}` }}
-      return this.$store.dispatch('jv/delete', params).then(data => {
+      return this.$store.dispatch('jv/delete', params).then(() => {
         const index = this.imageIdList.indexOf(id)
         this.imageIdList.splice(index, 1)
       }, e => this.handleError(e))
     },
     handleVideoRemove() {
-      this.videoList = []
-      this.videoPercent = 1
-      this.$refs.upload.clearFiles()
+      return this.$confirm(this.$t('topic.confirmDelete'), this.$t('discuzq.msgBox.title'), {
+        confirmButtonText: this.$t('discuzq.msgBox.confirm'),
+        cancelButtonText: this.$t('discuzq.msgBox.cancel'),
+        type: 'warning'
+      }).then(() => {
+        this.$refs.upload.clearFiles()
+        setTimeout(() => {
+          this.videoList = []
+          this.videoPercent = 0
+        }, 1000)
+      }, () => console.log('取消删除'))
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
@@ -263,39 +279,29 @@ export default {
       })
     },
     postVideo(fileId) {
-      console.log('post video')
       const params = {
         _jv: { type: 'thread/video' },
         file_id: fileId
       }
       this.$store.dispatch('jv/post', params).then(data => {
-        console.log(data, 'data')
         this.videoList[0].id = data.file_id
       }, e => this.handleError(e))
     },
     addVideo(file) {
-      console.log(file)
-      this.videoList.push({
-        name: file.name,
-        url: file.url
-      })
+      this.videoList.push({ name: file.name, url: file.url })
       this.getSignature(getSignature => {
         // eslint-disable-next-line new-cap
         new TcVod.default({ getSignature })
           .upload({ mediaFile: file.raw })
           .on('media_progress', info => {
             this.videoPercent = info.percent
-          })
-          .done()
-          .then(doneResult => {
+          }).done().then(doneResult => {
             this.postVideo(doneResult.fileId)
           })
       })
     },
     publish() {
-      console.log(this.categoryId)
-      if (!this.categoryId) return
-
+      if (!this.categoryId) this.$message.warning('请选择分类')
       const params = {
         _jv: {
           type: `/threads`,
@@ -306,12 +312,9 @@ export default {
           }
         },
         title: this.title,
-        content: this.text,
-        file_id: this.videoList[0].id,
-        file_name: this.videoList[0].name,
-        type: 2
+        content: this.text
       }
-      if (this.imageIdList.length > 0) {
+      if (this.type === 1 && this.imageIdList.length > 0) {
         params._jv.relationships.attachments = {}
         params._jv.relationships.attachments.data = this.imageIdList.splice(',').map(item => {
           const obj = {}
@@ -320,6 +323,11 @@ export default {
           return obj
         })
       }
+      if (this.type === 2 && this.videoList.length > 0) {
+        params.file_id = this.videoList[0].id
+        params.file_name = this.videoList[0].name
+      }
+      params.type = this.type
       return this.$store.dispatch('jv/post', params).then(data => {
         console.log(data, 'data')
       }, e => this.handleError(e))
