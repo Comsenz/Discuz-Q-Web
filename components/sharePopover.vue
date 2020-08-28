@@ -63,8 +63,8 @@ export default {
       if (process.client) {
         this.$nextTick(() => {
           const qrcode = new QRCode(this.$refs.qrcode, {
-            width: 88,
-            height: 88, // 高度
+            width: 108,
+            height: 108, // 高度
             text: link // 二维码内容
             // render: 'canvas' ,   // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
             // background: '#f0f',   // 背景色
@@ -78,7 +78,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-::v-deep .el-popover {
+::v-deep.el-popover {
   min-width: auto;
 }
 .share-container ::v-deep .custom-popover{
@@ -111,8 +111,8 @@ export default {
     margin-right: 6px;
   }
   &-cont{
-    width:88px;
-    height: 88px;
+    width:108px;
+    height: 108px;
     position: relative;
   }
   &-loading{

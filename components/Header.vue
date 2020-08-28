@@ -31,6 +31,7 @@
         >{{ $t('user.login') }}</el-button>
 
         <el-button
+          :disabled="canReg"
           type="primary"
           size="small"
           class="h-button2"
@@ -83,12 +84,8 @@
 </template>
 
 <script>
-import forums from '@/mixin/forums'
 export default {
   name: 'Header',
-  mixins: [
-    forums
-  ],
   props: {
     headImg: {
       type: String,
@@ -102,7 +99,9 @@ export default {
       activeIndex: '1',
       userInfo: '',
       userId: '',
-      code: '' // 邀请码
+      code: '', // 邀请码
+      canReg: '',
+      forums: ''
 
     }
   },
@@ -121,15 +120,32 @@ export default {
     //   return userInfo
     // }
   },
-  created() {
+  mounted() {
     this.isLoginh()
     this.userinfo()
     const { code } = this.$route.query
     if (code !== 'undefined') {
       this.code = code
     }
+    this.forumh()
   },
   methods: {
+    async forumh() {
+      const params = {
+        _jv: {
+          type: 'forum'
+        }
+      }
+      await this.$store.dispatch('jv/get', params).then(data => {
+        console.log('forum data => ', data)
+        this.forums = data
+        if (this.forums && this.forums.set_reg && this.forums.set_reg.register_close) {
+          this.canReg = false
+        } else {
+          this.canReg = true
+        }
+      })
+    },
     isLoginh() {
       if (process.client) this.isLogin = !!window.localStorage.getItem('access_token')
       console.log(this.isLogin)
@@ -137,13 +153,10 @@ export default {
     },
     ExitLogin() {
       this.isLogin = window.localStorage.removeItem('access_token')
-      // window.localStorage.removeItem('user_id')
-      // this.$router.go(0)
       this.$store.dispatch('session/logout').then(() => window.location.reload())
     },
     async userinfo() {
       this.userId = this.$store.getters['session/get']('userId')
-      // this.userId = localStorage.getItem('uid')
       console.log('userid', this.userId)
       const params = {
         _jv: { type: `/users/${this.userId}` }

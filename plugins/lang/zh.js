@@ -785,8 +785,8 @@ export default {
   // 登录注册
   user: {
     status: '记住我的登录状态',
-    userlogin: '用户名登录',
-    userregister: '用户名注册',
+    userlogin: '用户登录',
+    userregister: '用户注册',
     phonelogin: '手机号登录',
     phonenumber: '手机号码',
     phoneregister: '手机号码注册',
