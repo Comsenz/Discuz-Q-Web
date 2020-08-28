@@ -15,8 +15,8 @@
       </label>
       <div>
         <div v-if="showUploadImg || showUploadVideo" class="resources-list">
-          <picture-upload v-if="showUploadImg" :url="url" :header="header" :image-id-list.sync="imageIdList" />
-          <video-upload v-if="showUploadVideo" :video-list.sync="videoList" />
+          <picture-upload v-if="showUploadImg" :url="url" :header="header" :on-upload-image.sync="onUploadImage" :image-id-list.sync="imageIdList" />
+          <video-upload v-if="showUploadVideo" :on-upload-video.sync="onUploadVideo" :video-list.sync="videoList" />
         </div>
         <span class="tip">
           {{ textLimit>=text.length ? $t('post.note', { num: textLimit - text.length }) : $t('post.exceed', { num: text.length - textLimit }) }}
@@ -52,7 +52,7 @@
             </template>
           </div>
           <editor-markdown v-if="showMarkdown" :text="text" class="block" @changeText="changeText" />
-          <el-button class="button-publish" type="primary" size="small" @click="publish">{{ $t('post.post') }}
+          <el-button class="button-publish" :loading="onPublish" type="primary" size="small" @click="publish">{{ $t('post.post') }}
           </el-button>
         </div>
         <caller v-if="showCaller" @close="showCaller = false" @selectedCaller="selectActions" />
@@ -64,7 +64,6 @@
 
 <script>
 import handleError from '@/mixin/handleError'
-
 export default {
   name: 'Editor',
   mixins: [handleError],
@@ -85,16 +84,20 @@ export default {
       textLimit: 10000,
       selectionStart: 0,
       selectionEnd: 0,
-      showTitle: true,
+      showTitle: false,
       showEmoji: false,
       showTopic: false,
       showCaller: false,
       showMarkdown: false,
       showUploadImg: false,
       showUploadVideo: false,
+      onUploadImage: false,
+      onUploadVideo: false,
+      onPublish: false,
       imageIdList: [],
       videoList: [],
       typeShow: {
+        // 0 文字帖 1 帖子 2 视频 3 图片
         0: { textLimit: 450, showTitle: false, showImage: false, showVideo: false, showMarkdown: false },
         1: { textLimit: 10000, showTitle: true, showImage: true, showVideo: false, showMarkdown: true },
         2: { textLimit: 450, showTitle: false, showImage: false, showVideo: true, showMarkdown: false },
@@ -179,12 +182,20 @@ export default {
       this.showCaller = false
     },
     publish() {
-      if (!this.categoryId) return this.$message.warning('请选择分类')
-      if (this.type === 0 && !this.text) return this.$message.warning('内容不能为空')
-      if (this.type === 1 && !this.text) return this.$message.warning('内容不能为空')
-      if (this.type === 1 && !this.title) return this.$message.warning('标题不能为空')
-      if (this.type === 2 && this.videoList.length === 0) return this.$message.warning('视频不能为空')
-      if (this.type === 3 && this.imageIdList.length === 0) return this.$message.warning('图片不能为空')
+      if (!this.categoryId) return this.$message.warning(this.$t('post.theClassifyCanNotBeBlank'))
+      // 0 文字帖 1 帖子 2 视频 3 图片
+      if (this.type === 0 && !this.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
+
+      if (this.type === 1 && !this.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
+      if (this.type === 1 && !this.title) return this.$message.warning(this.$t('post.theTitleCanNotBeBlank'))
+      if (this.type === 1 && this.onUploadImage) return this.$message.warning(this.$t('post.pleaseWaitForTheImageUploadToComplete'))
+
+      if (this.type === 2 && this.onUploadVideo) return this.$message.warning(this.$t('post.pleaseWaitForTheVideoUploadToComplete'))
+      if (this.type === 2 && this.videoList.length === 0) return this.$message.warning(this.$t('post.videoCannotBeEmpty'))
+
+      if (this.type === 3 && this.onUploadImage) return this.$message.warning(this.$t('post.pleaseWaitForTheImageUploadToComplete'))
+      if (this.type === 3 && this.imageIdList.length === 0) return this.$message.warning(this.$t('post.imageCannotBeEmpty'))
+      this.onPublish = true
       const params = {
         _jv: {
           type: `/threads`,
@@ -214,7 +225,9 @@ export default {
       return this.$store.dispatch('jv/post', params).then(data => {
         console.log(data, 'data')
         this.$router.push(`/topic/${data._jv.id}`)
-      }, e => this.handleError(e))
+      }, e => this.handleError(e)).finally(() => {
+        this.onPublish = true
+      })
     }
   }
 }
@@ -317,7 +330,7 @@ export default {
     .topic-list {
       position: absolute;
       top: calc(100% + 5px);
-      left: 88px;
+      left: 80px;
     }
   }
 </style>

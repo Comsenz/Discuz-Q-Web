@@ -114,7 +114,7 @@ export default {
       border-left: 1px solid $border-color-base;
       border-top: 1px solid $border-color-base;
       top: -10px;
-      left: 26px;
+      left: 20px;
       z-index: 2;
     }
     .input-topic {

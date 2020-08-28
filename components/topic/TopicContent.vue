@@ -22,26 +22,7 @@
     </div>
     <div v-if="unpaid && threadType === 1" class="hide-content-tip">{{ $t('pay.contentHide') }}</div>
     <div class="tag" @click="skipIndexPage">{{ category.name }}</div>
-    <div v-if="showVideoPop" class="video-pop">
-      <Cover />
-      <video
-        controls
-        :poster="video.cover_url"
-        preload="auto"
-        bindpause="handlepause"
-        playsinline
-        webkit-playsinline
-        x5-playsinline
-        show-fullscreen-btn="true"
-        show-play-btn="true"
-        auto-pause-if-open-native="true"
-        auto-pause-if-navigate="true"
-        enable-play-gesture="false"
-        object-fit="cover"
-        :src="video.media_url"
-      />
-      <div />
-    </div>
+    <video-pop v-if="showVideoPop" :cover-url="video.cover_url" :url="video.media_url" @remove="showVideoPop = false" />
   </article>
 </template>
 
@@ -62,13 +43,11 @@ export default {
     },
     video: {
       type: Object,
-      default: () => {
-      }
+      default: () => {}
     },
     paidInformation: {
       type: Object,
-      default: () => {
-      }
+      default: () => {}
     },
     threadType: {
       type: Number,
@@ -76,8 +55,7 @@ export default {
     },
     category: {
       type: Object,
-      default: () => {
-      }
+      default: () => {}
     }
   },
   data() {
@@ -110,14 +88,6 @@ export default {
     openVideo() {
       if (this.unpaid) return this.$emit('payForVideo')
       this.showVideoPop = true
-      document.addEventListener('click', this.removeVideoPop)
-    },
-    removeVideoPop(e) {
-      let pass = true
-      e.path.forEach(item => { if (item.id === 'video-pop') pass = false })
-      if (!pass) return
-      this.showVideoPop = false
-      document.removeEventListener('click', this.removeVideoPop)
     },
     skipIndexPage() {
       // TODO
@@ -199,21 +169,6 @@ export default {
       background: #F7F7F7;
       color: #777;
       font-size: 12px;
-    }
-
-    > .video-pop {
-      z-index: 100;
-      background: #ffffff;
-      padding: 15px;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 760px;
-
-      > video {
-        width: 730px;
-      }
     }
 
   }

@@ -73,5 +73,8 @@ export default {
   .svg {
     cursor: pointer;
     margin-left: 20px;
+    &:first-child {
+      margin-left: 0;
+    }
   }
 </style>
