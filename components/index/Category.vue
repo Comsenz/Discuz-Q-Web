@@ -1,6 +1,6 @@
 <template>
   <div v-if="list.length > 0" class="category-container">
-    <div v-for="(item, index) in list" :key="index" class="category-item" :class="{'active': selectId === item._jv.id}" @click="onChange(item._jv.id)">
+    <div v-for="(item, index) in list" :key="index" class="category-item" :class="{'active': selectId === item._jv.id, 'loading': postLoading}" @click="onChange(item._jv.id)">
       <i v-if="selectId === item._jv.id" class="el-icon-arrow-left arrow-icon" />
       <div class="flex">
         <div class="title">{{ item.name }}</div>
@@ -10,7 +10,16 @@
   </div>
 </template>
 <script>
+import handleError from '@/mixin/handleError'
 export default {
+  name: 'Category',
+  mixins: [handleError],
+  props: {
+    postLoading: {
+      type: Boolean,
+      default: false
+    }
+  },
   // 异步数据用法
   async asyncData({ params, store }) {
     const data = await store.dispatch('jv/get', ['categories', {}])
@@ -32,10 +41,11 @@ export default {
         this.list = [{ _jv: { id: 0 }, name: this.$t('topic.whole') }, ...resData]
         console.log(this.list)
       }, e => {
-        this.$message.error('列表加载失败')
+        this.handleError(e)
       })
     },
     onChange(id) {
+      if (this.postLoading) return
       this.selectId = id
       this.$emit('onChange', id)
     }
@@ -43,10 +53,13 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-$colurBlue: #1878F3;
+@import '@/assets/css/variable/color.scss';
+@import '@/assets/css/variable/mixin.scss';
 .category-container{
   padding: 0 20px;
   margin-bottom: 16px;
+  max-height: 490px;
+  overflow-y: auto;
   .category-item{
     position: relative;
     padding: 16px 0;
@@ -59,7 +72,10 @@ $colurBlue: #1878F3;
       border-bottom: none;
     }
     &.active{
-      color: #1878F3;
+      color: $color-blue-base;
+    }
+    &.loading{
+      cursor: no-drop;
     }
     .flex{
       display: flex;
@@ -68,6 +84,7 @@ $colurBlue: #1878F3;
       .title{
         flex: 1;
         margin-right: 10px;
+        @include text-hidden();
       }
       .count{
         color: #B5B5B5;
@@ -80,7 +97,7 @@ $colurBlue: #1878F3;
     top:50%;
     left: -12px;
     transform: translateY(-50%);
-    color: $colurBlue;
+    color: $color-blue-base;
     font-size: 8px;
   }
 

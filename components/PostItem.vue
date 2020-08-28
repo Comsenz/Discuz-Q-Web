@@ -7,25 +7,65 @@
     <div class="main-cont">
       <div class="top-flex">
         <div class="user-name">{{ item.user && item.user.username }}</div>
-        <div class="time">{{ $t('topic.publishAt') }}{{ timerDiff(item.createdAt) }}</div>
+        <div class="time">{{ $t('topic.publishAt') }}{{ timerDiff(item.createdAt) }}{{ $t('topic.before') }}</div>
       </div>
       <template v-if="item.firstPost">
-        <nuxt-link :to="`./topic/${item._jv.id}`" class="content">
-          <div v-html="item.firstPost.contentHtml" />
-        </nuxt-link>
-        <div class="bottom-handle">
-          <div v-permission:handleLike="''" class="btn like" :class="{'liked': item.firstPost.isLiked}">
-            <svg-icon type="like" class="icon" />
-            {{ $t('topic.like') }} {{ item.firstPost.likeCount > 0 ? item.firstPost.likeCount : '' }}</div>
-          <nuxt-link :to="`./topic/${item._jv.id}`" class="btn comment">
-            <svg-icon type="comment" class="icon" />
-            {{ $t('topic.comment') }} {{ item.firstPost.comment > 0 ? item.firstPost.comment : '' }}</nuxt-link>
-          <share-popover :threads-id="item._jv.id">
-            <div class="btn share">
-              <svg-icon type="link" class="icon" />
-              {{ $t('topic.share') }}
+        <div class="first-post">
+          <div @click="toDetail">
+            <div v-if="item.type === 1" class="title">{{ item.title }}</div>
+            <div class="content">
+              <div v-html="item.firstPost.contentHtml" />
             </div>
-          </share-popover>
+          </div>
+          <div v-if="item.firstPost.images && item.firstPost.images.length > 0" class="images" @click.self="toDetail">
+            <el-image
+              v-for="(image, index) in item.firstPost.images.slice(0, 3)"
+              :key="index"
+              class="image"
+              :src="image.thumbUrl"
+              :alt="image.filename"
+              :preview-src-list="unpaid ? [] : [...item.firstPost.images.map(item => item.thumbUrl)]"
+              fit="cover"
+              lazy
+              @click="onClickImage"
+            >
+              <div slot="placeholder" class="image-slot">
+                <i class="el-icon-loading" />
+              </div>
+            </el-image>
+          </div>
+          <div v-if="item.firstPost.images && item.firstPost.images.length > 3" class="image-count" @click="toDetail">共 {{ item.firstPost.images.length }} 张图片，进入查看全部..</div>
+          <div v-if="item.type === 2 && item.threadVideo" class="video-main">
+            <el-image
+              v-if="item.threadVideo.cover_url"
+              class="video-img-cover"
+              :src="item.threadVideo.cover_url"
+              :alt="item.threadVideo.file_name"
+              fit="cover"
+              lazy
+              @click="openVideo"
+            />
+            <div v-else class="no-cover" @click="openVideo">暂无封面</div>
+            <svg-icon type="video-play" class="video-play" @click="openVideo" />
+          </div>
+          <video-pop v-if="showVideoPop" :cover-url="item.threadVideo.cover_url" :url="item.threadVideo.media_url" @remove="showVideoPop = false" />
+        </div>
+        <div class="bottom-handle">
+          <div class="left">
+            <div v-permission:handleLike="''" class="btn like" :class="{'liked': item.firstPost.isLiked}">
+              <svg-icon type="like" class="icon" />
+              {{ $t('topic.like') }} {{ item.firstPost.likeCount > 0 ? item.firstPost.likeCount : '' }}</div>
+            <nuxt-link :to="`./topic/${item._jv.id}`" class="btn comment">
+              <svg-icon type="comment" class="icon" />
+              {{ $t('topic.comment') }} {{ item.firstPost.comment > 0 ? item.firstPost.comment : '' }}</nuxt-link>
+            <share-popover :threads-id="item._jv.id">
+              <div class="btn share">
+                <svg-icon type="link" class="icon" />
+                {{ $t('topic.share') }}
+              </div>
+            </share-popover>
+          </div>
+          <div class="reply-btn">{{ $t('topic.reply') }}</div>
         </div>
       </template>
     </div>
@@ -44,12 +84,22 @@ export default {
   },
   data() {
     return {
-
+      loading: false,
+      showVideoPop: false
+    }
+  },
+  computed: {
+    unpaid() {
+      return !(this.item.paid || parseFloat(this.item.price) === 0)
     }
   },
   methods: {
+    // 点赞
     handleLike() {
       if (this.loading) return
+      if (!this.item.firstPost.canLike) {
+        this.$message.error('没有权限操作')
+      }
       this.loading = true
       const isLiked = !this.item.firstPost.isLiked
       const params = {
@@ -60,21 +110,41 @@ export default {
         isLiked: isLiked
       }
       return this.$store.dispatch('jv/patch', params).then(data => {
+        this.$message.success(isLiked ? '点赞成功' : '取消点赞成功')
       }, e => {
         this.handleError(e)
       }).finally(() => {
         this.loading = false
       })
+    },
+    // 跳转详情页
+    toDetail() {
+      this.$router.push({ path: `/topic/${this.item._jv.id}` })
+    },
+    // 点击图片 判断是否付费， 未付费跳转详情页
+    onClickImage() {
+      if (!this.unpaid) return
+      this.$router.push({ path: `/topic/${this.item._jv.id}` })
+    },
+    // 点击视频 判断是否付费， 未付费跳转详情页
+    openVideo() {
+      if (this.unpaid) {
+        this.$router.push({ path: `/topic/${this.item._jv.id}` })
+      } else {
+        this.showVideoPop = true
+      }
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+@import '@/assets/css/variable/color.scss';
+@import '@/assets/css/variable/mixin.scss';
 .post-container{
   position: relative;
   display: flex;
   padding:20px;
-  border-bottom: 1px solid #E4E4E4;
+  border-bottom: 1px solid $border-color-base;
   // &:hover{
   //   background: #E5F2FF;
   // }
@@ -92,24 +162,32 @@ export default {
       justify-content: space-between;
       margin-bottom: 8px;
     }
+    .first-post{
+      cursor: pointer;
+    }
     .user-name{
       font-size:16px;
       font-weight: bold;
+      flex: 0 0 60%;
+      @include text-hidden();
     }
     .time{
       color: #8590A6;
       font-size:12px;
     }
+    .title{
+      font-weight: bold;
+      font-size: 20px;
+      margin-bottom:6px;
+      @include text-hidden();
+      flex: 0 0 60%;
+    }
     .content{
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 4;
-      -webkit-box-orient: vertical;
-      word-break:break-all;
+      @include text-hidden(4);
       line-height: 24px;
       font-size: 16px;
       color: #000;
+      flex: 0 0 60%;
       ::v-deep p {
         font-size: 16px;
       }
@@ -118,26 +196,94 @@ export default {
         height: 22px;
       }
     }
+    .images{
+      padding: 20px 0 0;
+      display: flex;
+      .image{
+        width:185px;
+        height: 185px;
+        border-radius: 5px;
+        margin-right: 10px;
+        &:nth-child(3n){
+          margin-right: 0;
+        }
+        .image-slot{
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          height: 100%;
+          background: #f5f7fa;
+          color: #909399;
+          font-size: 22px;
+        }
+      }
+    }
+    .image-count{
+      font-size: 12px;
+      color: $font-color-grey;
+      text-align: right;
+      margin-top: 10px;
+    }
+    .video-main{
+      position: relative;
+      margin-top:10px;
+      display: inline-block;
+      .video-img-cover,.no-cover{
+        width:300px;
+        height: 200px;
+      }
+      .no-cover{
+        background: #f5f7fa;
+        color: #909399;
+        line-height: 200px;
+        text-align: center;
+      }
+      .video-play{
+        position: absolute;
+        font-size: 40px;
+        top:50%;
+        left:50%;
+        transform: translate(-50%,-50%);
+      }
+    }
+
     .bottom-handle{
       display: flex;
       align-items: center;
+      justify-content: space-between;
       margin-top: 20px;
-      .btn{
-        color: #8590A6;
-        margin-right:36px;
-        cursor: pointer;
-      }
-      .icon{
-        margin-right: 3px;
-      }
-      .like{
-        padding: 7px 15px;
-        line-height: 1;
-        border-radius:2px;
-        &.liked{
-          background: #E5F2FF;
-          color:#1878F3;
+      .left{
+        display: flex;
+        align-items: center;
+          .btn{
+          color: $font-color-grey;
+          margin-right:36px;
+          cursor: pointer;
         }
+        .icon{
+          margin-right: 3px;
+        }
+        .like{
+          padding: 7px 15px;
+          line-height: 1;
+          border-radius:2px;
+          &.liked{
+            background: #E5F2FF;
+            color:$color-blue-base;
+          }
+        }
+      }
+      .reply-btn{
+        color: $color-blue-base;
+        background: #FFFFFF;
+        border: 1px solid $color-blue-base;
+        border-radius: 2px;
+        font-size: 14px;
+        padding: 8px 20px;
+        line-height: 1;
+        outline: none;
+        cursor: pointer;
       }
     }
   }

@@ -21,13 +21,13 @@
         <loading v-if="loading" />
         <template v-else>
           <div v-if="hasMore" class="load-more" @click="loadMore">查看更多</div>
-          <div v-else class="no-more"><svg-icon v-if="threadsList.length > 0" type="empty" class="empty-icon" />{{ threadsList.length > 0 ? '没有更多了' : '暂无信息' }}</div>
+          <div v-else class="no-more"><svg-icon v-if="threadsList.length === 0" type="empty" class="empty-icon" />{{ threadsList.length > 0 ? '没有更多了' : '暂无信息' }}</div>
         </template>
       </div>
     </main>
     <aside class="cont-right">
       <div class="category background-color">
-        <category @onChange="onChangeCategory" />
+        <category :post-loading="loading" @onChange="onChangeCategory" />
       </div>
       <div class="background-color">
         <adv />
@@ -77,7 +77,7 @@ export default {
       threadType: '', // 主题类型 0普通 1长文 2视频 3图片（'' 不筛选）
       threadEssence: '', // 是否精华帖
       fromUserId: '', // 关注人id
-      hasMore: true
+      hasMore: false
     }
   },
   computed: {
@@ -121,9 +121,9 @@ export default {
       if (this.threadType !== null) {
         params['filter[type]'] = this.threadType
       }
-      Object.keys(params).forEach(item => {
-        !params[item] && delete params[item]
-      })
+      // Object.keys(params).forEach(item => {
+      //   !params[item] && delete params[item]
+      // })
       this.$store.dispatch('jv/get', ['threads', { params }]).then(data => {
         this.hasMore = data.length === this.pageSize
         if (this.pageNum === 1) {
@@ -139,8 +139,10 @@ export default {
       })
     },
     loadMore() {
-      this.pageNum += 1
-      this.getThreadsList()
+      if (this.hasMore) {
+        this.pageNum += 1
+        this.getThreadsList()
+      }
     },
     // 重新加载列表
     reloadThreadsList() {
