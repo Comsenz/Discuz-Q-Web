@@ -15,8 +15,8 @@
       </label>
       <div>
         <div v-if="showUploadImg || showUploadVideo" class="resources-list">
-          <picture-upload v-if="showUploadImg" :url="url" :header="header" :image-id-list.sync="imageIdList" />
-          <video-upload v-if="showUploadVideo" :video-list.sync="videoList" />
+          <picture-upload v-if="showUploadImg" :url="url" :header="header" :on-upload-image.sync="onUploadImage" :image-id-list.sync="imageIdList" />
+          <video-upload v-if="showUploadVideo" :on-upload-video.sync="onUploadVideo" :video-list.sync="videoList" />
         </div>
         <span class="tip">
           {{ textLimit>=text.length ? $t('post.note', { num: textLimit - text.length }) : $t('post.exceed', { num: text.length - textLimit }) }}
@@ -64,7 +64,6 @@
 
 <script>
 import handleError from '@/mixin/handleError'
-
 export default {
   name: 'Editor',
   mixins: [handleError],
@@ -85,16 +84,19 @@ export default {
       textLimit: 10000,
       selectionStart: 0,
       selectionEnd: 0,
-      showTitle: true,
+      showTitle: false,
       showEmoji: false,
       showTopic: false,
       showCaller: false,
       showMarkdown: false,
       showUploadImg: false,
       showUploadVideo: false,
+      onUploadImage: false,
+      onUploadVideo: false,
       imageIdList: [],
       videoList: [],
       typeShow: {
+        // 0 文字帖 1 帖子 2 视频 3 图片
         0: { textLimit: 450, showTitle: false, showImage: false, showVideo: false, showMarkdown: false },
         1: { textLimit: 10000, showTitle: true, showImage: true, showVideo: false, showMarkdown: true },
         2: { textLimit: 450, showTitle: false, showImage: false, showVideo: true, showMarkdown: false },
@@ -180,10 +182,17 @@ export default {
     },
     publish() {
       if (!this.categoryId) return this.$message.warning('请选择分类')
+      // 0 文字帖 1 帖子 2 视频 3 图片
       if (this.type === 0 && !this.text) return this.$message.warning('内容不能为空')
+
       if (this.type === 1 && !this.text) return this.$message.warning('内容不能为空')
       if (this.type === 1 && !this.title) return this.$message.warning('标题不能为空')
+      if (this.type === 1 && this.onUploadImage) return this.$message.warning('请等待图片上传完成')
+
+      if (this.type === 2 && this.onUploadVideo) return this.$message.warning('请等待视频上传完成')
       if (this.type === 2 && this.videoList.length === 0) return this.$message.warning('视频不能为空')
+
+      if (this.type === 3 && this.onUploadImage) return this.$message.warning('请等待图片上传完成')
       if (this.type === 3 && this.imageIdList.length === 0) return this.$message.warning('图片不能为空')
       const params = {
         _jv: {

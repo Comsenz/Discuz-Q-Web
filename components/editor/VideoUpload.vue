@@ -39,6 +39,10 @@ export default {
     videoList: {
       type: Array,
       default: () => []
+    },
+    onUploadVideo: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -61,6 +65,7 @@ export default {
       }, () => console.log('取消删除'))
     },
     addVideo(file) {
+      this.$emit('update:onUploadVideo', true)
       const _videoList = [...this.videoList]
       _videoList.push({ name: file.name, url: file.url })
       this.$emit('update:videoList', _videoList)
@@ -90,6 +95,9 @@ export default {
         _videoList[0].id = data.file_id
         this.$emit('update:videoList', _videoList)
       }, e => this.handleError(e))
+        .finally(() => {
+          this.$emit('update:onUploadVideo', false)
+        })
     }
   }
 }

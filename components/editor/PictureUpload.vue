@@ -12,11 +12,12 @@
       :disabled="imageIdList.length >= 9"
       list-type="picture-card"
       class="resources-upload"
+      :on-progress="() => $emit('update:onUploadImage', true)"
       :on-success="handleSuccess"
       :on-preview="handlePictureCardPreview"
       :before-remove="handleRemoveConfirm"
       :on-remove="handlePictureRemove"
-      :on-error="() => $message.error('文件上传失败')"
+      :on-error="handleError"
     >
       <i class="el-icon-plus" />
     </el-upload>
@@ -36,6 +37,10 @@ export default {
     imageIdList: {
       type: Array,
       default: () => []
+    },
+    onUploadImage: {
+      type: Boolean,
+      default: false
     },
     url: {
       type: String,
@@ -79,6 +84,11 @@ export default {
       const _imageIdList = [...this.imageIdList]
       _imageIdList.push(response.data.id)
       this.$emit('update:imageIdList', _imageIdList)
+      this.$emit('update:onUploadImage', false)
+    },
+    handleError() {
+      this.$emit('update:onUploadImage', false)
+      this.$message.error('文件上传失败')
     }
   }
 }
