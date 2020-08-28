@@ -107,6 +107,7 @@ export default {
     }
   },
   // 从store中获取userid获取userinfo，但getters这个方法没起作用
+  //
   computed: {
     // userId() {
     //   return this.$store.getters['session/get']('userId')
