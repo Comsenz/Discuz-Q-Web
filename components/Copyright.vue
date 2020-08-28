@@ -3,7 +3,7 @@
     <div class="info">
       <span>Powered By</span>
       <span class="site">Discuz!Q</span>
-      <span>© 2014-20{{ forums.set_site ? forums.set_site.site_expire : '' }}</span>
+      <span>© 2014-{{ forums.set_site && forums.set_site.site_expire ? '20' + forums.set_site.site_expire : year }}</span>
     </div>
     <div>分享 / 交流 / 共融</div>
     <div class="id">
@@ -23,6 +23,15 @@ export default {
       default: () => {
       }
     }
+  },
+  data() {
+    return {
+      year: '2019'
+    }
+  },
+  created() {
+    const date = new Date()
+    this.year = date.getFullYear()
   }
 }
 </script>
