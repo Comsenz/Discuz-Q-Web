@@ -1,5 +1,5 @@
 <template>
-  <div class="register" v-loading="loading">
+  <div v-loading="loading" class="register">
     <h2 class="register-title">{{ $t('user.userregister') }}</h2>
     <el-tabs
       v-model="activeName"

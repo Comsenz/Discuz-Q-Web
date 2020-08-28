@@ -3,6 +3,7 @@
     <label v-if="showTitle">
       <input v-model="title" :placeholder="$t('post.pleaseInputPostTitle')" class="input-title" type="text">
     </label>
+    <editor-payment :is-paid.sync="isPaid" :free-words.sync="freeWords" :price.sync="price" />
     <div class="container-textarea">
       <label>
         <textarea
@@ -109,6 +110,10 @@ export default {
       imageIdList: [],
       videoList: [],
       attachedIdList: [],
+      // payment
+      isPaid: false,
+      freeWords: 0,
+      price: 0,
 
       typeShow: {
         // 0 文字帖 1 帖子 2 视频 3 图片
@@ -255,15 +260,21 @@ export default {
             }
           }
         },
-        content: this.text
+        content: this.text,
+        free_words: 10,
+        price: 20
       }
       params.type = this.type
       this.title ? params.title = this.title : ''
+      if (this.isPaid) {
+        params.price = this.price
+        params.free_words = this.freeWords
+      }
       this.publishResource(params)
       return this.$store.dispatch('jv/post', params).then(data => {
         this.$router.push(`/topic/${data._jv.id}`)
       }, e => this.handleError(e)).finally(() => {
-        this.onPublish = true
+        this.onPublish = false
       })
     }
   }
@@ -312,7 +323,7 @@ export default {
       border: 1px solid $border-color-base;
       border-radius: 3px;
       position: relative;
-      margin-top: 10px;
+      margin-top: 30px;
     }
 
     .resources-list {
