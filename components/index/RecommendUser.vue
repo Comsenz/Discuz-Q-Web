@@ -19,7 +19,7 @@ export default {
   data() {
     return {
       user: {
-        avatarUrl: 'https://discuzq-1251099537.cos.ap-shanghai.myqcloud.com/public/avatar/13.png?sign=q-sign-algorithm%3Dsha1%26q-ak%3DAKIDjNmKJ3tqtiJeZFS4DG4cvymKcfTCdvvh%26q-sign-time%3D1598261028%3B1598264688%26q-key-time%3D1598261028%3B1598264688%26q-header-list%3Dhost%26q-url-param-list%3D%26q-signature%3D10bbbda1cef33422edad66f722a09c99ac4b5a6a',
+        avatarUrl: '',
         id: 13,
         username: '"xhltest"'
       }

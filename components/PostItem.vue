@@ -20,30 +20,12 @@
           <nuxt-link :to="`./topic/${item._jv.id}`" class="btn comment">
             <svg-icon type="comment" class="icon" />
             {{ $t('topic.comment') }} {{ item.firstPost.comment > 0 ? item.firstPost.comment : '' }}</nuxt-link>
-          <el-popover
-            placement="bottom"
-            width="120"
-            trigger="click"
-          >
-            <div
-              style="display: flex; flex-direction: column; align-items: center; color: #6D6D6D; font-size: 14px; text-align: center;"
-            >
-              <div style="width: 100%;border-bottom: 1px solid #EDEDED; padding: 10px 0; cursor: pointer" @click="copyLink">
-                <svg-icon style="margin-right: 6px;" type="copy-link" />
-                <span>{{ $t('core.copyLink') }}</span>
-              </div>
-              <div class="qr-code">
-                <div style="width: 100%; padding: 10px 0;">
-                  <svg-icon style="font-size: 18px;margin-right: 6px;" type="wechat-logo" />
-                  <span>{{ $t('core.wxShare') }}</span>
-                </div>
-                <div style="width: 88px; height: 88px; border: 1px solid red">二维码</div>
-              </div>
-            </div>
-            <div slot="reference" class="btn share">
+          <share-popover :threads-id="item._jv.id">
+            <div class="btn share">
               <svg-icon type="link" class="icon" />
-              {{ $t('topic.share') }}</div>
-          </el-popover>
+              {{ $t('topic.share') }}
+            </div>
+          </share-popover>
         </div>
       </template>
     </div>
@@ -52,7 +34,6 @@
 <script>
 import timerDiff from '@/mixin/timerDiff'
 import handleError from '@/mixin/handleError'
-// const QRCode = process.client && require('qrcodejs2')
 export default {
   mixins: [timerDiff, handleError],
   props: {
@@ -63,7 +44,7 @@ export default {
   },
   data() {
     return {
-      loading: false
+
     }
   },
   methods: {
@@ -79,25 +60,11 @@ export default {
         isLiked: isLiked
       }
       return this.$store.dispatch('jv/patch', params).then(data => {
-        this.loading = false
       }, e => {
-        this.loading = false
         this.handleError(e)
+      }).finally(() => {
+        this.loading = false
       })
-    },
-    copyLink() {
-      const oInput = document.createElement('input')
-      if (process.client) {
-        oInput.value = window.location.href + 'topic/' + this.item._jv.id
-        oInput.id = 'copyInput'
-        document.body.appendChild(oInput)
-        oInput.select()
-        document.execCommand('Copy')
-      }
-      this.$message.success('链接复制成功')
-      setTimeout(() => {
-        oInput.remove()
-      }, 100)
     }
   }
 }
@@ -140,7 +107,8 @@ export default {
       -webkit-line-clamp: 4;
       -webkit-box-orient: vertical;
       word-break:break-all;
-      line-height: 20px;
+      line-height: 24px;
+      font-size: 16px;
       color: #000;
       ::v-deep p {
         font-size: 16px;
@@ -174,4 +142,5 @@ export default {
     }
   }
 }
+
 </style>

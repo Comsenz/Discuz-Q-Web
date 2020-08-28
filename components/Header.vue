@@ -7,7 +7,7 @@
       >
         <img
           :src="headImg != '' && headImg != null ? headImg : require('static/logo.png')"
-          alt
+          alt="头部logo"
         >
       </div>
       <el-input
@@ -17,7 +17,6 @@
         suffix-icon="el-icon-search"
         class="h-search"
       />
-      <!-- 登陆状态 -->
       <div
         v-if="!isLogin"
         v-cloak
@@ -51,11 +50,12 @@
           class="avatar"
         />
         <el-button
+          v-if="userInfo.username"
           type="primary"
           size="small"
           class="h-button4 marleft"
           @click="jumptoperson"
-        >{{ userInfo.username }}</el-button>
+        >{{ userInfo?userInfo.username:'' }}</el-button>
 
         <el-button
           type="primary"
@@ -63,13 +63,12 @@
           class="h-button4"
         >{{ $t('home.tabsNews') }}</el-button>
 
-        <nuxt-link to="/my/profile">
-          <el-button
-            type="primary"
-            size="small"
-            class="h-button4"
-          >{{ $t('profile.personalhomepage') }}</el-button>
-        </nuxt-link>
+        <el-button
+          type="primary"
+          size="small"
+          class="h-button4"
+          @click="jumpprofile"
+        >{{ $t('profile.personalhomepage') }}</el-button>
 
         <el-button
           type="primary"
@@ -108,6 +107,7 @@ export default {
     }
   },
   // 从store中获取userid获取userinfo，但getters这个方法没起作用
+  //
   computed: {
     // userId() {
     //   return this.$store.getters['session/get']('userId')
@@ -141,14 +141,14 @@ export default {
       // this.$router.go(0)
       this.$store.dispatch('session/logout').then(() => window.location.reload())
     },
-    userinfo() {
+    async userinfo() {
       this.userId = this.$store.getters['session/get']('userId')
       // this.userId = localStorage.getItem('uid')
       console.log('userid', this.userId)
       const params = {
         _jv: { type: `/users/${this.userId}` }
       }
-      this.$store.dispatch('jv/get', params).then(res => {
+      await this.$store.dispatch('jv/get', params).then(res => {
         console.log('userinfo', res)
         this.userInfo = res
         this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
@@ -165,6 +165,9 @@ export default {
     },
     home() {
       this.$router.push('/')
+    },
+    jumpprofile() {
+      this.$router.push('/my/profile')
     }
   }
 }
