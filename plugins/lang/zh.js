@@ -243,6 +243,7 @@ export default {
     videoCannotBeEmpty: '视频不能为空',
     pleaseWaitForTheVideoUploadToComplete: '请等待视频上传完成',
     pleaseWaitForTheImageUploadToComplete: '请等待图片上传完成',
+    pleaseWaitForTheAttachedUploadToComplete: '请等待附件上传完成',
     failedToObtainSignature: '获取签名失败',
     fromWeChatApplet: '来自微信小程序',
     pleaseEnterAPostTitle: '请输入帖子标题'

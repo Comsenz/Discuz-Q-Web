@@ -24,6 +24,7 @@
       action=""
       list-type="picture-card"
       class="image-upload"
+      accept="video/*"
       :limit="1"
       :disabled="videoList.length > 0"
       :on-change="addVideo"

@@ -14,9 +14,17 @@
         />
       </label>
       <div>
-        <div v-if="showUploadImg || showUploadVideo" class="resources-list">
+        <div v-if="showUploadImg || showUploadVideo || showUploadAttached" class="resources-list">
           <picture-upload v-if="showUploadImg" :url="url" :header="header" :on-upload-image.sync="onUploadImage" :image-id-list.sync="imageIdList" />
           <video-upload v-if="showUploadVideo" :on-upload-video.sync="onUploadVideo" :video-list.sync="videoList" />
+          <attached-upload
+            v-if="showUploadAttached"
+            :url="url"
+            :header="header"
+            :type-limit="attachedTypeLimit"
+            :on-upload-attached.sync="onUploadAttached"
+            :attached-id-list.sync="attachedIdList"
+          />
         </div>
         <span class="tip">
           {{ textLimit>=text.length ? $t('post.note', { num: textLimit - text.length }) : $t('post.exceed', { num: text.length - textLimit }) }}
@@ -57,16 +65,16 @@
         </div>
         <caller v-if="showCaller" @close="showCaller = false" @selectedCaller="selectActions" />
       </div>
-
     </div>
   </div>
 </template>
 
 <script>
 import handleError from '@/mixin/handleError'
+import forums from '@/mixin/forums'
 export default {
   name: 'Editor',
-  mixins: [handleError],
+  mixins: [forums, handleError],
   props: {
     categoryId: {
       type: String,
@@ -84,24 +92,30 @@ export default {
       textLimit: 10000,
       selectionStart: 0,
       selectionEnd: 0,
+      // actions
       showTitle: false,
       showEmoji: false,
       showTopic: false,
       showCaller: false,
       showMarkdown: false,
+      // resource
       showUploadImg: false,
       showUploadVideo: false,
+      showUploadAttached: false,
       onUploadImage: false,
       onUploadVideo: false,
+      onUploadAttached: false,
       onPublish: false,
       imageIdList: [],
       videoList: [],
+      attachedIdList: [],
+
       typeShow: {
         // 0 文字帖 1 帖子 2 视频 3 图片
-        0: { textLimit: 450, showTitle: false, showImage: false, showVideo: false, showMarkdown: false },
-        1: { textLimit: 10000, showTitle: true, showImage: true, showVideo: false, showMarkdown: true },
-        2: { textLimit: 450, showTitle: false, showImage: false, showVideo: true, showMarkdown: false },
-        3: { textLimit: 450, showTitle: false, showImage: true, showVideo: false, showMarkdown: false }
+        0: { textLimit: 450, showTitle: false, showImage: false, showVideo: false, showAttached: false, showMarkdown: false },
+        1: { textLimit: 10000, showTitle: true, showImage: true, showVideo: false, showAttached: true, showMarkdown: true },
+        2: { textLimit: 450, showTitle: false, showImage: false, showVideo: true, showAttached: false, showMarkdown: false },
+        3: { textLimit: 450, showTitle: false, showImage: true, showVideo: false, showAttached: false, showMarkdown: false }
       },
       listenerList: ['emoji-list', 'topic-list'],
       actions: [
@@ -111,7 +125,8 @@ export default {
       ],
       resources: [
         { icon: 'picture', toggle: 'showUploadImg', show: false },
-        { icon: 'video', toggle: 'showUploadVideo', show: false }
+        { icon: 'video', toggle: 'showUploadVideo', show: false },
+        { icon: 'attached', toggle: 'showUploadAttached', show: false }
       ]
     }
   },
@@ -126,6 +141,10 @@ export default {
         return { authorization: `Bearer ${token}` }
       }
       return ''
+    },
+    attachedTypeLimit() {
+      const limitText = this.forums.set_attach.support_file_ext + this.forums.set_attach.support_img_ext
+      return limitText.split(',').map(item => '.' + item).join(',')
     }
   },
   mounted() {
@@ -149,6 +168,7 @@ export default {
       this.showMarkdown = typeShow.showMarkdown
       this.resources[0].show = typeShow.showImage
       this.resources[1].show = typeShow.showVideo
+      this.resources[2].show = typeShow.showAttached
     },
     getSelection() {
       this.selectionStart = document.getElementById('textarea').selectionStart
@@ -181,7 +201,32 @@ export default {
       this.showTopic = false
       this.showCaller = false
     },
-    publish() {
+    createAttachmentsData(resource) {
+      return resource.map(item => {
+        const obj = {}
+        obj.id = item
+        obj.type = 'attachments'
+        return obj
+      })
+    },
+    publishResource(params) {
+      console.log(this.imageIdList, this.attachedIdList)
+      const imageData = this.createAttachmentsData(this.imageIdList)
+      const attachedData = this.createAttachmentsData(this.attachedIdList)
+      console.log(imageData, attachedData)
+      if (imageData.length > 0 || attachedData.length > 0) {
+        params._jv.relationships.attachments = {}
+        params._jv.relationships.attachments.data = []
+        params._jv.relationships.attachments.data.push(...imageData)
+        params._jv.relationships.attachments.data.push(...attachedData)
+      }
+      if (this.videoList.length > 0) {
+        params.file_id = this.videoList[0].id
+        params.file_name = this.videoList[0].name
+      }
+      return params
+    },
+    checkPublish() {
       if (!this.categoryId) return this.$message.warning(this.$t('post.theClassifyCanNotBeBlank'))
       // 0 文字帖 1 帖子 2 视频 3 图片
       if (this.type === 0 && !this.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
@@ -189,12 +234,17 @@ export default {
       if (this.type === 1 && !this.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
       if (this.type === 1 && !this.title) return this.$message.warning(this.$t('post.theTitleCanNotBeBlank'))
       if (this.type === 1 && this.onUploadImage) return this.$message.warning(this.$t('post.pleaseWaitForTheImageUploadToComplete'))
+      if (this.type === 1 && this.onUploadAttached) return this.$message.warning(this.$t('post.pleaseWaitForTheAttachedUploadToComplete'))
 
       if (this.type === 2 && this.onUploadVideo) return this.$message.warning(this.$t('post.pleaseWaitForTheVideoUploadToComplete'))
       if (this.type === 2 && this.videoList.length === 0) return this.$message.warning(this.$t('post.videoCannotBeEmpty'))
 
       if (this.type === 3 && this.onUploadImage) return this.$message.warning(this.$t('post.pleaseWaitForTheImageUploadToComplete'))
       if (this.type === 3 && this.imageIdList.length === 0) return this.$message.warning(this.$t('post.imageCannotBeEmpty'))
+      return 'success'
+    },
+    publish() {
+      if (this.checkPublish() !== 'success') return
       this.onPublish = true
       const params = {
         _jv: {
@@ -209,21 +259,8 @@ export default {
       }
       params.type = this.type
       this.title ? params.title = this.title : ''
-      if (this.imageIdList.length > 0) {
-        params._jv.relationships.attachments = {}
-        params._jv.relationships.attachments.data = this.imageIdList.splice(',').map(item => {
-          const obj = {}
-          obj.id = item
-          obj.type = 'attachments'
-          return obj
-        })
-      }
-      if (this.videoList.length > 0) {
-        params.file_id = this.videoList[0].id
-        params.file_name = this.videoList[0].name
-      }
+      this.publishResource(params)
       return this.$store.dispatch('jv/post', params).then(data => {
-        console.log(data, 'data')
         this.$router.push(`/topic/${data._jv.id}`)
       }, e => this.handleError(e)).finally(() => {
         this.onPublish = true

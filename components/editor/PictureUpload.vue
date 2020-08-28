@@ -7,7 +7,7 @@
       multiple
       name="file"
       with-credentials
-      accept="image/png, image/jpeg"
+      accept="image/*"
       :limit="9"
       :disabled="imageIdList.length >= 9"
       list-type="picture-card"
@@ -114,6 +114,7 @@ export default {
       display: inline-flex;
       justify-content: center;
       align-items: center;
+      margin-bottom: 8px;
     }
   }
 </style>
