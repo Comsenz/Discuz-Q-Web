@@ -2,10 +2,13 @@
   <div>
     <div v-if="videoList[0]" class="video-upload">
       <video
+        ref="video"
         class="video"
         :src="videoList[0].url"
         :controls="false"
       />
+      <video-pop v-if="showVideoPop" :url="videoList[0].url" @remove="showVideoPop = false" />
+      <svg-icon type="video-play" class="icon-play" style="font-size: 30px" @click="showVideoPop = true" />
       <svg-icon type="delete-red" class="icon-delete" style="font-size: 22px" @click="handleVideoRemove" />
       <el-progress
         v-show="videoPercent < 1"
@@ -20,7 +23,7 @@
       ref="upload"
       action=""
       list-type="picture-card"
-      class="resources-upload"
+      class="image-upload"
       :limit="1"
       :disabled="videoList.length > 0"
       :on-change="addVideo"
@@ -47,7 +50,8 @@ export default {
   },
   data() {
     return {
-      videoPercent: 0
+      videoPercent: 0,
+      showVideoPop: false
     }
   },
   methods: {
@@ -141,6 +145,14 @@ export default {
       height: 2px;
     }
 
+    > .icon-play {
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
     > .icon-delete {
       cursor: pointer;
       position: absolute;
@@ -149,6 +161,7 @@ export default {
     }
 
     > .video {
+      cursor: pointer;
       width: 100px;
       height: 100px;
       display: inline-block;

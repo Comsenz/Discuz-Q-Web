@@ -52,7 +52,7 @@
             </template>
           </div>
           <editor-markdown v-if="showMarkdown" :text="text" class="block" @changeText="changeText" />
-          <el-button class="button-publish" type="primary" size="small" @click="publish">{{ $t('post.post') }}
+          <el-button class="button-publish" :loading="onPublish" type="primary" size="small" @click="publish">{{ $t('post.post') }}
           </el-button>
         </div>
         <caller v-if="showCaller" @close="showCaller = false" @selectedCaller="selectActions" />
@@ -93,6 +93,7 @@ export default {
       showUploadVideo: false,
       onUploadImage: false,
       onUploadVideo: false,
+      onPublish: false,
       imageIdList: [],
       videoList: [],
       typeShow: {
@@ -181,19 +182,20 @@ export default {
       this.showCaller = false
     },
     publish() {
-      if (!this.categoryId) return this.$message.warning('请选择分类')
+      if (!this.categoryId) return this.$message.warning(this.$t('post.theClassifyCanNotBeBlank'))
       // 0 文字帖 1 帖子 2 视频 3 图片
-      if (this.type === 0 && !this.text) return this.$message.warning('内容不能为空')
+      if (this.type === 0 && !this.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
 
-      if (this.type === 1 && !this.text) return this.$message.warning('内容不能为空')
-      if (this.type === 1 && !this.title) return this.$message.warning('标题不能为空')
-      if (this.type === 1 && this.onUploadImage) return this.$message.warning('请等待图片上传完成')
+      if (this.type === 1 && !this.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
+      if (this.type === 1 && !this.title) return this.$message.warning(this.$t('post.theTitleCanNotBeBlank'))
+      if (this.type === 1 && this.onUploadImage) return this.$message.warning(this.$t('post.pleaseWaitForTheImageUploadToComplete'))
 
-      if (this.type === 2 && this.onUploadVideo) return this.$message.warning('请等待视频上传完成')
-      if (this.type === 2 && this.videoList.length === 0) return this.$message.warning('视频不能为空')
+      if (this.type === 2 && this.onUploadVideo) return this.$message.warning(this.$t('post.pleaseWaitForTheVideoUploadToComplete'))
+      if (this.type === 2 && this.videoList.length === 0) return this.$message.warning(this.$t('post.videoCannotBeEmpty'))
 
-      if (this.type === 3 && this.onUploadImage) return this.$message.warning('请等待图片上传完成')
-      if (this.type === 3 && this.imageIdList.length === 0) return this.$message.warning('图片不能为空')
+      if (this.type === 3 && this.onUploadImage) return this.$message.warning(this.$t('post.pleaseWaitForTheImageUploadToComplete'))
+      if (this.type === 3 && this.imageIdList.length === 0) return this.$message.warning(this.$t('post.imageCannotBeEmpty'))
+      this.onPublish = true
       const params = {
         _jv: {
           type: `/threads`,
@@ -223,7 +225,9 @@ export default {
       return this.$store.dispatch('jv/post', params).then(data => {
         console.log(data, 'data')
         this.$router.push(`/topic/${data._jv.id}`)
-      }, e => this.handleError(e))
+      }, e => this.handleError(e)).finally(() => {
+        this.onPublish = true
+      })
     }
   }
 }
@@ -326,7 +330,7 @@ export default {
     .topic-list {
       position: absolute;
       top: calc(100% + 5px);
-      left: 88px;
+      left: 80px;
     }
   }
 </style>

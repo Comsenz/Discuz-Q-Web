@@ -1,7 +1,7 @@
 <template>
   <div class="page-post">
-    <div class="title">发话题</div>
-    <div class="category-list">
+    <div class="title">{{ $t('post.postThread') }}</div>
+    <div v-loading="categoryList.length === 0" class="category-list">
       <template v-for="(category, index) in categoryList">
         <span
           v-if="category.canCreateThread"
@@ -35,6 +35,7 @@ export default {
     this.getCategoryList()
   },
   methods: {
+    // TODO 未登录
     getCategoryList() {
       this.$store.dispatch('jv/get', ['categories', {}]).then(res => {
         this.categoryList = res
@@ -58,6 +59,7 @@ export default {
     font-size: 26px;
   }
   > .category-list {
+    min-height: 25px;
     margin-top: 50px;
     > .category {
       display: inline-block;
