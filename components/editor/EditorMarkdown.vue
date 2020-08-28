@@ -28,7 +28,7 @@ export default {
       markdownList: [
         { icon: 'bold', tip: '粗体文字', code: '**', fn: 'markdownWrap' },
         { icon: 'header', tip: '标题', code: '### ', fn: 'markdownPrefix' },
-        { icon: 'italics', tip: '斜体文字', code: '__', fn: 'markdownWrap' },
+        { icon: 'italics', tip: '斜体文字', code: '_', fn: 'markdownWrap' },
         { icon: 'quote', tip: '引用', code: '> ', fn: 'markdownPrefix' },
         { icon: 'code', tip: '代码块', code: '`', fn: 'markdownWrap' },
         { icon: 'delete-line', tip: '删除线', code: '~~', fn: 'markdownWrap' },

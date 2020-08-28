@@ -1,6 +1,6 @@
 <template>
   <div class="editor">
-    <label v-if="titleShow">
+    <label v-if="showTitle">
       <input v-model="title" :placeholder="$t('post.pleaseInputPostTitle')" class="input-title" type="text">
     </label>
     <div class="container-textarea">
@@ -42,6 +42,7 @@
           <div class="block">
             <template v-for="(resource, index) in resources">
               <svg-icon
+                v-if="resource.show"
                 :key="index"
                 :type="resource.icon"
                 class="svg"
@@ -50,8 +51,9 @@
               />
             </template>
           </div>
-          <editor-markdown :text="text" class="block" @changeText="changeText" />
-          <el-button class="button-publish" type="primary" size="small" @click="publish">{{ $t('post.post') }} </el-button>
+          <editor-markdown v-if="showMarkdown" :text="text" class="block" @changeText="changeText" />
+          <el-button class="button-publish" type="primary" size="small" @click="publish">{{ $t('post.post') }}
+          </el-button>
         </div>
         <caller v-if="showCaller" @close="showCaller = false" @selectedCaller="selectActions" />
       </div>
@@ -78,19 +80,26 @@ export default {
   },
   data() {
     return {
-      titleShow: true,
       title: '',
       text: '',
       textLimit: 10000,
       selectionStart: 0,
       selectionEnd: 0,
+      showTitle: true,
       showEmoji: false,
       showTopic: false,
       showCaller: false,
+      showMarkdown: false,
       showUploadImg: false,
       showUploadVideo: false,
       imageIdList: [],
       videoList: [],
+      typeShow: {
+        0: { textLimit: 450, showTitle: false, showImage: false, showVideo: false, showMarkdown: false },
+        1: { textLimit: 10000, showTitle: true, showImage: true, showVideo: false, showMarkdown: true },
+        2: { textLimit: 450, showTitle: false, showImage: false, showVideo: true, showMarkdown: false },
+        3: { textLimit: 450, showTitle: false, showImage: true, showVideo: false, showMarkdown: false }
+      },
       listenerList: ['emoji-list', 'topic-list'],
       actions: [
         { icon: 'emoji', toggle: 'showEmoji' },
@@ -98,8 +107,8 @@ export default {
         { icon: 'topic', toggle: 'showTopic' }
       ],
       resources: [
-        { icon: 'picture', toggle: 'showUploadImg' },
-        { icon: 'video', toggle: 'showUploadVideo' }
+        { icon: 'picture', toggle: 'showUploadImg', show: false },
+        { icon: 'video', toggle: 'showUploadVideo', show: false }
       ]
     }
   },
@@ -117,10 +126,12 @@ export default {
     }
   },
   mounted() {
+    this.initActions()
     this.autoHeight()
     this.emojiListener()
   },
   methods: {
+    changeText(newText) { this.text = newText },
     autoHeight() {
       const textarea = document.getElementById('textarea')
       textarea.onkeyup = function() {
@@ -128,8 +139,13 @@ export default {
         this.style.height = this.scrollHeight + 'px'
       }
     },
-    changeText(newText) {
-      this.text = newText
+    initActions() {
+      const typeShow = this.typeShow[this.type]
+      this.textLimit = typeShow.textLimit
+      this.showTitle = typeShow.showTitle
+      this.showMarkdown = typeShow.showMarkdown
+      this.resources[0].show = typeShow.showImage
+      this.resources[1].show = typeShow.showVideo
     },
     getSelection() {
       this.selectionStart = document.getElementById('textarea').selectionStart
@@ -163,7 +179,12 @@ export default {
       this.showCaller = false
     },
     publish() {
-      if (!this.categoryId) this.$message.warning('请选择分类')
+      if (!this.categoryId) return this.$message.warning('请选择分类')
+      if (this.type === 0 && !this.text) return this.$message.warning('内容不能为空')
+      if (this.type === 1 && !this.text) return this.$message.warning('内容不能为空')
+      if (this.type === 1 && !this.title) return this.$message.warning('标题不能为空')
+      if (this.type === 2 && this.videoList.length === 0) return this.$message.warning('视频不能为空')
+      if (this.type === 3 && this.imageIdList.length === 0) return this.$message.warning('图片不能为空')
       const params = {
         _jv: {
           type: `/threads`,
@@ -173,10 +194,11 @@ export default {
             }
           }
         },
-        title: this.title,
         content: this.text
       }
-      if (this.type === 1 && this.imageIdList.length > 0) {
+      params.type = this.type
+      this.title ? params.title = this.title : ''
+      if (this.imageIdList.length > 0) {
         params._jv.relationships.attachments = {}
         params._jv.relationships.attachments.data = this.imageIdList.splice(',').map(item => {
           const obj = {}
@@ -185,13 +207,13 @@ export default {
           return obj
         })
       }
-      if (this.type === 2 && this.videoList.length > 0) {
+      if (this.videoList.length > 0) {
         params.file_id = this.videoList[0].id
         params.file_name = this.videoList[0].name
       }
-      params.type = this.type
       return this.$store.dispatch('jv/post', params).then(data => {
         console.log(data, 'data')
+        this.$router.push(`/topic/${data._jv.id}`)
       }, e => this.handleError(e))
     }
   }
