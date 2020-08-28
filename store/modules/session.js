@@ -171,18 +171,28 @@ const actions = {
           setUserInfoStore(context, results, resolve)
         })
         .catch(error => {
-          console.log('hhh')
-          const {
-            response: {
-              data: { errors }
-            }
-          } = error
-          if (errors[0]) {
-            const error = errors[0].detail
-              ? errors[0].detail[0]
-              : errors[0].code
-            Message.error(error)
-          }
+          resolve(error.response)
+
+          // console.log('hhh')
+          // const {
+          //   response: {
+          //     data: { errors }
+          //   }
+          // } = error
+          // if (errors[0]) {
+          //   if (errors[0].status === '401') {
+          //     if (errors[0].code === 'ban_user') {
+          //       Message.error('账号禁用中，请等管理员解除警用')
+          //     } else {
+          //       Message.error('账号审核中，请等管理员审核通过')
+          //     }
+          //   } else {
+          //     const error = errors[0].detail
+          //       ? errors[0].detail[0]
+          //       : errors[0].code
+          //     Message.error(error)
+          //   }
+          // }
         })
     })
   },
@@ -208,18 +218,28 @@ const actions = {
           setUserInfoStore(context, results, resolve)
         })
         .catch(error => {
-          console.log('hhh')
-          const {
-            response: {
-              data: { errors }
-            }
-          } = error
-          if (errors[0]) {
-            const error = errors[0].detail
-              ? errors[0].detail[0]
-              : errors[0].code
-            Message.error(error)
-          }
+          resolve(error.response)
+          // console.log('hhh')
+          // const {
+          //   response: {
+          //     data: { errors }
+          //   }
+          // } = error
+          // if (errors[0]) {
+          //   console.log(errors[0])
+          //   if (errors[0].status === '401') {
+          //     if (errors[0].code === 'ban_user') {
+          //       Message.error('账号禁用中，请等管理员解除警用')
+          //     } else {
+          //       Message.error('账号审核中，请等管理员审核通过')
+          //     }
+          //   } else {
+          //     const error = errors[0].detail
+          //       ? errors[0].detail[0]
+          //       : errors[0].code
+          //     Message.error(error)
+          //   }
+          // }
         })
     })
   },

@@ -1,12 +1,20 @@
 <template>
-  <div class="register">
+  <div
+    v-loading="loading"
+    class="register"
+  >
     <h2 class="register-title">{{ $t('user.userlogin') }}</h2>
     <el-tabs
+      v-model="activeName"
       type="border-card"
       class="register-select"
+      @tab-click="changeactive"
     >
       <!-- 用户名登录 -->
-      <el-tab-pane :label="$t('user.userlogin')">
+      <el-tab-pane
+        :label="$t('user.userlogin')"
+        name="0"
+      >
         <span class="title">用户名</span>
         <el-input
           v-model="userName"
@@ -41,8 +49,8 @@
       </el-tab-pane>
       <!-- 手机号登录 -->
       <el-tab-pane
-        v-if="forums && forums.set_reg && forums.set_reg.register_type === 1"
         :label="$t('user.phonelogin')"
+        name="1"
       >
         <span class="title2">{{ $t('profile.mobile') }}</span>
 
@@ -83,7 +91,10 @@
         >{{ $t('user.login') }}</el-button>
       </el-tab-pane>
       <!-- 快捷登录 -->
-      <el-tab-pane :label="$t('user.quicklogin')">
+      <el-tab-pane
+        :label="$t('user.quicklogin')"
+        name="2"
+      >
         <div class="quick">
           <div class="quick-container">
             <div class="quick-title">
@@ -133,7 +144,7 @@
 
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
-import forums from '@/mixin/forums'
+// import forums from '@/mixin/forums'
 import handleError from '@/mixin/handleError'
 import { SITE_PAY } from '@/common/const'
 
@@ -142,25 +153,30 @@ const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
 // let QuickLogin = null
 export default {
   name: 'Login',
-  mixins: [forums, handleError, tcaptchs],
-  // async asyncData({ params, store }) {
-  //   const _params = {
-  //     _jv: {
-  //       type: 'oauth/wechat/web/user'
-  //     }
-  //   }
-  //   const data = await store.dispatch('jv/get', _params)
-  //   return { info: data, scene_str: data.scene_str }
-  // },
+  mixins: [handleError, tcaptchs],
+  async asyncData({ params, store }) {
+    const _params = {
+      _jv: {
+        type: 'forum'
+      }
+    }
+
+    const data = await store.dispatch('jv/get', _params)
+    // console.log('asyncData =>', data)
+    return { forums: data }
+  },
   data() {
     return {
       userName: '',
       passWord: '',
       phoneNumber: '',
+      forums: '',
       checked: true,
       content: this.$t('modify.sendVerifyCode'),
       canClick: false,
+      activeName: '0', // 默认激活tab
       verifyCode: '',
+      canClickNum: false,
       info: '', // 微信二维码数据
       scene_str: '',
       loginStatus: false, // 登录状态
@@ -170,11 +186,12 @@ export default {
       isPaid: false, // 是否付费
       qcloud_sms: false, // 默认不开启短信功能
       code: '', // 注册邀请码
-      token: '' // token
+      token: '', // token,
+      loading: false
 
     }
   },
-  created() {
+  mounted() {
     const { url, validate, register, token, code } = this.$route.query
     console.log('query', this.$route.query)
     if (url) {
@@ -192,6 +209,7 @@ export default {
     if (token) {
       this.token = token
     }
+
     console.log('----this.forums-----', this.forums)
     if (this.forums && this.forums.set_site && this.forums.set_site.site_mode) {
       this.site_mode = this.forums.set_site.site_mode
@@ -199,7 +217,9 @@ export default {
     if (this.forums && this.forums.qcloud) {
       this.qcloud_sms = this.forums.qcloud.qcloud_sms
     }
+    console.log(this.forums)
     this.QRcode()
+    this.changeactive()
   },
   methods: {
     countDown(interval) {
@@ -227,10 +247,15 @@ export default {
         this.canClick = false
       }
     },
+    // tab激活
+    changeactive() {
+      this.activeName = this.forums ? this.forums.set_reg.register_type.toString() : ''
+      this.canClickNum = this.activeName !== '1'
+      console.log(this.canClickNum)
+    },
     // 用户名登录
     UserLogin() {
-      console.log(this.userName)
-      console.log(this.passWord)
+      this.loading = true
       if (this.username === '') {
         this.$message.error('用户名不能为空')
       } else if (this.password === '') {
@@ -246,13 +271,40 @@ export default {
         }
         this.$store.dispatch('session/h5Login', params)
           .then(res => {
+            this.loading = false
             console.log('登录成功', res)
-            // console.log(this.$store.getters['session/get']('userId'))
-            this.logind()
-            this.userName = ''
-            this.passWord = ''
-            this.$message.success('登录成功')
-          }, e => this.handleError(e))
+            if (res && res.data && res.data.data && res.data.data.id) {
+              this.logind()
+              this.userName = ''
+              this.passWord = ''
+              this.$message.success('登录成功')
+            }
+            if (
+              res &&
+              res.data &&
+              res.data.errors &&
+              res.data.errors[0].status === '422'
+            ) {
+              this.$message.error(
+                res.data.errors[0].detail[0]
+              )
+            }
+            if (
+              res &&
+              res.data &&
+              res.data.errors &&
+              res.data.errors[0].code === 'register_validate'
+            ) {
+              this.$message.error('账号审核中，请等管理员审核通过')
+              this.$router.push('/')
+            }
+            this.$message.error(
+              res.data.errors[0].detail[0]
+            )
+          })
+          .catch(err => {
+            console.log(err)
+          })
       }
     },
     logind() {
@@ -312,9 +364,6 @@ export default {
               this.sendVerifyCode()
             }
           }
-          // if (res.ret === 2) {
-          //   uni.hideLoading()
-          // }
         })
         // 显示验证码
         this.captcha.show()
@@ -322,10 +371,15 @@ export default {
       // #endif
     },
     sendVerifyCode() {
+      // this.loading = true
       const params = {
         _jv: { type: 'sms/send' },
         mobile: this.phoneNumber,
         type: 'login'
+      }
+      if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha_app_id) {
+        params.captcha_rand_str = this.randstr
+        params.captcha_ticket = this.ticket
       }
       status.run(() => this.$store.dispatch('jv/post', params))
         .then(res => {
@@ -441,6 +495,9 @@ export default {
 </script>
 <style lang='scss' scoped>
 //@import url(); 引入公共css类
+::v-deep.disable {
+  pointer-events: none;
+}
 .register {
   display: flex;
   width: 400px;
@@ -461,6 +518,7 @@ export default {
     border: none;
     background: transparent;
     box-shadow: none;
+
     .title {
       width: 66px;
       text-align: center;

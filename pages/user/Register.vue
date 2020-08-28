@@ -1,12 +1,17 @@
 <template>
-  <div class="register">
+  <div class="register" v-loading="loading">
     <h2 class="register-title">{{ $t('user.userregister') }}</h2>
     <el-tabs
+      v-model="activeName"
       type="border-card"
       class="register-select"
+      @tab-click="changeactive"
     >
       <!-- 用户名注册 -->
-      <el-tab-pane :label="$t('user.userregister') ">
+      <el-tab-pane
+        :label="$t('user.userregister') "
+        name="0"
+      >
         <div>
           <span class="title">{{ $t('profile.username') }}</span>
           <el-input
@@ -66,8 +71,8 @@
       </el-tab-pane>
       <!-- 手机号注册 -->
       <el-tab-pane
-        v-if="forums && forums.set_reg && forums.set_reg.register_type === 1"
         :label="$t('user.phoneregister')"
+        name="1"
       >
         <span class="title2">{{ $t('user.phonenumber') }}</span>
         <el-input
@@ -152,7 +157,7 @@
 </template>
 
 <script>
-import forums from '@/mixin/forums'
+// import forums from '@/mixin/forums'
 import handleError from '@/mixin/handleError'
 import { status } from '@/library/jsonapi-vuex/index'
 import { SITE_PAY } from '@/common/const'
@@ -162,14 +167,28 @@ const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
 export default {
   name: 'Register',
   mixins: [
-    forums, handleError, tcaptchs
+    handleError, tcaptchs
   ],
+  async asyncData({ params, store }) {
+    const _params = {
+      _jv: {
+        type: 'forum'
+      }
+    }
+
+    const data = await store.dispatch('jv/get', _params)
+    // console.log('asyncData =>', data)
+    return { forums: data }
+  },
   data() {
     return {
       userName: '',
       passWord: '',
       phoneNumber: '',
       verifyCode: '',
+      activeName: '0', // 默认激活tab
+      canClickNum: false,
+      forums: '',
       Reason: '', // 注册原因
       url: '', // 上一个页面的路径
       validate: false, // 默认不开启注册审核
@@ -184,7 +203,8 @@ export default {
       randstr: '',
       checked: true,
       content: this.$t('modify.sendVerifyCode'),
-      canClick: false
+      canClick: false,
+      loading: false
 
     }
   },
@@ -217,7 +237,11 @@ export default {
     if (this.forums && this.forums.qcloud) {
       this.qcloud_sms = this.forums.qcloud.qcloud_sms
     }
+    if (this.forums && this.forums.set_reg) {
+      this.validate = this.forums.set_reg.register_validate
+    }
     // this.QRcode()
+    this.changeactive()
   },
   methods: {
     countDown(interval) {
@@ -266,7 +290,13 @@ export default {
           this.$router.push('/site/info')
         }
       })
-      this.$store.dispatch('forum/setError', { loading: false })
+      // this.$store.dispatch('forum/setError', { loading: false })
+    },
+    // tab激活
+    changeactive() {
+      this.activeName = this.forums ? this.forums.set_reg.register_type.toString() : ''
+      this.canClickNum = this.activeName !== '1'
+      console.log(this.canClickNum)
     },
     changeinput() {
       setTimeout(() => {
@@ -312,15 +342,12 @@ export default {
           if (res.ret === 0) {
             this.ticket = res.ticket
             this.randstr = res.randstr
-            if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
-              this.sendVerifyCode()
-            } else {
+            if (this.passWord) {
               this.registerClick()
+            } else {
+              this.sendVerifyCode()
             }
           }
-          // if (res.ret === 2) {
-          //   uni.hideLoading()
-          // }
         })
         // 显示验证码
         this.captcha.show()
@@ -328,6 +355,7 @@ export default {
       // #endif
     },
     registerClick() {
+      this.loading = true
       const params = {
         // _jv: { type: '/register' },
         // username: this.userName,
@@ -358,11 +386,12 @@ export default {
       this.$store
         .dispatch('session/h5Register', params)
         .then(res => {
+          this.loading = false
           console.log('注册成功', res)
           if (res && res.data && res.data.data && res.data.data.id) {
             console.log('注册成功', res)
             this.logind()
-            this.$t('user.registerSuccess')
+            this.$message.success(this.$t('user.registerSuccess'))
           }
           if (
             res &&
@@ -370,7 +399,18 @@ export default {
             res.data.errors &&
             res.data.errors[0].status === '422'
           ) {
-            this.$message.error(res.data.errors[0].detail[0])
+            this.$message.error(
+              res.data.errors[0].detail[0]
+            )
+          }
+          if (
+            res &&
+            res.data &&
+            res.data.errors &&
+            res.data.errors[0].code === 'register_validate'
+          ) {
+            this.$message.error('账号审核中，请等管理员审核通过')
+            this.$router.push('/')
           }
         })
         .catch(err => {
@@ -392,6 +432,11 @@ export default {
         _jv: { type: 'sms/send' },
         mobile: this.phoneNumber,
         type: 'login'
+      }
+
+      if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha_app_id) {
+        params.captcha_rand_str = this.randstr
+        params.captcha_ticket = this.ticket
       }
       status.run(() => this.$store.dispatch('jv/post', params))
         .then(res => {
@@ -425,6 +470,18 @@ export default {
               type: 'login'
             }
           }
+        }
+        if (this.register_captcha && this.validate) {
+          params.data.attributes.register_reason = this.reason
+          params.data.attributes.captcha_ticket = this.ticket
+          params.data.attributes.captcha_rand_str = this.randstr
+        }
+        if (this.validate) {
+          params.data.attributes.register_reason = this.reason
+        }
+        if (this.register_captcha) {
+          params.data.attributes.captcha_ticket = this.ticket
+          params.data.attributes.captcha_rand_str = this.randstr
         }
         if (this.token && this.token !== '') {
           params.data.attributes.token = this.token
