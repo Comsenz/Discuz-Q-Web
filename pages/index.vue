@@ -21,7 +21,7 @@
         <loading v-if="loading" />
         <template v-else>
           <div v-if="hasMore" class="load-more" @click="loadMore">查看更多</div>
-          <div v-else class="no-more">没有更多了</div>
+          <div v-else class="no-more"><svg-icon v-if="threadsList.length > 0" type="empty" class="empty-icon" />{{ threadsList.length > 0 ? '没有更多了' : '暂无信息' }}</div>
         </template>
       </div>
     </main>
@@ -35,15 +35,19 @@
       <div class="recommend-user background-color">
         <recommend-user />
       </div>
+      <copyright :forums="forums" />
     </aside>
   </div>
 </template>
 
 <script>
 import s9e from '@/utils/s9e'
+import forums from '@/mixin/forums'
+import handleError from '@/mixin/handleError'
 export default {
   layout: 'custom_layout',
   name: 'Index',
+  mixins: [forums, handleError],
   // 异步数据用法
   // async asyncData({ params, store }) {
   //   const threadsStickyParams = {
@@ -129,7 +133,7 @@ export default {
         }
         console.log('threadsList', data)
       }, e => {
-        this.$message.error('列表加载失败')
+        this.handleError(e)
       }).finally(() => {
         this.loading = false
       })
@@ -274,5 +278,8 @@ export default {
       margin-bottom: 0;
     }
   }
+}
+.empty-icon{
+  margin-right: 6px;
 }
 </style>
