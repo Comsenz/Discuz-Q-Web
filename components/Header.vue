@@ -1,15 +1,15 @@
 <template>
   <div class="header">
     <div class="header-container">
-      <nuxt-link to="/">
-        <div class="logo">
-          <img
-            :src="headImg != '' && headImg != null ? headImg : require('static/logo.png')"
-            alt
-          >
-        </div>
-      </nuxt-link>
-
+      <div
+        class="logo"
+        @click="home"
+      >
+        <img
+          :src="headImg != '' && headImg != null ? headImg : require('static/logo.png')"
+          alt
+        >
+      </div>
       <el-input
         v-model="inputVal"
         size="medium"
@@ -23,22 +23,21 @@
         v-cloak
         class="h-button"
       >
-        <nuxt-link :to="'/user/login'">
-          <el-button
-            type="primary"
-            plain
-            size="small"
-            class="h-button1"
-          >{{ $t('user.login') }}</el-button>
-        </nuxt-link>
+        <el-button
+          type="primary"
+          plain
+          size="small"
+          class="h-button1"
+          @click="loginurl"
+        >{{ $t('user.login') }}</el-button>
 
-        <nuxt-link to="/user/register">
-          <el-button
-            type="primary"
-            size="small"
-            class="h-button2"
-          >{{ $t('user.register') }}</el-button>
-        </nuxt-link>
+        <el-button
+          type="primary"
+          size="small"
+          class="h-button2"
+          @click="registerurl"
+        >{{ $t('user.register') }}</el-button>
+
       </div>
       <div
         v-else
@@ -103,7 +102,8 @@ export default {
       isLogin: '',
       activeIndex: '1',
       userInfo: '',
-      userId: ''
+      userId: '',
+      code: '' // 邀请码
 
     }
   },
@@ -121,13 +121,17 @@ export default {
     //   return userInfo
     // }
   },
-  mounted() {
+  created() {
     this.isLoginh()
     this.userinfo()
+    const { code } = this.$route.query
+    if (code !== 'undefined') {
+      this.code = code
+    }
   },
   methods: {
     isLoginh() {
-      this.isLogin = !!window.localStorage.getItem('access_token')
+      if (process.client) this.isLogin = !!window.localStorage.getItem('access_token')
       console.log(this.isLogin)
       console.log('userinfo', this.userInfo)
     },
@@ -150,8 +154,17 @@ export default {
         this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
       })
     },
+    registerurl() {
+      this.$router.push(`/user/register?url='/'&validate=${this.forums.set_reg.register_validate}&code=${this.code}`)
+    },
     jumptoperson() {
       this.$router.push(`/profile?userId=${this.userId}`)
+    },
+    loginurl() {
+      this.$router.push('/user/login')
+    },
+    home() {
+      this.$router.push('/')
     }
   }
 }
@@ -171,7 +184,9 @@ export default {
     width: 1005px;
     height: 65px;
     padding: 15px 0;
+
     align-items: center;
+    // display: flex;
     .logo {
       float: left;
       width: 150px;
@@ -192,6 +207,7 @@ export default {
       /* background: yellow; */
     }
     .h-button {
+      height: 35px;
       float: right;
       .h-button1 {
         width: 60px;
@@ -232,6 +248,8 @@ export default {
       }
       .marleft {
         margin-left: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .h-button4:hover {
         background: none;
@@ -268,25 +286,9 @@ export default {
     }
   }
 }
-
-// .h-search-input {
-//   width: 255px;
-//   border: none;
-//   height: 100%;
-//   /* outline-color: lightskyblue; */
-//   outline: none;
-//   padding-left: 16px;
-
-//   font-size: 14px;
-//   font-family: Microsoft YaHei;
-//   font-weight: 400;
-//   line-height: 19px;
-//   color: rgba(208, 212, 220, 1);
-// }
 .search-logo {
   width: 14px;
   height: 14px;
-  /* background: blue; */
   display: inline-block;
   vertical-align: middle;
 }

@@ -6,7 +6,7 @@
     <div class="payinfo">
       <p class="payinfo-title">{{ $t('manage.payInfoTitle') }}</p>
       <p>
-        <span class="color">{{ $t('discuzq.post.paymentAmount') }}</span><span class="paymoney">{{ '¥' + ((forums.set_site && forums.set_site.site_price) || 0) }}元</span>
+        <span class="color">{{ $t('post.paymentAmount') }}</span><span class="paymoney">{{ '¥' + ((forums.set_site && forums.set_site.site_price) || 0) }}元</span>
       </p>
       <p>
         <span class="date color">{{ $t('site.periodvalidity') }}</span><span class="workdate">{{ forums.set_site && forums.set_site.site_expire
@@ -23,10 +23,16 @@
       <p>
         <span class="date color">{{ $t('site.circlemaster') }}</span>
         <span class="img">
-          <img
-            :src="forums.set_site && forums.set_site.site_author.avatar"
-            alt=""
-          ></span><span class="workdate">{{ forums.set_site && forums.set_site.site_author.username }}</span>
+          <Avatar
+            :user="{
+              username: forums.set_site && forums.set_site.site_author.username,
+              avatarUrl: forums.set_site && forums.set_site.site_author.avatar,
+            }"
+            :size="30"
+            :round="true"
+            class="avatar"
+          />
+        </span><span class="workdate">{{ forums.set_site && forums.set_site.site_author.username }}</span>
       </p>
       <p>
         <span class="date color">{{ $t('home.theme') }}</span>
@@ -38,10 +44,15 @@
           :key="index"
           class="img"
         >
-          <img
-            :src="item.avatarUrl ? item.avatarUrl : require('static/logo.png')"
-            alt=""
-          >
+          <Avatar
+            :user="{
+              username: forums.set_site && forums.set_site.site_author.username,
+              avatarUrl: forums.set_site && forums.set_site.site_author.avatar,
+            }"
+            :size="30"
+            :round="true"
+            class="avatar"
+          />
         </span>
       </p>
       <p>
@@ -70,7 +81,7 @@
         {{
           forums.set_site && forums.set_site.site_expire
             ? `  / ${$t('site.periodvalidity')}${forums.set_site &&
-              forums.set_site.site_expire}${$('site.day')}`
+              forums.set_site.site_expire}${$t('site.day')}`
             : ` / ${$t('site.permanent')}`
         }}</el-button>
     </p>

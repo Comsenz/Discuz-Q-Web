@@ -40,7 +40,10 @@
         >{{ $t('user.login') }}</el-button>
       </el-tab-pane>
       <!-- 手机号登录 -->
-      <el-tab-pane :label="$t('user.phonelogin')">
+      <el-tab-pane
+        v-if="forums && forums.set_reg && forums.set_reg.register_type === 1"
+        :label="$t('user.phonelogin')"
+      >
         <span class="title2">{{ $t('profile.mobile') }}</span>
 
         <el-input
@@ -55,7 +58,7 @@
           class="count-b"
           :class="{disabled: !canClick}"
           size="middle"
-          @click="sendVerifyCode"
+          @click="phoneRegister"
         >{{ content }}</el-button>
 
         <span class="title3">{{ $t('user.verification') }}</span>
@@ -134,10 +137,12 @@ import forums from '@/mixin/forums'
 import handleError from '@/mixin/handleError'
 import { SITE_PAY } from '@/common/const'
 
+const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
+
 // let QuickLogin = null
 export default {
   name: 'Login',
-  mixins: [forums, handleError],
+  mixins: [forums, handleError, tcaptchs],
   // async asyncData({ params, store }) {
   //   const _params = {
   //     _jv: {
@@ -232,9 +237,6 @@ export default {
         this.$message.error('密码不能为空')
       } else {
         const params = {
-          // _jv: { type: '/login' },
-          // username: this.userName,
-          // password: this.passWord
           data: {
             attributes: {
               username: this.userName,
@@ -242,23 +244,6 @@ export default {
             }
           }
         }
-        // await status.run(() => this.$store.dispatch('jv/post', params))
-        //   .then(res => {
-        //     console.log('登录信息', res)
-        //     if (res.access_token !== '') {
-        //       window.localStorage.setItem('access_token', res.access_token)
-        //       this.$message.success('登录成功')
-        //       this.$router.go(-1)
-        //     }
-        //   }, e => {
-        //     const {
-        //       response: {
-        //         data: { errors }
-        //       }
-        //     } = e
-        //     if (errors[0]) return this.$message.error(errors[0].detail[0])
-        //   })
-
         this.$store.dispatch('session/h5Login', params)
           .then(res => {
             console.log('登录成功', res)
@@ -267,11 +252,6 @@ export default {
             this.userName = ''
             this.passWord = ''
             this.$message.success('登录成功')
-            // if (res.data.data.attributes.access_token !== ' ') {
-            //   window.localStorage.setItem('access_token', res.data.data.attributes.access_token)
-            //   this.$message.success('登录成功')
-            //   this.$router.go(-1)
-            // }
           }, e => this.handleError(e))
       }
     },
@@ -306,6 +286,40 @@ export default {
         }
       })
       this.$store.dispatch('forum/setError', { loading: false })
+    },
+    // 手机号
+    phoneRegister() {
+      if (this.phoneNumber === '') {
+        this.$message.error('手机号不能为空')
+      } else if (this.forums && this.forums.set_reg && this.forums.set_reg.register_captcha) {
+        this.toTCaptcha()
+      } else {
+        this.sendVerifyCode()
+      }
+    },
+    // 验证码
+    toTCaptcha() {
+      // #ifdef H5
+      console.log('---------验证码-------')
+      if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha_app_id) {
+        // eslint-disable-next-line no-undef
+        this.captcha = new TencentCaptcha(this.forums.qcloud.qcloud_captcha_app_id, res => {
+          console.log('h5验证码', res)
+          if (res.ret === 0) {
+            this.ticket = res.ticket
+            this.randstr = res.randstr
+            if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
+              this.sendVerifyCode()
+            }
+          }
+          // if (res.ret === 2) {
+          //   uni.hideLoading()
+          // }
+        })
+        // 显示验证码
+        this.captcha.show()
+      }
+      // #endif
     },
     sendVerifyCode() {
       const params = {
@@ -346,12 +360,24 @@ export default {
             }
           }
         }
-        // if (this.token && this.token !== '') {
-        //   params.data.attributes.token = this.token
-        // }
-        // if (this.code && this.code !== 'undefined') {
-        //   params.data.attributes.inviteCode = this.code
-        // }
+        if (this.register_captcha && this.validate) {
+          params.data.attributes.register_reason = this.reason
+          params.data.attributes.captcha_ticket = this.ticket
+          params.data.attributes.captcha_rand_str = this.randstr
+        }
+        if (this.validate) {
+          params.data.attributes.register_reason = this.reason
+        }
+        if (this.register_captcha) {
+          params.data.attributes.captcha_ticket = this.ticket
+          params.data.attributes.captcha_rand_str = this.randstr
+        }
+        if (this.token && this.token !== '') {
+          params.data.attributes.token = this.token
+        }
+        if (this.code && this.code !== 'undefined') {
+          params.data.attributes.inviteCode = this.code
+        }
         this.$store
           .dispatch('session/verificationCodeh5Login', params)
           .then(res => {
@@ -391,12 +417,12 @@ export default {
     getLoginStatus(scene_str) {
       const params = {
         _jv: {
-          type: encodeURI(`oauth/wechat/web/user/search?scene_str="${scene_str}"`)
-
-        }
+          type: `oauth/wechat/web/user/search`
+        },
+        scene_str: scene_str
       }
       console.log(params)
-      this.$store.dispatch('jv/get', params).then(data => {
+      this.$store.dispatch('jv/get', `oauth/wechat/web/user/search?scene_str=${scene_str}`).then(data => {
         console.log('user data => ', data)
       })
     },
@@ -435,7 +461,7 @@ export default {
     border: none;
     background: transparent;
     box-shadow: none;
-   .title {
+    .title {
       width: 66px;
       text-align: center;
       display: inline-block;
@@ -449,7 +475,7 @@ export default {
       margin-left: 12px;
       margin-right: 12px;
     }
-   .title:first-child {
+    .title:first-child {
       margin-right: 0px;
     }
     .reg-input {

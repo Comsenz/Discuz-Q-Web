@@ -65,18 +65,23 @@
         >{{ $t('user.register') }}</el-button>
       </el-tab-pane>
       <!-- 手机号注册 -->
-      <el-tab-pane :label="$t('user.phoneregister')">
+      <el-tab-pane
+        v-if="forums && forums.set_reg && forums.set_reg.register_type === 1"
+        :label="$t('user.phoneregister')"
+      >
         <span class="title2">{{ $t('user.phonenumber') }}</span>
         <el-input
           v-model="phoneNumber"
           :placeholder="$t('user.phoneNumber')"
           class="phone-input"
+          maxlength="11"
+          @input="changeinput"
         />
 
         <el-button
           class="count-b"
           :class="{disabled: !canClick}"
-          @click="sendVerifyCode"
+          @click="phoneRegister"
         >{{ content }}</el-button>
 
         <span class="title">{{ $t('user.verification') }}</span>
@@ -100,6 +105,7 @@
           @click="PhoneLogin"
         >{{ $t('user.register') }}</el-button>
       </el-tab-pane>
+      <!-- 快速注册 -->
       <el-tab-pane label="快速注册">
         <div class="quick">
           <div class="quick-container">
@@ -151,10 +157,12 @@ import handleError from '@/mixin/handleError'
 import { status } from '@/library/jsonapi-vuex/index'
 import { SITE_PAY } from '@/common/const'
 
+const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
+
 export default {
   name: 'Register',
   mixins: [
-    forums, handleError
+    forums, handleError, tcaptchs
   ],
   data() {
     return {
@@ -175,12 +183,12 @@ export default {
       ticket: '',
       randstr: '',
       checked: true,
-      content: '获取验证码',
-      canClick: true
+      content: this.$t('modify.sendVerifyCode'),
+      canClick: false
 
     }
   },
-  created() {
+  mounted() {
     const { url, validate, register, token, code } = this.$route.query
     console.log('query', this.$route.query)
     if (url) {
@@ -201,6 +209,7 @@ export default {
     console.log('----this.forums-----', this.forums)
     if (this.forums && this.forums.set_reg && this.forums.set_reg.register_captcha) {
       this.register_captcha = this.forums.set_reg.register_captcha
+      console.log(this.register_captcha)
     }
     if (this.forums && this.forums.set_site && this.forums.set_site.site_mode) {
       this.site_mode = this.forums.set_site.site_mode
@@ -259,7 +268,17 @@ export default {
       })
       this.$store.dispatch('forum/setError', { loading: false })
     },
-    // 注册
+    changeinput() {
+      setTimeout(() => {
+        this.phoneNumber = this.phoneNumber.replace(/[^\d]/g, '')
+      }, 30)
+      if (this.phoneNumber.length === 11) {
+        this.canClick = true
+      } else {
+        this.canClick = false
+      }
+    },
+    // 用户名注册
     register() {
       if (this.userName === '') {
         this.$message.error('用户名不能为空')
@@ -271,12 +290,17 @@ export default {
         this.registerClick()
       }
     },
-    jump2Login() {
-      console.log('跳转到登录页面')
-      this.$router.push(
-        `/user/login?url=${this.url}&validate=${this.validate}`
-      )
+    // 手机号
+    phoneRegister() {
+      if (this.phoneNumber === '') {
+        this.$message.error('手机号不能为空')
+      } else if (this.forums && this.forums.set_reg && this.forums.set_reg.register_captcha) {
+        this.toTCaptcha()
+      } else {
+        this.sendVerifyCode()
+      }
     },
+
     // 验证码
     toTCaptcha() {
       // #ifdef H5
@@ -288,7 +312,11 @@ export default {
           if (res.ret === 0) {
             this.ticket = res.ticket
             this.randstr = res.randstr
-            this.registerClick()
+            if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
+              this.sendVerifyCode()
+            } else {
+              this.registerClick()
+            }
           }
           // if (res.ret === 2) {
           //   uni.hideLoading()
@@ -312,24 +340,25 @@ export default {
         }
       }
       console.log(params)
-      // if (this.register_captcha && this.validate) {
-      //   params.data.attributes.register_reason = this.reason
-      //   params.data.attributes.captcha_ticket = this.ticket
-      //   params.data.attributes.captcha_rand_str = this.randstr
-      // }
-      // if (this.validate) {
-      //   params.data.attributes.register_reason = this.reason
-      // }
-      // if (this.register_captcha) {
-      //   params.data.attributes.captcha_ticket = this.ticket
-      //   params.data.attributes.captcha_rand_str = this.randstr
-      // }
-      // if (this.code !== '') {
-      //   params.data.attributes.code = this.code
-      // }
+      if (this.register_captcha && this.validate) {
+        params.data.attributes.register_reason = this.Reason
+        params.data.attributes.captcha_ticket = this.ticket
+        params.data.attributes.captcha_rand_str = this.randstr
+      }
+      if (this.validate) {
+        params.data.attributes.register_reason = this.Reason
+      }
+      if (this.register_captcha) {
+        params.data.attributes.captcha_ticket = this.ticket
+        params.data.attributes.captcha_rand_str = this.randstr
+      }
+      if (this.code !== '') {
+        params.data.attributes.code = this.code
+      }
       this.$store
         .dispatch('session/h5Register', params)
         .then(res => {
+          console.log('注册成功', res)
           if (res && res.data && res.data.data && res.data.data.id) {
             console.log('注册成功', res)
             this.logind()
@@ -397,12 +426,12 @@ export default {
             }
           }
         }
-        // if (this.token && this.token !== '') {
-        //   params.data.attributes.token = this.token
-        // }
-        // if (this.code && this.code !== 'undefined') {
-        //   params.data.attributes.inviteCode = this.code
-        // }
+        if (this.token && this.token !== '') {
+          params.data.attributes.token = this.token
+        }
+        if (this.code && this.code !== 'undefined') {
+          params.data.attributes.inviteCode = this.code
+        }
         this.$store
           .dispatch('session/verificationCodeh5Login', params)
           .then(res => {
@@ -414,6 +443,12 @@ export default {
             console.log(err)
           })
       }
+    },
+    jump2Login() {
+      console.log('跳转到登录页面')
+      this.$router.push(
+        `/user/login?url=${this.url}&validate=${this.validate}`
+      )
     }
 
   }
