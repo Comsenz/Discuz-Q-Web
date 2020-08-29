@@ -3,6 +3,7 @@
     <label v-if="showTitle">
       <input v-model="title" :placeholder="$t('post.pleaseInputPostTitle')" class="input-title" type="text">
     </label>
+    <editor-payment v-if="type !== 0" :is-paid.sync="isPaid" :free-words.sync="freeWords" :price.sync="price" :type="type" />
     <div class="container-textarea">
       <label>
         <textarea
@@ -14,9 +15,17 @@
         />
       </label>
       <div>
-        <div v-if="showUploadImg || showUploadVideo" class="resources-list">
-          <picture-upload v-if="showUploadImg" :url="url" :header="header" :on-upload-image.sync="onUploadImage" :image-id-list.sync="imageIdList" />
+        <div v-if="showUploadImg || showUploadVideo || showUploadAttached" class="resources-list">
+          <image-upload v-if="showUploadImg" :url="url" :header="header" :on-upload-image.sync="onUploadImage" :image-list.sync="imageList" />
           <video-upload v-if="showUploadVideo" :on-upload-video.sync="onUploadVideo" :video-list.sync="videoList" />
+          <attached-upload
+            v-if="showUploadAttached"
+            :url="url"
+            :header="header"
+            :type-limit="attachedTypeLimit"
+            :on-upload-attached.sync="onUploadAttached"
+            :attached-list.sync="attachedList"
+          />
         </div>
         <span class="tip">
           {{ textLimit>=text.length ? $t('post.note', { num: textLimit - text.length }) : $t('post.exceed', { num: text.length - textLimit }) }}
@@ -57,16 +66,16 @@
         </div>
         <caller v-if="showCaller" @close="showCaller = false" @selectedCaller="selectActions" />
       </div>
-
     </div>
   </div>
 </template>
 
 <script>
 import handleError from '@/mixin/handleError'
+import forums from '@/mixin/forums'
 export default {
   name: 'Editor',
-  mixins: [handleError],
+  mixins: [forums, handleError],
   props: {
     categoryId: {
       type: String,
@@ -75,6 +84,14 @@ export default {
     type: {
       type: Number,
       default: 0
+    },
+    thread: {
+      type: Object,
+      default: () => {}
+    },
+    isEditor: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -84,24 +101,34 @@ export default {
       textLimit: 10000,
       selectionStart: 0,
       selectionEnd: 0,
+      // actions
       showTitle: false,
       showEmoji: false,
       showTopic: false,
       showCaller: false,
       showMarkdown: false,
+      // resource
       showUploadImg: false,
       showUploadVideo: false,
+      showUploadAttached: false,
       onUploadImage: false,
       onUploadVideo: false,
+      onUploadAttached: false,
       onPublish: false,
-      imageIdList: [],
+      imageList: [],
       videoList: [],
+      attachedList: [],
+      // payment
+      isPaid: false,
+      freeWords: 0,
+      price: 0,
+
       typeShow: {
         // 0 文字帖 1 帖子 2 视频 3 图片
-        0: { textLimit: 450, showTitle: false, showImage: false, showVideo: false, showMarkdown: false },
-        1: { textLimit: 10000, showTitle: true, showImage: true, showVideo: false, showMarkdown: true },
-        2: { textLimit: 450, showTitle: false, showImage: false, showVideo: true, showMarkdown: false },
-        3: { textLimit: 450, showTitle: false, showImage: true, showVideo: false, showMarkdown: false }
+        0: { textLimit: 450, showTitle: false, showImage: false, showVideo: false, showAttached: false, showMarkdown: false },
+        1: { textLimit: 10000, showTitle: true, showImage: true, showVideo: false, showAttached: true, showMarkdown: true },
+        2: { textLimit: 450, showTitle: false, showImage: false, showVideo: true, showAttached: false, showMarkdown: false },
+        3: { textLimit: 450, showTitle: false, showImage: true, showVideo: false, showAttached: false, showMarkdown: false }
       },
       listenerList: ['emoji-list', 'topic-list'],
       actions: [
@@ -111,7 +138,8 @@ export default {
       ],
       resources: [
         { icon: 'picture', toggle: 'showUploadImg', show: false },
-        { icon: 'video', toggle: 'showUploadVideo', show: false }
+        { icon: 'video', toggle: 'showUploadVideo', show: false },
+        { icon: 'attached', toggle: 'showUploadAttached', show: false }
       ]
     }
   },
@@ -126,6 +154,21 @@ export default {
         return { authorization: `Bearer ${token}` }
       }
       return ''
+    },
+    attachedTypeLimit() {
+      if (this.forums.set_attach) {
+        const limitText = this.forums.set_attach.support_file_ext + this.forums.set_attach.support_img_ext
+        return limitText.split(',').map(item => '.' + item).join(',')
+      }
+      return ''
+    }
+  },
+  watch: {
+    thread: {
+      handler() {
+        if (this.isEditor) this.initThread()
+      },
+      deep: true
     }
   },
   mounted() {
@@ -134,6 +177,36 @@ export default {
     this.emojiListener()
   },
   methods: {
+    initThread() {
+      this.text = this.thread.content
+      this.title = this.thread.title
+      this.price = parseFloat(this.thread.price)
+      this.freeWords = parseInt(this.thread.freeWords)
+      this.isPaid = this.thread.price > 0
+      if (this.thread.images.length > 0) {
+        this.showUploadImg = true
+        this.initThreadResource('imageList')
+      }
+      if (this.thread.attachments.length > 0) {
+        this.showUploadAttached = true
+        this.initThreadResource('attachedList')
+      }
+      if (this.thread.videoList && this.thread.videoList.length > 0) {
+        this.showUploadVideo = true
+        this.initThreadResource('videoList')
+        this.videoList[0].videoPercent = 1
+      }
+    },
+    initThreadResource(key) {
+      this.thread[key].forEach(item => {
+        const attached = {
+          name: key === 'videoList' ? item.file_name : item.attachment,
+          url: key === 'videoList' ? item.media_url : item.thumbUrl,
+          id: item._jv.id
+        }
+        this[key].push(attached)
+      })
+    },
     changeText(newText) { this.text = newText },
     autoHeight() {
       const textarea = document.getElementById('textarea')
@@ -149,6 +222,7 @@ export default {
       this.showMarkdown = typeShow.showMarkdown
       this.resources[0].show = typeShow.showImage
       this.resources[1].show = typeShow.showVideo
+      this.resources[2].show = typeShow.showAttached
     },
     getSelection() {
       this.selectionStart = document.getElementById('textarea').selectionStart
@@ -181,7 +255,31 @@ export default {
       this.showTopic = false
       this.showCaller = false
     },
-    publish() {
+    createAttachmentsData(resource) {
+      return resource.map(item => {
+        const obj = {}
+        obj.id = item.id
+        obj.type = 'attachments'
+        return obj
+      })
+    },
+    publishResource(params) {
+      const imageData = this.createAttachmentsData(this.imageList)
+      const attachedData = this.createAttachmentsData(this.attachedList)
+      console.log(imageData, attachedData)
+      if (imageData.length > 0 || attachedData.length > 0) {
+        params._jv.relationships.attachments = {}
+        params._jv.relationships.attachments.data = []
+        params._jv.relationships.attachments.data.push(...imageData)
+        params._jv.relationships.attachments.data.push(...attachedData)
+      }
+      if (this.videoList.length > 0) {
+        params.file_id = this.videoList[0].id
+        params.file_name = this.videoList[0].name
+      }
+      return params
+    },
+    checkPublish() {
       if (!this.categoryId) return this.$message.warning(this.$t('post.theClassifyCanNotBeBlank'))
       // 0 文字帖 1 帖子 2 视频 3 图片
       if (this.type === 0 && !this.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
@@ -189,12 +287,17 @@ export default {
       if (this.type === 1 && !this.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
       if (this.type === 1 && !this.title) return this.$message.warning(this.$t('post.theTitleCanNotBeBlank'))
       if (this.type === 1 && this.onUploadImage) return this.$message.warning(this.$t('post.pleaseWaitForTheImageUploadToComplete'))
+      if (this.type === 1 && this.onUploadAttached) return this.$message.warning(this.$t('post.pleaseWaitForTheAttachedUploadToComplete'))
 
       if (this.type === 2 && this.onUploadVideo) return this.$message.warning(this.$t('post.pleaseWaitForTheVideoUploadToComplete'))
       if (this.type === 2 && this.videoList.length === 0) return this.$message.warning(this.$t('post.videoCannotBeEmpty'))
 
       if (this.type === 3 && this.onUploadImage) return this.$message.warning(this.$t('post.pleaseWaitForTheImageUploadToComplete'))
       if (this.type === 3 && this.imageIdList.length === 0) return this.$message.warning(this.$t('post.imageCannotBeEmpty'))
+      return 'success'
+    },
+    publish() {
+      if (this.checkPublish() !== 'success') return
       this.onPublish = true
       const params = {
         _jv: {
@@ -207,26 +310,18 @@ export default {
         },
         content: this.text
       }
+      if (this.thread.id) params._jv.id = this.thread.id
       params.type = this.type
       this.title ? params.title = this.title : ''
-      if (this.imageIdList.length > 0) {
-        params._jv.relationships.attachments = {}
-        params._jv.relationships.attachments.data = this.imageIdList.splice(',').map(item => {
-          const obj = {}
-          obj.id = item
-          obj.type = 'attachments'
-          return obj
-        })
+      if (this.isPaid) {
+        params.price = this.price
+        params.free_words = this.freeWords
       }
-      if (this.videoList.length > 0) {
-        params.file_id = this.videoList[0].id
-        params.file_name = this.videoList[0].name
-      }
+      this.publishResource(params)
       return this.$store.dispatch('jv/post', params).then(data => {
-        console.log(data, 'data')
         this.$router.push(`/topic/${data._jv.id}`)
       }, e => this.handleError(e)).finally(() => {
-        this.onPublish = true
+        this.onPublish = false
       })
     }
   }
@@ -275,7 +370,7 @@ export default {
       border: 1px solid $border-color-base;
       border-radius: 3px;
       position: relative;
-      margin-top: 10px;
+      margin-top: 30px;
     }
 
     .resources-list {

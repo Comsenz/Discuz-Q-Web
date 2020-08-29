@@ -7,9 +7,10 @@
       multiple
       name="file"
       with-credentials
-      accept="image/png, image/jpeg"
+      accept="image/*"
+      :file-list="imageList"
       :limit="9"
-      :disabled="imageIdList.length >= 9"
+      :disabled="imageList.length >= 9"
       list-type="picture-card"
       class="resources-upload"
       :on-progress="() => $emit('update:onUploadImage', true)"
@@ -31,10 +32,10 @@
 import handleError from '@/mixin/handleError'
 
 export default {
-  name: 'PictureUpload',
+  name: 'ImageUpload',
   mixins: [handleError],
   props: {
-    imageIdList: {
+    imageList: {
       type: Array,
       default: () => []
     },
@@ -70,20 +71,22 @@ export default {
       const id = file.response.data.id
       const params = { _jv: { type: `/attachments/${id}` }}
       return this.$store.dispatch('jv/delete', params).then(() => {
-        const _imageIdList = [...this.imageIdList]
-        const index = _imageIdList.indexOf(id)
-        _imageIdList.splice(index, 1)
-        this.$emit('update:imageIdList', _imageIdList)
+        const _imageList = [...this.imageList]
+        const deleteImage = _imageList.filter(item => item.id === id)[0]
+        const index = _imageList.indexOf(deleteImage)
+        _imageList.splice(index, 1)
+        this.$emit('update:imageIdList', _imageList)
       }, e => this.handleError(e))
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
       this.dialogVisible = true
     },
-    handleSuccess(response) {
-      const _imageIdList = [...this.imageIdList]
-      _imageIdList.push(response.data.id)
-      this.$emit('update:imageIdList', _imageIdList)
+    handleSuccess(response, file) {
+      console.log(response, file)
+      const _imageList = [...this.imageList]
+      _imageList.push({ name: file.name, url: file.url, id: response.data.id })
+      this.$emit('update:imageIdList', _imageList)
       this.$emit('update:onUploadImage', false)
     },
     handleError() {
@@ -114,6 +117,7 @@ export default {
       display: inline-flex;
       justify-content: center;
       align-items: center;
+      margin-bottom: 8px;
     }
   }
 </style>

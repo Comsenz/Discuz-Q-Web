@@ -3,6 +3,7 @@
     v-loading="loading"
     class="register"
   >
+
     <h2 class="register-title">{{ $t('user.userregister') }}</h2>
     <el-tabs
       v-model="activeName"
@@ -161,6 +162,7 @@
         </div>
       </el-tab-pane>
     </el-tabs>
+  </div>
   </div>
 </template>
 
