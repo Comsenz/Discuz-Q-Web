@@ -1,7 +1,7 @@
 <template>
   <div class="global">
     <div class="block">
-      <div class="text">付费模式:</div>
+      <div class="text">{{ $t('post.isPay') }}:</div>
       <el-select v-model="value" placeholder="请选择" @change="value => $emit('update:isPaid', value)">
         <el-option
           v-for="item in options"
@@ -13,17 +13,19 @@
     </div>
     <div class="block">
       <div v-show="isPaid">
-        <div class="text">免费查看字数:</div>
+        <div class="text">{{ $t('post.freeWordCount') }}:</div>
         <label>
-          <input placeholder="请输入" maxlength="5" type="text" @input="onFreeWordInput">
+          <span>{{ $t('post.wordItem') }}</span>
+          <input :placeholder="$t('post.pleaseInput')" maxlength="5" type="text" @input="onFreeWordInput">
         </label>
       </div>
     </div>
     <div class="block">
       <div v-show="isPaid">
-        <div class="text">付费金额:</div>
+        <div class="text">{{ $t('post.paymentAmount') }}:</div>
         <label>
-          <input placeholder="请输入" maxlength="7" type="text" @input="onPriceInput">
+          <span>{{ $t('post.yuanItem') }}</span>
+          <input :placeholder="$t('post.pleaseInput')" maxlength="7" type="text" @input="onPriceInput">
         </label>
       </div>
     </div>
@@ -52,11 +54,11 @@ export default {
       options: [
         {
           value: false,
-          label: '免费查看'
+          label: this.$t('post.freeWatch')
         },
         {
           value: true,
-          label: '付费查看'
+          label: this.$t('post.paidWatch')
         }],
       value: false
     }
@@ -101,17 +103,28 @@ export default {
       }
 
       label {
-        display: block;
+        display: flex;
         width: 100%;
+        border: 1px solid $border-color-base;
+        border-radius: 4px;
+
+        > span {
+          display: block;
+          width: 30px;
+          background: #F5F6F7;
+          line-height: $height;
+          height: $height;
+          text-align: center;
+        }
 
         > input {
+          flex: 1;
           display: block;
           width: 100%;
           line-height: $height;
           height: $height;
-          border: 1px solid $border-color-base;
-          border-radius: 4px;
-          padding: 0 16px;
+          border: none;
+          padding: 0 5px;
           color: $font-color;
           background: #F5F6F7;
         }

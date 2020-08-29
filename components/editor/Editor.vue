@@ -260,9 +260,7 @@ export default {
             }
           }
         },
-        content: this.text,
-        free_words: 10,
-        price: 20
+        content: this.text
       }
       params.type = this.type
       this.title ? params.title = this.title : ''
