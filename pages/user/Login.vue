@@ -27,6 +27,7 @@
           :placeholder="$t('user.password')"
           type="password"
           class="reg-input"
+          show-password
           @keyup.enter.native="UserLogin"
         />
         <div class="agreement">
@@ -74,6 +75,7 @@
           v-model="verifyCode"
           :placeholder="$t('user.verificationCodeLogin')"
           class="reg-input"
+          @keyup.enter.native="PhoneLogin"
         />
         <div class="agreement">
           <el-checkbox v-model="checked">
@@ -150,7 +152,7 @@ import { SITE_PAY } from '@/common/const'
 
 const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
 
-// let QuickLogin = null
+let QuickLogin = null
 export default {
   name: 'Login',
   mixins: [handleError, tcaptchs],
@@ -237,6 +239,7 @@ export default {
         }
       }, 1000)
     },
+    // 简单判断
     changeinput() {
       setTimeout(() => {
         this.phoneNumber = this.phoneNumber.replace(/[^\d]/g, '')
@@ -253,60 +256,7 @@ export default {
       this.canClickNum = this.activeName !== '1'
       console.log(this.canClickNum)
     },
-    // 用户名登录
-    UserLogin() {
-      this.loading = true
-      if (this.username === '') {
-        this.$message.error('用户名不能为空')
-      } else if (this.password === '') {
-        this.$message.error('密码不能为空')
-      } else {
-        const params = {
-          data: {
-            attributes: {
-              username: this.userName,
-              password: this.passWord
-            }
-          }
-        }
-        this.$store.dispatch('session/h5Login', params)
-          .then(res => {
-            this.loading = false
-            console.log('登录成功', res)
-            if (res && res.data && res.data.data && res.data.data.id) {
-              this.logind()
-              this.userName = ''
-              this.passWord = ''
-              this.$message.success('登录成功')
-            }
-            if (
-              res &&
-              res.data &&
-              res.data.errors &&
-              res.data.errors[0].status === '422'
-            ) {
-              this.$message.error(
-                res.data.errors[0].detail[0]
-              )
-            }
-            if (
-              res &&
-              res.data &&
-              res.data.errors &&
-              res.data.errors[0].code === 'register_validate'
-            ) {
-              this.$message.error('账号审核中，请等管理员审核通过')
-              this.$router.push('/')
-            }
-            this.$message.error(
-              res.data.errors[0].detail[0]
-            )
-          })
-          .catch(err => {
-            console.log(err)
-          })
-      }
-    },
+
     logind() {
       const userId = this.$store.getters['session/get']('userId')
       if (!userId) return
@@ -351,7 +301,6 @@ export default {
     },
     // 验证码
     toTCaptcha() {
-      // #ifdef H5
       console.log('---------验证码-------')
       if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha_app_id) {
         // eslint-disable-next-line no-undef
@@ -360,15 +309,71 @@ export default {
           if (res.ret === 0) {
             this.ticket = res.ticket
             this.randstr = res.randstr
-            if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
-              this.sendVerifyCode()
-            }
+            // if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
+            // }
+            this.sendVerifyCode()
           }
         })
         // 显示验证码
         this.captcha.show()
       }
-      // #endif
+    },
+    // 用户名登录
+    UserLogin() {
+      this.loading = true
+      if (this.userName === '') {
+        this.$message.error('用户名不能为空')
+        this.loading = false
+      } else if (this.passWord === '') {
+        this.$message.error('密码不能为空')
+        this.loading = false
+      } else {
+        const params = {
+          data: {
+            attributes: {
+              username: this.userName,
+              password: this.passWord
+            }
+          }
+        }
+        this.$store.dispatch('session/h5Login', params)
+          .then(res => {
+            this.loading = false
+            console.log('登录成功', res)
+            if (res && res.data && res.data.data && res.data.data.id) {
+              this.logind()
+              this.userName = ''
+              this.passWord = ''
+              this.$message.success('登录成功')
+            }
+            if (
+              res &&
+              res.data &&
+              res.data.errors[0]
+            ) {
+              const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code
+              console.log('error', error)
+              this.$message.error(
+                this.$t(`core.${error}`)
+              )
+            }
+            if (
+              res &&
+              res.data &&
+              res.data.errors &&
+              res.data.errors[0].code === 'register_validate'
+            ) {
+              this.$message.error('账号审核中，请等管理员审核通过')
+              this.$router.push('/')
+            }
+            this.$message.error(
+              res.data.errors[0].detail[0]
+            )
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      }
     },
     sendVerifyCode() {
       // this.loading = true
@@ -387,24 +392,14 @@ export default {
         }, e => this.handleError(e))
     },
     PhoneLogin() {
+      this.loading = true
       if (this.phoneNumber === '') {
         this.$message.error('手机号不能为空')
+        this.loading = false
       } else if (this.verifyCode === '') {
         this.$message.error('验证码不能为空')
+        this.loading = false
       } else {
-        // const params = {
-        //   _jv: { type: 'sms/verify' },
-        //   mobile: this.phoneNumber,
-        //   code: this.verifyCode,
-        //   type: 'login'
-        // }
-        // status.run(() => this.$store.dispatch('jv/post', params))
-        //   .then(res => {
-        //     window.localStorage.setItem('access_token', res.access_token)
-        //     this.$message.success('登录成功')
-        //     this.$router.go(-1)
-        //   }, e => this.handleError(e))
-
         const params = {
           data: {
             attributes: {
@@ -435,9 +430,38 @@ export default {
         this.$store
           .dispatch('session/verificationCodeh5Login', params)
           .then(res => {
+            this.loading = false
             console.log('手机号验证成功', res)
-            this.logind()
-            this.$message.$t('user.loginSuccess')
+            console.log('登录成功', res)
+            if (res && res.data && res.data.data && res.data.data.id) {
+              this.logind()
+              this.userName = ''
+              this.passWord = ''
+              this.$message.success(this.$t('user.loginSuccess'))
+            }
+            if (
+              res &&
+              res.data &&
+              res.data.errors[0]
+            ) {
+              const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code
+              console.log('error', error)
+              this.$message.error(
+                this.$t(`core.${error}`)
+              )
+            }
+            if (
+              res &&
+              res.data &&
+              res.data.errors &&
+              res.data.errors[0].code === 'register_validate'
+            ) {
+              this.$message.error('账号审核中，请等管理员审核通过')
+              this.$router.push('/')
+            }
+            this.$message.error(
+              res.data.errors[0].detail[0]
+            )
           })
           .catch(err => {
             console.log(err)
@@ -448,7 +472,7 @@ export default {
     QRcode() {
       const _params = {
         _jv: {
-          type: 'oauth/wechat/web/user'
+          type: '/oauth/wechat/web/user'
         }
       }
       this.$store.dispatch('jv/get', _params).then(data => {
@@ -457,13 +481,13 @@ export default {
           this.info = data
           this.scene_str = data.scene_str
           console.log(this.scene_str)
-          // QuickLogin = setInterval(() => {
-          //   if (this.loginStatus) {
-          //     clearInterval(QuickLogin)
-          //     return
-          //   }
-          //   this.getLoginStatus(this.scene_str)
-          // }, 3000)
+          QuickLogin = setInterval(() => {
+            if (this.loginStatus) {
+              clearInterval(QuickLogin)
+              return
+            }
+            this.getLoginStatus(this.scene_str)
+          }, 10000)
         }
       })
     },
@@ -471,13 +495,16 @@ export default {
     getLoginStatus(scene_str) {
       const params = {
         _jv: {
-          type: `oauth/wechat/web/user/search`
+          type: `oauth/wechat/web/user/serach`
         },
         scene_str: scene_str
       }
       console.log(params)
-      this.$store.dispatch('jv/get', `oauth/wechat/web/user/search?scene_str=${scene_str}`).then(data => {
+      this.$store.dispatch('jv/get', `/oauth/wechat/web/user/serach?scene_str=${scene_str}`).then(data => {
         console.log('user data => ', data)
+        if (data.id) {
+          this.loginStatus = true
+        }
       })
     },
     // qq登录

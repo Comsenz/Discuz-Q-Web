@@ -111,6 +111,7 @@ export default {
   },
   core: {
     register_close: '站点禁止注册',
+    regcode: '为加强站内人员管理，站点开启了人工验证注册用户，请耐心等待审核通过。',
     bind_error: '绑定错误',
     noAvatar: '无',
     thousand: '万',

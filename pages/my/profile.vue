@@ -1,5 +1,8 @@
 <template>
-  <div class="myprofile">
+  <div
+    v-loading="loading"
+    class="myprofile"
+  >
     <div
       class="myprofile-c"
       style="padding-bottom:0px"
@@ -97,13 +100,14 @@
         <span
           class="setavatar"
           @click="mobileModify"
-        >{{ (!isMobileModify ? $t('profile.modify') : '取消修改') }}</span>
+        >{{ (!isMobileModify ?!userInfo.mobile ? '绑定手机': $t('profile.modify') : '取消修改') }}</span>
       </div>
-      <div v-show="!isMobileModify" class="myprofile-btom" style="font-size:20px;font-weight:bold">
-        {{ userInfo.mobile }}
+      <div v-show="!isMobileModify" class="myprofile-btom" style="color:#8590A6">
+        {{ userInfo.mobile ? userInfo.mobile : $t('modify.setphontitle') }}
       </div>
-      <div v-show="isMobileModify" class="myprofile-btom">
-        <div style="font-size:20px;font-weight:bold">
+      <!-- 修改手机号 -->
+      <div v-show="(isMobileModify && userInfo.mobile)" class="myprofile-btom">
+        <div style="font-size:20px;font-weight:bold;margin-bottom:10px">
           {{ userInfo.mobile }}
         </div>
         <div>
@@ -125,6 +129,7 @@
             v-model="newPhoneNumber"
             :placeholder="$t('modify.setphontitle')"
             style="width:300px"
+            class="passbtom"
           />
 
           <el-input
@@ -148,6 +153,48 @@
                 width: 300px;
                 background: #1878f3;
                 margin-bottom:48px;"
+          @click="mobileComfirm"
+        >确定修改</el-button>
+      </div>
+      <!-- 新用户绑定手机号 -->
+      <div v-show="(isMobileModify && !userInfo.mobile)" class="myprofile-btom">
+        <div>
+          <el-input
+            ref="oldphone"
+            v-model="oldVerifyCode"
+            placeholder="请输入绑定的手机号"
+            class="phone-input"
+          />
+
+          <el-button
+            class="count-b"
+            :class="{disabled: !canClick}"
+            size="middle"
+            @click="sendVerifyCode"
+          >{{ content }}</el-button>
+
+          <el-input
+            v-model="newVerifyCode"
+            placeholder="请输入手机验证码"
+            class="phone-input"
+          />
+
+          <el-button
+            class="count-b"
+            :class="{disabled: !canClick}"
+            size="middle"
+            @click="sendVerifyCode2"
+          >{{ content }}</el-button>
+        </div>
+
+        <el-button
+          type="primary"
+          style="
+                display: block;
+                width: 300px;
+                background: #1878f3;
+                margin-bottom:48px;
+                margin-top:10px;"
           @click="mobileComfirm"
         >确定修改</el-button>
       </div>
@@ -292,7 +339,8 @@ export default {
       isMobileModify: false,
       isPassModify: false,
       isWechatModify: false,
-      isRealModify: false
+      isRealModify: false,
+      loading: true
     }
   },
   computed: {
@@ -339,13 +387,13 @@ export default {
     // 使用计算属性获取不到userinfo,直接请求接口就可以了
     userinfo() {
       this.userId = this.$store.getters['session/get']('userId')
-      // this.userId = localStorage.getItem('uid')
-      console.log('userid', this.userId)
+
       const params = {
         include: 'groups,wechat'
       }
       this.$store.dispatch('jv/get', [`users/${this.userId}`, { params }]).then(res => {
         console.log('useriinfo', res)
+        this.loading = false
         this.userInfo = res
         this.signcontent = this.userInfo.signature
         this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
@@ -362,7 +410,8 @@ export default {
       this.$nextTick(() => {
         this.$refs.sign.focus()
       })
-      this.inputVal = this.userInfo.signature
+      console.log('签名', this.inputVal)
+      // this.inputVal = this.signcontent
     },
     // 签名确认修改
     sigComfirm() {
@@ -377,6 +426,7 @@ export default {
         if (res) {
           this.isSignModify = !this.isSignModify
           this.$message.success(this.$t('modify.modificationsucc'))
+          this.$router.go(0)
         }
       })
     },
@@ -716,34 +766,9 @@ export default {
     font-family: Microsoft YaHei;
     color: #000000;
   }
-  ::v-deep .el-input__inner {
-    border-radius: 0px;
-  }
-  ::v-deep .el-button {
-    border-radius: 0px;
-  }
-  ::v-deep .el-input__inner:focus {
-    border-color: #dcdfe6;
-  }
-  ::v-deep .el-button:focus {
-    background: #fff;
-    border: 1px solid #dcdfe6;
-    color: #606266;
-  }
-  ::v-deep .el-button:hover {
-    background: #fff;
-    border: 1px solid #dcdfe6;
-    color: #606266;
-  }
-  ::v-deep .el-button:active {
-    background: #fff;
-    border: 1px solid #dcdfe6;
-    color: #606266;
-  }
   .phone-input {
     width: 209px;
-    margin-bottom: 20px;
-    margin-top: 20px;
+    margin-bottom: 10px;
     ::v-deep.el-input__inner {
       border-right: none;
     }
@@ -754,6 +779,7 @@ export default {
     // padding: 15.5px 10px;
     padding: 0;
     margin-left: -4px;
+    color: #606162;
     // font-size: 10px;
   }
   .disabled {
@@ -767,4 +793,28 @@ export default {
     margin-bottom: 10px;
   }
 }
+::v-deep .el-input__inner {
+  border-radius: 0px;
+}
+::v-deep .el-button {
+  border-radius: 0px;
+}
+::v-deep .el-input__inner:focus {
+  border-color: #dcdfe6;
+}
+// ::v-deep .el-button:focus {
+//   background: #fff;
+//   // border: 1px solid #dcdfe6;
+//   color: #ffffff;
+// }
+// ::v-deep .el-button:hover {
+//   background: #fff;
+//   // border: 1px solid #dcdfe6;
+//   color: #ffffff;
+// }
+// ::v-deep .el-button:active {
+//   background: #fff;
+//   // border: 1px solid #dcdfe6;
+//   color: #ffffff;
+// }
 </style>

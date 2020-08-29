@@ -1,5 +1,5 @@
 /* eslint no-underscore-dangle: ["error", { "allow": ["_jv"] }] */
-import { Message } from 'element-ui'
+// import { Message } from 'element-ui'
 import service from '@/api/request'
 import { utils } from '@/library/jsonapi-vuex/index'
 // import { DISCUZ_REQUEST_HOST } from '@/common/const'
@@ -142,18 +142,20 @@ const actions = {
           setUserInfoStore(context, results, resolve)
         })
         .catch(error => {
-          console.log('hhh')
-          const {
-            response: {
-              data: { errors }
-            }
-          } = error
-          if (errors[0]) {
-            const error = errors[0].detail
-              ? errors[0].detail[0]
-              : errors[0].code
-            Message.error(error)
-          }
+          resolve(error.response)
+
+          // console.log('hhh')
+          // const {
+          //   response: {
+          //     data: { errors }
+          //   }
+          // } = error
+          // if (errors[0]) {
+          //   const error = errors[0].detail
+          //     ? errors[0].detail[0]
+          //     : errors[0].code
+          //   Message.error(error)
+          // }
         })
     })
   },
