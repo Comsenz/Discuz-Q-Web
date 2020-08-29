@@ -68,7 +68,7 @@ export default {
     },
     handleCommand({ command, item }) {
       // TODO 去发帖
-      if (command === 'toEdit') return alert('去发帖页面')
+      if (command === 'toEdit') return this.$router.push('/topic/post/' + this.thread.type + '?threadId=' + this.thread._jv.id)
       if (command === 'isDeleted') return this.deleteConfirm(item)
       this.$emit('managementSelected', item)
     },

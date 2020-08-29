@@ -11,8 +11,8 @@
       <svg-icon type="video-play" class="icon-play" style="font-size: 30px" @click="showVideoPop = true" />
       <svg-icon type="delete-red" class="icon-delete" style="font-size: 22px" @click="handleVideoRemove" />
       <el-progress
-        v-show="videoPercent < 1"
-        :percentage="videoPercent * 100"
+        v-show="videoList[0].videoPercent < 1"
+        :percentage="videoList[0].videoPercent * 100"
         color="red"
         :show-text="false"
         class="progress"
@@ -51,7 +51,6 @@ export default {
   },
   data() {
     return {
-      videoPercent: 0,
       showVideoPop: false
     }
   },
@@ -65,21 +64,21 @@ export default {
         this.$refs.upload.clearFiles()
         setTimeout(() => {
           this.$emit('update:videoList', [])
-          this.videoPercent = 0
         }, 1000)
       }, () => console.log('取消删除'))
     },
     addVideo(file) {
       this.$emit('update:onUploadVideo', true)
       const _videoList = [...this.videoList]
-      _videoList.push({ name: file.name, url: file.url })
+      _videoList.push({ name: file.name, url: file.url, videoPercent: 0 })
       this.$emit('update:videoList', _videoList)
       this.getSignature(getSignature => {
         // eslint-disable-next-line new-cap
         new TcVod.default({ getSignature })
           .upload({ mediaFile: file.raw })
           .on('media_progress', info => {
-            this.videoPercent = info.percent
+            _videoList[0].videoPercent = info.percent
+            this.$emit('update:videoList', _videoList)
           }).done().then(doneResult => {
             this.postVideo(doneResult.fileId)
           })

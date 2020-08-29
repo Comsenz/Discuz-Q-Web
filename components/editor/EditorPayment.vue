@@ -2,7 +2,7 @@
   <div class="global">
     <div class="block">
       <div class="text">{{ $t('post.isPay') }}:</div>
-      <el-select v-model="value" placeholder="请选择" @change="value => $emit('update:isPaid', value)">
+      <el-select :value="isPaid" placeholder="请选择" @change="value => $emit('update:isPaid', value)">
         <el-option
           v-for="item in options"
           :key="item.value"
@@ -13,19 +13,19 @@
     </div>
     <div class="block">
       <div v-show="isPaid">
-        <div class="text">{{ $t('post.freeWordCount') }}:</div>
+        <div class="text">{{ $t('post.paymentAmount') }}:</div>
         <label>
-          <span>{{ $t('post.wordItem') }}</span>
-          <input :placeholder="$t('post.pleaseInput')" maxlength="5" type="text" @input="onFreeWordInput">
+          <span>{{ $t('post.yuanItem') }}</span>
+          <input :value="price" maxlength="7" type="number" @input="onPriceInput">
         </label>
       </div>
     </div>
     <div class="block">
-      <div v-show="isPaid">
-        <div class="text">{{ $t('post.paymentAmount') }}:</div>
+      <div v-show="isPaid && type === 1">
+        <div class="text">{{ $t('post.freeWordCount') }}:</div>
         <label>
-          <span>{{ $t('post.yuanItem') }}</span>
-          <input :placeholder="$t('post.pleaseInput')" maxlength="7" type="text" @input="onPriceInput">
+          <span>{{ $t('post.wordItem') }}</span>
+          <input :value="freeWords" max="10000" type="number" @input="onFreeWordInput">
         </label>
       </div>
     </div>
@@ -47,6 +47,10 @@ export default {
     price: {
       type: Number,
       default: 0
+    },
+    type: {
+      type: Number,
+      default: 0
     }
   },
   data() {
@@ -59,17 +63,18 @@ export default {
         {
           value: true,
           label: this.$t('post.paidWatch')
-        }],
-      value: false
+        }]
     }
   },
   methods: {
     onFreeWordInput(e) {
-      e.target.value = e.target.value.replace(/[^\0-9\/]/gi, '')
+      if (e.target.value.length >= 5) e.target.value = e.target.value.substr(0, 5)
+      if (e.target.value === '') e.target.value = 0
       this.$emit('update:freeWords', parseInt(e.target.value))
     },
     onPriceInput(e) {
-      e.target.value = e.target.value.replace(/[^\0-9\.\/]/gi, '')
+      if (e.target.value.length >= 7) e.target.value = e.target.value.substr(0, 7)
+      if (e.target.value === '') e.target.value = 0
       this.$emit('update:price', parseFloat(e.target.value))
     }
   }

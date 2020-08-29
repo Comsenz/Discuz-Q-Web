@@ -7,9 +7,10 @@
       multiple
       name="file"
       with-credentials
+      :file-list="attachedList"
       :accept="typeLimit"
       :limit="3"
-      :disabled="attachedIdList.length >= 3"
+      :disabled="attachedList.length >= 3"
       class="resources-upload"
       :on-progress="() => $emit('update:onUploadAttached', true)"
       :on-success="handleSuccess"
@@ -28,7 +29,7 @@ export default {
   name: 'PictureUpload',
   mixins: [handleError],
   props: {
-    attachedIdList: {
+    attachedList: {
       type: Array,
       default: () => []
     },
@@ -60,21 +61,20 @@ export default {
       })
     },
     handleAttachedRemove(file) {
-      console.log(123123)
       const id = file.response.data.id
       const params = { _jv: { type: `/attachments/${id}` }}
       return this.$store.dispatch('jv/delete', params).then(() => {
-        const _attachedIdList = [...this.attachedIdList]
-        const index = _attachedIdList.indexOf(id)
-        _attachedIdList.splice(index, 1)
-        this.$emit('update:attachedIdList', _attachedIdList)
+        const _attachedList = [...this.attachedList]
+        const deleteAttached = _attachedList.filter(item => item.id === id)[0]
+        const index = _attachedList.indexOf(deleteAttached)
+        _attachedList.splice(index, 1)
+        this.$emit('update:attachedIdList', _attachedList)
       }, e => this.handleError(e))
     },
-    handleSuccess(response) {
-      const _attachedIdList = [...this.attachedIdList]
-      _attachedIdList.push(response.data.id)
-      console.log(_attachedIdList)
-      this.$emit('update:attachedIdList', _attachedIdList)
+    handleSuccess(response, file) {
+      const _attachedList = [...this.attachedList]
+      _attachedList.push({ name: file.name, url: file.url, id: response.data.id })
+      this.$emit('update:attachedIdList', _attachedList)
       this.$emit('update:onUploadAttached', false)
     },
     handleError() {

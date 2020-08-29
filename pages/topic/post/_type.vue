@@ -11,11 +11,12 @@
         >{{ category.name }}</span>
       </template>
     </div>
-    <editor :category-id="categorySelectedId" :type="type" />
+    <editor :category-id="categorySelectedId" :type="type" :is-editor="threadId !== '' && threadId !== undefined" :thread="thread" />
   </div>
 </template>
 
 <script>
+const threadInclude = 'firstPost,firstPost.images,firstPost.attachments,category,threadVideo'
 import handleError from '@/mixin/handleError'
 export default {
   name: 'Post',
@@ -23,22 +24,45 @@ export default {
   data() {
     return {
       categoryList: [],
+      thread: {},
       categorySelectedId: undefined
     }
   },
   computed: {
     type() {
       return parseInt(this.$route.params.type)
+    },
+    threadId() {
+      return this.$route.query.threadId
     }
   },
   created() {
     this.getCategoryList()
+    this.getThread()
   },
   methods: {
     // TODO 未登录
     getCategoryList() {
       this.$store.dispatch('jv/get', ['categories', {}]).then(res => {
         this.categoryList = res
+      }, e => this.handleError(e))
+    },
+    getThread() {
+      if (!this.threadId) return
+      return this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include: threadInclude }}]).then(data => {
+        if (data.isDeleted) return this.$router.push('/')
+        console.log(data, 'data')
+        this.categorySelectedId = data.category._jv.id
+        this.thread = data.firstPost
+        this.thread.id = data._jv.id
+        this.thread.title = data.title
+        this.thread.price = data.price
+        this.thread.freeWords = data.freeWords
+        this.thread.paid = data.paid
+        data.threadVideo ? this.thread.videoList = [data.threadVideo] : ''
+        // 改 key 的名字，为了 Editor init 数据中可以循环 init
+        this.thread.attachedList = data.firstPost.attachments
+        this.thread.imageList = data.firstPost.images
       }, e => this.handleError(e))
     },
     selectCategory(category) {

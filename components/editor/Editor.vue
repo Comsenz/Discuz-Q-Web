@@ -3,7 +3,7 @@
     <label v-if="showTitle">
       <input v-model="title" :placeholder="$t('post.pleaseInputPostTitle')" class="input-title" type="text">
     </label>
-    <editor-payment :is-paid.sync="isPaid" :free-words.sync="freeWords" :price.sync="price" />
+    <editor-payment v-if="type !== 0" :is-paid.sync="isPaid" :free-words.sync="freeWords" :price.sync="price" :type="type" />
     <div class="container-textarea">
       <label>
         <textarea
@@ -16,7 +16,7 @@
       </label>
       <div>
         <div v-if="showUploadImg || showUploadVideo || showUploadAttached" class="resources-list">
-          <picture-upload v-if="showUploadImg" :url="url" :header="header" :on-upload-image.sync="onUploadImage" :image-id-list.sync="imageIdList" />
+          <image-upload v-if="showUploadImg" :url="url" :header="header" :on-upload-image.sync="onUploadImage" :image-list.sync="imageList" />
           <video-upload v-if="showUploadVideo" :on-upload-video.sync="onUploadVideo" :video-list.sync="videoList" />
           <attached-upload
             v-if="showUploadAttached"
@@ -24,7 +24,7 @@
             :header="header"
             :type-limit="attachedTypeLimit"
             :on-upload-attached.sync="onUploadAttached"
-            :attached-id-list.sync="attachedIdList"
+            :attached-list.sync="attachedList"
           />
         </div>
         <span class="tip">
@@ -84,6 +84,14 @@ export default {
     type: {
       type: Number,
       default: 0
+    },
+    thread: {
+      type: Object,
+      default: () => {}
+    },
+    isEditor: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -107,9 +115,9 @@ export default {
       onUploadVideo: false,
       onUploadAttached: false,
       onPublish: false,
-      imageIdList: [],
+      imageList: [],
       videoList: [],
-      attachedIdList: [],
+      attachedList: [],
       // payment
       isPaid: false,
       freeWords: 0,
@@ -148,8 +156,19 @@ export default {
       return ''
     },
     attachedTypeLimit() {
-      const limitText = this.forums.set_attach.support_file_ext + this.forums.set_attach.support_img_ext
-      return limitText.split(',').map(item => '.' + item).join(',')
+      if (this.forums.set_attach) {
+        const limitText = this.forums.set_attach.support_file_ext + this.forums.set_attach.support_img_ext
+        return limitText.split(',').map(item => '.' + item).join(',')
+      }
+      return ''
+    }
+  },
+  watch: {
+    thread: {
+      handler() {
+        if (this.isEditor) this.initThread()
+      },
+      deep: true
     }
   },
   mounted() {
@@ -158,6 +177,36 @@ export default {
     this.emojiListener()
   },
   methods: {
+    initThread() {
+      this.text = this.thread.content
+      this.title = this.thread.title
+      this.price = parseFloat(this.thread.price)
+      this.freeWords = parseInt(this.thread.freeWords)
+      this.isPaid = this.thread.price > 0
+      if (this.thread.images.length > 0) {
+        this.showUploadImg = true
+        this.initThreadResource('imageList')
+      }
+      if (this.thread.attachments.length > 0) {
+        this.showUploadAttached = true
+        this.initThreadResource('attachedList')
+      }
+      if (this.thread.videoList && this.thread.videoList.length > 0) {
+        this.showUploadVideo = true
+        this.initThreadResource('videoList')
+        this.videoList[0].videoPercent = 1
+      }
+    },
+    initThreadResource(key) {
+      this.thread[key].forEach(item => {
+        const attached = {
+          name: key === 'videoList' ? item.file_name : item.attachment,
+          url: key === 'videoList' ? item.media_url : item.thumbUrl,
+          id: item._jv.id
+        }
+        this[key].push(attached)
+      })
+    },
     changeText(newText) { this.text = newText },
     autoHeight() {
       const textarea = document.getElementById('textarea')
@@ -209,15 +258,14 @@ export default {
     createAttachmentsData(resource) {
       return resource.map(item => {
         const obj = {}
-        obj.id = item
+        obj.id = item.id
         obj.type = 'attachments'
         return obj
       })
     },
     publishResource(params) {
-      console.log(this.imageIdList, this.attachedIdList)
-      const imageData = this.createAttachmentsData(this.imageIdList)
-      const attachedData = this.createAttachmentsData(this.attachedIdList)
+      const imageData = this.createAttachmentsData(this.imageList)
+      const attachedData = this.createAttachmentsData(this.attachedList)
       console.log(imageData, attachedData)
       if (imageData.length > 0 || attachedData.length > 0) {
         params._jv.relationships.attachments = {}
@@ -262,6 +310,7 @@ export default {
         },
         content: this.text
       }
+      if (this.thread.id) params._jv.id = this.thread.id
       params.type = this.type
       this.title ? params.title = this.title : ''
       if (this.isPaid) {
