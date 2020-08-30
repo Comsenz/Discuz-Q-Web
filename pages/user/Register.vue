@@ -1,5 +1,9 @@
 <template>
-  <div v-loading="loading" class="register">
+  <div
+    v-loading="loading"
+    class="register"
+  >
+
     <h2 class="register-title">{{ $t('user.userregister') }}</h2>
     <el-tabs
       v-model="activeName"
@@ -27,24 +31,28 @@
             :placeholder="$t('user.password')"
             type="password"
             class="reg-input"
+            show-password
             @keyup.enter.native="register"
           />
         </div>
-        <!-- <div>
+        <div>
           <span class="title2">重复密码</span>
           <el-input
             v-model="repeatPassWord"
             :placeholder="$t('user.password')"
             type="password"
             class="reg-input"
+            show-password
+            @keyup.enter.native="register"
           />
-        </div> -->
+        </div>
         <div v-if="validate">
           <span class="title2">注册原因</span>
           <el-input
             v-model="Reason"
             :placeholder="$t('user.reason')"
             class="reg-input"
+            @keyup.enter.native="register"
           />
         </div>
 
@@ -94,6 +102,7 @@
           v-model="verifyCode"
           :placeholder="$t('user.verificationCode')"
           class="reg-input"
+          @keyup.enter.native="PhoneLogin"
         />
         <div class="agreement">
           <el-checkbox v-model="checked">
@@ -184,6 +193,7 @@ export default {
     return {
       userName: '',
       passWord: '',
+      repeatPassWord: '',
       phoneNumber: '',
       verifyCode: '',
       activeName: '0', // 默认激活tab
@@ -314,8 +324,16 @@ export default {
         this.$message.error('用户名不能为空')
       } else if (this.passWord === '') {
         this.$message.error('密码不能为空')
+      } else if (this.passWord !== this.repeatPassWord) {
+        this.$message.error('二次密码输入不一致')
+      } else if (!this.checked) {
+        this.$message.error('请同意协议')
       } else if (this.forums && this.forums.set_reg && this.forums.set_reg.register_captcha) {
-        this.toTCaptcha()
+        if (this.validate && this.Reason === '') {
+          this.$message.error('注册原因不能为空')
+        } else {
+          this.toTCaptcha()
+        }
       } else {
         this.registerClick()
       }
@@ -324,6 +342,8 @@ export default {
     phoneRegister() {
       if (this.phoneNumber === '') {
         this.$message.error('手机号不能为空')
+      } else if (!this.checked) {
+        this.$message.error('请同意协议')
       } else if (this.forums && this.forums.set_reg && this.forums.set_reg.register_captcha) {
         this.toTCaptcha()
       } else {
@@ -333,7 +353,6 @@ export default {
 
     // 验证码
     toTCaptcha() {
-      // #ifdef H5
       console.log('---------验证码-------')
       if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha_app_id) {
         // eslint-disable-next-line no-undef
@@ -352,8 +371,8 @@ export default {
         // 显示验证码
         this.captcha.show()
       }
-      // #endif
     },
+    // 用户名注册
     registerClick() {
       this.loading = true
       const params = {
@@ -397,10 +416,12 @@ export default {
             res &&
             res.data &&
             res.data.errors &&
-            res.data.errors[0].status === '422'
+            res.data.errors[0]
           ) {
+            const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code
+            console.log('error', error)
             this.$message.error(
-              res.data.errors[0].detail[0]
+              this.$t(`core.${error}`)
             )
           }
           if (
@@ -410,21 +431,12 @@ export default {
             res.data.errors[0].code === 'register_validate'
           ) {
             this.$message.error('账号审核中，请等管理员审核通过')
-            this.$router.push('/')
+            this.$router.push(`/user/warning?username=${this.userName}`)
           }
         })
         .catch(err => {
           console.log(err)
         })
-
-      // status.run(() => this.$store.dispatch('jv/post', params)).then(res => {
-      //   console.log('注册', res)
-      //   if (res && res.data && res.data.data && res.data.data.id) {
-      //     console.log('注册成功', res)
-      //     this.logind()
-      //     this.$message.success(this.$t('user.registerSuccess'))
-      //   }
-      // }, e => this.handleError(e))
     },
     // 手机号注册
     sendVerifyCode() {
@@ -444,24 +456,14 @@ export default {
         }, e => this.handleError(e))
     },
     PhoneLogin() {
+      this.loading = true
       if (this.phoneNumber === '') {
         this.$message.error('手机号不能为空')
+        this.loading = false
       } else if (this.verifyCode === '') {
         this.$message.error('验证码不能为空')
+        this.loading = false
       } else {
-        // const params = {
-        //   _jv: { type: 'sms/verify' },
-        //   mobile: this.phoneNumber,
-        //   code: this.verifyCode,
-        //   type: 'login'
-        // }
-        // status.run(() => this.$store.dispatch('jv/post', params))
-        //   .then(res => {
-        //     window.localStorage.setItem('access_token', res.access_token)
-        //     this.$message.success('登录成功')
-        //     this.$router.go(-1)
-        //   }, e => this.handleError(e))
-
         const params = {
           data: {
             attributes: {
@@ -492,9 +494,34 @@ export default {
         this.$store
           .dispatch('session/verificationCodeh5Login', params)
           .then(res => {
+            this.loading = false
             console.log('手机号验证成功', res)
-            this.logind()
-            this.$message.$t('user.loginSuccess')
+            if (res && res.data && res.data.data && res.data.data.id) {
+              console.log('注册成功', res)
+              this.logind()
+              this.$message.success(this.$t('user.registerSuccess'))
+            }
+            if (
+              res &&
+              res.data &&
+              res.data.errors &&
+              res.data.errors[0]
+            ) {
+              const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code
+              console.log('error', error)
+              this.$message.error(
+                this.$t(`core.${error}`)
+              )
+            }
+            if (
+              res &&
+              res.data &&
+              res.data.errors &&
+              res.data.errors[0].code === 'register_validate'
+            ) {
+              this.$message.error('账号审核中，请等管理员审核通过')
+              this.$router.push(`/user/warning?username=${this.phoneNumber}`)
+            }
           })
           .catch(err => {
             console.log(err)
@@ -662,10 +689,10 @@ export default {
   .el-tabs__nav-wrap {
     margin-bottom: 0px;
   }
-  // .el-input__inner {
-  //   border-radius: 0px;
-  //   border-right: none;
-  // }
+  .el-input__inner {
+    border-radius: 0px;
+    // border-right: none;
+  }
   .el-button {
     border-radius: 0px;
   }

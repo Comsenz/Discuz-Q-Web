@@ -5,8 +5,9 @@
       width="120"
       min-width="120"
       trigger="click"
-      popper-class="custom-popover"
+      popper-class="custom-popover-width"
       @show="onShowPopover"
+      @hide="closeCode"
     >
       <div class="share-cont">
         <div class="copy" @click="copyLink">
@@ -39,7 +40,9 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      qrcode: null
+    }
   },
   methods: {
     copyLink() {
@@ -57,33 +60,38 @@ export default {
       }, 100)
     },
     onShowPopover() {
-      this.qrcode(window.location.href + 'topic/' + this.threadsId)
+      this.createQrcode(window.location.href + 'topic/' + this.threadsId)
     },
-    qrcode(link) {
+    createQrcode(link) {
       if (process.client) {
+        this.qrcode = null
         this.$nextTick(() => {
-          const qrcode = new QRCode(this.$refs.qrcode, {
-            width: 108,
-            height: 108, // 高度
+          this.qrcode = new QRCode(this.$refs.qrcode, {
+            width: 88,
+            height: 88, // 高度
             text: link // 二维码内容
             // render: 'canvas' ,   // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
             // background: '#f0f',   // 背景色
             // foreground: '#ff0'    // 前景色
           })
-          console.log('qrcode', qrcode)
         })
       }
+    },
+    // 关闭弹框,清除已经生成的二维码
+    closeCode() {
+      this.$refs.qrcode.innerHTML = ''
     }
   }
 }
 </script>
+<style lang="scss">
+.custom-popover-width{
+  min-width: 120px;
+  padding: 0;
+}
+</style>
 <style lang="scss" scoped>
-::v-deep.el-popover {
-  min-width: auto;
-}
-.share-container ::v-deep .custom-popover{
-  color: red;
-}
+
 .share-cont{
   display: flex;
   flex-direction: column;
@@ -91,6 +99,7 @@ export default {
   color: #6D6D6D;
   font-size: 14px;
   text-align: center;
+  padding:12px;
   .copy{
     width: 100%;
     border-bottom: 1px solid #EDEDED;
@@ -111,8 +120,8 @@ export default {
     margin-right: 6px;
   }
   &-cont{
-    width:108px;
-    height: 108px;
+    width:88px;
+    height: 88px;
     position: relative;
   }
   &-loading{

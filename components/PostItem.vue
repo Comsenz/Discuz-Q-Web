@@ -53,8 +53,8 @@
         <div class="bottom-handle">
           <div class="left">
             <div v-permission:handleLike="''" class="btn like" :class="{'liked': item.firstPost.isLiked}">
-              <svg-icon type="like" class="icon" />
-              {{ $t('topic.like') }} {{ item.firstPost.likeCount > 0 ? item.firstPost.likeCount : '' }}</div>
+              <svg-icon v-permission:handleLike="''" type="like" class="icon" />
+              {{ item.firstPost.isLiked ? $t('topic.liked') : $t('topic.like') }} {{ item.firstPost.likeCount > 0 ? item.firstPost.likeCount : '' }}</div>
             <nuxt-link :to="`./topic/${item._jv.id}`" class="btn comment">
               <svg-icon type="comment" class="icon" />
               {{ $t('topic.comment') }} {{ item.firstPost.comment > 0 ? item.firstPost.comment : '' }}</nuxt-link>
@@ -65,7 +65,7 @@
               </div>
             </share-popover>
           </div>
-          <div class="reply-btn">{{ $t('topic.reply') }}</div>
+          <nuxt-link :to="`./topic/${item._jv.id}`" class="reply-btn">{{ $t('topic.reply') }}</nuxt-link>
         </div>
       </template>
     </div>
@@ -268,13 +268,18 @@ export default {
           padding: 7px 15px;
           line-height: 1;
           border-radius:2px;
+          transition: all 0.3s ease-in-out;
           &.liked{
+            color:#D0D4DC;
+          }
+          &:hover{
             background: #E5F2FF;
             color:$color-blue-base;
           }
         }
       }
       .reply-btn{
+        display: inline-block;
         color: $color-blue-base;
         background: #FFFFFF;
         border: 1px solid $color-blue-base;

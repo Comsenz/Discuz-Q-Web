@@ -45,10 +45,7 @@
           class="img"
         >
           <Avatar
-            :user="{
-              username: forums.set_site && forums.set_site.site_author.username,
-              avatarUrl: forums.set_site && forums.set_site.site_author.avatar,
-            }"
+            :user="item"
             :size="30"
             :round="true"
             class="avatar"

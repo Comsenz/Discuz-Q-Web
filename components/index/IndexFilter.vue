@@ -19,7 +19,8 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <nuxt-link to="/" class="new-post">+{{ $t('profile.post') }}</nuxt-link>
+    <create-post-popover />
+    <!-- <nuxt-link to="/" class="new-post">+{{ $t('profile.post') }}</nuxt-link> -->
   </div>
 </template>
 <script>
@@ -128,6 +129,7 @@ export default {
     margin: 0 0 0 10px;
     padding:8px 14px;
     color: #8590A6;
+    cursor: default;
   }
 }
 .el-dropdown-link{
@@ -137,15 +139,6 @@ export default {
   }
 }
 
-.new-post{
-  background-color: #1878F3;
-  width:70px;
-  height:35px;
-  border-radius:2px;
-  color: #ffffff;
-  line-height: 35px;
-  text-align: center;
-}
 .el-dropdown-menu{
   padding: 0 10px;
   .el-dropdown-menu__item{
