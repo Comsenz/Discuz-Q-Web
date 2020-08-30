@@ -18,6 +18,7 @@
           @payForVideo="showCheckoutCounter = true"
         />
         <topic-reward-list
+          v-if="forums && forums.paycenter && forums.paycenter.wxpay_close"
           :paid-information="paidInformation"
           :thread-type="thread.type || 0"
           :user-lists="[thread.paidUsers || [], thread.rewardedUsers || [], article.likedUsers || []]"
@@ -166,7 +167,7 @@ export default {
         this.createOrder(hideAvatar, this.rewardOrPay === 'reward' ? rewardAmount : this.thread.price)
       } else if (payWay === 'wxPay') {
         this.payment.payment_type = 10
-        if (this.forums.paycenter.wxpay_close) return this.$message.warning('微信支付功能已关闭')
+        if (!this.forums.paycenter.wxpay_close) return this.$message.warning('微信支付功能已关闭')
         // TODO Loading
         this.createOrder(hideAvatar, this.rewardOrPay === 'reward' ? rewardAmount : this.thread.price).then(() => this.payOrder())
       }
