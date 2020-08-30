@@ -3,7 +3,7 @@
     <label v-if="showTitle">
       <input v-model="title" :placeholder="$t('post.pleaseInputPostTitle')" class="input-title" type="text">
     </label>
-    <editor-payment v-if="type !== 0" :is-paid.sync="isPaid" :free-words.sync="freeWords" :price.sync="price" :type="type" />
+    <editor-payment v-if="type !== 0 && type !== 4" :is-paid.sync="isPaid" :free-words.sync="freeWords" :price.sync="price" :type="type" />
     <div class="container-textarea">
       <label>
         <textarea
@@ -81,6 +81,10 @@ export default {
       type: String,
       default: ''
     },
+    threadId: {
+      type: String,
+      default: ''
+    },
     type: {
       type: Number,
       default: 0
@@ -124,11 +128,12 @@ export default {
       price: 0,
 
       typeShow: {
-        // 0 文字帖 1 帖子 2 视频 3 图片
+        // 0 文字帖 1 帖子 2 视频 3 图片 4 评论
         0: { textLimit: 450, showTitle: false, showImage: false, showVideo: false, showAttached: false, showMarkdown: false },
         1: { textLimit: 10000, showTitle: true, showImage: true, showVideo: false, showAttached: true, showMarkdown: true },
         2: { textLimit: 450, showTitle: false, showImage: false, showVideo: true, showAttached: false, showMarkdown: false },
-        3: { textLimit: 450, showTitle: false, showImage: true, showVideo: false, showAttached: false, showMarkdown: false }
+        3: { textLimit: 450, showTitle: false, showImage: true, showVideo: false, showAttached: false, showMarkdown: false },
+        4: { textLimit: 450, showTitle: false, showImage: true, showVideo: false, showAttached: false, showMarkdown: false }
       },
       listenerList: ['emoji-list', 'topic-list'],
       actions: [
@@ -282,8 +287,8 @@ export default {
       return params
     },
     checkPublish() {
-      if (!this.categoryId) return this.$message.warning(this.$t('post.theClassifyCanNotBeBlank'))
-      // 0 文字帖 1 帖子 2 视频 3 图片
+      if (!this.categoryId && this.type !== 4) return this.$message.warning(this.$t('post.theClassifyCanNotBeBlank'))
+      // 0 文字帖 1 帖子 2 视频 3 图片 4 评论
       if (this.type === 0 && !this.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
 
       if (this.type === 1 && !this.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
@@ -296,11 +301,14 @@ export default {
 
       if (this.type === 3 && this.onUploadImage) return this.$message.warning(this.$t('post.pleaseWaitForTheImageUploadToComplete'))
       if (this.type === 3 && this.imageList.length === 0) return this.$message.warning(this.$t('post.imageCannotBeEmpty'))
+
+      if (this.type === 4 && !this.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
       return 'success'
     },
     publish() {
       if (this.checkPublish() !== 'success') return
       this.onPublish = true
+      if (this.type === 4) return this.postPublish() // 发布评论
       if (this.isEditor) {
         return Promise.all([this.editThreadPublish(), this.editPostPublish()]).then(dataArray => {
           this.$router.push(`/topic/${dataArray[0]._jv.id}`)
@@ -332,6 +340,21 @@ export default {
       }, e => this.handleError(e)).finally(() => {
         this.onPublish = false
       })
+    },
+    postPublish() {
+      const postParams = {
+        _jv: {
+          type: `posts`,
+          relationships: {
+            thread: { data: { type: 'threads', id: this.threadId }}
+          }
+        },
+        content: this.text
+      }
+      this.publishPostResource(postParams)
+      return this.$store.dispatch('jv/post', postParams).then(() => {
+        this.$emit('publish')
+      }, e => handleError(e)).finally(() => { this.onPublish = false })
     },
     editPostPublish() {
       // 用于 更新 content image attached

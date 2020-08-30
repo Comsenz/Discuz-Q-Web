@@ -1,12 +1,14 @@
 <template>
   <div>
+    <comment-header v-if="(postCount - 1) > 0" :comment-count="commentList.length" :is-positive-sort.sync="isPositiveSort" />
+    <div v-else class="without-comment">{{ $t('topic.noComment') }}</div>
+    <editor :type="4" :thread-id="threadId" @publish="onPublish" />
     <template v-if="(postCount - 1) > 0">
-      <comment-header :comment-count="commentList.length" :is-positive-sort.sync="isPositiveSort" />
       <!-- 深拷贝后 reverse() 是为了防止无限更新   -->
       <comment-list
-        :comment-list="isPositiveSort ? [...commentList].reverse() : [...commentList]"
+        v-loading="loading"
+        :comment-list="isPositiveSort ? [...commentList] : [...commentList].reverse()"
         @deleteComment="deleteComment"
-        @deleteReply="deleteReply"
         @like="onLike"
       />
       <div v-if="(postCount - 1) > pageLimit" class="container-show-more">
@@ -14,7 +16,6 @@
         <button v-else class="show-more" @click="foldComment">{{ $t('topic.foldComment') }}</button>
       </div>
     </template>
-    <div v-else class="without-comment">{{ $t('topic.noComment') }}</div>
   </div>
 </template>
 
@@ -34,9 +35,10 @@ export default {
     return {
       commentList: [],
       postCount: 0,
-      isPositiveSort: false,
+      isPositiveSort: true,
       pageCount: 1,
-      pageLimit: 2
+      pageLimit: 5,
+      loading: true
     }
   },
   created() {
@@ -53,6 +55,7 @@ export default {
         'page[limit]': this.pageLimit,
         include: postInclude
       }}]).then(data => {
+        this.loading = false
         fold ? this.commentList = data : this.commentList.push(...data)
         if (data.length > 0) this.postCount = data[0].thread.postCount
       }, e => this.handleError(e))
@@ -91,8 +94,9 @@ export default {
         }, e => this.handleError(e))
       }, () => console.log('取消删除'))
     },
-    deleteReply() {
-      alert('删除回复')
+    onPublish() {
+      this.loading = true
+      this.getComment()
     }
   }
 }
