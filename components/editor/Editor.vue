@@ -85,7 +85,7 @@ export default {
       type: Number,
       default: 0
     },
-    thread: {
+    post: {
       type: Object,
       default: () => {}
     },
@@ -164,7 +164,7 @@ export default {
     }
   },
   watch: {
-    thread: {
+    post: {
       handler() {
         if (this.isEditor) this.initThread()
       },
@@ -178,27 +178,27 @@ export default {
   },
   methods: {
     initThread() {
-      this.text = this.thread.content
-      this.title = this.thread.title
-      this.price = parseFloat(this.thread.price)
-      this.freeWords = parseInt(this.thread.freeWords)
-      this.isPaid = this.thread.price > 0
-      if (this.thread.images.length > 0) {
+      this.text = this.post.content
+      this.title = this.post.title
+      this.price = parseFloat(this.post.price)
+      this.freeWords = parseInt(this.post.freeWords)
+      this.isPaid = this.post.price > 0
+      if (this.post.images.length > 0) {
         this.showUploadImg = true
         this.initThreadResource('imageList')
       }
-      if (this.thread.attachments.length > 0) {
+      if (this.post.attachments.length > 0) {
         this.showUploadAttached = true
         this.initThreadResource('attachedList')
       }
-      if (this.thread.videoList && this.thread.videoList.length > 0) {
+      if (this.post.videoList && this.post.videoList.length > 0) {
         this.showUploadVideo = true
         this.initThreadResource('videoList')
         this.videoList[0].videoPercent = 1
       }
     },
     initThreadResource(key) {
-      this.thread[key].forEach(item => {
+      this.post[key].forEach(item => {
         const attached = {
           name: key === 'videoList' ? item.file_name : item.attachment,
           url: key === 'videoList' ? item.media_url : item.thumbUrl,
@@ -263,16 +263,18 @@ export default {
         return obj
       })
     },
-    publishResource(params) {
+    publishPostResource(params) {
       const imageData = this.createAttachmentsData(this.imageList)
       const attachedData = this.createAttachmentsData(this.attachedList)
-      console.log(imageData, attachedData)
       if (imageData.length > 0 || attachedData.length > 0) {
         params._jv.relationships.attachments = {}
         params._jv.relationships.attachments.data = []
         params._jv.relationships.attachments.data.push(...imageData)
         params._jv.relationships.attachments.data.push(...attachedData)
       }
+      return params
+    },
+    publishThreadResource(params) {
       if (this.videoList.length > 0) {
         params.file_id = this.videoList[0].id
         params.file_name = this.videoList[0].name
@@ -293,15 +295,22 @@ export default {
       if (this.type === 2 && this.videoList.length === 0) return this.$message.warning(this.$t('post.videoCannotBeEmpty'))
 
       if (this.type === 3 && this.onUploadImage) return this.$message.warning(this.$t('post.pleaseWaitForTheImageUploadToComplete'))
-      if (this.type === 3 && this.imageIdList.length === 0) return this.$message.warning(this.$t('post.imageCannotBeEmpty'))
+      if (this.type === 3 && this.imageList.length === 0) return this.$message.warning(this.$t('post.imageCannotBeEmpty'))
       return 'success'
     },
     publish() {
       if (this.checkPublish() !== 'success') return
       this.onPublish = true
+      if (this.isEditor) {
+        return Promise.all([this.editThreadPublish(), this.editPostPublish()]).then(dataArray => {
+          this.$router.push(`/topic/${dataArray[0]._jv.id}`)
+        }, e => handleError(e)).finally(() => {
+          this.onPublish = false
+        })
+      }
       const params = {
         _jv: {
-          type: `/threads`,
+          type: `threads`,
           relationships: {
             category: {
               data: { type: 'categories', id: this.categoryId }
@@ -310,19 +319,52 @@ export default {
         },
         content: this.text
       }
-      if (this.thread.id) params._jv.id = this.thread.id
       params.type = this.type
       this.title ? params.title = this.title : ''
       if (this.isPaid) {
         params.price = this.price
         params.free_words = this.freeWords
       }
-      this.publishResource(params)
+      this.publishThreadResource(params)
+      this.publishPostResource(params)
       return this.$store.dispatch('jv/post', params).then(data => {
         this.$router.push(`/topic/${data._jv.id}`)
       }, e => this.handleError(e)).finally(() => {
         this.onPublish = false
       })
+    },
+    editPostPublish() {
+      // 用于 更新 content image attached
+      const postParams = {
+        _jv: {
+          type: `posts`,
+          relationships: {}
+        },
+        content: this.text
+      }
+      if (this.post.threadId) postParams._jv.id = this.post.threadId
+      this.publishPostResource(postParams)
+      return this.$store.dispatch('jv/patch', [postParams, { url: `/posts/${this.post._jv.id}` }])
+    },
+    editThreadPublish() {
+      // 用于 更新 title video category payment
+      const threadParams = {
+        _jv: {
+          type: `threads`,
+          relationships: {
+            category: {
+              data: { type: 'categories', id: this.categoryId }
+            }
+          }
+        }
+      }
+      if (this.post.threadId) threadParams._jv.id = this.post.threadId
+      this.title ? threadParams.title = this.title : ''
+      threadParams.type = this.type
+      threadParams.price = this.isPaid ? this.price : 0
+      threadParams.free_words = this.isPaid ? this.freeWords : 0
+      this.publishThreadResource(threadParams)
+      return this.$store.dispatch('jv/patch', [threadParams, { url: `/threads/${this.post.threadId}` }])
     }
   }
 }

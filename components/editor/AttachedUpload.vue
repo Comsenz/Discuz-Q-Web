@@ -61,20 +61,19 @@ export default {
       })
     },
     handleAttachedRemove(file) {
-      const id = file.response.data.id
-      const params = { _jv: { type: `/attachments/${id}` }}
-      return this.$store.dispatch('jv/delete', params).then(() => {
+      const id = file.id
+      return this.$store.dispatch('jv/delete', [`/attachments/${id}`, {}]).then(() => {
         const _attachedList = [...this.attachedList]
         const deleteAttached = _attachedList.filter(item => item.id === id)[0]
         const index = _attachedList.indexOf(deleteAttached)
         _attachedList.splice(index, 1)
-        this.$emit('update:attachedIdList', _attachedList)
+        this.$emit('update:attachedList', _attachedList)
       }, e => this.handleError(e))
     },
     handleSuccess(response, file) {
       const _attachedList = [...this.attachedList]
       _attachedList.push({ name: file.name, url: file.url, id: response.data.id })
-      this.$emit('update:attachedIdList', _attachedList)
+      this.$emit('update:attachedList', _attachedList)
       this.$emit('update:onUploadAttached', false)
     },
     handleError() {

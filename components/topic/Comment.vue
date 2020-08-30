@@ -53,7 +53,6 @@ export default {
         'page[limit]': this.pageLimit,
         include: postInclude
       }}]).then(data => {
-        console.log(data, 'comment-data')
         fold ? this.commentList = data : this.commentList.push(...data)
         if (data.length > 0) this.postCount = data[0].thread.postCount
       }, e => this.handleError(e))

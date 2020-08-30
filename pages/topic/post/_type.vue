@@ -11,7 +11,7 @@
         >{{ category.name }}</span>
       </template>
     </div>
-    <editor :category-id="categorySelectedId" :type="type" :is-editor="threadId !== '' && threadId !== undefined" :thread="thread" />
+    <editor :category-id="categorySelectedId" :type="type" :is-editor="threadId !== '' && threadId !== undefined" :post="post" />
   </div>
 </template>
 
@@ -24,7 +24,7 @@ export default {
   data() {
     return {
       categoryList: [],
-      thread: {},
+      post: {},
       categorySelectedId: undefined
     }
   },
@@ -51,18 +51,17 @@ export default {
       if (!this.threadId) return
       return this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include: threadInclude }}]).then(data => {
         if (data.isDeleted) return this.$router.push('/')
-        console.log(data, 'data')
         this.categorySelectedId = data.category._jv.id
-        this.thread = data.firstPost
-        this.thread.id = data._jv.id
-        this.thread.title = data.title
-        this.thread.price = data.price
-        this.thread.freeWords = data.freeWords
-        this.thread.paid = data.paid
-        data.threadVideo ? this.thread.videoList = [data.threadVideo] : ''
+        this.post = data.firstPost
+        this.post.threadId = data._jv.id
+        this.post.title = data.title
+        this.post.price = data.price
+        this.post.freeWords = data.freeWords
+        this.post.paid = data.paid
+        data.threadVideo ? this.post.videoList = [data.threadVideo] : ''
         // 改 key 的名字，为了 Editor init 数据中可以循环 init
-        this.thread.attachedList = data.firstPost.attachments
-        this.thread.imageList = data.firstPost.images
+        this.post.attachedList = data.firstPost.attachments
+        this.post.imageList = data.firstPost.images
       }, e => this.handleError(e))
     },
     selectCategory(category) {

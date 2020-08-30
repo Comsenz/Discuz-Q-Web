@@ -68,25 +68,23 @@ export default {
       })
     },
     handlePictureRemove(file) {
-      const id = file.response.data.id
-      const params = { _jv: { type: `/attachments/${id}` }}
-      return this.$store.dispatch('jv/delete', params).then(() => {
+      const id = file.id
+      return this.$store.dispatch('jv/delete', [`/attachments/${id}`, {}]).then(() => {
         const _imageList = [...this.imageList]
         const deleteImage = _imageList.filter(item => item.id === id)[0]
         const index = _imageList.indexOf(deleteImage)
         _imageList.splice(index, 1)
-        this.$emit('update:imageIdList', _imageList)
-      }, e => this.handleError(e))
+        this.$emit('update:imageList', _imageList)
+      }, e => handleError(e))
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
       this.dialogVisible = true
     },
     handleSuccess(response, file) {
-      console.log(response, file)
       const _imageList = [...this.imageList]
       _imageList.push({ name: file.name, url: file.url, id: response.data.id })
-      this.$emit('update:imageIdList', _imageList)
+      this.$emit('update:imageList', _imageList)
       this.$emit('update:onUploadImage', false)
     },
     handleError() {
