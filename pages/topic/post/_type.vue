@@ -68,6 +68,9 @@ export default {
     },
     threadId() {
       return this.$route.query.threadId
+    },
+    categoryId() {
+      return this.$route.query.categoryId
     }
   },
   created() {
@@ -79,6 +82,7 @@ export default {
     getCategoryList() {
       this.$store.dispatch('jv/get', ['categories', {}]).then(res => {
         this.categoryList = res
+        if (this.categoryId) this.categorySelectedId = this.categoryId
       }, e => this.handleError(e))
     },
     getThread() {
