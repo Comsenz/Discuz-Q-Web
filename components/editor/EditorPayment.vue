@@ -2,7 +2,7 @@
   <div class="global">
     <div class="block">
       <div class="text">{{ $t('post.isPay') }}:</div>
-      <el-select :value="isPaid" placeholder="请选择" @change="value => $emit('update:isPaid', value)">
+      <el-select :value="payment.isPaid" placeholder="请选择" @change="value => $emit('paymentChange', { key: 'isPaid', value })">
         <el-option
           v-for="item in options"
           :key="item.value"
@@ -12,20 +12,20 @@
       </el-select>
     </div>
     <div class="block">
-      <div v-show="isPaid">
+      <div v-show="payment.isPaid">
         <div class="text">{{ $t('post.paymentAmount') }}:</div>
         <label>
           <span>{{ $t('post.yuanItem') }}</span>
-          <input :value="price" maxlength="7" type="number" @input="onPriceInput">
+          <input :value="payment.price" maxlength="7" type="number" @input="onPriceInput">
         </label>
       </div>
     </div>
     <div class="block">
-      <div v-show="isPaid && type === 1">
+      <div v-show="payment.isPaid && type === 1">
         <div class="text">{{ $t('post.freeWordCount') }}:</div>
         <label>
           <span>{{ $t('post.wordItem') }}</span>
-          <input :value="freeWords" max="10000" type="number" @input="onFreeWordInput">
+          <input :value="payment.freeWords" max="10000" type="number" @input="onFreeWordInput">
         </label>
       </div>
     </div>
@@ -36,17 +36,9 @@
 export default {
   name: 'EditorPayment',
   props: {
-    isPaid: {
-      type: Boolean,
-      default: false
-    },
-    freeWords: {
-      type: Number,
-      default: 0
-    },
-    price: {
-      type: Number,
-      default: 0
+    payment: {
+      type: Object,
+      default: () => {}
     },
     type: {
       type: Number,
@@ -70,12 +62,12 @@ export default {
     onFreeWordInput(e) {
       if (e.target.value.length >= 5) e.target.value = e.target.value.substr(0, 5)
       if (e.target.value === '') e.target.value = 0
-      this.$emit('update:freeWords', parseInt(e.target.value))
+      this.$emit('paymentChange', { key: 'freeWords', value: parseInt(e.target.value) })
     },
     onPriceInput(e) {
       if (e.target.value.length >= 7) e.target.value = e.target.value.substr(0, 7)
       if (e.target.value === '') e.target.value = 0
-      this.$emit('update:price', parseFloat(e.target.value))
+      this.$emit('paymentChange', { key: 'price', value: parseInt(e.target.value) })
     }
   }
 }

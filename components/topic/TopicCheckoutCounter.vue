@@ -89,7 +89,7 @@
     </div>
     <div class="bottom">
       <span>￥ {{ showAmount + $t('pay.rmb') + $t('pay.payTo') + '，' + user.username || '' }} {{ $t('pay.ofAccount') }}</span>
-      <el-button v-if="payWay === 'wxPay'" size="medium" type="primary" @click="$emit('paying', { payWay, hideAvatar })">{{ $t('pay.scanPay') }}</el-button>
+      <el-button v-if="payWay === 'wxPay'" size="medium" type="primary" @click="$emit('paying', { payWay, hideAvatar, rewardAmount })">{{ $t('pay.scanPay') }}</el-button>
       <el-button v-if="payWay === 'walletPay'" :disabled="!enoughBalance" size="medium" type="primary" @click="$emit('paying', { payWay, hideAvatar, rewardAmount })">{{ $t('pay.surePay') }}</el-button>
     </div>
   </message-box>

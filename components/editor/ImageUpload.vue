@@ -4,7 +4,6 @@
       :action="url + '/api/attachments'"
       :headers="header"
       :data="{ type: 1 }"
-      multiple
       name="file"
       with-credentials
       accept="image/*"
@@ -69,13 +68,14 @@ export default {
     },
     handlePictureRemove(file) {
       const id = file.id
-      return this.$store.dispatch('jv/delete', [`/attachments/${id}`, {}]).then(() => {
-        const _imageList = [...this.imageList]
-        const deleteImage = _imageList.filter(item => item.id === id)[0]
-        const index = _imageList.indexOf(deleteImage)
-        _imageList.splice(index, 1)
-        this.$emit('update:imageList', _imageList)
-      }, e => handleError(e))
+      const _imageList = [...this.imageList]
+      const deleteImage = _imageList.filter(item => item.id === id)[0]
+      const index = _imageList.indexOf(deleteImage)
+      _imageList.splice(index, 1)
+      console.log(_imageList, index, file.id)
+      this.$emit('imageChange', { key: 'imageList', value: _imageList })
+      // TODO delete 请求报错
+      return this.$store.dispatch('jv/delete', [`/attachments/${id}`, {}]).catch(() => '')
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
@@ -84,7 +84,7 @@ export default {
     handleSuccess(response, file) {
       const _imageList = [...this.imageList]
       _imageList.push({ name: file.name, url: file.url, id: response.data.id })
-      this.$emit('update:imageList', _imageList)
+      this.$emit('imageChange', { key: 'imageList', value: _imageList })
       this.$emit('update:onUploadImage', false)
     },
     handleError() {

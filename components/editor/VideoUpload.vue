@@ -58,12 +58,12 @@ export default {
     handleVideoRemove() {
       return this.$confirm(this.$t('topic.confirmDelete'), this.$t('discuzq.msgBox.title'), {
         confirmButtonText: this.$t('discuzq.msgBox.confirm'),
-        cancelButtonText: this.$t('discuzq.msgBox.cancel'),
-        type: 'warning'
+        type: this.$t('discuzq.msgBox.cancel'),
+        typeInformation: 'warning'
       }).then(() => {
         this.$refs.upload.clearFiles()
         setTimeout(() => {
-          this.$emit('update:videoList', [])
+          this.$emit('videoChange', { key: 'videoList', value: [] })
         }, 1000)
       }, () => console.log('取消删除'))
     },
@@ -71,14 +71,14 @@ export default {
       this.$emit('update:onUploadVideo', true)
       const _videoList = [...this.videoList]
       _videoList.push({ name: file.name, url: file.url, videoPercent: 0 })
-      this.$emit('update:videoList', _videoList)
+      this.$emit('videoChange', { key: 'videoList', value: _videoList })
       this.getSignature(getSignature => {
         // eslint-disable-next-line new-cap
         new TcVod.default({ getSignature })
           .upload({ mediaFile: file.raw })
           .on('media_progress', info => {
             _videoList[0].videoPercent = info.percent
-            this.$emit('update:videoList', _videoList)
+            this.$emit('videoChange', { key: 'videoList', value: _videoList })
           }).done().then(doneResult => {
             this.postVideo(doneResult.fileId)
           })
@@ -97,7 +97,7 @@ export default {
       this.$store.dispatch('jv/post', params).then(data => {
         const _videoList = [...this.videoList]
         _videoList[0].id = data.file_id
-        this.$emit('update:videoList', _videoList)
+        this.$emit('videoChange', { key: 'videoList', value: _videoList })
       }, e => this.handleError(e))
         .finally(() => {
           this.$emit('update:onUploadVideo', false)

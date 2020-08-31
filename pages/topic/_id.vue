@@ -230,7 +230,7 @@ export default {
       }, e => this.handleError(e))
     },
     afterDeleted() {
-      this.$message({ type: 'success', message: this.$t('topic.deleteSuccessAndJumpToBack') })
+      this.$message({ typeInformation: 'success', message: this.$t('topic.deleteSuccessAndJumpToBack') })
       setTimeout(() => { this.$router.push('/') }, 1500)
     }
   }

@@ -1,34 +1,59 @@
 <template>
   <div class="editor">
-    <label v-if="showTitle">
-      <input v-model="title" :placeholder="$t('post.pleaseInputPostTitle')" class="input-title" type="text">
+    <label v-if="typeInformation && typeInformation.showTitle">
+      <input
+        :placeholder="$t('post.pleaseInputPostTitle')"
+        class="input-title"
+        type="text"
+        :value="post && post.title"
+        @input="e => onPostContentChange('title', e.target.value)"
+      >
     </label>
-    <editor-payment v-if="type !== 0 && type !== 4" :is-paid.sync="isPaid" :free-words.sync="freeWords" :price.sync="price" :type="type" />
+    <editor-payment
+      v-if="typeInformation && typeInformation.showPayment"
+      :payment="payment || {}"
+      :type="typeInformation && typeInformation.type"
+      @paymentChange="e => onPaymentChange(e.key, e.value)"
+    />
     <div class="container-textarea">
       <label>
         <textarea
           id="textarea"
-          v-model="text"
+          :value="post && post.text"
           class="input-text"
           :placeholder="$t('post.placeholder')"
-          :maxlength="textLimit"
+          :maxlength="post && post.textLimit"
+          @input="e => onPostContentChange('text', e.target.value)"
         />
       </label>
       <div>
         <div v-if="showUploadImg || showUploadVideo || showUploadAttached" class="resources-list">
-          <image-upload v-if="showUploadImg" :url="url" :header="header" :on-upload-image.sync="onUploadImage" :image-list.sync="imageList" />
-          <video-upload v-if="showUploadVideo" :on-upload-video.sync="onUploadVideo" :video-list.sync="videoList" />
+          <image-upload
+            v-if="showUploadImg"
+            :url="url"
+            :header="header"
+            :on-upload-image.sync="onUploadImage"
+            :image-list="post && post.imageList"
+            @imageChange="e => onPostContentChange(e.key, e.value)"
+          />
+          <video-upload
+            v-if="showUploadVideo"
+            :on-upload-video.sync="onUploadVideo"
+            :video-list="post && post.videoList"
+            @videoChange="e => onPostContentChange(e.key, e.value)"
+          />
           <attached-upload
             v-if="showUploadAttached"
             :url="url"
             :header="header"
             :type-limit="attachedTypeLimit"
             :on-upload-attached.sync="onUploadAttached"
-            :attached-list.sync="attachedList"
+            :attached-list="post && post.attachedList"
+            @attachedChange="e => onPostContentChange(e.key, e.value)"
           />
         </div>
-        <span class="tip">
-          {{ textLimit>=text.length ? $t('post.note', { num: textLimit - text.length }) : $t('post.exceed', { num: text.length - textLimit }) }}
+        <span v-if="typeInformation && typeInformation.text" class="tip">
+          {{ typeInformation.textLimit>=typeInformation.text.length ? $t('post.note', { num: textLimit - text.length }) : $t('post.exceed', { num: text.length - textLimit }) }}
         </span>
         <div class="emoji-list">
           <emoji-list v-show="showEmoji" @selectEmoji="selectActions" />
@@ -60,8 +85,14 @@
               />
             </template>
           </div>
-          <editor-markdown v-if="showMarkdown" :text="text" class="block" @changeText="changeText" />
-          <el-button class="button-publish" :loading="onPublish" type="primary" size="small" @click="publish">{{ $t('post.post') }}
+          <editor-markdown
+            v-if="typeInformation && typeInformation.showMarkdown"
+            :text="post && post.text"
+            class="block"
+            @changeText="text => onPostContentChange('text', text)"
+          />
+          <el-button class="button-publish" :loading="onPublish" type="primary" size="small" @click="publish">
+            {{ $t('post.post') }}
           </el-button>
         </div>
         <caller v-if="showCaller" @close="showCaller = false" @selectedCaller="selectActions" />
@@ -73,68 +104,48 @@
 <script>
 import handleError from '@/mixin/handleError'
 import forums from '@/mixin/forums'
+
 export default {
   name: 'Editor',
   mixins: [forums, handleError],
   props: {
-    categoryId: {
-      type: String,
-      default: ''
-    },
-    threadId: {
-      type: String,
-      default: ''
-    },
-    type: {
-      type: Number,
-      default: 0
-    },
     post: {
       type: Object,
       default: () => {}
     },
-    isEditor: {
+    payment: {
+      type: Object,
+      default: () => {}
+    },
+    typeInformation: {
+      type: Object,
+      default: () => {}
+    },
+    editResourceShow: {
+      type: Object,
+      default: () => {}
+    },
+    onPublish: {
       type: Boolean,
       default: false
     }
   },
   data() {
     return {
-      title: '',
-      text: '',
-      textLimit: 10000,
       selectionStart: 0,
       selectionEnd: 0,
-      // actions
-      showTitle: false,
+      // 是否显示弹窗
       showEmoji: false,
-      showTopic: false,
       showCaller: false,
-      showMarkdown: false,
-      // resource
+      showTopic: false,
       showUploadImg: false,
       showUploadVideo: false,
       showUploadAttached: false,
+
       onUploadImage: false,
       onUploadVideo: false,
       onUploadAttached: false,
-      onPublish: false,
-      imageList: [],
-      videoList: [],
-      attachedList: [],
-      // payment
-      isPaid: false,
-      freeWords: 0,
-      price: 0,
 
-      typeShow: {
-        // 0 文字帖 1 帖子 2 视频 3 图片 4 评论
-        0: { textLimit: 450, showTitle: false, showImage: false, showVideo: false, showAttached: false, showMarkdown: false },
-        1: { textLimit: 10000, showTitle: true, showImage: true, showVideo: false, showAttached: true, showMarkdown: true },
-        2: { textLimit: 450, showTitle: false, showImage: false, showVideo: true, showAttached: false, showMarkdown: false },
-        3: { textLimit: 450, showTitle: false, showImage: true, showVideo: false, showAttached: false, showMarkdown: false },
-        4: { textLimit: 450, showTitle: false, showImage: true, showVideo: false, showAttached: false, showMarkdown: false }
-      },
       listenerList: ['emoji-list', 'topic-list'],
       actions: [
         { icon: 'emoji', toggle: 'showEmoji' },
@@ -142,9 +153,9 @@ export default {
         { icon: 'topic', toggle: 'showTopic' }
       ],
       resources: [
-        { icon: 'picture', toggle: 'showUploadImg', show: false },
-        { icon: 'video', toggle: 'showUploadVideo', show: false },
-        { icon: 'attached', toggle: 'showUploadAttached', show: false }
+        { icon: 'picture', toggle: 'showUploadImg', show: this.typeInformation && this.typeInformation.showImage },
+        { icon: 'video', toggle: 'showUploadVideo', show: this.typeInformation && this.typeInformation.showVideo },
+        { icon: 'attached', toggle: 'showUploadAttached', show: this.typeInformation && this.typeInformation.showAttached }
       ]
     }
   },
@@ -169,65 +180,37 @@ export default {
     }
   },
   watch: {
-    post: {
-      handler() {
-        if (this.isEditor) this.initThread()
+    editResourceShow: {
+      handler(val) {
+        for (const key in val) {
+          this[key] = val[key]
+        }
       },
       deep: true
     }
   },
   mounted() {
-    this.initActions()
     this.autoHeight()
     this.emojiListener()
   },
   methods: {
-    initThread() {
-      this.text = this.post.content
-      this.title = this.post.title
-      this.price = parseFloat(this.post.price)
-      this.freeWords = parseInt(this.post.freeWords)
-      this.isPaid = this.post.price > 0
-      if (this.post.images.length > 0) {
-        this.showUploadImg = true
-        this.initThreadResource('imageList')
-      }
-      if (this.post.attachments.length > 0) {
-        this.showUploadAttached = true
-        this.initThreadResource('attachedList')
-      }
-      if (this.post.videoList && this.post.videoList.length > 0) {
-        this.showUploadVideo = true
-        this.initThreadResource('videoList')
-        this.videoList[0].videoPercent = 1
-      }
+    onPostContentChange(key, value) {
+      this.$emit(`update:post`, _post)
+      const _post = Object.assign({}, this.post)
+      _post[key] = value
+      this.$emit(`update:post`, _post)
     },
-    initThreadResource(key) {
-      this.post[key].forEach(item => {
-        const attached = {
-          name: key === 'videoList' ? item.file_name : item.attachment,
-          url: key === 'videoList' ? item.media_url : item.thumbUrl,
-          id: item._jv.id
-        }
-        this[key].push(attached)
-      })
+    onPaymentChange(key, value) {
+      const _payment = Object.assign({}, this.payment)
+      _payment[key] = value
+      this.$emit(`update:payment`, _payment)
     },
-    changeText(newText) { this.text = newText },
     autoHeight() {
       const textarea = document.getElementById('textarea')
       textarea.onkeyup = function() {
         this.style.height = 'auto'
         this.style.height = this.scrollHeight + 'px'
       }
-    },
-    initActions() {
-      const typeShow = this.typeShow[this.type]
-      this.textLimit = typeShow.textLimit
-      this.showTitle = typeShow.showTitle
-      this.showMarkdown = typeShow.showMarkdown
-      this.resources[0].show = typeShow.showImage
-      this.resources[1].show = typeShow.showVideo
-      this.resources[2].show = typeShow.showAttached
     },
     getSelection() {
       this.selectionStart = document.getElementById('textarea').selectionStart
@@ -255,139 +238,18 @@ export default {
     },
     selectActions(code) {
       this.getSelection()
-      this.text = this.text.slice(0, this.selectionStart) + code + this.text.slice(this.selectionStart, this.text.length)
+      const _text = this.post.text.slice(0, this.selectionStart) + code + this.post.text.slice(this.selectionStart, this.post.text.length)
+      this.onPostContentChange('text', _text)
       this.showEmoji = false
       this.showTopic = false
       this.showCaller = false
     },
-    createAttachmentsData(resource) {
-      return resource.map(item => {
-        const obj = {}
-        obj.id = item.id
-        obj.type = 'attachments'
-        return obj
-      })
-    },
-    publishPostResource(params) {
-      const imageData = this.createAttachmentsData(this.imageList)
-      const attachedData = this.createAttachmentsData(this.attachedList)
-      if (imageData.length > 0 || attachedData.length > 0) {
-        params._jv.relationships.attachments = {}
-        params._jv.relationships.attachments.data = []
-        params._jv.relationships.attachments.data.push(...imageData)
-        params._jv.relationships.attachments.data.push(...attachedData)
-      }
-      return params
-    },
-    publishThreadResource(params) {
-      if (this.videoList.length > 0) {
-        params.file_id = this.videoList[0].id
-        params.file_name = this.videoList[0].name
-      }
-      return params
-    },
-    checkPublish() {
-      if (!this.categoryId && this.type !== 4) return this.$message.warning(this.$t('post.theClassifyCanNotBeBlank'))
-      // 0 文字帖 1 帖子 2 视频 3 图片 4 评论
-      if (this.type === 0 && !this.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
-
-      if (this.type === 1 && !this.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
-      if (this.type === 1 && !this.title) return this.$message.warning(this.$t('post.theTitleCanNotBeBlank'))
-      if (this.type === 1 && this.onUploadImage) return this.$message.warning(this.$t('post.pleaseWaitForTheImageUploadToComplete'))
-      if (this.type === 1 && this.onUploadAttached) return this.$message.warning(this.$t('post.pleaseWaitForTheAttachedUploadToComplete'))
-
-      if (this.type === 2 && this.onUploadVideo) return this.$message.warning(this.$t('post.pleaseWaitForTheVideoUploadToComplete'))
-      if (this.type === 2 && this.videoList.length === 0) return this.$message.warning(this.$t('post.videoCannotBeEmpty'))
-
-      if (this.type === 3 && this.onUploadImage) return this.$message.warning(this.$t('post.pleaseWaitForTheImageUploadToComplete'))
-      if (this.type === 3 && this.imageList.length === 0) return this.$message.warning(this.$t('post.imageCannotBeEmpty'))
-
-      if (this.type === 4 && !this.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
-      return 'success'
-    },
     publish() {
-      if (this.checkPublish() !== 'success') return
-      this.onPublish = true
-      if (this.type === 4) return this.postPublish() // 发布评论
-      if (this.isEditor) {
-        return Promise.all([this.editThreadPublish(), this.editPostPublish()]).then(dataArray => {
-          this.$router.push(`/topic/${dataArray[0]._jv.id}`)
-        }, e => handleError(e)).finally(() => {
-          this.onPublish = false
-        })
-      }
-      const params = {
-        _jv: {
-          type: `threads`,
-          relationships: {
-            category: {
-              data: { type: 'categories', id: this.categoryId }
-            }
-          }
-        },
-        content: this.text
-      }
-      params.type = this.type
-      this.title ? params.title = this.title : ''
-      if (this.isPaid) {
-        params.price = this.price
-        params.free_words = this.freeWords
-      }
-      this.publishThreadResource(params)
-      this.publishPostResource(params)
-      return this.$store.dispatch('jv/post', params).then(data => {
-        this.$router.push(`/topic/${data._jv.id}`)
-      }, e => this.handleError(e)).finally(() => {
-        this.onPublish = false
-      })
-    },
-    postPublish() {
-      const postParams = {
-        _jv: {
-          type: `posts`,
-          relationships: {
-            thread: { data: { type: 'threads', id: this.threadId }}
-          }
-        },
-        content: this.text
-      }
-      this.publishPostResource(postParams)
-      return this.$store.dispatch('jv/post', postParams).then(() => {
-        this.$emit('publish')
-      }, e => handleError(e)).finally(() => { this.onPublish = false })
-    },
-    editPostPublish() {
-      // 用于 更新 content image attached
-      const postParams = {
-        _jv: {
-          type: `posts`,
-          relationships: {}
-        },
-        content: this.text
-      }
-      if (this.post.threadId) postParams._jv.id = this.post.threadId
-      this.publishPostResource(postParams)
-      return this.$store.dispatch('jv/patch', [postParams, { url: `/posts/${this.post._jv.id}` }])
-    },
-    editThreadPublish() {
-      // 用于 更新 title video category payment
-      const threadParams = {
-        _jv: {
-          type: `threads`,
-          relationships: {
-            category: {
-              data: { type: 'categories', id: this.categoryId }
-            }
-          }
-        }
-      }
-      if (this.post.threadId) threadParams._jv.id = this.post.threadId
-      this.title ? threadParams.title = this.title : ''
-      threadParams.type = this.type
-      threadParams.price = this.isPaid ? this.price : 0
-      threadParams.free_words = this.isPaid ? this.freeWords : 0
-      this.publishThreadResource(threadParams)
-      return this.$store.dispatch('jv/patch', [threadParams, { url: `/threads/${this.post.threadId}` }])
+      if (this.onUploadAttached) return this.$message.warning(this.$t('post.pleaseWaitForTheAttachedUploadToComplete'))
+      if (this.onUploadImage) return this.$message.warning(this.$t('post.pleaseWaitForTheImageUploadToComplete'))
+      if (this.onUploadVideo) return this.$message.warning(this.$t('post.pleaseWaitForTheVideoUploadToComplete'))
+      this.$emit('update:onPublish', true)
+      this.$emit('publish')
     }
   }
 }

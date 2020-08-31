@@ -4,7 +4,6 @@
       :action="url + '/api/attachments'"
       :headers="header"
       :data="{ type: 0 }"
-      multiple
       name="file"
       with-credentials
       :file-list="attachedList"
@@ -62,18 +61,18 @@ export default {
     },
     handleAttachedRemove(file) {
       const id = file.id
-      return this.$store.dispatch('jv/delete', [`/attachments/${id}`, {}]).then(() => {
-        const _attachedList = [...this.attachedList]
-        const deleteAttached = _attachedList.filter(item => item.id === id)[0]
-        const index = _attachedList.indexOf(deleteAttached)
-        _attachedList.splice(index, 1)
-        this.$emit('update:attachedList', _attachedList)
-      }, e => this.handleError(e))
+      const _attachedList = [...this.attachedList]
+      const deleteAttached = _attachedList.filter(item => item.id === id)[0]
+      const index = _attachedList.indexOf(deleteAttached)
+      _attachedList.splice(index, 1)
+      this.$emit('attachedChange', { key: 'attachedList', value: _attachedList })
+      // TODO delete 请求报错
+      return this.$store.dispatch('jv/delete', [`/attachments/${id}`, {}]).catch(() => '')
     },
     handleSuccess(response, file) {
       const _attachedList = [...this.attachedList]
       _attachedList.push({ name: file.name, url: file.url, id: response.data.id })
-      this.$emit('update:attachedList', _attachedList)
+      this.$emit('attachedChange', { key: 'attachedList', value: _attachedList })
       this.$emit('update:onUploadAttached', false)
     },
     handleError() {
