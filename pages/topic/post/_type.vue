@@ -1,6 +1,6 @@
 <template>
   <div class="page-post">
-    <div class="title">{{ $t('post.postThread') }}</div>
+    <div class="title">{{ $t(`post.${typeInformation[type].headerText}`) }}</div>
     <div v-loading="categoryList.length === 0" class="category-list">
       <template v-for="(category, index) in categoryList">
         <span
@@ -24,38 +24,31 @@
 
 <script>
 const threadInclude = 'firstPost,firstPost.images,firstPost.attachments,category,threadVideo'
+import publishResource from '@/mixin/publishResource'
 import handleError from '@/mixin/handleError'
+
 export default {
   name: 'Post',
-  mixins: [handleError],
+  mixins: [handleError, publishResource],
   data() {
     return {
       categoryList: [],
-      post: {
-        id: '',
-        title: '',
-        text: '',
-        imageList: [],
-        videoList: [],
-        attachedList: []
-      },
-      payment: {
-        isPaid: false,
-        price: 0,
-        freeWords: 0
-      },
-      editResourceShow: {
-        showUploadImg: false,
-        showUploadVideo: false,
-        showUploadAttached: false
-      },
+      post: { id: '', title: '', text: '', imageList: [], videoList: [], attachedList: [] },
+      payment: { isPaid: false, price: 0, freeWords: 0 },
+      editResourceShow: { showUploadImg: false, showUploadVideo: false, showUploadAttached: false },
       typeInformation: {
         // 0 文字帖 1 帖子 2 视频 3 图片 4 评论
-        0: { type: 0, textLimit: 450, showPayment: false, showTitle: false, showImage: false, showVideo: false, showAttached: false, showMarkdown: false },
-        1: { type: 1, textLimit: 10000, showPayment: true, showTitle: true, showImage: true, showVideo: false, showAttached: true, showMarkdown: true },
-        2: { type: 2, textLimit: 450, showPayment: true, showTitle: false, showImage: false, showVideo: true, showAttached: false, showMarkdown: false },
-        3: { type: 3, textLimit: 450, showPayment: true, showTitle: false, showImage: true, showVideo: false, showAttached: false, showMarkdown: false },
-        4: { type: 4, textLimit: 450, showPayment: false, showTitle: false, showImage: true, showVideo: false, showAttached: false, showMarkdown: false }
+        0: { type: 0, headerText: 'postText', textLimit: 450, showPayment: false, showTitle: false, showImage: false, showVideo: false,
+          showAttached: false, showMarkdown: false, showEmoji: true, showTopic: true, showCaller: true },
+
+        1: { type: 1, headerText: 'postPost', textLimit: 10000, showPayment: true, showTitle: true, showImage: true, showVideo: false,
+          showAttached: true, showMarkdown: true, showEmoji: true, showTopic: true, showCaller: true },
+
+        2: { type: 2, headerText: 'postVideo', textLimit: 450, showPayment: true, showTitle: false, showImage: false, showVideo: true,
+          showAttached: false, showMarkdown: false, showEmoji: true, showTopic: true, showCaller: true },
+
+        3: { type: 3, headerText: 'postImage', textLimit: 450, showPayment: true, showTitle: false, showImage: true, showVideo: false,
+          showAttached: false, showMarkdown: false, showEmoji: true, showTopic: true, showCaller: true }
       },
       categorySelectedId: '',
       isEditor: false,
@@ -64,6 +57,7 @@ export default {
   },
   computed: {
     type() {
+      // TODO 非 0 1 2 3  去 404
       return this.$route.params.type
     },
     threadId() {
@@ -123,32 +117,6 @@ export default {
         target.push(attached)
       })
     },
-    createAttachmentsData(resource) {
-      return resource.map(item => {
-        const obj = {}
-        obj.id = item.id
-        obj.type = 'attachments'
-        return obj
-      })
-    },
-    publishPostResource(params) {
-      const imageData = this.createAttachmentsData(this.post.imageList)
-      const attachedData = this.createAttachmentsData(this.post.attachedList)
-      if (imageData.length > 0 || attachedData.length > 0) {
-        params._jv.relationships.attachments = {}
-        params._jv.relationships.attachments.data = []
-        params._jv.relationships.attachments.data.push(...imageData)
-        params._jv.relationships.attachments.data.push(...attachedData)
-      }
-      return params
-    },
-    publishThreadResource(params) {
-      if (this.post.videoList.length > 0) {
-        params.file_id = this.videoList[0].id
-        params.file_name = this.videoList[0].name
-      }
-      return params
-    },
     checkPublish() {
       // 0 文字帖 1 帖子 2 视频 3 图片 4 评论
       if (!this.categorySelectedId && this.type !== 4) return this.$message.warning(this.$t('post.theClassifyCanNotBeBlank'))
@@ -163,7 +131,6 @@ export default {
     publish() {
       if (this.checkPublish() !== 'success') return
       this.onPublish = true
-      if (this.type === 4) return this.postPublish() // 发布评论
       if (this.isEditor) {
         return Promise.all([this.editThreadPublish(), this.editPostPublish()]).then(dataArray => {
           this.$router.push(`/topic/${dataArray[0]._jv.id}`)
@@ -171,7 +138,7 @@ export default {
           this.onPublish = false
         })
       }
-      const params = {
+      let params = {
         _jv: {
           type: `threads`,
           relationships: {
@@ -188,28 +155,13 @@ export default {
         params.price = this.payment.price
         params.free_words = this.payment.freeWords
       }
-      this.publishThreadResource(params)
-      this.publishPostResource(params)
+      this.publishThreadResource(params, this.post)
+      params = this.publishPostResource(params, this.post)
       return this.$store.dispatch('jv/post', params).then(data => {
         this.$router.push(`/topic/${data._jv.id}`)
       }, e => this.handleError(e)).finally(() => {
         this.onPublish = false
       })
-    },
-    postPublish() {
-      const postParams = {
-        _jv: {
-          type: `posts`,
-          relationships: {
-            thread: { data: { type: 'threads', id: this.threadId }}
-          }
-        },
-        content: this.text
-      }
-      this.publishPostResource(postParams)
-      return this.$store.dispatch('jv/post', postParams).then(() => {
-        this.$emit('publish')
-      }, e => handleError(e)).finally(() => { this.onPublish = false })
     },
     editPostPublish() {
       // 用于 更新 content image attached
@@ -221,7 +173,7 @@ export default {
         content: this.post.text
       }
       if (this.threadId) postParams._jv.id = this.threadId
-      this.publishPostResource(postParams)
+      this.publishPostResource(postParams, this.post)
       return this.$store.dispatch('jv/patch', [postParams, { url: `/posts/${this.post.id}` }])
     },
     editThreadPublish() {
@@ -241,7 +193,7 @@ export default {
       threadParams.type = this.type
       threadParams.price = this.payment.isPaid ? this.payment.price : 0
       threadParams.free_words = this.payment.isPaid ? this.payment.freeWords : 0
-      this.publishThreadResource(threadParams)
+      this.publishThreadResource(threadParams, this.post)
       return this.$store.dispatch('jv/patch', [threadParams, { url: `/threads/${this.threadId}` }])
     }
   }

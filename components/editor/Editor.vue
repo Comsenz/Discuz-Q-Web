@@ -65,6 +65,7 @@
           <div class="block">
             <template v-for="(action, index) in actions">
               <svg-icon
+                v-if="action.show"
                 :key="index"
                 :type="action.icon"
                 class="svg"
@@ -148,14 +149,14 @@ export default {
 
       listenerList: ['emoji-list', 'topic-list'],
       actions: [
-        { icon: 'emoji', toggle: 'showEmoji' },
-        { icon: 'call', toggle: 'showCaller' },
-        { icon: 'topic', toggle: 'showTopic' }
+        { icon: 'emoji', toggle: 'showEmoji', show: false },
+        { icon: 'call', toggle: 'showCaller', show: false },
+        { icon: 'topic', toggle: 'showTopic', show: false }
       ],
       resources: [
-        { icon: 'picture', toggle: 'showUploadImg', show: this.typeInformation && this.typeInformation.showImage },
-        { icon: 'video', toggle: 'showUploadVideo', show: this.typeInformation && this.typeInformation.showVideo },
-        { icon: 'attached', toggle: 'showUploadAttached', show: this.typeInformation && this.typeInformation.showAttached }
+        { icon: 'picture', toggle: 'showUploadImg', show: false },
+        { icon: 'video', toggle: 'showUploadVideo', show: false },
+        { icon: 'attached', toggle: 'showUploadAttached', show: false }
       ]
     }
   },
@@ -182,11 +183,21 @@ export default {
   watch: {
     editResourceShow: {
       handler(val) {
-        for (const key in val) {
-          this[key] = val[key]
-        }
+        for (const key in val) this[key] = val[key]
       },
       deep: true
+    },
+    typeInformation: {
+      handler(val) {
+        this.actions[0].show = val.showEmoji
+        this.actions[1].show = val.showCaller
+        this.actions[2].show = val.showTopic
+        this.resources[0].show = val.showImage
+        this.resources[1].show = val.showVideo
+        this.resources[2].show = val.showAttached
+      },
+      deep: true,
+      immediate: true
     }
   },
   mounted() {
