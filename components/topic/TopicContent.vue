@@ -17,7 +17,7 @@
         :src="image.thumbUrl"
         :alt="image.filename"
         :preview-src-list="unpaid ? [] : [...article.images.map(item => item.thumbUrl)]"
-        fit="contain"
+        fit="cover"
       />
     </div>
     <div v-if="unpaid && threadType === 1" class="hide-content-tip">{{ $t('pay.contentHide') }}</div>
