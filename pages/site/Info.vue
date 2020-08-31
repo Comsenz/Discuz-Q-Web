@@ -86,12 +86,12 @@
       v-if="!isLogin"
       v-cloak
     >
-      <nuxt-link to="/user/login">
-        <el-button
-          type="primary"
-          class="r-button"
-        >{{ $t('site.join') }}{{ $t('site.site') }}</el-button>
-      </nuxt-link>
+
+      <el-button
+        type="primary"
+        class="r-button"
+        @click="tologin"
+      >{{ $t('site.join') }}{{ $t('site.site') }}</el-button>
 
     </p>
     <div
@@ -99,18 +99,15 @@
       class="qrco-overlay"
     />
     <el-dialog
-      :title="`扫码支付${(forums.set_site &&forums.set_site.site_price) ? forums.set_site.site_price : 1}元加入${forums.set_site && forums.set_site.site_name}`"
       :visible.sync="qrcodeShow"
       width="15%"
       class="model"
       :show-close="false"
     >
-
       <img
         :src="codeUrl"
         alt=""
       >
-
     </el-dialog>
 
   </div>
@@ -125,8 +122,8 @@ export default {
   ],
   data() {
     return {
-      isLogin: '',
-      pageSize: 20,
+      isLogin: this.$store.getters['session/get']('isLogin'),
+      pageSize: 7,
       pageNum: 1,
       userList: [],
       searchText: '',
@@ -138,17 +135,26 @@ export default {
 
     }
   },
+  computed: {
+    userId() {
+      return this.$store.getters['session/get']('userId')
+    }
+  },
   mounted() {
-    this.isLoginh()
     this.searchUser()
+    this.userInfo()
   },
   methods: {
-    isLoginh() {
-      this.isLogin = !!window.localStorage.getItem('access_token')
-      console.log(this.isLogin)
-      var a = 1001
-      var b = 1000
-      console.log(a > b ? `${a % 1000}k` : '原来的价格')
+    userInfo() {
+      const params = {
+        include: 'groups,wechat'
+      }
+      this.$store.dispatch('jv/get', [`users/${this.userId}`, { params }]).then(res => {
+        console.log('当前用户信息', res)
+        if (res.paid) {
+          window.location.href = '/'
+        }
+      })
     },
     async searchUser() {
       const params = {
@@ -166,9 +172,12 @@ export default {
         })
       }
     },
+    tologin() {
+      this.$router.push('/user/login')
+    },
     // 支付方式选择完成点击确定时
     paysureShow() {
-      console.log(this.forums)
+      console.log('站点信息', this.forums)
       this.creatOrder(this.forums.set_site.site_price, 1, this.value)
     },
     // 创建订单
@@ -178,8 +187,7 @@ export default {
           type: 'orders'
         },
         type,
-        amount,
-        is_anonymous: this.isAnonymous
+        amount
       }
       this.$store.dispatch('jv/post', params).then(res => {
         console.log('---order info ---', res)
@@ -233,12 +241,12 @@ export default {
               this.qrcodeShow = false
             }
             window.location.href = '/'
-            // this.$refs.toast.show({ message: this.p.paySuccess })
+            this.$message.success(this.$t('pay.paySuccess'))
           }
         })
         .catch(() => {
           this.coverLoading = false
-          // this.$refs.toast.show({ message: this.pay.payFail })
+          this.$message.success(this.$t('pay.payFail'))
         })
     }
   }

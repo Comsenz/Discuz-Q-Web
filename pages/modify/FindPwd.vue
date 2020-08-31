@@ -226,7 +226,7 @@ export default {
   margin: 60px auto;
   width: 300px;
   .disabled {
-    background-color: #ddd;
+    background-color: #EDEDED;
     border-color: #ddd;
     color: #57a3f3;
     cursor: not-allowed; // 鼠标变化
