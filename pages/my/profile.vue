@@ -855,6 +855,7 @@ export default {
       color: #6d6d6d;
       text-align: center;
       margin-bottom: 21px;
+      cursor: pointer;
       .num {
         font-size: 18px;
       }

@@ -48,7 +48,7 @@ export default {
     copyLink() {
       const oInput = document.createElement('input')
       if (process.client) {
-        oInput.value = window.location.href + 'topic/' + this.threadsId
+        oInput.value = process.env.mobileDomain + '/pages/topic/index?id=' + this.threadsId
         oInput.id = 'copyInput'
         document.body.appendChild(oInput)
         oInput.select()
@@ -60,7 +60,7 @@ export default {
       }, 100)
     },
     onShowPopover() {
-      this.createQrcode(window.location.href + 'topic/' + this.threadsId)
+      this.createQrcode(process.env.mobileDomain + '/pages/topic/index?id=' + this.threadsId)
     },
     createQrcode(link) {
       if (process.client) {

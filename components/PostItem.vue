@@ -10,7 +10,7 @@
         <div class="time">{{ $t('topic.publishAt') }}{{ timerDiff(item.createdAt) }}{{ $t('topic.before') }}</div>
       </div>
       <template v-if="item.firstPost">
-        <div class="first-post">
+        <div class="first-post" @click.self="toDetail">
           <div @click="toDetail">
             <div v-if="item.type === 1" class="title">{{ item.title }}</div>
             <div class="content">
@@ -55,9 +55,9 @@
             <div v-permission:handleLike="''" class="btn like" :class="{'liked': item.firstPost.isLiked}">
               <svg-icon v-permission:handleLike="''" type="like" class="icon" />
               {{ item.firstPost.isLiked ? $t('topic.liked') : $t('topic.like') }} {{ item.firstPost.likeCount > 0 ? item.firstPost.likeCount : '' }}</div>
-            <nuxt-link :to="`./topic/${item._jv.id}`" class="btn comment">
+            <div class="btn comment" @click="toDetail">
               <svg-icon type="comment" class="icon" />
-              {{ $t('topic.comment') }} {{ item.firstPost.comment > 0 ? item.firstPost.comment : '' }}</nuxt-link>
+              {{ $t('topic.comment') }} {{ item.firstPost.comment > 0 ? item.firstPost.comment : '' }}</div>
             <share-popover :threads-id="item._jv.id">
               <div class="btn share">
                 <svg-icon type="link" class="icon" />
@@ -65,7 +65,7 @@
               </div>
             </share-popover>
           </div>
-          <nuxt-link :to="`./topic/${item._jv.id}`" class="reply-btn">{{ $t('topic.reply') }}</nuxt-link>
+          <div class="reply-btn" @click="toDetail">{{ $t('topic.reply') }}</div>
         </div>
       </template>
     </div>
@@ -98,7 +98,7 @@ export default {
     handleLike() {
       if (this.loading) return
       if (!this.item.firstPost.canLike) {
-        this.$message.error('没有权限操作')
+        this.$message.error(this.$t('topic.noThreadLikePermission'))
       }
       this.loading = true
       const isLiked = !this.item.firstPost.isLiked
@@ -119,20 +119,29 @@ export default {
     },
     // 跳转详情页
     toDetail() {
+      if (!this.canViewPostsFn()) return
       this.$router.push({ path: `/topic/${this.item._jv.id}` })
     },
     // 点击图片 判断是否付费， 未付费跳转详情页
     onClickImage() {
-      if (!this.unpaid) return
+      if (!this.unpaid || !this.canViewPostsFn()) return
       this.$router.push({ path: `/topic/${this.item._jv.id}` })
     },
     // 点击视频 判断是否付费， 未付费跳转详情页
     openVideo() {
+      if (!this.canViewPostsFn()) return
       if (this.unpaid) {
         this.$router.push({ path: `/topic/${this.item._jv.id}` })
       } else {
         this.showVideoPop = true
       }
+    },
+    canViewPostsFn() {
+      if (!this.item.canViewPosts) {
+        this.$message.error(this.$t('home.noPostingTopic'))
+        return false
+      }
+      return true
     }
   }
 }
@@ -268,7 +277,7 @@ export default {
           padding: 7px 15px;
           line-height: 1;
           border-radius:2px;
-          transition: all 0.3s ease-in-out;
+          transition: all 0.1s ease-in-out;
           &.liked{
             color:#D0D4DC;
           }

@@ -104,9 +104,13 @@ export default {
       return this.$store.getters['session/get']('userId')
     }
   },
-  created() {
-    this.getThreadsSticky()
-    this.getThreadsList()
+  mounted() {
+    if (this.stickyList.length === 0) {
+      this.getThreadsSticky()
+    }
+    if (this.threadsList.length === 0) {
+      this.getThreadsList()
+    }
   },
   methods: {
     // 置顶主题
