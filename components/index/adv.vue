@@ -20,7 +20,7 @@ export default {
   },
   destroyed() {
     this.qrcode = null
-    this.$refs.qrcode.innerHTML = ''
+    // this.$refs.qrcode.innerHTML = ''
   },
   methods: {
     createQrcode(link) {
