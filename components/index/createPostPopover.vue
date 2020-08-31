@@ -8,10 +8,10 @@
     popper-class="custom-popover-width"
   >
     <ul class="type-container">
-      <li v-if="can_create_thread" @click.stop="toRouter(0)">文本</li>
+      <li v-if="can_create_thread" @click.stop="toRouter(0)">文字</li>
+      <li v-if="can_create_thread_long" @click.stop="toRouter(1)">帖子</li>
       <li v-if="can_create_thread_image" @click.stop="toRouter(3)">图片</li>
       <li v-if="can_create_thread_video" @click.stop="toRouter(2)">视频</li>
-      <li v-if="can_create_thread_long" @click.stop="toRouter(2)">文章</li>
     </ul>
     <template slot="reference">
       <slot name="button">

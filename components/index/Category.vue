@@ -22,8 +22,13 @@ export default {
   },
   // 异步数据用法
   async asyncData({ params, store }) {
-    const data = await store.dispatch('jv/get', ['categories', {}])
-    return { list: data }
+    try {
+      const data = await store.dispatch('jv/get', ['categories', {}])
+      return { list: [{ _jv: { id: 0 }, name: this.$t('topic.whole') }, ...data] }
+    } catch (error) {
+      console.log('ssr err')
+      return { list: [] }
+    }
   },
   data() {
     return {
@@ -31,8 +36,13 @@ export default {
       selectId: 0
     }
   },
-  created() {
-    this.getCategoryList()
+  mounted() {
+    if (this.list.length === 0) {
+      this.getCategoryList()
+    }
+    if (this.$route.query.categoryId) {
+      this.onChange(this.$route.query.categoryId)
+    }
   },
   methods: {
     getCategoryList() {
@@ -47,6 +57,7 @@ export default {
     onChange(id) {
       if (this.postLoading) return
       this.selectId = id
+      this.$router.push({ url: '/', query: { categoryId: id !== 0 ? id : '' }})
       this.$emit('onChange', id)
     }
   }
