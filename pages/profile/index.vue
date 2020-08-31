@@ -116,9 +116,8 @@
     </div>
     <div
       class="profile-c"
-      style="height:1000px"
     >
-      <div style="width:700px;padding:20px">
+      <div style="width:700px;margin: 15px 15px 0 0;">
         <el-tabs
           v-model="activeName"
           type="border-card"
@@ -128,19 +127,21 @@
           <el-tab-pane
             :label="$t('profile.topic')+ ` (${userInfo.threadCount})`"
             name="1"
-          >11111111</el-tab-pane>
-          <el-tab-pane
-            :label="$t('profile.following')+ ` (${userInfo.fansCount})`"
-            name="2"
-          >22222222</el-tab-pane>
-          <el-tab-pane
-            :label="$t('profile.followers')+ ` (${userInfo.followCount})`"
-            name="3"
-          >333333333</el-tab-pane>
+          >
+            <topic :user-id="userId" />
+          </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.likes')+ ` (${userInfo.likedCount})`"
+            name="2"
+          >2222</el-tab-pane>
+          <el-tab-pane
+            :label="$t('profile.following')+ ` (${userInfo.fansCount})`"
+            name="3"
+          >3333</el-tab-pane>
+          <el-tab-pane
+            :label="$t('profile.followers')+ ` (${userInfo.followCount})`"
             name="4"
-          >444444444444</el-tab-pane>
+          >44</el-tab-pane>
         </el-tabs>
       </div>
       <div style="width:300px;">
@@ -365,8 +366,11 @@ export default {
     display: flex;
     .register-select {
       border: none;
-      background: transparent;
+      background: #ffffff;
       box-shadow: none;
+      ::v-deep.el-tabs__header{
+        padding: 20px;
+      }
     }
   }
   .isFixed {
