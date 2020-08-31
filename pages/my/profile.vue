@@ -120,30 +120,29 @@
 
           <el-button
             class="count-b"
-            :class="{disabled: !canClick}"
             size="middle"
-            @click="sendVerifyCode"
+            @click="sendsms2"
           >{{ content }}</el-button>
 
           <el-input
-            v-model="newPhoneNumber"
+            v-model="newphon"
             :placeholder="$t('modify.setphontitle')"
             style="width:300px"
             class="passbtom"
+            @input="changeinput"
           />
-
           <el-input
             v-model="newVerifyCode"
             placeholder="请输入新手机验证码"
             class="phone-input"
           />
-
           <el-button
             class="count-b"
-            :class="{disabled: !canClick}"
+            :class="{disabled: !canClick2}"
+            :disabled="!canClick2"
             size="middle"
-            @click="sendVerifyCode2"
-          >{{ content }}</el-button>
+            @click="sendsms"
+          >{{ content2 }}</el-button>
         </div>
 
         <el-button
@@ -161,30 +160,26 @@
         <div>
           <el-input
             ref="oldphone"
-            v-model="oldVerifyCode"
+            v-model="newphon"
+            maxlength="11"
             placeholder="请输入绑定的手机号"
             class="phone-input"
+            @input="changeinput"
           />
 
           <el-button
             class="count-b"
             :class="{disabled: !canClick}"
+            :disabled="!canClick"
             size="middle"
-            @click="sendVerifyCode"
+            @click="sendsms"
           >{{ content }}</el-button>
 
           <el-input
-            v-model="newVerifyCode"
+            v-model="setnum"
             placeholder="请输入手机验证码"
-            class="phone-input"
+            class="passbtom"
           />
-
-          <el-button
-            class="count-b"
-            :class="{disabled: !canClick}"
-            size="middle"
-            @click="sendVerifyCode2"
-          >{{ content }}</el-button>
         </div>
 
         <el-button
@@ -195,7 +190,7 @@
                 background: #1878f3;
                 margin-bottom:48px;
                 margin-top:10px;"
-          @click="mobileComfirm"
+          @click="dingphon"
         >确定修改</el-button>
       </div>
     </div>
@@ -219,16 +214,22 @@
             v-model="oldPassWord"
             :placeholder="$t('modify.enterold')"
             class="passbtom"
+            type="password"
+            show-password
           />
           <el-input
             v-model="newPassWord"
             :placeholder="$t('modify.enterNew')"
             class="passbtom"
+            type="password"
+            show-password
           />
           <el-input
             v-model="renewPassword"
             :placeholder="$t('modify.enterNewRepeat')"
             class="passbtom"
+            type="password"
+            show-password
           />
 
         </div>
@@ -316,8 +317,10 @@
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
 import forums from '@/mixin/forums'
+import handleError from '@/mixin/handleError'
+const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
 export default {
-  mixins: [forums],
+  mixins: [forums, handleError, tcaptchs],
   data() {
     return {
       userId: '',
@@ -326,21 +329,32 @@ export default {
       wordnumber: '',
       signcontent: '',
       content: this.$t('modify.sendVerifyCode'),
-      canClick: true,
+      content2: this.$t('modify.sendVerifyCode'),
+      canClick: false,
+      canClick2: false,
+      captcha: null, // 腾讯云验证码实例
+      captcha_ticket: '', // 腾讯云验证码返回票据
+      captcha_rand_str: '', // 腾讯云验证码返回随机字符串
+      ticket: '',
+      randstr: '',
       newVerifyCode: '', // 新手机验证码
       oldVerifyCode: '', // 旧手机验证码
       newPhoneNumber: '', // 新绑定的手机
+      newphon: '', // 初始绑定的手机号
+      setnum: '', // 初始绑定手机号时收到的验证码
+      novice: '',
       oldPassWord: '',
       newPassWord: '',
       renewPassword: '', // 重复新密码
-      realName: '',
-      idNumber: '',
+      realName: '', // 真实姓名
+      idNumber: '', // 身份证
       isSignModify: false,
       isMobileModify: false,
       isPassModify: false,
       isWechatModify: false,
       isRealModify: false,
-      loading: true
+      loading: true,
+      rebind: false // 是否修改手机号
     }
   },
   computed: {
@@ -370,7 +384,9 @@ export default {
   },
   methods: {
     countDown(interval) {
+      console.log('倒计时')
       if (!this.canClick) return
+      console.log('倒计时2')
       this.canClick = false
       this.content = interval + this.$t('modify.retransmission')
       const clock = window.setInterval(() => {
@@ -381,6 +397,21 @@ export default {
           this.content = this.$t('modify.sendVerifyCode')
           // this.totalTime = 60
           this.canClick = true
+        }
+      }, 1000)
+    },
+    countDown2(interval) {
+      if (!this.canClick2) return
+      this.canClick2 = false
+      this.content2 = interval + this.$t('modify.retransmission')
+      const clock = window.setInterval(() => {
+        interval--
+        this.content2 = interval + this.$t('modify.retransmission')
+        if (interval < 0) {
+          window.clearInterval(clock)
+          this.content2 = this.$t('modify.sendVerifyCode')
+          // this.totalTime = 60
+          this.canClick2 = true
         }
       }, 1000)
     },
@@ -430,6 +461,137 @@ export default {
         }
       })
     },
+    // 手机位数简单校验
+    changeinput() {
+      setTimeout(() => {
+        this.newphon = this.newphon.replace(/[^\d]/g, '')
+      }, 30)
+      if (this.newphon.length < 11) {
+        this.canClick = false
+        this.canClick2 = false
+      } else if (this.newphon.length === 11) {
+        this.canClick = true
+        this.canClick2 = true
+        this.novice = this.newphon.replace(/\s+/g, '')
+      }
+    },
+    // 发送短信接口
+    sendsms() {
+      console.log('初始绑定手机')
+      if (/^1(3|4|5|6|7|8|9)\d{9}$/.test(this.novice)) {
+        if (this.forums.qcloud.qcloud_captcha) {
+          console.log('腾讯云验证已经开启')
+          this.tcaptcha()
+        } else {
+          console.log('腾讯云验证未开启')
+          if (this.rebind) {
+            this.sendVerifyCode2()
+          } else {
+            this.setphon()
+          }
+        }
+      } else {
+        this.$message.error('手机号错误')
+      }
+    },
+    // 发送短信接口2
+    sendsms2() {
+      this.newphon = ''
+      console.log('验证旧手机')
+      if (this.forums.qcloud.qcloud_captcha) {
+        console.log('腾讯云验证已经开启')
+        this.tcaptcha()
+      } else {
+        console.log('腾讯云验证未开启')
+        // 直接修改手机验证码发送
+        this.sendVerifyCode()
+      }
+    },
+    // 腾讯验证码
+    tcaptcha() {
+      // eslint-disable-next-line no-undef
+      this.captcha = new TencentCaptcha(this.forums.qcloud.qcloud_captcha_app_id, res => {
+        if (res.ret === 0) {
+          this.ticket = res.ticket
+          this.randstr = res.randstr
+          // 验证通过后发布
+          console.log('验证码发送')
+          if (this.novice) {
+            if (this.rebind) {
+              this.sendVerifyCode2()
+            } else {
+              // 新手机验证码发送
+              this.setphon()
+            }
+          } else {
+            // 修改手机验证码发送
+            this.sendVerifyCode()
+          }
+        }
+      })
+      // 显示验证码
+      this.captcha.show()
+    },
+    // 新手机号发送验证码
+    setphon() {
+      const params = {
+        _jv: {
+          type: 'sms/send'
+        },
+        mobile: this.novice,
+        type: 'bind',
+        captcha_ticket: this.ticket,
+        captcha_rand_str: this.randstr
+      }
+      const postphon = status.run(() => this.$store.dispatch('jv/post', params))
+      postphon
+        .then(res => {
+          if (res.interval) this.countDown(res.interval)
+          this.ticket = ''
+          this.randstr = ''
+        }, e => this.handleError(e))
+    },
+    dingphon() {
+      if (this.newphon) {
+        this.bindphon()
+      }
+    },
+    // 验证手机号
+    bindphon() {
+      const _this = this
+      const params = {
+        _jv: {
+          type: 'sms/verify'
+        },
+        mobile: this.newphon,
+        code: this.setnum,
+        type: 'bind'
+      }
+      const postphon = status.run(() => this.$store.dispatch('jv/post', params))
+      postphon
+        .then(res => {
+          if (res) {
+            this.isMobileModify = !this.isMobileModify
+            this.$message.success(this.$t('modify.phontitle'))
+            const param = {
+              _jv: {
+                type: 'forum'
+              }
+            }
+            _this.$store.dispatch('jv/get', param).then(() => {
+              // console.log(1, 'froums');
+            })
+            const promsget = {
+              _jv: {
+                type: 'users',
+                id: this.userid
+              }
+              // include: 'groups',
+            }
+            _this.$store.dispatch('jv/get', promsget).then(() => { })
+          }
+        }, e => this.handleError(e))
+    },
     // 修改手机号
     mobileModify() {
       this.isMobileModify = !this.isMobileModify
@@ -438,89 +600,100 @@ export default {
       })
     },
     // 旧手机验证码发送
-    async sendVerifyCode() {
+    sendVerifyCode() {
+      this.canClick = true
       const params = {
-        _jv: { type: 'sms/send' },
-        mobile: this.userInfo.originalMobile,
-        type: 'verify'
+        _jv: {
+          type: 'sms/send'
+        },
+        type: 'verify',
+        captcha_ticket: this.ticket,
+        captcha_rand_str: this.randstr
       }
-      console.log('oldphone', params)
-      await status.run(() => this.$store.dispatch('jv/post', params))
+      const postphon = status.run(() => this.$store.dispatch('jv/post', params))
+      postphon
         .then(res => {
+          console.log('旧手机验证码', res, this.content)
           if (res.interval) this.countDown(res.interval)
-        }, e => {
-          const {
-            response: {
-              data: {
-                errors }
-            }
-          } = e
-          if (errors[0]) return this.$message.error(errors[0].detail[0])
-        })
+          this.rebind = true
+          this.ticket = ''
+          this.randstr = ''
+        }, e => this.handleError(e))
     },
     // 新手机验证码发送
-    async sendVerifyCode2() {
+    sendVerifyCode2() {
       const params = {
         _jv: { type: 'sms/send' },
-        mobile: this.newPhoneNumber,
-        type: 'rebind'
+        mobile: this.novice,
+        type: 'rebind',
+        captcha_ticket: this.ticket,
+        captcha_rand_str: this.randstr
       }
-      await status.run(() => this.$store.dispatch('jv/post', params))
+      const postphon = status.run(() => this.$store.dispatch('jv/post', params))
+      postphon
         .then(res => {
-          if (res.interval) this.countDown(res.interval)
-        }, e => {
-          const {
-            response: {
-              data: {
-                errors }
-            }
-          } = e
-          if (errors[0]) return this.$message.error(errors[0].code)
-        })
+          console.log('绑定新手机验证码', res)
+          if (res.interval) this.countDown2(res.interval)
+          this.rebind = true
+          this.ticket = ''
+          this.randstr = ''
+        }, e => this.handleError(e))
     },
     // 手机号确认修改
     mobileComfirm() {
       this.oldVerify()
       this.newVerify()
-      // newVerifyCode: '',
-      // oldVerifyCode: '',
-      // newPhoneNumber: '',
       console.log('hh')
       this.isMobileModify = !this.isMobileModify
     },
-    async oldVerify() {
+    oldVerify() {
       const params = {
         _jv: { type: 'sms/verify' },
-        mobile: this.userInfo.originalMobile,
         code: this.oldVerifyCode,
         type: 'verify'
       }
-      await status.run(() => this.$store.dispatch('jv/post', params))
+      this.$store.dispatch('jv/post', params)
         .then(res => {
-          alert('旧手机解绑验证成功')
-        }, e => {
-          const {
-            response: { status }
-          } = e
-          if (status === 500) return this.$message.error('验证码不正确')
-        })
+          if (res) {
+            this.$message.success('旧手机验证成功')
+          }
+        }, e => this.handleError(e))
     },
-    async newVerify() {
+    // 验证新手机号
+    newVerify() {
+      const _this = this
       const params = {
-        _jv: { type: 'sms/verify' },
-        mobile: this.newPhoneNumber,
+        _jv: {
+          type: 'sms/verify'
+        },
+        mobile: this.newphon,
         code: this.newVerifyCode,
         type: 'rebind'
       }
-      await status.run(() => this.$store.dispatch('jv/post', params))
+      const postphon = status.run(() => this.$store.dispatch('jv/post', params))
+      postphon
         .then(res => {
-          alert('新手机绑定成功')
-        }, e => {
-          const {
-            response: { status }
-          } = e
-          if (status === 500) return this.$message.error('验证码不正确')
-        })
+          if (res) {
+            this.isMobileModify = !this.isMobileModify
+            this.$message.success(this.$t('modify.phontitle'))
+            const param = {
+              _jv: {
+                type: 'forum'
+              }
+            }
+            _this.$store.dispatch('jv/get', param).then(() => {
+              // console.log(1, 'froums');
+            })
+            const promsget = {
+              _jv: {
+                type: 'users',
+                id: this.userid
+              }
+              // include: 'groups',
+            }
+            _this.$store.dispatch('jv/get', promsget).then(() => { })
+          }
+        }, e => this.handleError(e))
     },
     // 修改密码
     passModify() {
@@ -559,42 +732,7 @@ export default {
             this.$message.success(this.$t('modify.titlepassword'))
             this.isPassModify = !this.isPassModify
           }
-        })
-        // 错误能输出却拿不到，需要在request.js添加响应时的错误处理
-        .catch(error => {
-          console.log(error.request)
-          console.log(error.message)
-          console.log(error.config)
-          this.disab = true
-          this.styledisbla = 'default'
-          if (error.statusCode === 422) {
-            if (this.valuetone === this.valuenew) {
-              this.judge2 = true
-              this.judge3 = false
-              const [
-                {
-                  detail: [sun]
-                }
-              ] = error.data.errors
-              this.text1 = sun
-            } else {
-              this.judge3 = true
-              this.judge2 = false
-              this.disab = true
-            }
-          } else if (error.request.status === 500) {
-            this.judge2 = false
-            this.judge3 = false
-            this.judge = true
-            const err = { 'errors': [{ 'status': 500, 'code': 'user_update_error', 'detail': ['\u539f\u5bc6\u7801\u4e0d\u5339\u914d'] }] }
-            console.log(err.errors[0].detail)
-            // if (error.request.response) {
-            //   console.log(error.request.response.errors[0].detail[0])
-            // }
-
-            if (err.errors[0].detail[0]) return this.$message.error(err.errors[0].detail[0])
-          }
-        })
+        }, e => this.handleError(e))
     },
     // 微信
     wechatModify() {
@@ -624,12 +762,13 @@ export default {
         _jv: {
           type: 'users/real'
         },
-        identity: this.realName,
-        realname: this.idNumber
+        realname: this.realName,
+        identity: this.idNumber
       }
       const patchname = status.run(() => this.$store.dispatch('jv/patch', params))
       patchname
         .then(res => {
+          this.isRealModify = !this.isRealModify
           if (res) {
             console.log('实名成功信息', res)
             const param = {
@@ -657,41 +796,7 @@ export default {
               duration: 2000
             })
           }
-        })
-        .catch(err => {
-          console.log(err)
-          if (err.statusCode === 422) {
-            this.judge = true
-            const [
-              {
-                detail: [sun]
-              }
-            ] = err.data.errors
-            this.title1 = sun
-            // uni.showToast({
-            //   icon: 'none',
-            //   title: this.title1,
-            //   duration: 2000
-            // })
-          } else if (err.statusCode === 500) {
-            this.judge = true
-            if (err.data.errors[0].detail === this.i18n.t('modify.idtitl')) {
-              this.title1 = err.data.errors[0].detail
-              // uni.showToast({
-              //   icon: 'none',
-              //   title: this.title1,
-              //   duration: 2000
-              // })
-            } else {
-              this.title2 = err.data.errors[0].detail
-              // uni.showToast({
-              //   icon: 'none',
-              //   title: this.title2,
-              //   duration: 2000
-              // })
-            }
-          }
-        })
+        }, e => this.handleError(e))
     }
   }
 }
@@ -783,9 +888,9 @@ export default {
     // font-size: 10px;
   }
   .disabled {
-    background-color: #ddd;
+    background-color: #EDEDED;
     border-color: #ddd;
-    color: #57a3f3;
+    color: #606162;
     cursor: not-allowed; // 鼠标变化
   }
   .passbtom {

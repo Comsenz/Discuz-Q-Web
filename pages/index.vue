@@ -49,23 +49,42 @@ export default {
   name: 'Index',
   mixins: [forums, handleError],
   // 异步数据用法
-  // async asyncData({ params, store }) {
-  //   const threadsStickyParams = {
-  //     'filter[isSticky]': 'yes',
-  //     'filter[isApproved]': 1,
-  //     'filter[isDeleted]': 'no',
-  //     include: ['firstPost']
-  //   }
-  //   const threadsParams = {
-  //     include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
-  //     'filter[isSticky]': 'no',
-  //     'filter[isApproved]': 1,
-  //     'filter[isDeleted]': 'no'
-  //   }
-  //   const threadsStickyData = await store.dispatch('jv/get', ['threads', { threadsStickyParams }])
-  //   const threadsData = await store.dispatch('jv/get', ['threads', { threadsParams }])
-  //   return { stickyList: threadsStickyData, threadsList: threadsData }
-  // },
+  async asyncData({ params, store }, callback) {
+    const threadsStickyParams = {
+      'filter[isSticky]': 'yes',
+      'filter[isApproved]': 1,
+      'filter[isDeleted]': 'no',
+      include: ['firstPost']
+    }
+    const threadsParams = {
+      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
+      'filter[isSticky]': 'no',
+      'filter[isApproved]': 1,
+      'filter[isDeleted]': 'no'
+    }
+
+    try {
+      const resData = {}
+      const threadsStickyData = await store.dispatch('jv/get', ['threads', { threadsStickyParams }])
+      const threadsData = await store.dispatch('jv/get', ['threads', { threadsParams }])
+      // 处理一下data
+      if (Array.isArray(threadsStickyData)) {
+        resData.threadsStickyData = threadsStickyData
+      } else if (threadsStickyData && threadsStickyData._jv && threadsStickyData._jv.json) {
+        resData.threadsStickyData = threadsStickyData._jv.json.data || []
+      }
+
+      if (Array.isArray(threadsData)) {
+        resData.threadsData = threadsData
+      } else if (threadsData && threadsData._jv && threadsData._jv.json) {
+        resData.threadsData = threadsData._jv.json.data || []
+      }
+      callback(null, resData)
+    } catch (error) {
+      console.log('ssr err')
+      callback(null, {})
+    }
+  },
   data() {
     return {
       loading: false,

@@ -35,7 +35,10 @@
             <span class="agree">{{ $t('user.status') }} </span>
           </el-checkbox>
           <div class="logorreg">
-            <span v-if="register">尚无账号，立即<nuxt-link to="/user/register">{{ $t('user.register') }}</nuxt-link></span>
+            <span v-if="register">尚无账号，立即<span
+              style="color: #1878f3;cursor:pointer;"
+              @click="toRegister"
+            > {{ $t('user.register') }}</span></span>
             <nuxt-link
               to="/modify/findpwd"
               class="findpass"
@@ -515,6 +518,9 @@ export default {
       this.$store.dispatch('jv/get', params).then(res => {
         console.log('qq登陆', res)
       })
+    },
+    toRegister() {
+      this.$router.push(`/user/register?url=${this.url}&code=${this.code}`)
     }
 
   }
@@ -660,7 +666,7 @@ export default {
     // font-size: 10px;
   }
   .disabled {
-    background-color: #ddd;
+    background-color: #ededed;
     border-color: #ddd;
     color: #57a3f3;
     cursor: not-allowed; // 鼠标变化

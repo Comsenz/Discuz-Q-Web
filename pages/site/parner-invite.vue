@@ -1,11 +1,11 @@
 <template>
   <div class="info">
     <!-- 有偿加入 -->
-    <h2 class="info-title">{{ $t('manage.payJoin') }}</h2>
+    <h2 :class="normal ? 'info-title' :'info-title tcolor'">{{ codeTitle }}</h2>
     <!-- 站点内容部分-->
     <div class="content-info abs">
       <!-- 付费信息标题 -->
-      <p class="payinfo-title">{{ $t('manage.inviteInfoTitle') }}</p>
+      <p class="payinfo-title">{{ codeTips }}</p>
       <!-- 创建时间 -->
       <p>
         <span class="color">{{ $t('site.creationtime') }}</span>
@@ -15,10 +15,15 @@
       <p>
         <span class="date color">{{ $t('site.circlemaster') }}</span>
         <span class="img">
-          <img
-            :src="forums.set_site && forums.set_site.site_author.avatar"
-            alt=""
-          >
+          <Avatar
+            :user="{
+              username: forums.set_site && forums.set_site.site_author.username,
+              avatarUrl: forums.set_site && forums.set_site.site_author.avatar,
+            }"
+            :size="30"
+            :round="true"
+            class="avatar"
+          />
         </span>
         <span class="workdate">{{ forums.set_site && forums.set_site.site_author.username }}</span>
       </p>
@@ -33,10 +38,12 @@
           :key="index"
           class="img"
         >
-          <img
-            :src="item.avatarUrl ? item.avatarUrl : require('static/logo.png')"
-            alt=""
-          >
+          <Avatar
+            :user="item"
+            :size="30"
+            :round="true"
+            class="avatar"
+          />
         </span>
       </p>
       <!-- 内容数量 -->
@@ -110,29 +117,35 @@
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
 import forums from '@/mixin/forums'
+import loginAuth from '@/mixin/loginAuth'
 export default {
   mixins: [
-    forums
+    forums, loginAuth
   ],
   data() {
     return {
       isLogin: '',
-      pageSize: 20,
+      pageSize: 7,
       pageNum: 1,
       userList: [],
       searchText: '',
       permission: [], // 权利
       inviteData: {}, // 邀请信息
       dialogVisible: false,
-      codeTips: ''
+      codeTips: '',
+      codeTitle: '',
+      inviteCode: '', // 邀请码,
+      normal: false
 
     }
   },
   mounted() {
     this.isLoginh()
     this.searchUser() // 站点数据没有用户数据，这里自行请求user接口
-    this.getInviteInfo(this.$route.query)
-    console.log(this.$route.query)
+    const { code } = this.$route.query
+    this.inviteCode = code
+    this.getInviteInfo(this.inviteCode)
+    console.log('路由参数', this.$route.query)
   },
   methods: {
     handleClose(done) {
@@ -166,12 +179,15 @@ export default {
       await status
         .run(() => this.$store.dispatch('jv/get', `invite/${code}`)
           .then(res => {
+            console.log('邀请信息', res)
             this.inviteData = res
+            this.check2()
             res._jv.json.included.splice(0, 2)
-            this.permission = res.group.permission
-            console.log(this.permission)
-            console.log(res._jv.json.included[0].attributes.permission)
-            console.log(res)
+            const permission = res.group.permission.slice(0, 3)
+            this.permission = permission
+          }).catch(e => {
+            this.check2()
+            console.log(e)
           })
         )
     },
@@ -213,14 +229,54 @@ export default {
           return ''
       }
     },
+    // 进入站点时邀请码的验证
+    check2() {
+      const statusVal =
+        this.inviteData.status || this.inviteData.status === 0 ? this.inviteData.status : 'error'
+      console.log(this.inviteData.status)
+      switch (statusVal) {
+        case 0: {
+          this.codeTitle = this.$t('site.codeinvalid2')
+          this.codeTips = this.$t('site.codeinvalid')
+          break
+        }
+        case 1: {
+          console.log('check2')
+          this.codeTitle = this.$t('manage.payJoin')
+          this.codeTips = this.$t('manage.inviteInfoTitle')
+          this.normal = true
+          break
+        }
+        case 2: {
+          this.codeTitle = this.$t('site.codeused2')
+          this.codeTips = this.$t('site.codeused')
+
+          break
+        }
+        case 3: {
+          this.codeTitle = this.$t('site.codeexpired2')
+          this.codeTips = this.$t('site.codeexpired')
+
+          break
+        }
+        case 'error': {
+          this.codeTitle = this.$t('site.codenotfound2')
+          this.codeTips = this.$t('site.codenotfound')
+
+          break
+        }
+        default:
+          return ''
+      }
+    },
     // 验证码提交
     submit() {
       this.dialogVisible = false
       // 未登陆的情况
-      if (!localStorage.getItem('access_token')) {
-        alert('登陆')
+      if (!this.$store.getters['session/get']('isLogin')) {
         // 需要引入mixins loginauth.js
-        // this.handleLogin(this.code)
+        console.log('未登录进入付费圈子', this.inviteCode)
+        this.handleLogin('/', this.inviteCode)
       } else {
         // 已经登陆的情况
         console.log(this.forums.set_reg.register_type)
@@ -255,9 +311,12 @@ export default {
   margin-top: 62px;
   flex-direction: column;
   .info-title {
-    width: 130px;
+    // width: 130px;
     height: 35px;
     font-size: 26px;
+  }
+  .tcolor{
+    color:#FA5151;
   }
   .payinfo {
     border-bottom: 1px solid #efefef;
@@ -351,10 +410,10 @@ export default {
       color: #909399;
     }
     .myauth-c {
-      flex: 4;
+      flex: 5;
       font-size: 12px;
       font-family: Microsoft YaHei;
-      margin-right: 25px;
+      margin-right: 11px;
       color: #777777;
       span {
         margin-right: 5px;

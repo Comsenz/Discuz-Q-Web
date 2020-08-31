@@ -659,7 +659,7 @@ export default {
     margin-left: -4px;
   }
   .disabled {
-    background-color: #ddd;
+    background-color: #EDEDED;
     border-color: #ddd;
     color: #57a3f3;
     cursor: not-allowed; // 鼠标变化

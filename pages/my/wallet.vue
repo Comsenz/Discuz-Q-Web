@@ -9,9 +9,15 @@
       <div class="mywallet-topitem">
         <span class="margbtm">{{ $t('profile.freezeamount') }}</span>
         <span
+          v-if="dataInfo.freeze_amount > 0"
           class="amount"
           style="color:#FA5151;"
-        >{{ `¥ ${dataInfo.freeze_amount || 0.0}` }}<span>112</span></span>
+        >{{ `¥ ${dataInfo.freeze_amount || 0.0}` }}</span>
+        <span
+          v-else
+          class="amount"
+        >{{ `¥ ${dataInfo.freeze_amount || 0.0}` }}</span>
+
       </div>
       <div
         class="mywallet-topitem"
@@ -422,8 +428,12 @@
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
 import { time2MinuteOrHour } from '@/utils/time'
+import handleError from '@/mixin/handleError'
 
 export default {
+  mixins: [
+    handleError
+  ],
   data() {
     const date = new Date()
     const year = date.getFullYear()
@@ -451,6 +461,7 @@ export default {
       pageNum4: 1, // 订单当前页数
       loadingType: '', // 读取状态
       dataInfo: {}, // 钱包信息
+      freeze_amount: '',
       date: currentDate, // 提现记录日期
       date2: currentDate, // 钱包明细日期
       date3: currentDate, // 冻结金额日期
@@ -600,7 +611,7 @@ export default {
       const postphon = status.run(() => this.$store.dispatch('jv/post', params))
       postphon
         .then(res => {
-          console.log('支付密码验证', res)
+          console.log('原支付密码验证', res)
           if (res._jv.json.data.id) {
             this.passError = false
             this.showPasswordInput = false
@@ -609,9 +620,6 @@ export default {
             )
             this.showNewverify = true
             this.usertokenid = res._jv.json.data.id
-            // uni.navigateTo({
-            //   url: `/pages/modify/paypwd?token=${tokenid}&id=${this.userid}`
-            // })
           }
         })
         .catch(err => {
@@ -635,7 +643,7 @@ export default {
         })
       console.log('password', password)
     },
-    // 存第一次新密码
+    // 新密码
     checkpass(num) {
       if (num.length >= 6) {
         console.log('hhhhhhh')
@@ -653,7 +661,24 @@ export default {
         this.validateVerify(sum)
       }
     },
-    // 新密码判断
+
+    // 获取初始化密码
+    setPass(password) {
+      if (password.length >= 6) {
+        this.inputpas = password
+        console.log('hhhh')
+        this.setPasswordInput = false
+        this.repPasswordInput = true
+      }
+    },
+    // 重复初始化密码
+    setPass2(password) {
+      if (password.length >= 6) {
+        console.log('重复密码', password)
+        this.validateVerify(password)
+      }
+    },
+    // 初始密码判断
     validateVerify(password = '') {
       console.log('password', password)
       const params = {
@@ -668,46 +693,20 @@ export default {
       const postphon = status.run(() => this.$store.dispatch('jv/patch', params))
       postphon
         .then(res => {
-          console.log('密码修改成功', res)
+          this.inputpas = ''
+          console.log('初始密码设置成功', res)
           if (res) {
-            this.$message.success(this.$t('modify.paymentsucceed'))
+            this.repPasswordInput = false
             this.showNewverify2 = false
+            this.$message.success(this.$t('modify.paymentsucceed'))
+            this.$router.go(0)
           }
         })
         .catch(err => {
           console.log(err)
           this.codeError = true
-          if (err.statusCode === 422) {
-            if (this.inputpas !== password) {
-              this.$message.error(this.$t('modify.reenter'))
-              this.codeError = true
-            } else if (this.inputpas === password) {
-              this.$message.error(this.$t('modify.modification'))
-
-              this.codeError = true
-            }
-          }
+          this.handleError(err)
         })
-    },
-    // 获取初始化密码
-    setPass(password) {
-      if (password.length >= 6) {
-        this.firstpas = password
-        console.log('hhhh')
-        this.setPasswordInput = false
-        this.repPasswordInput = true
-      }
-    },
-    // 重复初始化密码
-    setPass2(password) {
-      if (password.length >= 6) {
-        console.log('重复密码', password)
-        this.validateVerify(password)
-      }
-    },
-    // 初始化密码校验
-    validateVerify2(password = '') {
-
     },
     // 获取钱包信息
     getInfo() {
@@ -722,7 +721,6 @@ export default {
     // 金额排序
     sortAmount(str1, str2) {
       console.log(str1, str2)
-
       return str1.change_available_amount * 1 - str2.change_available_amount * 1
     },
     // 处理时间
