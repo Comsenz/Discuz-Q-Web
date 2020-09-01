@@ -29,9 +29,7 @@
       <div class="category background-color">
         <category :post-loading="loading" @onChange="onChangeCategory" />
       </div>
-      <div class="background-color">
-        <advertising />
-      </div>
+      <advertising />
       <div class="recommend-user background-color">
         <recommend-user />
       </div>

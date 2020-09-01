@@ -46,6 +46,10 @@ export default {
   padding: 15px;
   display: flex;
   align-items: center;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.03);
+  margin-bottom: 16px;
   .qrcode{
     width:70px;
     height:70px;
