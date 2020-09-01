@@ -313,6 +313,8 @@ export default {
     canWrite: '还能输入',
     word: '个字',
     publish: '发布',
+    commentPublishSuccess: '评论发布成功',
+    replyPublishSuccess: '回复发布成功',
     publishAt: '发布于',
     editAt: '编辑于',
     replyContentCannotBeEmpty: '回复内容不能为空',

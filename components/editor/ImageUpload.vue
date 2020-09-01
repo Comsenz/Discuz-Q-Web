@@ -72,7 +72,6 @@ export default {
       const deleteImage = _imageList.filter(item => item.id === id)[0]
       const index = _imageList.indexOf(deleteImage)
       _imageList.splice(index, 1)
-      console.log(_imageList, index, file.id)
       this.$emit('imageChange', { key: 'imageList', value: _imageList })
       // TODO delete 请求报错
       return this.$store.dispatch('jv/delete', [`/attachments/${id}`, {}]).catch(() => '')

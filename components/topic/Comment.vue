@@ -1,6 +1,6 @@
 <template>
   <div>
-    <comment-header v-if="(postCount - 1) > 0" :comment-count="commentList.length" :is-positive-sort.sync="isPositiveSort" />
+    <comment-header v-if="postCount > 0" :comment-count="commentList.length" :is-positive-sort.sync="isPositiveSort" />
     <div v-else class="without-comment">{{ $t('topic.noComment') }}</div>
     <editor
       editor-style="comment"
@@ -9,19 +9,19 @@
       :on-publish="onCommentPublish"
       @publish="postCommentPublish"
     />
-    <template v-if="(postCount - 1) > 0">
+    <template v-if="postCount > 0">
       <!-- 深拷贝后 reverse() 是为了防止无限更新   -->
       <comment-list
         v-loading="loading"
         :thread-id="threadId"
-        :comment-list="isPositiveSort ? [...commentList] : [...commentList].reverse()"
-        @replyPublish="getComment(true)"
+        :comment-list="commentList"
+        @replyPublish="getComment()"
         @deleteComment="deleteComment"
         @like="onLike"
       />
-      <div v-if="(postCount - 1) > pageLimit" class="container-show-more">
-        <button v-if="(postCount - 1) !== commentList.length" class="show-more" @click="showMore">{{ $t('topic.showMore') }}</button>
-        <button v-else class="show-more" @click="foldComment">{{ $t('topic.foldComment') }}</button>
+      <div v-if="postCount > growthFactor" class="container-show-more">
+        <button v-if="postCount !== commentList.length" class="show-more" @click="pageLimit += growthFactor">{{ $t('topic.showMore') }}</button>
+        <button v-else class="show-more" @click="pageLimit = growthFactor">{{ $t('topic.foldComment') }}</button>
       </div>
     </template>
   </div>
@@ -30,10 +30,11 @@
 <script>
 const postInclude = 'user,replyUser,images,thread,user.groups,thread.category,thread.firstPost,lastThreeComments,lastThreeComments.user,lastThreeComments.replyUser,deletedUser,lastDeletedLog'
 import publishResource from '@/mixin/publishResource'
+import postLegalityCheck from '@/mixin/postLegalityCheck'
 import handleError from '@/mixin/handleError'
 export default {
   name: 'Comment',
-  mixins: [handleError, publishResource],
+  mixins: [handleError, publishResource, postLegalityCheck],
   props: {
     threadId: {
       type: String,
@@ -45,41 +46,43 @@ export default {
       commentList: [],
       postCount: 0,
       isPositiveSort: true,
-      pageCount: 1,
+      growthFactor: 5,
       pageLimit: 5,
       onCommentPublish: false,
       comment: { text: '', imageList: [], attachedList: [] },
       commentType: { type: 4, textLimit: 450, showPayment: false, showTitle: false, showImage: true, showVideo: false,
         showAttached: false, showMarkdown: false, showEmoji: true, showTopic: false, showCaller: true },
-      loading: true
+      loading: false
+    }
+  },
+  watch: {
+    pageLimit() {
+      this.getComment()
+    },
+    isPositiveSort() {
+      this.getComment()
     }
   },
   created() {
     this.getComment()
   },
   methods: {
-    getComment(fold = false) {
+    getComment() {
+      if (this.loading === true) return // 事件防抖
+      this.loading = true
       this.$store.dispatch('jv/get', [`posts`, { params: {
-        'filter[isApproved]': 1,
         'filter[thread]': this.threadId,
         'filter[isDeleted]': 'no',
         'filter[isComment]': 'no',
-        'page[number]': this.pageCount,
+        'page[number]': 1,
         'page[limit]': this.pageLimit,
+        sort: this.isPositiveSort ? '-createdAt' : 'createdAt',
         include: postInclude
       }}]).then(data => {
         this.loading = false
-        fold ? this.commentList = data : this.commentList.push(...data)
-        if (data.length > 0) this.postCount = data[0].thread.postCount
+        this.commentList = data
+        this.postCount = data.length > 0 ? (data[0].thread.postCount - 1) : 0
       }, e => this.handleError(e))
-    },
-    showMore() {
-      this.pageCount += 1
-      this.getComment()
-    },
-    foldComment() {
-      this.pageCount = 1
-      this.getComment(true)
     },
     onLike({ comment, index }) {
       const params = {
@@ -102,12 +105,12 @@ export default {
         type: 'warning'
       }).then(() => {
         return this.$store.dispatch('jv/patch', params).then(() => {
-          this.pageCount = 1
-          this.getComment(true)
+          this.getComment()
         }, e => this.handleError(e))
       }, () => console.log('取消删除'))
     },
     postCommentPublish() {
+      if (!this.comment.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
       this.onCommentPublish = true
       const commentParams = {
         _jv: {
@@ -119,13 +122,13 @@ export default {
         content: this.comment.text
       }
       this.publishPostResource(commentParams, this.comment)
-      return this.$store.dispatch('jv/post', commentParams).then(() => {
+      return this.$store.dispatch('jv/post', commentParams).then(response => {
         this.$emit('publish')
         this.comment.text = ''
         this.comment.imageList = []
         this.getComment()
-        this.$message.success('评论发布成功')
-      }, e => handleError(e)).finally(() => { this.onCommentPublish = false })
+        this.postLegalityCheck(response, this.$t('topic.commentPublishSuccess'))
+      }, e => this.handleError(e)).finally(() => { this.onCommentPublish = false })
     }
   }
 }

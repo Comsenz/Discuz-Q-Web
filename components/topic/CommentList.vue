@@ -7,6 +7,7 @@
           <div class="author-name">{{ comment.user ? comment.user.username : '' }}</div>
           <div class="timer">{{ timerDiff(comment.updatedAt) + $t('topic.before') }}..</div>
         </div>
+        <div v-if="comment.isApproved === 0" class="checking">{{ $t('topic.inReview') }}</div>
       </div>
       <div class="container-detail">
         <div class="content-html" @click="showAll($event, index, commentList)" v-html="formatSummary(comment)" />
@@ -60,17 +61,17 @@
             </div>
           </div>
           <div class="content-html" @click="showAll($event, replyIndex, replyList)" v-html="formatSummary(reply)" />
-          <div v-if="reply.images && reply.images.length > 0" class="images">
-            <el-image
-              v-for="(image, imageIndex) in reply.images"
-              :key="imageIndex"
-              style="width: 100px; height: 100px;border-radius: 5px; margin-right: 10px"
-              :src="image.thumbUrl"
-              :alt="image.filename"
-              :preview-src-list="[...reply.images.map(item => item.thumbUrl)]"
-              fit="contain"
-            />
-          </div>
+          <!--          <div v-if="reply.images && reply.images.length > 0" class="images">-->
+          <!--            <el-image-->
+          <!--              v-for="(image, imageIndex) in reply.images"-->
+          <!--              :key="imageIndex"-->
+          <!--              style="width: 100px; height: 100px;border-radius: 5px; margin-right: 10px"-->
+          <!--              :src="image.thumbUrl"-->
+          <!--              :alt="image.filename"-->
+          <!--              :preview-src-list="[...reply.images.map(item => item.thumbUrl)]"-->
+          <!--              fit="contain"-->
+          <!--            />-->
+          <!--          </div>-->
         </div>
         <div v-if="comment.replyCount > 3">
           <div v-if="comment.replyCount !== (replyList[index] || []).length" class="show-all-reply" @click="getReply(comment._jv.id, index)">
@@ -84,15 +85,17 @@
 </template>
 
 <script>
-const commentInclude = 'commentPosts,commentPosts.user,images'
+const commentInclude = 'replyUser,user.groups,user,images'
 import handleError from '@/mixin/handleError'
 import publishResource from '@/mixin/publishResource'
+import postLegalityCheck from '@/mixin/postLegalityCheck'
 import timerDiff from '@/mixin/timerDiff'
+import s9e from '@/utils/s9e'
 import dayjs from 'dayjs'
 
 export default {
   name: 'CommentList',
-  mixins: [handleError, timerDiff, publishResource],
+  mixins: [handleError, timerDiff, publishResource, postLegalityCheck],
   props: {
     commentList: {
       type: Array,
@@ -111,13 +114,14 @@ export default {
       replyPost: { text: '', imageList: [], attachedList: [] },
       replyType: { type: 4, textLimit: 450, showPayment: false, showTitle: false, showImage: true, showVideo: false,
         showAttached: false, showMarkdown: false, showEmoji: true, showTopic: false, showCaller: true },
-      showAllReplay: false
+      showAllReply: false,
+      replyLoading: false
     }
   },
   watch: {
     commentList: {
       handler(val) {
-        if (!this.showAllReplay) this.replyList = val.map(item => item.lastThreeComments)
+        if (!this.showAllReply) this.replyList = val.map(item => item.lastThreeComments)
       },
       deep: true
     }
@@ -127,26 +131,39 @@ export default {
       return dayjs(date).format('YYYY-MM-DD HH:mm')
     },
     formatSummary(comment) {
+      let html
       if (comment.contentHtml !== comment.summary) {
-        return comment.summary + `&nbsp&nbsp&nbsp<button style="color: #00479B; cursor: pointer" class="showAllComment">全部<button>`
+        html = comment.summary + `&nbsp&nbsp&nbsp<button style="color: #00479B; cursor: pointer" class="showAllComment">全部<button>`
       } else {
-        return comment.contentHtml
+        html = comment.contentHtml
       }
+      return s9e.parse(html)
     },
     showAll(e, index, contentList) {
       if (e.target.matches('.showAllComment')) e.target.parentElement.innerHTML = contentList[index].contentHtml
     },
     getReply(id, index) {
-      this.showAllReplay = true
-      this.$store.dispatch('jv/get', [`posts/${id}`, { params: { include: commentInclude }}]).then(data => {
-        this.$set(this.replyList, index, data.commentPosts.reverse())
+      if (this.replyLoading === true) return // 事件防抖
+      this.showAllReply = true
+      this.replyLoading = true
+      this.$store.dispatch('jv/get', [`posts`, { params: {
+        'filter[isApproved]': 1,
+        'filter[thread]': this.threadId,
+        'filter[reply]': id,
+        'filter[isDeleted]': 'no',
+        sort: '-createdAt',
+        'filter[isComment]': 'yes',
+        include: commentInclude }}]).then(data => {
+        this.replyLoading = false
+        this.$set(this.replyList, index, data)
       }, e => this.handleError(e))
     },
     foldReply(index) {
-      this.showAllReplay = false
+      this.showAllReply = false
       this.$set(this.replyList, index, this.commentList[index].lastThreeComments)
     },
     replyPublish(id) {
+      if (!this.replyPost.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
       this.onReplyPublish = true
       const replyParams = {
         _jv: {
@@ -160,13 +177,14 @@ export default {
         content: this.replyPost.text
       }
       this.publishPostResource(replyParams, this.replyPost)
-      return this.$store.dispatch('jv/post', replyParams).then(() => {
+      return this.$store.dispatch('jv/post', replyParams).then(response => {
         this.$emit('publish')
         this.replyPost.text = ''
         this.replyPost.imageList = []
+        this.showReplyEditorForIndex = -1
+        this.postLegalityCheck(response, this.$t('topic.replyPublishSuccess'))
         this.$emit('replyPublish')
-        this.$message.success('回复发布成功')
-      }, e => handleError(e)).finally(() => { this.onReplyPublish = false })
+      }, e => this.handleError(e)).finally(() => { this.onReplyPublish = false })
     }
   }
 }
@@ -205,6 +223,11 @@ export default {
           font-size: 12px;
         }
       }
+
+      > .checking {
+        font-size: 16px;
+        color: #FA5151;
+      }
     }
 
     > .container-detail {
@@ -240,14 +263,12 @@ export default {
         color: $font-color-grey;
 
         > .left {
-          width: 320px;
-          display: flex;
-          justify-content: space-between;
           > span {
-            flex: 1;
+            margin-right: 60px;
             cursor: pointer;
 
             &:last-child {
+              margin-right: 0;
               cursor: default;
             }
 

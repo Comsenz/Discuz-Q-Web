@@ -134,7 +134,7 @@ export default {
       if (this.isEditor) {
         return Promise.all([this.editThreadPublish(), this.editPostPublish()]).then(dataArray => {
           this.$router.push(`/topic/${dataArray[0]._jv.id}`)
-        }, e => handleError(e)).finally(() => {
+        }, e => this.handleError(e)).finally(() => {
           this.onPublish = false
         })
       }

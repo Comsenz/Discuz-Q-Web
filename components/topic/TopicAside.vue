@@ -9,7 +9,7 @@
         <a :href="'/topic/' + item._jv.id">{{ $t('topic.toWatch') }}</a>
       </div>
     </div>
-    <advertising />
+    <advertising style="margin-top: 15px;" />
     <copyright :forums="forums" />
   </div>
 </template>
