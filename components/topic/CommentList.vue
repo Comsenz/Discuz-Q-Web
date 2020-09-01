@@ -27,7 +27,7 @@
               <svg-icon :type="comment.isLiked ? 'liked' : 'like'" style="font-size: 14px" />
               <span class="text">{{ $t('topic.like') }} {{ comment.likeCount > 0 ? comment.likeCount : '' }}</span>
             </span>
-            <span @click="commentTa">
+            <span @click=" showReplyEditorForIndex = showReplyEditorForIndex === index ? -1 : index">
               <svg-icon type="comment" style="font-size: 14px" />
               <span class="text">{{ $t('topic.replyTa') }}</span>
             </span>
@@ -38,6 +38,15 @@
           <div v-if="comment.canDelete" class="right" @click="$emit('deleteComment', comment._jv.id)">{{ $t('topic.delete') }}</div>
         </div>
       </div>
+      <editor
+        v-if="showReplyEditorForIndex === index"
+        style="margin-top: 0; margin-bottom: 20px"
+        editor-style="reply"
+        :type-information="replyType"
+        :post.sync="replyPost"
+        :on-publish="onReplyPublish"
+        @publish="replyPublish(comment._jv.id)"
+      />
       <div class="reply-list">
         <div v-for="(reply, replyIndex) in replyList[index]" :key="replyIndex" class="reply">
           <div class="title">
@@ -77,21 +86,31 @@
 <script>
 const commentInclude = 'commentPosts,commentPosts.user,images'
 import handleError from '@/mixin/handleError'
+import publishResource from '@/mixin/publishResource'
 import timerDiff from '@/mixin/timerDiff'
 import dayjs from 'dayjs'
 
 export default {
   name: 'CommentList',
-  mixins: [handleError, timerDiff],
+  mixins: [handleError, timerDiff, publishResource],
   props: {
     commentList: {
       type: Array,
       default: () => []
+    },
+    threadId: {
+      type: String,
+      default: ''
     }
   },
   data() {
     return {
       replyList: [],
+      onReplyPublish: false,
+      showReplyEditorForIndex: -1,
+      replyPost: { text: '', imageList: [], attachedList: [] },
+      replyType: { type: 4, textLimit: 450, showPayment: false, showTitle: false, showImage: true, showVideo: false,
+        showAttached: false, showMarkdown: false, showEmoji: true, showTopic: false, showCaller: true },
       showAllReplay: false
     }
   },
@@ -102,7 +121,6 @@ export default {
       },
       deep: true
     }
-
   },
   methods: {
     formatDate(date) {
@@ -128,8 +146,27 @@ export default {
       this.showAllReplay = false
       this.$set(this.replyList, index, this.commentList[index].lastThreeComments)
     },
-    commentTa() {
-      alert('回复评论')
+    replyPublish(id) {
+      this.onReplyPublish = true
+      const replyParams = {
+        _jv: {
+          type: `posts`,
+          relationships: {
+            thread: { data: { type: 'threads', id: this.threadId }}
+          }
+        },
+        isComment: true,
+        replyId: id,
+        content: this.replyPost.text
+      }
+      this.publishPostResource(replyParams, this.replyPost)
+      return this.$store.dispatch('jv/post', replyParams).then(() => {
+        this.$emit('publish')
+        this.replyPost.text = ''
+        this.replyPost.imageList = []
+        this.$emit('replyPublish')
+        this.$message.success('回复发布成功')
+      }, e => handleError(e)).finally(() => { this.onReplyPublish = false })
     }
   }
 }

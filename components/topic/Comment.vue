@@ -3,17 +3,19 @@
     <comment-header v-if="(postCount - 1) > 0" :comment-count="commentList.length" :is-positive-sort.sync="isPositiveSort" />
     <div v-else class="without-comment">{{ $t('topic.noComment') }}</div>
     <editor
-      :type-information="editorType"
-      :post.sync="post"
-      :on-publish="onPublish"
-      @publish="postPublish"
+      editor-style="comment"
+      :type-information="commentType"
+      :post.sync="comment"
+      :on-publish="onCommentPublish"
+      @publish="postCommentPublish"
     />
     <template v-if="(postCount - 1) > 0">
       <!-- 深拷贝后 reverse() 是为了防止无限更新   -->
       <comment-list
         v-loading="loading"
-        :editor-type="editorType"
+        :thread-id="threadId"
         :comment-list="isPositiveSort ? [...commentList] : [...commentList].reverse()"
+        @replyPublish="getComment(true)"
         @deleteComment="deleteComment"
         @like="onLike"
       />
@@ -45,9 +47,9 @@ export default {
       isPositiveSort: true,
       pageCount: 1,
       pageLimit: 5,
-      onPublish: false,
-      post: { text: '', imageList: [], attachedList: [] },
-      editorType: { type: 4, textLimit: 450, showPayment: false, showTitle: false, showImage: true, showVideo: false,
+      onCommentPublish: false,
+      comment: { text: '', imageList: [], attachedList: [] },
+      commentType: { type: 4, textLimit: 450, showPayment: false, showTitle: false, showImage: true, showVideo: false,
         showAttached: false, showMarkdown: false, showEmoji: true, showTopic: false, showCaller: true },
       loading: true
     }
@@ -105,24 +107,25 @@ export default {
         }, e => this.handleError(e))
       }, () => console.log('取消删除'))
     },
-    postPublish() {
-      const postParams = {
+    postCommentPublish() {
+      this.onCommentPublish = true
+      const commentParams = {
         _jv: {
           type: `posts`,
           relationships: {
             thread: { data: { type: 'threads', id: this.threadId }}
           }
         },
-        content: this.post.text
+        content: this.comment.text
       }
-      this.publishPostResource(postParams, this.post)
-      return this.$store.dispatch('jv/post', postParams).then(() => {
+      this.publishPostResource(commentParams, this.comment)
+      return this.$store.dispatch('jv/post', commentParams).then(() => {
         this.$emit('publish')
-        this.post.text = ''
-        this.post.imageList = []
+        this.comment.text = ''
+        this.comment.imageList = []
         this.getComment()
         this.$message.success('评论发布成功')
-      }, e => handleError(e)).finally(() => { this.onPublish = false })
+      }, e => handleError(e)).finally(() => { this.onCommentPublish = false })
     }
   }
 }
@@ -130,10 +133,6 @@ export default {
 
 <style lang="scss" scoped>
   @import '@/assets/css/variable/color.scss';
-
-  ::v-deep #textarea {
-    min-height: 120px !important;
-  }
 
   .container-show-more {
     padding-top: 20px;

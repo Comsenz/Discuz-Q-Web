@@ -15,12 +15,12 @@
       :type="typeInformation && typeInformation.type"
       @paymentChange="e => onPaymentChange(e.key, e.value)"
     />
-    <div class="container-textarea">
+    <div :class="['container-textarea', editorStyle]">
       <label>
         <textarea
           id="textarea"
           :value="post && post.text"
-          class="input-text"
+          :class="['input-text', editorStyle]"
           :placeholder="$t('post.placeholder')"
           :maxlength="post && post.textLimit"
           @input="e => onPostContentChange('text', e.target.value)"
@@ -64,26 +64,12 @@
         <div class="actions">
           <div class="block">
             <template v-for="(action, index) in actions">
-              <svg-icon
-                v-if="action.show"
-                :key="index"
-                :type="action.icon"
-                class="svg"
-                style="font-size: 20px"
-                @click="onActions(action.toggle)"
-              />
+              <svg-icon v-if="action.show" :key="index" :type="action.icon" class="svg" style="font-size: 20px" @click="onActions(action.toggle)" />
             </template>
           </div>
           <div class="block">
             <template v-for="(resource, index) in resources">
-              <svg-icon
-                v-if="resource.show"
-                :key="index"
-                :type="resource.icon"
-                class="svg"
-                style="font-size: 20px"
-                @click="addResource(resource.toggle)"
-              />
+              <svg-icon v-if="resource.show" :key="index" :type="resource.icon" class="svg" style="font-size: 20px" @click="addResource(resource.toggle)" />
             </template>
           </div>
           <editor-markdown
@@ -129,6 +115,10 @@ export default {
     onPublish: {
       type: Boolean,
       default: false
+    },
+    editorStyle: {
+      type: String,
+      default: 'post'
     }
   },
   data() {
@@ -297,9 +287,11 @@ export default {
         resize: none;
         line-height: 16px;
         padding: 15px;
-        min-height: 200px;
         overflow: hidden;
         transition: all 200ms linear;
+        &.post { min-height: 200px; }
+        &.comment { min-height: 120px; }
+        &.reply { min-height: 80px; }
       }
 
     }
@@ -309,6 +301,7 @@ export default {
       border-radius: 3px;
       position: relative;
       margin-top: 30px;
+      &.reply { margin-top: 0; margin-left: 60px; }
     }
 
     .resources-list {
