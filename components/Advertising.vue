@@ -1,38 +1,60 @@
 <template>
-  <div class="advertising">
-    <img src="@/assets/qrcode.png" alt="二维码" class="qrcode">
+  <div class="adv-container">
+    <div ref="qrcode" class="qrcode" />
     <div class="adv-info">
       <div class="adv-title">微信小程序版</div>
       DISCUZ! 分享、交流、共融
     </div>
   </div>
 </template>
-
 <script>
+const QRCode = process.client && require('qrcodejs2')
 export default {
-  name: 'Advertising'
-}
-</script>
-
-<style lang="scss" scoped>
-  .advertising {
-    display: flex;
-    align-items: center;
-    padding: 20px;
-    background: #ffffff;
-    border-radius: 3px;
-    margin-top: 15px;
-
-    .qrcode {
-      width: 70px;
-      height: 70px;
-      margin-right: 6px;
+  data() {
+    return {
+      qrcode: null
     }
-
-    .adv-title {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 6px;
+  },
+  mounted() {
+    this.createQrcode(process.env.mobileDomain)
+  },
+  destroyed() {
+    this.qrcode = null
+    // this.$refs.qrcode.innerHTML = ''
+  },
+  methods: {
+    createQrcode(link) {
+      if (process.client) {
+        this.qrcode = null
+        this.$nextTick(() => {
+          this.qrcode = new QRCode(this.$refs.qrcode, {
+            width: 70,
+            height: 70, // 高度
+            text: link // 二维码内容
+            // render: 'canvas' ,   // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
+            // background: '#f0f',   // 背景色
+            // foreground: '#ff0'    // 前景色
+          })
+        })
+      }
     }
   }
-</style >
+}
+</script>
+<style lang="scss" scoped>
+.adv-container{
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  .qrcode{
+    width:70px;
+    height:70px;
+    margin-right:10px;
+  }
+  .adv-title{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:6px;
+  }
+}
+</style>
