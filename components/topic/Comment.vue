@@ -10,9 +10,10 @@
       @publish="postCommentPublish"
     />
     <template v-if="postCount > 0">
-      <!-- 深拷贝后 reverse() 是为了防止无限更新   -->
       <comment-list
         v-loading="loading"
+        class="comment-editor"
+        selector="comment-editor"
         :thread-id="threadId"
         :comment-list="commentList"
         @replyPublish="getComment()"

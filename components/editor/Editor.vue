@@ -74,6 +74,7 @@
           </div>
           <editor-markdown
             v-if="typeInformation && typeInformation.showMarkdown"
+            :selector="selector"
             :text="post && post.text"
             class="block"
             @changeText="text => onPostContentChange('text', text)"
@@ -119,6 +120,10 @@ export default {
     editorStyle: {
       type: String,
       default: 'post'
+    },
+    selector: {
+      type: String,
+      default: 'editor'
     }
   },
   data() {
@@ -168,6 +173,9 @@ export default {
         return limitText.split(',').map(item => '.' + item).join(',')
       }
       return ''
+    },
+    textarea() {
+      return document.querySelector(`.${this.selector} #textarea`)
     }
   },
   watch: {
@@ -207,15 +215,14 @@ export default {
       this.$emit(`update:payment`, _payment)
     },
     autoHeight() {
-      const textarea = document.getElementById('textarea')
-      textarea.onkeyup = function() {
+      this.textarea.onkeyup = function() {
         this.style.height = 'auto'
         this.style.height = this.scrollHeight + 'px'
       }
     },
     getSelection() {
-      this.selectionStart = document.getElementById('textarea').selectionStart
-      this.selectionEnd = document.getElementById('textarea').selectionEnd
+      this.selectionStart = this.textarea.selectionStart
+      this.selectionEnd = this.textarea.selectionEnd
     },
     emojiListener() {
       document.addEventListener('click', e => {

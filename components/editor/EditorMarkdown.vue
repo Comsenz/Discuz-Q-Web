@@ -19,6 +19,10 @@ export default {
     text: {
       type: String,
       default: ''
+    },
+    selector: {
+      type: String,
+      default: 'editor'
     }
   },
   data() {
@@ -40,8 +44,8 @@ export default {
   },
   methods: {
     getSelection() {
-      this.selectionStart = document.getElementById('textarea').selectionStart
-      this.selectionEnd = document.getElementById('textarea').selectionEnd
+      this.selectionStart = document.querySelector(`.${this.selector} #textarea`).selectionStart
+      this.selectionEnd = document.querySelector(`.${this.selector} #textarea`).selectionEnd
     },
     editMarkdown(markdown) {
       this.getSelection()

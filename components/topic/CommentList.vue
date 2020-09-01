@@ -43,6 +43,8 @@
         v-if="showReplyEditorForIndex === index"
         style="margin-top: 0; margin-bottom: 20px"
         editor-style="reply"
+        class="reply-editor"
+        selector="reply-editor"
         :type-information="replyType"
         :post.sync="replyPost"
         :on-publish="onReplyPublish"
