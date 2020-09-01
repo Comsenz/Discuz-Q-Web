@@ -277,7 +277,7 @@ export default {
           padding: 7px 15px;
           line-height: 1;
           border-radius:2px;
-          transition: all 0.1s ease-in-out;
+          // transition: all 0.1s ease-in;
           &.liked{
             color:#D0D4DC;
           }
