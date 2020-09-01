@@ -7,7 +7,7 @@
     <div class="main-cont">
       <div class="top-flex">
         <div class="user-name">{{ item.user && item.user.username }}</div>
-        <div class="time">{{ $t('topic.publishAt') }}{{ timerDiff(item.createdAt) }}{{ $t('topic.before') }}</div>
+        <div class="time">{{ $t('topic.publishAt') }} {{ timerDiff(item.createdAt) }}{{ $t('topic.before') }}</div>
       </div>
       <template v-if="item.firstPost">
         <div class="first-post" @click.self="toDetail">

@@ -48,7 +48,7 @@ export default {
     copyLink() {
       const oInput = document.createElement('input')
       if (process.client) {
-        oInput.value = process.env.mobileDomain + '/pages/topic/index?id=' + this.threadsId
+        oInput.value = window.location.href + 'topic/' + this.threadsId
         oInput.id = 'copyInput'
         document.body.appendChild(oInput)
         oInput.select()
