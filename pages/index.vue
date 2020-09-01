@@ -13,15 +13,15 @@
           </nuxt-link>
         </div>
       </div>
-      <!-- <div class="new-post">
-        <div class="new-post-cont">有 3 条新发布的内容 <span class="refresh">点击刷新</span></div>
-      </div> -->
+      <div v-if="newThreadsCount > 0" class="new-post">
+        <div class="new-post-cont">有 {{ newThreadsCount }} 条新发布的内容 <span class="refresh" @click="reloadThreadsList">点击刷新</span></div>
+      </div>
       <div class="post-list">
         <post-item v-for="(item, index) in threadsList" :key="index" :item="item" />
         <loading v-if="loading" />
         <template v-else>
-          <div v-if="hasMore" class="load-more" @click="loadMore">查看更多</div>
-          <div v-else class="no-more"><svg-icon v-if="threadsList.length === 0" type="empty" class="empty-icon" />{{ threadsList.length > 0 ? '没有更多了' : '暂无信息' }}</div>
+          <div v-if="hasMore" class="load-more" @click="loadMore">{{ $t('topic.showMore') }}</div>
+          <div v-else class="no-more"><svg-icon v-if="threadsList.length === 0" type="empty" class="empty-icon" />{{ threadsList.length > 0 ? $t('list.noMoreData') : $t('list.noData') }}</div>
         </template>
       </div>
     </main>
@@ -29,7 +29,9 @@
       <div class="category background-color">
         <category :post-loading="loading" @onChange="onChangeCategory" />
       </div>
-      <advertising />
+      <div class="background-color">
+        <advertising />
+      </div>
       <div class="recommend-user background-color">
         <recommend-user />
       </div>
@@ -92,9 +94,12 @@ export default {
       pageSize: 10, // 每页多少条数据
       categoryId: 0, // 分类id 0全部
       threadType: '', // 主题类型 0普通 1长文 2视频 3图片（'' 不筛选）
+      sort: '', // 排序
       threadEssence: '', // 是否精华帖
       fromUserId: '', // 关注人id
-      hasMore: false
+      hasMore: false,
+      timer: null, // 轮询获取新主题 定时器
+      newThreadsCount: 0 // 新这主题数，通过轮询获取
     }
   },
   computed: {
@@ -109,6 +114,9 @@ export default {
     if (this.threadsList.length === 0) {
       this.getThreadsList()
     }
+  },
+  destroyed() {
+    this.tiemr = null
   },
   methods: {
     // 置顶主题
@@ -136,6 +144,7 @@ export default {
         'filter[type]': this.threadType,
         'filter[isEssence]': this.threadEssence,
         'filter[fromUserId]': this.fromUserId,
+        'sort': this.sort,
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize
       }
@@ -152,6 +161,11 @@ export default {
         } else {
           this.threadsList = [...this.threadsList, ...data]
         }
+        clearInterval(this.timer)
+        this.timer = setInterval(() => {
+          this.autoLoadThreads(data._jv.json.meta.threadCount)
+        }, 30000)
+
         console.log('threadsList', data)
       }, e => {
         this.handleError(e)
@@ -165,9 +179,27 @@ export default {
         this.getThreadsList()
       }
     },
+    // 轮询查看是否有新主题
+    autoLoadThreads(count) {
+      const params = {
+        'filter[isSticky]': 'no',
+        'filter[isApproved]': 1,
+        'filter[isDeleted]': 'no',
+        'filter[categoryId]': this.categoryId,
+        'filter[type]': this.threadType,
+        'filter[isEssence]': this.threadEssence,
+        'filter[fromUserId]': this.fromUserId,
+        'page[limit]': 1
+      }
+      this.$store.dispatch('jv/get', ['threads', { params }]).then(data => {
+        this.newThreadsCount = data._jv.json.meta.threadCount - count
+        console.log('新主题数', this.newThreadsCount)
+      })
+    },
     // 重新加载列表
     reloadThreadsList() {
       this.pageNum = 1
+      this.newThreadsCount = 0
       this.threadsList = []
       this.getThreadsList()
     },
@@ -196,8 +228,9 @@ export default {
       this.reloadThreadsList()
     },
     // 排序
-    onChangeSort() {
-
+    onChangeSort(val) {
+      this.sort = val
+      this.reloadThreadsList()
     },
     // 处理富文本里的图片宽度自适应
     // 1.去掉img标签里的style、width、height属性

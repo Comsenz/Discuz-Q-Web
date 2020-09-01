@@ -14,9 +14,15 @@
         v-model="inputVal"
         size="medium"
         :placeholder="$t('search.search')"
-        suffix-icon="el-icon-search"
         class="h-search"
-      />
+        @keyup.enter.native="onClickSearch"
+      >
+        <i
+          slot="suffix"
+          class="el-icon-search el-input__icon"
+          @click="onClickSearch"
+        />
+      </el-input>
       <div
         v-if="!isLogin"
         v-cloak
@@ -92,6 +98,21 @@ export default {
       default: ''
     }
   },
+  // 异步数据用法
+  async asyncData({ params, store }) {
+    try {
+      const params = {
+        _jv: {
+          type: 'forum'
+        }
+      }
+      const data = await store.dispatch('jv/get', params)
+      return { forums: data }
+    } catch (error) {
+      console.log('ssr err')
+      return { list: {}}
+    }
+  },
   data() {
     return {
       inputVal: '',
@@ -128,6 +149,9 @@ export default {
       this.code = code
     }
     this.forumh()
+    if (this.$route.query.q) {
+      this.inputVal = this.$route.query.q
+    }
   },
   methods: {
     async forumh() {
@@ -189,6 +213,11 @@ export default {
     },
     jumpprofile() {
       this.$router.push('/my/profile')
+    },
+    onClickSearch() {
+      if (this.inputVal) {
+        this.$router.push('/search?q=' + this.inputVal)
+      }
     }
   }
 }
@@ -223,13 +252,13 @@ export default {
       margin-left: 30px;
       width: 298px;
       height: 36px;
-      // border-radius: 0px;
       float: left;
       .el-input__inner {
         border-radius: 0px;
+        color: #000;
       }
-      /* background: yellow; */
     }
+
     .h-button {
       height: 35px;
       float: right;
@@ -260,7 +289,7 @@ export default {
         // border-color: #1878f3;
       }
       .h-button4 {
-        width: 60px;
+        // width: 60px;
         height: 35px;
         padding: 0;
         border: none;
@@ -271,9 +300,10 @@ export default {
         margin-left: 30px;
       }
       .marleft {
-        margin-left: 10px;
+        margin-left: 5px;
         overflow: hidden;
         text-overflow: ellipsis;
+        max-width:120px;
       }
       .h-button4:hover {
         background: none;

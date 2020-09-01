@@ -11,7 +11,7 @@
         </el-dropdown-menu>
       </el-dropdown>
       <el-dropdown class="filter-dropdown" placement="bottom" @command="handleCommandSort">
-        <span class="el-dropdown-link">
+        <span class="el-dropdown-link" :class="{'active': query.filterSort !== ''}">
           {{ $t('core.sort') }}<i class="el-icon-arrow-down el-icon--right" />
         </span>
         <el-dropdown-menu slot="dropdown">
@@ -36,9 +36,6 @@ export default {
       }, {
         label: this.$t('home.followed'),
         value: 'followed'
-      }, {
-        label: '最新评论',
-        value: 'new_comment'
       }],
       filterType: [{
         label: '不限',
@@ -61,10 +58,10 @@ export default {
         value: ''
       }, {
         label: '按发帖时间',
-        value: 'article'
+        value: '-createdAt'
       }, {
         label: '按评论时间',
-        value: 'comment'
+        value: '-updatedAt'
       }],
       query: {
         filter: '',
