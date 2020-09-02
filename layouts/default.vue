@@ -45,5 +45,10 @@ export default {
   background: rgba(255, 255, 255, 1);
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.03);
   border-radius: 5px;
+  @media screen and ( max-width: 1005px ) {
+    width: 100%;
+    min-width: 768px;
+    padding: 0 14px;
+  }
 }
 </style>

@@ -1,28 +1,30 @@
 <template>
   <div class="header">
     <div class="header-container">
-      <div
-        class="logo"
-        @click="home"
-      >
-        <img
-          :src="headImg != '' && headImg != null ? headImg : require('static/logo.png')"
-          alt="头部logo"
+      <div class="flex">
+        <div
+          class="logo"
+          @click="home"
         >
+          <img
+            :src="headImg != '' && headImg != null ? headImg : require('static/logo.png')"
+            alt="头部logo"
+          >
+        </div>
+        <el-input
+          v-model="inputVal"
+          size="medium"
+          :placeholder="$t('search.search')"
+          class="h-search"
+          @keyup.enter.native="onClickSearch"
+        >
+          <i
+            slot="suffix"
+            class="el-icon-search el-input__icon"
+            @click="onClickSearch"
+          />
+        </el-input>
       </div>
-      <el-input
-        v-model="inputVal"
-        size="medium"
-        :placeholder="$t('search.search')"
-        class="h-search"
-        @keyup.enter.native="onClickSearch"
-      >
-        <i
-          slot="suffix"
-          class="el-icon-search el-input__icon"
-          @click="onClickSearch"
-        />
-      </el-input>
       <div
         v-if="!isLogin"
         v-cloak
@@ -179,8 +181,6 @@ export default {
     },
     isLoginh() {
       if (process.client) this.isLogin = !!window.localStorage.getItem('access_token')
-      console.log(this.isLogin)
-      console.log('userinfo', this.userInfo)
     },
     ExitLogin() {
       this.isLogin = window.localStorage.removeItem('access_token')
@@ -189,12 +189,10 @@ export default {
     async userinfo() {
       this.userId = this.$store.getters['session/get']('userId')
       if (!this.userId || +this.userId === 0) return
-      console.log('userid', this.userId)
       const params = {
         _jv: { type: `/users/${this.userId}` }
       }
       await this.$store.dispatch('jv/get', params).then(res => {
-        console.log('userinfo', res)
         this.userInfo = res
         this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
       })
@@ -227,23 +225,41 @@ export default {
   display: none !important;
 }
 .header {
-  min-width: 1032px;
+  // min-width: 1032px;
   height: 65px;
   background: rgba(255, 255, 255, 1);
   box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.03);
   opacity: 1;
+  @media screen and ( max-width: 1005px ) {
+    height: 50px;
+    width: 100%;
+    min-width: 768px;
+  }
   .header-container {
     margin: 0 auto;
     width: 1005px;
     height: 65px;
-    padding: 15px 0;
-
+    display: flex;
     align-items: center;
-    // display: flex;
+    justify-content: space-between;
+    .flex{
+      display: flex;
+      align-items: center;
+    }
+    @media screen and ( max-width: 1005px ) {
+      width: 100%;
+      min-width: 768px;
+      padding: 0 14px;
+      height: 50px;
+    }
     .logo {
       float: left;
       width: 150px;
       height: 35px;
+      @media screen and ( max-width: 1005px ) {
+        width: 135px;
+        height: 30px;
+      }
       img {
         height: 100%;
       }
@@ -253,9 +269,22 @@ export default {
       width: 298px;
       height: 36px;
       float: left;
+      @media screen and ( max-width: 1005px ) {
+        width: 200px;
+        height: 30px;
+      }
       .el-input__inner {
         border-radius: 0px;
         color: #000;
+        @media screen and ( max-width: 1005px ) {
+          height: 30px;
+          line-height: 30px;
+        }
+      }
+      @media screen and ( max-width: 1005px ) {
+        .el-input--medium .el-input__icon{
+          height: 30px;
+        }
       }
     }
 
@@ -298,6 +327,9 @@ export default {
         font-size: 16px;
         /* margin-top: -5px; */
         margin-left: 30px;
+        @media screen and ( max-width: 1005px ) {
+          font-size: 14px;
+        }
       }
       .marleft {
         margin-left: 5px;
