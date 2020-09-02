@@ -50,7 +50,8 @@ export default {
   plugins: [
     '@/plugins/element-ui',
     '@/plugins/svg-icon',
-    '@/directive/permission'
+    '@/directive/permission',
+    '@/plugins/route'
   ],
   /*
   ** Auto import components
@@ -70,7 +71,7 @@ export default {
   ],
 
   i18n: {
-    locales: ['en', 'zh'],
+    locales: ['zh'],
     defaultLocale: 'zh',
     vueI18n: {
       fallbackLocale: 'zh',

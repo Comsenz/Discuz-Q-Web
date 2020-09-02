@@ -54,6 +54,10 @@ import handleError from '@/mixin/handleError'
 const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
 export default {
   name: 'Findpwd',
+  // middleware: 'auth',
+  meta: {
+    requiresAuth: true
+  },
   mixins: [
     tcaptchs, handleError
   ],
