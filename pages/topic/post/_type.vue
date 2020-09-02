@@ -203,6 +203,7 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/css/variable/color.scss';
 .page-post {
+  min-width: 700px;
   width: 100%;
   height: 100%;
   margin: 60px 140px 30px 140px;

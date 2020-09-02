@@ -126,6 +126,12 @@ export default {
           border: 1px solid $border-color-base;
         }
       }
+
+      @media screen and ( max-width: 1005px ) {
+        button {
+          width: 85px;
+        }
+      }
     }
   }
 </style>

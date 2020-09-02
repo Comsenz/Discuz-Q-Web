@@ -165,7 +165,6 @@ export default {
       }
 
       > .head {
-        margin-left: 10px;
         width: 65px;
         color: #000000;
 
@@ -175,9 +174,8 @@ export default {
       }
 
       > .body {
-        margin-left: 15px;
         flex: 1;
-
+        margin-left: 15px;
         &.product-information {
           span {
             display: block;
@@ -213,7 +211,7 @@ export default {
           }
 
           > .default-amounts {
-            width: 660px;
+            max-width: 660px;
             display: flex;
             flex-wrap: wrap;
 
@@ -303,6 +301,14 @@ export default {
                 align-items: center;
                 justify-content: center;
                 font-size: 30px;
+              }
+            }
+          }
+          @media screen and ( max-width: 1005px ) {
+            .pay-card {
+              width: 298px;
+              .pay-tip {
+                font-size: 15px;
               }
             }
           }

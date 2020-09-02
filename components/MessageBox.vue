@@ -33,6 +33,8 @@ export default {
     transform: translate(-50%, -50%);
     border-radius: 3px;
     width: 820px;
+    max-height: 100vh;
+    overflow: auto;
     background: #ffffff;
     font-size: 16px;
     display: flex;
@@ -49,6 +51,11 @@ export default {
         font-size: 16px;
         font-weight: bold;
       }
+    }
+  }
+  @media screen and ( max-width: 1005px ) {
+    .checkout-counter {
+      width: 750px;
     }
   }
 

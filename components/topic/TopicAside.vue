@@ -157,7 +157,12 @@ export default {
       }
 
     }
+  }
 
+  @media screen and ( max-width: 1005px ) {
+    .global {
+      width: 220px;
+    }
   }
 
 </style>

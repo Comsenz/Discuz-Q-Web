@@ -13,7 +13,7 @@
       <el-image
         v-for="(image, index) in article.images"
         :key="index"
-        style="width: 200px; height: 200px;border-radius: 5px; margin-right: 20px"
+        class="image"
         :src="image.thumbUrl"
         :alt="image.filename"
         :preview-src-list="unpaid ? [] : [...article.images.map(item => item.thumbUrl)]"
@@ -110,6 +110,7 @@ export default {
 
     > .content-html {
       margin-top: 22px;
+      font-size: 16px;
 
       &.hide-cover {
         position: relative;
@@ -139,9 +140,42 @@ export default {
       }
     }
 
+    @media screen and ( max-width: 1005px ) {
+      .title {
+        font-size: 18px;
+      }
+      .content-html {
+        font-size: 16px;
+        ::v-deep p {
+          font-size: 14px;
+        }
+      }
+    }
+
     > .images {
       margin-top: 30px;
       width: 660px;
+      > .image {
+        width: 200px;
+        height: 200px;
+        border-radius: 5px;
+        margin-right: 20px;
+        margin-bottom: 20px;
+      }
+    }
+
+    @media screen and ( max-width: 1005px ) {
+      > .images {
+        max-width: 470px;
+        width: 100%;
+        > .image {
+          width: 150px;
+          height: 150px;
+          border-radius: 5px;
+          margin-right: 5px;
+          margin-bottom: 5px
+        }
+      }
     }
 
     > .video-img-cover {

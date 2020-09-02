@@ -36,7 +36,7 @@
               <span v-if="comment.replyCount > 0 " class="text">{{ $t('topic.replyAlready') + ' ' + comment.replyCount }}</span>
             </span>
           </div>
-          <div v-if="comment.canDelete" class="right" @click="$emit('deleteComment', comment._jv.id)">{{ $t('topic.delete') }}</div>
+          <div v-if="comment.canHide" class="right" @click="$emit('deleteComment', comment._jv.id)">{{ $t('topic.delete') }}</div>
         </div>
       </div>
       <editor
@@ -59,7 +59,7 @@
               <span class="text">{{ $t('topic.reply') }}</span>
               <span class="text">{{ comment.user ? comment.user.username : '' }}   </span>
               <span class="timer">{{ formatDate(reply.updatedAt) }}</span>
-              <span v-if="reply.canDelete" class="delete-reply" @click="$emit('deleteComment', reply._jv.id)">{{ $t('topic.delete') }}</span>
+              <span v-if="reply.canHide" class="delete-reply" @click="$emit('deleteComment', reply._jv.id)">{{ $t('topic.delete') }}</span>
             </div>
           </div>
           <div class="content-html" @click="showAll($event, replyIndex, replyList)" v-html="formatSummary(reply)" />
