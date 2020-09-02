@@ -144,7 +144,7 @@
           >44</el-tab-pane>
         </el-tabs>
       </div>
-      <div style="width:300px;">
+      <div style="width:300px; margin-top:15px;">
         <advertising />
         <recommend-user style="background: white;margin-top: 16px;" />
         <copyright :forums="forums" />

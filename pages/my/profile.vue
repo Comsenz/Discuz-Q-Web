@@ -33,7 +33,15 @@
             type="warning"
           /> <span style="margin-left:2px; color:#FA5151;">未实名认证</span>
         </span>
-        <span class="setavatar">设置头像</span>
+        <span
+          class="setavatar"
+          @click="setAvatar"
+        >设置头像</span>
+        <show-avatar
+          v-if="isShowAvatar"
+          :user-id="userId"
+          @change="changeShow"
+        />
       </div>
       <div class="myprofile-bottom">
         <div class="myprofile-title marglef">
@@ -354,7 +362,8 @@ export default {
       isWechatModify: false,
       isRealModify: false,
       loading: true,
-      rebind: false // 是否修改手机号
+      rebind: false, // 是否修改手机号
+      isShowAvatar: false // 是否设置头像
     }
   },
   computed: {
@@ -430,6 +439,12 @@ export default {
         this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
         this.wordnumber = this.signcontent.length
       })
+    },
+    setAvatar() {
+      this.isShowAvatar = true
+    },
+    changeShow(val) {
+      this.isShowAvatar = val
     },
     // 获取输入字数长度
     fun(e) {
@@ -889,7 +904,7 @@ export default {
     // font-size: 10px;
   }
   .disabled {
-    background-color: #EDEDED;
+    background-color: #ededed;
     border-color: #ddd;
     color: #606162;
     cursor: not-allowed; // 鼠标变化

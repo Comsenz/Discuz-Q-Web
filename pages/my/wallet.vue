@@ -133,21 +133,29 @@
             label="记录描述"
             width="332"
             :formatter="statusFormat"
-          />
+          >
+            <template slot-scope="scope">
+              <span v-html="statusFormat(scope.row)" />
+            </template>
+          </el-table-column>
           <el-table-column
             label="时间"
             width="177"
             prop="created_at"
-            :ormatter="dateFormat"
+            :formatter="dateFormat"
           />
           <el-table-column
             prop="cash_status"
             label="状态"
             width="97"
             :formatter="statusFormat"
-          />
+          >
+            <template slot-scope="scope">
+              <span v-html="statusFormat(scope.row)" />
+            </template>
+          </el-table-column>
           <el-table-column
-            prop="money"
+            prop="cash_apply_amount"
             label="金额"
             width="113"
             sortable
@@ -729,7 +737,7 @@ export default {
     },
     // 提现状态格式化
     statusFormat(row) {
-      switch (row.change_type) {
+      switch (row.cash_status) {
         case 1: return `<font style="color:#25A9F6">${this.$t('profile.tobereviewed')}</font>`
         case 2: return `<font style="color:#09BB07">${this.$t('profile.approved')}</font>`
         case 3: return `<font style="color:#FA5151">${this.$t('profile.auditfailed')}</font>`
@@ -854,7 +862,6 @@ export default {
     },
     // 获取提现数据
     getList(type) {
-      this.loadingType = 'loading'
       const dateArr = this.date.split('-')
       const days = new Date(dateArr[0], dateArr[1], 0).getDate()
       // cash_status(1-6) '待审核', '审核通过', '审核不通过', '待打款', '已打款', '打款失败'
@@ -877,7 +884,7 @@ export default {
       status
         .run(() => this.$store.dispatch('jv/get', ['wallet/cash', { params }]))
         .then(res => {
-          console.log(res)
+          console.log('提现数据', res)
           if (res._jv) {
             delete res._jv
           }
@@ -932,10 +939,9 @@ export default {
     },
     // 获取冻结金额列表数据
     getFreezelist() {
-      this.loadingType = 'loading'
       const params = {
         'filter[user]': this.userId,
-        'filter[change_type]': [10, 11, 12], // 10提现冻结 11提现成功 12 提现解冻
+        'filter[change_type]': '10, 11, 12', // 10提现冻结 11提现成功 12 提现解冻
         'page[number]': this.pageNum3,
         'page[limit]': this.pageSize3
       }
@@ -988,10 +994,18 @@ export default {
     handlemoney(result) {
       const res = JSON.parse(JSON.stringify(result))
       let sum = 0
-      res.forEach((item, index) => {
-        res[index] = parseFloat(item.change_available_amount.replace(/\+|\-|\*|\?/g, ''))
-        sum = sum + res[index]
-      })
+      if (res[0].cash_apply_amount) {
+        res.forEach((item, index) => {
+          res[index] = parseFloat(item.cash_apply_amount.replace(/\+|\-|\*|\?/g, ''))
+          sum = sum + res[index]
+        })
+      } else if (res[0].change_available_amount) {
+        res.forEach((item, index) => {
+          res[index] = parseFloat(item.change_available_amount.replace(/\+|\-|\*|\?/g, ''))
+          sum = sum + res[index]
+        })
+      }
+
       return sum.toFixed(2)
     },
     // 处理订单

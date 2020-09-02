@@ -22,7 +22,8 @@
     "lodash.merge": "^4.6.2",
     "nuxt": "^2.14.0",
     "nuxt-i18n": "^6.13.7",
-    "qs": "^6.5.2"
+    "qs": "^6.5.2",
+    "vue-cropper": "^0.5.5"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",

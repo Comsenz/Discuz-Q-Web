@@ -51,7 +51,8 @@ export default {
     '@/plugins/element-ui',
     '@/plugins/svg-icon',
     '@/directive/permission',
-    '@/plugins/route'
+    '@/plugins/route',
+    { src: '@/plugins/cropper', ssr: false }
   ],
   /*
   ** Auto import components
@@ -71,7 +72,7 @@ export default {
   ],
 
   i18n: {
-    locales: ['zh'],
+    locales: ['en', 'zh'],
     defaultLocale: 'zh',
     vueI18n: {
       fallbackLocale: 'zh',

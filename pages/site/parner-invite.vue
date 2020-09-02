@@ -315,8 +315,8 @@ export default {
     height: 35px;
     font-size: 26px;
   }
-  .tcolor{
-    color:#FA5151;
+  .tcolor {
+    color: #fa5151;
   }
   .payinfo {
     border-bottom: 1px solid #efefef;
