@@ -131,7 +131,7 @@
           <el-table-column
             prop="cash_status"
             label="记录描述"
-            width="332"
+            width="311"
             :formatter="statusFormat"
           >
             <template slot-scope="scope">
@@ -222,7 +222,7 @@
           <el-table-column
             prop="change_desc"
             label="记录描述"
-            width="332"
+            width="311"
           />
           <el-table-column
             label="时间"
@@ -307,7 +307,7 @@
           <el-table-column
             prop="change_desc"
             label="记录描述"
-            width="332"
+            width="311"
           />
           <el-table-column
             label="时间"
@@ -391,7 +391,7 @@
           <el-table-column
             prop="titleType"
             label="记录描述"
-            width="332"
+            width="311"
           />
           <el-table-column
             label="时间"

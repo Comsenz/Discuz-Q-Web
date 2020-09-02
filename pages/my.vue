@@ -12,7 +12,11 @@
         :class="item.classname"
         @click="currentInfo(index)"
       >{{ $t(item.content) }}
-        <span :class="['arrow',isActive(index)]">></span>
+        <span :class="['arrow',isActive(index)]">
+          <svg-icon
+            style="width:5px; height:8px;vertical-align: middle;"
+            type="Mask"
+          /></span>
       </el-menu-item>
 
     </el-menu>
