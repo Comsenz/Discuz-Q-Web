@@ -428,7 +428,15 @@ export default {
     siteName: '站点名称',
     needRealname: '发布内容需要实名认证，请在我的资料页进行实名认证',
     needPhone: '发布内容需要绑定手机号，请在我的资料页进行手机绑定',
-    record: '网站备案信息:'
+    record: '网站备案信息:',
+    recommentUser: '推荐用户',
+    refresh: '换一批',
+    noLimit: '不限',
+    sortCreatedAt: '按发帖时间',
+    sortUpdatedAt: '按评论时间',
+    noPoster: '暂无封面',
+    total: '共',
+    seeAllImage: '张图片，进入查看全部..'
   },
   // 站点管理页面
   manage: {

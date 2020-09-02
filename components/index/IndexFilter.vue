@@ -38,7 +38,7 @@ export default {
         value: 'followed'
       }],
       filterType: [{
-        label: '不限',
+        label: this.$t('home.noLimit'),
         value: ''
       }, {
         label: this.$t('home.text'),
@@ -54,13 +54,13 @@ export default {
         value: 3
       }],
       filterSort: [{
-        label: '不限',
+        label: this.$t('home.noLimit'),
         value: ''
       }, {
-        label: '按发帖时间',
+        label: this.$t('home.sortCreatedAt'),
         value: '-createdAt'
       }, {
-        label: '按评论时间',
+        label: this.$t('home.sortUpdatedAt'),
         value: '-updatedAt'
       }],
       query: {
@@ -79,7 +79,7 @@ export default {
     onClickFilter(val) {
       if (val === 'followed' && (!this.userId || +this.userId === 0)) {
         if (process.client) {
-          this.$message.error('请登录后再操作')
+          this.$message.error(this.$t('core.not_authenticated'))
         } else {
           console.log('请登录后再操作')
         }

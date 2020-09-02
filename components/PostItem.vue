@@ -34,7 +34,7 @@
               </div>
             </el-image>
           </div>
-          <div v-if="item.firstPost.images && item.firstPost.images.length > 3" class="image-count" @click="toDetail">共 {{ item.firstPost.images.length }} 张图片，进入查看全部..</div>
+          <div v-if="item.firstPost.images && item.firstPost.images.length > 3" class="image-count" @click="toDetail">{{ $t('home.total') }} {{ item.firstPost.images.length }} {{ $t('home.seeAllImage') }}</div>
           <div v-if="item.type === 2 && item.threadVideo" class="video-main">
             <el-image
               v-if="item.threadVideo.cover_url"
@@ -45,7 +45,7 @@
               lazy
               @click="openVideo"
             />
-            <div v-else class="no-cover" @click="openVideo">暂无封面</div>
+            <div v-else class="no-cover" @click="openVideo">{{ $t('home.noPoster') }}</div>
             <svg-icon type="video-play" class="video-play" @click="openVideo" />
           </div>
           <video-pop v-if="showVideoPop" :cover-url="item.threadVideo.cover_url" :url="item.threadVideo.media_url" @remove="showVideoPop = false" />

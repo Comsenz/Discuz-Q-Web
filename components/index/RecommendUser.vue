@@ -1,12 +1,12 @@
 <template>
   <div v-loading="loading" class="recommend-user-container">
-    <div class="recommend-user-title">推荐用户</div>
+    <div class="recommend-user-title">{{ $t('home.recommentUser') }}</div>
     <div class="recommend-user-list">
       <user-item v-for="(item, index) in userList" :key="index" :item="item" show="simple" />
       <div v-if="userList.length === 0" class="no-more">{{ $t('discuzq.list.noData') }}</div>
     </div>
     <div class="refresh" @click="refresh">
-      <i class="el-icon-refresh icon" />换一批
+      <i class="el-icon-refresh icon" />{{ $t('home.refresh') }}
     </div>
   </div>
 </template>
