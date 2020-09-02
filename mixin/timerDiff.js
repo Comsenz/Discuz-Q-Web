@@ -24,7 +24,7 @@ module.exports = {
           break
         }
       }
-      return value
+      return value || ''
     }
   }
 }

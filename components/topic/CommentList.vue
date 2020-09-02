@@ -2,12 +2,10 @@
   <div>
     <div v-for="(comment, index) in commentList" :key="index" class="comment">
       <div class="title">
-        <Avatar :user="comment.user || {}" size="45" />
-        <div class="title-info">
-          <div class="author-name">{{ comment.user ? comment.user.username : '' }}</div>
-          <div class="timer">{{ timerDiff(comment.updatedAt) + $t('topic.before') }}..</div>
-        </div>
-        <div v-if="comment.isApproved === 0" class="checking">{{ $t('topic.inReview') }}</div>
+        <avatar-component :author="comment.user" :size="45">
+          {{ timerDiff(comment.updatedAt) + $t('topic.before') }}..
+        </avatar-component>
+        <div v-if="comment.isApproved === 1" class="checking">{{ $t('topic.inReview') }}</div>
       </div>
       <div class="container-detail">
         <div class="content-html" @click="showAll($event, index, commentList)" v-html="formatSummary(comment)" />
@@ -63,17 +61,6 @@
             </div>
           </div>
           <div class="content-html" @click="showAll($event, replyIndex, replyList)" v-html="formatSummary(reply)" />
-          <!--          <div v-if="reply.images && reply.images.length > 0" class="images">-->
-          <!--            <el-image-->
-          <!--              v-for="(image, imageIndex) in reply.images"-->
-          <!--              :key="imageIndex"-->
-          <!--              style="width: 100px; height: 100px;border-radius: 5px; margin-right: 10px"-->
-          <!--              :src="image.thumbUrl"-->
-          <!--              :alt="image.filename"-->
-          <!--              :preview-src-list="[...reply.images.map(item => item.thumbUrl)]"-->
-          <!--              fit="contain"-->
-          <!--            />-->
-          <!--          </div>-->
         </div>
         <div v-if="comment.replyCount > 3">
           <div v-if="comment.replyCount !== (replyList[index] || []).length" class="show-all-reply" @click="getReply(comment._jv.id, index)">
@@ -208,23 +195,7 @@ export default {
     > .title {
       height: 45px;
       display: flex;
-
-      > .title-info {
-        margin-left: 15px;
-        margin-top: 5px;
-        flex: 1;
-
-        .author-name {
-          font-size: 16px;
-          font-weight: bold;
-        }
-
-        .timer {
-          margin-top: 5px;
-          color: $font-color-grey;
-          font-size: 12px;
-        }
-      }
+      justify-content: space-between;
 
       > .checking {
         font-size: 16px;

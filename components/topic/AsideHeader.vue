@@ -1,13 +1,9 @@
 <template>
   <div class="author">
     <div class="title">{{ $t('topic.aboutAuthor') }}</div>
-    <div class="author-info">
-      <Avatar :user="author" size="50" />
-      <div class="name">
-        <div class="author-name">{{ author.username }}</div>
-        <div class="timer">{{ $t('topic.activeAt') }} {{ timerDiff(author.loginAt) }}{{ $t('topic.before') }}</div>
-      </div>
-    </div>
+    <avatar-component :author="author" class="author-info">
+      {{ $t('topic.activeAt') }} {{ timerDiff(author.loginAt) }}{{ $t('topic.before') }}
+    </avatar-component>
     <div class="signature">{{ author.signature }}</div>
     <div class="container-billBoard">
       <div v-for="(item, index) in billboard" :key="index" class="billBoard-item">
@@ -61,19 +57,6 @@ export default {
 
     > .author-info {
       margin-top: 10px;
-      display: flex;
-
-      > .name {
-        margin-top: 6px;
-        margin-left: 10px;
-        color: $font-color-grey;
-
-        > .author-name {
-          color: #000;
-          font-size: 16px;
-          font-weight: bold;
-        }
-      }
     }
 
     > .signature {

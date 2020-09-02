@@ -1,13 +1,9 @@
 <template>
   <div class="title">
-    <Avatar :user="author" />
-    <div class="title-info">
-      <div class="author-name">{{ author.username }}</div>
-      <div class="timer">
-        {{ $t('topic.publishAt') }} {{ timerDiff(thread.createdAt) + $t('topic.before') }} ..
-        （{{ $t('topic.editAt') }} {{ timerDiff(thread.updatedAt) + $t('topic.before') }}）
-      </div>
-    </div>
+    <avatar-component :author="author">
+      {{ $t('topic.publishAt') }} {{ timerDiff(thread.createdAt) + $t('topic.before') }} ..
+      （{{ $t('topic.editAt') }} {{ timerDiff(thread.updatedAt) + $t('topic.before') }}）
+    </avatar-component>
     <el-dropdown
       v-show="managementList.some(item => item.canOpera)"
       class="dropdown"
@@ -93,23 +89,7 @@ export default {
   .title {
     height: 50px;
     display: flex;
-
-    > .title-info {
-      margin-left: 15px;
-      margin-top: 5px;
-      flex: 1;
-
-      .author-name {
-        font-size: 16px;
-        font-weight: bold;
-      }
-
-      .timer {
-        margin-top: 5px;
-        color: $font-color-grey;
-        font-size: 12px;
-      }
-    }
+    justify-content: space-between;
 
     > .dropdown {
       height: 20px;
