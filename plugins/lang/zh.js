@@ -118,7 +118,7 @@ export default {
     content: '内容',
     not_authenticated: '请登录',
     admin_login: '管理员登录',
-    back_home: '返回首页',
+    back_home: '返回 DISCUZ!Q 主页',
     back_history: '返回上一级页面',
     close: '点击关闭',
     page_not_found: '页面没有找到',
