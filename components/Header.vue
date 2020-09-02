@@ -282,8 +282,8 @@ export default {
         }
       }
       @media screen and ( max-width: 1005px ) {
-        .el-input--medium .el-input__icon{
-          height: 30px;
+        .el-input__icon{
+          line-height: 30px;
         }
       }
     }

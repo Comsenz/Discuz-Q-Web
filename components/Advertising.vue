@@ -50,15 +50,22 @@ export default {
   border-radius: 5px;
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.03);
   margin-bottom: 16px;
+  @media screen and ( max-width: 1005px ) {
+    font-size:12px;
+  }
   .qrcode{
     width:70px;
     height:70px;
+    flex:0 0 70px;
     margin-right:10px;
   }
   .adv-title{
     font-size:18px;
     font-weight:bold;
     margin-bottom:6px;
+    @media screen and ( max-width: 1005px ) {
+      font-size:16px;
+    }
   }
 }
 </style>

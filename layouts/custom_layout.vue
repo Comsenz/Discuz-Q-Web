@@ -7,7 +7,7 @@
     <div class="app-cont">
       <Nuxt />
     </div>
-    <Footer />
+    <!-- <Footer /> -->
   </div>
 </template>
 

@@ -179,6 +179,9 @@ export default {
       font-weight: bold;
       flex: 0 0 60%;
       @include text-hidden();
+      @media screen and ( max-width: 1005px ) {
+        font-size:14px;
+      }
     }
     .time{
       color: #8590A6;
@@ -190,6 +193,9 @@ export default {
       margin-bottom:6px;
       @include text-hidden();
       flex: 0 0 60%;
+      @media screen and ( max-width: 1005px ) {
+        font-size:18px;
+      }
     }
     .content{
       @include text-hidden(4);
@@ -204,6 +210,15 @@ export default {
       ::v-deep img {
         height: 22px;
       }
+      @media screen and ( max-width: 1005px ) {
+        font-size:14px;
+        ::v-deep p {
+          font-size: 14px;
+        }
+        ::v-deep img {
+          height: 20px;
+        }
+      }
     }
     .images{
       padding: 20px 0 0;
@@ -213,6 +228,10 @@ export default {
         height: 185px;
         border-radius: 5px;
         margin-right: 10px;
+        @media screen and ( max-width: 1005px ) {
+          width:130px;
+          height: 130px;
+        }
         &:nth-child(3n){
           margin-right: 0;
         }
@@ -262,10 +281,13 @@ export default {
       align-items: center;
       justify-content: space-between;
       margin-top: 20px;
+      @media screen and ( max-width: 1005px ) {
+        font-size:12px;
+      }
       .left{
         display: flex;
         align-items: center;
-          .btn{
+        .btn{
           color: $font-color-grey;
           margin-right:36px;
           cursor: pointer;
