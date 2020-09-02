@@ -2,10 +2,11 @@
   <div class="myindex">
     <div>
       <div>
-        <img
-          src="@/static/logo.png"
-          alt=""
-        >
+        <el-image
+          :src="forums.set_site && forums.set_site.site_logo ? forums.set_site.site_logo : require('static/logo.png')"
+          alt="logo"
+          class="logo"
+        />
         <div>
           <span>11
             <img
@@ -30,14 +31,21 @@
 </template>
 
 <script>
+import forums from '@/mixin/forums'
 export default {
+  mixins: [forums],
   data() {
     return {
 
     }
+  },
+  mounted() {
+    console.log(this.forums)
   }
 }
 </script>
 <style lang='scss' scoped>
-//@import url(); 引入公共css类
+.logo{
+  width: 294px;
+}
 </style>
