@@ -121,12 +121,18 @@ export default {
       background: #E5F2FF;
       transition: all 0.2s ease-in-out;
     }
+    @media screen and ( max-width: 1005px ) {
+      margin-right: 0;
+    }
   }
   .filter-dropdown{
     margin: 0 0 0 10px;
     padding:8px 14px;
     color: #8590A6;
     cursor: default;
+    @media screen and ( max-width: 1005px ) {
+      margin: 0;
+    }
   }
 }
 .el-dropdown-link{

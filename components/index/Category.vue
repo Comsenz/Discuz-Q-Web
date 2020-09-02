@@ -57,7 +57,6 @@ export default {
     onChange(id) {
       if (this.postLoading) return
       this.selectId = id
-      this.$router.push({ url: '/', query: { categoryId: id !== 0 ? id : '' }})
       this.$emit('onChange', id)
     }
   }
@@ -71,6 +70,10 @@ export default {
   margin-bottom: 16px;
   max-height: 490px;
   overflow-y: auto;
+  @media screen and ( max-width: 1005px ) {
+    padding: 0 14px;
+    max-height: 470px;
+  }
   .category-item{
     position: relative;
     padding: 16px 0;
@@ -87,6 +90,9 @@ export default {
     }
     &.loading{
       cursor: no-drop;
+    }
+    @media screen and ( max-width: 1005px ) {
+      font-size: 14px;
     }
     .flex{
       display: flex;

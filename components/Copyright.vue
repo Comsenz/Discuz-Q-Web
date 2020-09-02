@@ -3,7 +3,7 @@
     <div class="info">
       <span>Powered By</span>
       <span class="site">Discuz!Q</span>
-      <span>© 2014-{{ forums.set_site && forums.set_site.site_expire ? '20' + forums.set_site.site_expire : year }}</span>
+      <span class="block">© 2014-{{ forums.set_site && forums.set_site.site_expire ? '20' + forums.set_site.site_expire : year }}</span>
     </div>
     <div>分享 / 交流 / 共融</div>
     <div class="id">
@@ -43,12 +43,20 @@ export default {
     color: $font-color-grey;
     line-height: 20px;
     padding: 20px;
-
+    @media screen and ( max-width: 1005px ) {
+      padding: 14px;
+      font-size:12px;
+      .block{
+        display: block;
+      }
+    }
     > .info {
       width: 100%;
       display: inline-flex;
       justify-content: space-between;
-
+      @media screen and ( max-width: 1005px ) {
+        display: block;
+     }
       > .site {
         font-weight: bold;
       }

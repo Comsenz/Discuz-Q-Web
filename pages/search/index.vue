@@ -11,11 +11,10 @@
       <div class="user-list">
         <div class="user-flex">
           <nuxt-link v-for="(item, index) in userList.slice(0, userPageSize)" :key="index" :to="`/profile?userId=${item.id}`" class="user-item">
-            <el-image v-if="item.avatarUrl" class="avatar" :src="item.avatarUrl" />
-            <div v-else class="avatar">{{ item.username ? item.username.charAt(0).toUpperCase() : '' }}</div>
+            <avatar :user="item" :size="45" />
             <div class="info">
               <div class="name text-hidden">{{ item.username }}</div>
-              <div v-if="item.fansCount > 0" class="fans">{{ $t('profile.followers') }}{{ item.fansCount }}</div>
+              <div class="fans">{{ $t('profile.followers') }} {{ item.fansCount || 0 }}</div>
             </div>
           </nuxt-link>
         </div>
@@ -30,8 +29,8 @@
         <post-item v-for="(item, index) in threadsList" :key="index" :item="item" />
         <loading v-if="loading" />
         <template v-else>
-          <div v-if="hasMore" class="load-more" @click="loadMore">{{ $t('search.searchmorethemes') }}</div>
-          <div v-else class="no-more"><svg-icon v-if="threadsList.length === 0" type="empty" class="empty-icon" />{{ threadsList.length > 0 ? $t('list.noMoreData') : $t('search.norelatedthemesfound') }}</div>
+          <div v-if="hasMore" class="load-more" @click="loadMore">{{ $t('topic.showMore') }}</div>
+          <div v-else class="no-more"><svg-icon v-if="threadsList.length === 0" type="empty" class="empty-icon" />{{ threadsList.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noData') }}</div>
         </template>
       </div>
     </main>
@@ -55,7 +54,6 @@ export default {
   data() {
     return {
       loading: false,
-      stickyList: [], // 置顶主题列表
       threadsList: [], // 主题列表
       pageNum: 1, // 当前页码
       pageSize: 10, // 每页多少条数据
@@ -154,7 +152,11 @@ export default {
       this.categoryId = id
       this.reloadThreadsList()
     },
-    toUserList() {}
+    toUserList() {
+      if (this.$route.query.q) {
+        this.$router.push('/search/user?q=' + this.$route.query.q)
+      }
+    }
   }
 }
 </script>
@@ -204,25 +206,21 @@ export default {
         display: flex;
         align-items: center;
         margin-right: 80px;
-        .avatar{
-          width: 45px;
-          height: 45px;
-          border-radius: 5px;
-          background: rgb(229, 199, 160);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: #fff;
-          font-size: 24px;
-          margin-right: 10px;
+        @media screen and ( max-width: 1005px ) {
+          margin-right: 20px;
         }
         .info{
+          margin-left: 10px;
           .name{
             font-size:16px;
             max-width: 100px;
+            @media screen and ( max-width: 1005px ) {
+              max-width: 80px;
+            }
           }
           .fans{
             color: #8590A6;
+            margin-top: 2px;
           }
         }
       }
@@ -257,6 +255,10 @@ export default {
     margin-left:15px;
     width:300px;
     flex: 0 0 300px;
+    @media screen and ( max-width: 1005px ) {
+      width:220px;
+      flex: 0 0 220px;
+    }
     .background-color{
       @include background();
        margin-bottom: 16px;

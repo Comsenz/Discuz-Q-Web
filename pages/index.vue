@@ -21,7 +21,7 @@
         <loading v-if="loading" />
         <template v-else>
           <div v-if="hasMore" class="load-more" @click="loadMore">{{ $t('topic.showMore') }}</div>
-          <div v-else class="no-more"><svg-icon v-if="threadsList.length === 0" type="empty" class="empty-icon" />{{ threadsList.length > 0 ? $t('list.noMoreData') : $t('list.noData') }}</div>
+          <div v-else class="no-more"><svg-icon v-if="threadsList.length === 0" type="empty" class="empty-icon" />{{ threadsList.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noData') }}</div>
         </template>
       </div>
     </main>
@@ -117,6 +117,7 @@ export default {
   },
   destroyed() {
     this.tiemr = null
+    clearInterval(this.timer)
   },
   methods: {
     // 置顶主题
@@ -205,6 +206,7 @@ export default {
     },
     // 点击分类
     onChangeCategory(id) {
+      this.$router.push({ url: '/', query: { categoryId: id !== 0 ? id : '' }})
       this.categoryId = id
       this.reloadThreadsList()
       this.stickyList = []
@@ -326,6 +328,10 @@ export default {
     margin-left:15px;
     width:300px;
     flex: 0 0 300px;
+    @media screen and ( max-width: 1005px ) {
+      width:220px;
+      flex: 0 0 220px;
+    }
     .background-color{
       @include background();
        margin-bottom: 16px;

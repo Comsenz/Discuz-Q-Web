@@ -17,5 +17,6 @@ export default {
 .loading-container{
   text-align: center;
   padding:20px 0;
+  color: #8590A6;
 }
 </style>

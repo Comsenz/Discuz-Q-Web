@@ -1,14 +1,15 @@
 <template>
   <div class="recommend-user-container">
     <div class="recommend-user-title">推荐用户</div>
-    <div class="user-item">
+    <!-- <div class="user-item">
       <avatar :user="user" :size="45" />
       <div class="user-info">
         <div class="user-name text-hidden">李四</div>
         <div class="user-fans">粉丝 2522</div>
       </div>
       <div class="follow">{{ $t('profile.following') }}</div>
-    </div>
+    </div> -->
+    <user-item :item="user" show="simple" />
     <div class="refresh">
       <i class="el-icon-refresh icon" />换一批
     </div>
@@ -21,7 +22,7 @@ export default {
       user: {
         avatarUrl: '',
         id: 13,
-        username: '"xhltest"'
+        username: 'xhltest'
       }
     }
   }
@@ -30,6 +31,9 @@ export default {
 <style lang="scss" scoped>
 .recommend-user-container{
   padding: 20px;
+  @media screen and ( max-width: 1005px ) {
+    padding: 14px;
+  }
   .recommend-user-title{
     color:#6D6D6D;
     margin-bottom: 8px;
