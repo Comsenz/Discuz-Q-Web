@@ -316,12 +316,6 @@ export default {
         margin: 20px;
         border-radius:2px;
       }
-      .no-more{
-        padding: 20px 0;
-        text-align: center;
-        font-size: 14px;
-        color: $font-color-grey;
-      }
     }
   }
   .cont-right{

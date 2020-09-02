@@ -77,6 +77,7 @@ export default {
       const params = {
         include: 'groups',
         sort: 'createdAt',
+        'filter[status]': 'normal',
         'page[limit]': this.pageSize,
         'page[number]': this.pageNum,
         'filter[username]': `*${this.q}*`
@@ -168,12 +169,6 @@ export default {
       cursor: pointer;
       margin: 20px;
       border-radius:2px;
-    }
-    .no-more{
-      padding: 20px 0;
-      text-align: center;
-      font-size: 14px;
-      color: $font-color-grey;
     }
   }
   .cont-right{
