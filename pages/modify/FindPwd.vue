@@ -55,9 +55,9 @@ const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
 export default {
   name: 'Findpwd',
   // middleware: 'auth',
-  meta: {
-    requiresAuth: true
-  },
+  // meta: {
+  //   requiresAuth: true
+  // },
   mixins: [
     tcaptchs, handleError
   ],
@@ -197,7 +197,7 @@ export default {
       }
     },
     sendverify() {
-      if (this.forums && this.forums.set_reg && this.forums.set_reg.register_captcha) {
+      if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha) {
         this.toTCaptcha()
       } else {
         this.sendVerifyCode()

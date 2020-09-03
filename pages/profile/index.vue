@@ -23,21 +23,22 @@
           @tab-click="changeactive"
         >
           <el-tab-pane
-            :label="$t('profile.topic')+ ` (${userInfo.threadCount || ''})`"
+            :label="$t('profile.topic')+ ` (${userInfo.threadCount || 0})`"
             name="1"
           />
           <el-tab-pane
-            :label="$t('profile.following')+ ` (${userInfo.fansCount || ''})`"
+            :label="$t('profile.likes')+ ` (${userInfo.likedCount || 0})`"
             name="2"
           />
           <el-tab-pane
-            :label="$t('profile.followers')+ ` (${userInfo.followCount || ''})`"
+            :label="$t('profile.following')+ ` (${userInfo.fansCount || 0})`"
             name="3"
           />
           <el-tab-pane
-            :label="$t('profile.likes')+ ` (${userInfo.likedCount || ''})`"
+            :label="$t('profile.followers')+ ` (${userInfo.followCount || 0})`"
             name="4"
           />
+
         </el-tabs>
         <div
           v-if="userId !== currentLoginId"
@@ -114,9 +115,7 @@
         >{{ $t('profile.privateMessage') }}</el-button>
       </div>
     </div>
-    <div
-      class="profile-c"
-    >
+    <div class="profile-c">
       <div style="width:700px;margin: 15px 15px 0 0;">
         <el-tabs
           v-model="activeName"
@@ -125,21 +124,21 @@
           @tab-click="changeactive"
         >
           <el-tab-pane
-            :label="$t('profile.topic')+ ` (${userInfo.threadCount || ''})`"
+            :label="$t('profile.topic')+ ` (${userInfo.threadCount || 0})`"
             name="1"
           >
             <topic :user-id="userId" />
           </el-tab-pane>
           <el-tab-pane
-            :label="$t('profile.likes')+ ` (${userInfo.likedCount || ''})`"
+            :label="$t('profile.likes')+ ` (${userInfo.likedCount || 0})`"
             name="2"
           >2222</el-tab-pane>
           <el-tab-pane
-            :label="$t('profile.following')+ ` (${userInfo.fansCount || ''})`"
+            :label="$t('profile.following')+ ` (${userInfo.fansCount || 0})`"
             name="3"
           >3333</el-tab-pane>
           <el-tab-pane
-            :label="$t('profile.followers')+ ` (${userInfo.followCount || ''})`"
+            :label="$t('profile.followers')+ ` (${userInfo.followCount || 0})`"
             name="4"
           >44</el-tab-pane>
         </el-tabs>
@@ -368,7 +367,7 @@ export default {
       border: none;
       background: #ffffff;
       box-shadow: none;
-      ::v-deep.el-tabs__header{
+      ::v-deep.el-tabs__header {
         padding: 20px;
       }
     }

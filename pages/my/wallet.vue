@@ -4,9 +4,14 @@
     <div class="mywallet-top">
       <div class="mywallet-topitem">
         <span class="margbtm">{{ $t('profile.availableamount') }}</span>
-        <span class="amount">{{ `¥ ${dataInfo.available_amount || 0.0}` }}<span class="availmount">{{ $t('modify.withdratitle') }}</span></span>
+        <span class="amount">{{ `¥ ${dataInfo.available_amount || 0.0}` }}
+          <span
+            class="availmount"
+            @click="showWithdraw"
+          >{{ $t('modify.withdratitle') }}</span>
+        </span>
       </div>
-      <div class="mywallet-topitem">
+      <div class="mywallet-topitem mymarg">
         <span class="margbtm">{{ $t('profile.freezeamount') }}</span>
         <span
           v-if="dataInfo.freeze_amount > 0"
@@ -20,7 +25,7 @@
 
       </div>
       <div
-        class="mywallet-topitem"
+        class="mywallet-topitem mymarg"
         style="margin-right:30px;text-align:right"
       >
         <span class="margbtm">{{ $t('pay.payPassword') }}</span>
@@ -44,6 +49,7 @@
           />{{ $t('profile.setpaypassword') }}
         </span>
       </div>
+      <!-- 设置钱包密码 -->
       <div v-if="hasPassword">
         <wallet-password
           v-if="showPasswordInput"
@@ -77,6 +83,7 @@
           @password="setPass2"
         />
       </div>
+
     </div>
     <el-tabs
       type="border-card"
@@ -85,7 +92,6 @@
       <!-- 提现记录 -->
       <el-tab-pane :label="$t('profile.withdrawalslist')">
         <div class="selector">
-
           <el-date-picker
             v-model="date"
             type="month"
@@ -428,7 +434,10 @@
         />
       </el-tab-pane>
     </el-tabs>
-
+    <withdrawal
+      v-if="isWithdraw"
+      @close="isWithdraw = false"
+    />
   </div>
 
 </template>
@@ -449,6 +458,7 @@ export default {
     month = month < 10 ? `0${month}` : month
     const currentDate = `${year}-${month}`
     return {
+      isWithdraw: false,
       inputpas: '', // 第一次新密码
       usertokenid: '', // 原密码验证成功id
       showNewverify: false, // 新密码验证码框
@@ -600,6 +610,10 @@ export default {
     this.getList4()
   },
   methods: {
+    // 提现
+    showWithdraw() {
+      this.isWithdraw = true
+    },
     // 设置密码框展示
     setPassword() {
       this.setPasswordInput = true
@@ -929,7 +943,7 @@ export default {
           // 处理文字
           const result = this.handleHandle(res)
           // 处理钱
-          this.sumMoney2 = this.handlemoney(result)
+          this.sumMoney2 = this.handlemoney2(result)
           console.log('钱包总金额', this.sumMoney2)
           this.loadingType = result.length === this.pageSize ? 'more' : 'nomore'
           this.dataList2 = [...this.dataList2, ...result]
@@ -990,21 +1004,26 @@ export default {
           console.log('订单数据', this.dataList4)
         })
     },
-    // 处理钱包总金额
+    // 处理提现钱包总金额
     handlemoney(result) {
       const res = JSON.parse(JSON.stringify(result))
       let sum = 0
-      if (res[0].cash_apply_amount) {
-        res.forEach((item, index) => {
-          res[index] = parseFloat(item.cash_apply_amount.replace(/\+|\-|\*|\?/g, ''))
-          sum = sum + res[index]
-        })
-      } else if (res[0].change_available_amount) {
-        res.forEach((item, index) => {
-          res[index] = parseFloat(item.change_available_amount.replace(/\+|\-|\*|\?/g, ''))
-          sum = sum + res[index]
-        })
-      }
+      res.forEach((item, index) => {
+        res[index] = parseFloat(item.cash_apply_amount.replace(/\+|\-|\*|\?/g, ''))
+        sum = sum + res[index]
+      })
+
+      return sum.toFixed(2)
+    },
+    // 钱包总金额
+    handlemoney2(result) {
+      const res = JSON.parse(JSON.stringify(result))
+      let sum = 0
+
+      res.forEach((item, index) => {
+        res[index] = parseFloat(item.change_available_amount.replace(/\+|\-|\*|\?/g, ''))
+        sum = sum + res[index]
+      })
 
       return sum.toFixed(2)
     },
@@ -1172,10 +1191,16 @@ export default {
   .mywallet-top {
     display: flex;
     flex-direction: row;
+    .mymarg {
+      margin-left: 240px;
+      // @media screen and (max-width: 1005px) {
+      //   margin-left: 150px;
+      // }
+    }
     .mywallet-topitem {
       display: flex;
       flex-direction: column;
-      flex: 1;
+      // flex: 1;
       color: #6d6d6d;
       .amount {
         font-size: 20px;
@@ -1186,6 +1211,7 @@ export default {
         line-height: 23px;
         vertical-align: top;
         margin-left: 10px;
+        cursor: pointer;
       }
       .margbtm {
         margin-bottom: 10px;
@@ -1247,13 +1273,14 @@ export default {
 }
 ::v-deep.el-table .cell {
   padding-left: 10px;
+  font-weight: 400;
 }
 ::v-deep .el-table thead {
   color: #303133;
 }
 ::v-deep .el-table th,
 .el-table tr {
-  background-color: #f4f5f6 !important;
+  background-color: #fafafa !important;
 }
 ::v-deep .el-pagination .btn-prev {
   margin-left: 110px;

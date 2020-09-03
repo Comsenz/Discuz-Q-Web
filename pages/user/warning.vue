@@ -56,7 +56,7 @@ export default {
     padding-bottom: 30px;
     .payinfo-title {
       font-size: 18px;
-      font-family: Microsoft YaHei;
+      // font-family: Microsoft YaHei;
       font-weight: 400;
     }
     .color {
@@ -64,14 +64,14 @@ export default {
       padding-bottom: 20px;
     }
     .h-button1 {
-      width: 100px;
+      // width: 100px;
       height: 35px;
       color: #1878f3;
       background: #ffffff;
       border-color: #1878f3;
       font-size: 14px;
       border-radius: 0px;
-      padding: 0px;
+      // padding: 0px;
     }
   }
   span {

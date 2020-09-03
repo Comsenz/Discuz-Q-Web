@@ -75,14 +75,14 @@
         v-show="!isSignModify"
         class="myprofile-btom"
       >
-        {{ userInfo.signature }}
+        {{ userInfo.signature ? userInfo.signature : '暂无签名' }}
       </div>
       <div v-show="isSignModify">
         <textarea
           ref="sign"
           v-model="inputVal"
           type="text"
-          :placeholder="$t('search.search')"
+          placeholder="请输入签名内容"
           class="myprofile-btom"
           style="border:none;font-size:16px;margin-left:15px;margin-top:13px;"
           @input="fun"
@@ -888,7 +888,7 @@ export default {
     padding-bottom: 20px;
     margin-top: 15px;
     width: 460px;
-    font-family: Microsoft YaHei;
+    // font-family: Microsoft YaHei;
     color: #000000;
   }
   .phone-input {

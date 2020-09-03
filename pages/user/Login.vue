@@ -227,6 +227,9 @@ export default {
     this.QRcode()
     this.changeactive()
   },
+  destroyed() {
+    clearInterval(QuickLogin)
+  },
   methods: {
     countDown(interval) {
       if (!this.canClick) return
