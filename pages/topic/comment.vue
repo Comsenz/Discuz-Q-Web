@@ -34,7 +34,7 @@
         </div>
       </div>
     </main>
-    <topic-aside :author="thread.user || {}" :forums="forums || {}" />
+    <topic-aside :author="thread.user || {}" />
   </div>
 </template>
 
@@ -42,47 +42,50 @@
 const threadInclude = 'posts.replyUser,user.groups,user,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers'
 const commentInclude = 'user,likedUsers,commentPosts,commentPosts.user,commentPosts.user.groups,commentPosts.replyUser,commentPosts.replyUser.groups,commentPosts.mentionUsers,commentPosts.images,images,attachments'
 const replyInclude = 'replyUser,user.groups,user,images'
-import forums from '@/mixin/forums'
 import handleError from '@/mixin/handleError'
 import timerDiff from '@/mixin/timerDiff'
 
 export default {
   name: 'Comment',
   layout: 'custom_layout',
-  mixins: [timerDiff, forums, handleError],
-  async asyncData({ isDev, route, store, env, params, query, req, res, redirect, error }) {
+  mixins: [timerDiff, handleError],
+  async asyncData({ store, query }) {
     console.log(query, 'query')
     console.log(threadInclude)
     const threadId = query.threadId
     const commentId = query.commentId
-    const thread = await store.dispatch('jv/get', [`threads/${threadId}`, { params: { include: threadInclude }}])
-    const comment = await store.dispatch('jv/get', [`posts/${commentId}`, { params: { include: commentInclude }}])
-    // const replyListData = await store.dispatch('jv/get', [`posts`, {
-    //   params: {
-    //     'filter[thread]': threadId,
-    //     'filter[reply]': commentId,
-    //     'filter[isDeleted]': 'no',
-    //     sort: '-createdAt',
-    //     'filter[isComment]': 'yes',
-    //     include: replyInclude
-    //   }
-    // }])
-    // let replyList
-    // if (Array.isArray(replyListData)) {
-    //   replyList = replyListData
-    // } else if (replyListData && replyListData._jv && replyListData._jv.json) {
-    //   replyList = replyListData._jv.json.data || []
-    //   replyList.forEach(reply => {
-    //     if (reply.relationships && reply.attributes) {
-    //       for (const key in reply.relationships) {
-    //         reply.attributes[key] = reply.relationships[key].data
-    //         console.log(reply, '111')
-    //       }
-    //     }
-    //   })
-    // }
-    // console.log(replyList)
-    return { thread, comment }
+    try {
+      const thread = await store.dispatch('jv/get', [`threads/${threadId}`, { params: { include: threadInclude }}])
+      const comment = await store.dispatch('jv/get', [`posts/${commentId}`, { params: { include: commentInclude }}])
+      // const replyListData = await store.dispatch('jv/get', [`posts`, {
+      //   params: {
+      //     'filter[thread]': threadId,
+      //     'filter[reply]': commentId,
+      //     'filter[isDeleted]': 'no',
+      //     sort: '-createdAt',
+      //     'filter[isComment]': 'yes',
+      //     include: replyInclude
+      //   }
+      // }])
+      // let replyList
+      // if (Array.isArray(replyListData)) {
+      //   replyList = replyListData
+      // } else if (replyListData && replyListData._jv && replyListData._jv.json) {
+      //   replyList = replyListData._jv.json.data || []
+      //   replyList.forEach(reply => {
+      //     if (reply.relationships && reply.attributes) {
+      //       for (const key in reply.relationships) {
+      //         reply.attributes[key] = reply.relationships[key].data
+      //         console.log(reply, '111')
+      //       }
+      //     }
+      //   })
+      // }
+      // console.log(replyList)
+      return { thread, comment }
+    } catch (e) {
+      console.log('ssr err')
+    }
   },
   data() {
     return {

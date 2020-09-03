@@ -91,11 +91,10 @@
 
 <script>
 import handleError from '@/mixin/handleError'
-import forums from '@/mixin/forums'
 
 export default {
   name: 'Editor',
-  mixins: [forums, handleError],
+  mixins: [handleError],
   props: {
     post: {
       type: Object,
@@ -168,8 +167,9 @@ export default {
       return ''
     },
     attachedTypeLimit() {
-      if (this.forums.set_attach) {
-        const limitText = this.forums.set_attach.support_file_ext + this.forums.set_attach.support_img_ext
+      const forums = this.$store.state.site.info.attributes || {}
+      if (forums.set_attach) {
+        const limitText = forums.set_attach.support_file_ext + forums.set_attach.support_img_ext
         return limitText.split(',').map(item => '.' + item).join(',')
       }
       return ''

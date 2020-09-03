@@ -17,16 +17,14 @@
 <script>
 export default {
   name: 'Copyright',
-  props: {
-    forums: {
-      type: Object,
-      default: () => {
-      }
-    }
-  },
   data() {
     return {
       year: '2019'
+    }
+  },
+  computed: {
+    forums() {
+      return this.$store.state.site.info.attributes || {}
     }
   },
   created() {
