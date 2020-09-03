@@ -1,3 +1,6 @@
+// route在server render也会跑
+// client执行顺序 => beforeEach - middleware - afterEach
+// server执行顺序 => beforeEach - afterEach - middleware
 export default ({ app }) => {
   const { store, router } = app
   router.beforeEach(async(to, from, next) => {
@@ -13,7 +16,8 @@ export default ({ app }) => {
       }
       // 获取用户信息
       const userId = store.getters['session/get']('userId')
-      if (!store.state.user.info.id && userId) {
+      console.log('user id => ', userId)
+      if (!store.state.user.info.id && userId > 0) {
         try {
           await store.dispatch('user/getUserInfo', userId)
         } catch (error) {
@@ -23,7 +27,6 @@ export default ({ app }) => {
         }
       }
     }
-
     next()
   })
   router.afterEach((to, from) => {
