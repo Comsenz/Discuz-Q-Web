@@ -107,6 +107,7 @@ export default {
       }).then(() => {
         return this.$store.dispatch('jv/patch', params).then(() => {
           this.getComment()
+          this.$message.success(this.$t('topic.deleteSuccess'))
         }, e => this.handleError(e))
       }, () => console.log('取消删除'))
     },

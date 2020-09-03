@@ -8,7 +8,7 @@
         <div v-if="comment.isApproved === 0" class="checking">{{ $t('topic.inReview') }}</div>
       </div>
       <div class="container-detail">
-        <div class="content-html" @click="showAll($event, index, commentList)" v-html="formatSummary(comment)" />
+        <div class="content-html" @click="showAll($event, comment)" v-html="formatSummary(comment)" />
         <div v-if="comment.images && comment.images.length > 0" class="images">
           <el-image
             v-for="(image, imageIndex) in comment.images"
@@ -48,7 +48,7 @@
         :on-publish="onReplyPublish"
         @publish="replyPublish(comment._jv.id)"
       />
-      <div class="reply-list">
+      <div class="reply-list" @click="$router.push(`/topic/comment?threadId=${threadId}&commentId=${comment._jv.id}#reply`)">
         <div v-for="(reply, replyIndex) in replyList[index]" :key="replyIndex" class="reply">
           <div class="title">
             <Avatar :user="reply.user || {}" size="30" />
@@ -63,10 +63,12 @@
           <div class="content-html" @click="showAll($event, replyIndex, replyList)" v-html="formatSummary(reply)" />
         </div>
         <div v-if="comment.replyCount > 3">
-          <div v-if="comment.replyCount !== (replyList[index] || []).length" class="show-all-reply" @click="getReply(comment._jv.id, index)">
+          <div
+            v-if="comment.replyCount !== (replyList[index] || []).length"
+            class="show-all-reply"
+          >
             {{ $t('topic.showOther') }} {{ comment.replyCount - 3 }} {{ $t('topic.item') + $t('topic.reply') }}
           </div>
-          <div v-else class="show-all-reply" @click="foldReply(index)">{{ $t('topic.foldReply') }}</div>
         </div>
       </div>
     </div>
@@ -74,7 +76,6 @@
 </template>
 
 <script>
-const commentInclude = 'replyUser,user.groups,user,images'
 import handleError from '@/mixin/handleError'
 import publishResource from '@/mixin/publishResource'
 import postLegalityCheck from '@/mixin/postLegalityCheck'
@@ -128,28 +129,8 @@ export default {
       }
       return s9e.parse(html)
     },
-    showAll(e, index, contentList) {
-      if (e.target.matches('.showAllComment')) e.target.parentElement.innerHTML = contentList[index].contentHtml
-    },
-    getReply(id, index) {
-      if (this.replyLoading === true) return // 事件防抖
-      this.showAllReply = true
-      this.replyLoading = true
-      this.$store.dispatch('jv/get', [`posts`, { params: {
-        'filter[isApproved]': 1,
-        'filter[thread]': this.threadId,
-        'filter[reply]': id,
-        'filter[isDeleted]': 'no',
-        sort: '-createdAt',
-        'filter[isComment]': 'yes',
-        include: commentInclude }}]).then(data => {
-        this.replyLoading = false
-        this.$set(this.replyList, index, data)
-      }, e => this.handleError(e))
-    },
-    foldReply(index) {
-      this.showAllReply = false
-      this.$set(this.replyList, index, this.commentList[index].lastThreeComments)
+    showAll(e, comment) {
+      if (e.target.matches('.showAllComment')) this.$router.push(`/topic/comment?threadId=${this.threadId}&commentId=${comment._jv.id}`)
     },
     replyPublish(id) {
       if (!this.replyPost.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
@@ -259,6 +240,7 @@ export default {
     }
 
     > .reply-list {
+      cursor: pointer;
       margin-left: 60px;
 
       > .reply {

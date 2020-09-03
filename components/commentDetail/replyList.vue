@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-for="(reply, index) in replyList" :key="index" class="reply">
+    <div v-for="(reply, index) in replyList" :key="index" class="reply-list">
       <div class="title">
         <avatar-component :author="reply.user" :size="45">
           {{ timerDiff(reply.updatedAt) + $t('topic.before') }}..
@@ -22,12 +22,12 @@
         </div>
         <div class="actions">
           <div class="left">
-            <span v-if="reply.canLike" @click="$emit('delete')">
+            <span v-if="reply.canLike" class="like" @click="$emit('onLike', {reply, index})">
               <svg-icon :type="reply.isLiked ? 'liked' : 'like'" style="font-size: 14px" />
               <span class="text">{{ $t('topic.like') }} {{ reply.likeCount > 0 ? reply.likeCount : '' }}</span>
             </span>
           </div>
-          <div v-if="reply.canHide" class="right" @click="$emit('delete')">{{ $t('topic.delete') }}</div>
+          <div v-if="reply.canHide" class="right" @click="$emit('delete', { id: reply._jv.id, type: 'reply' })">{{ $t('topic.delete') }}</div>
         </div>
       </div>
     </div>
@@ -57,7 +57,7 @@ export default {
 
 <style lang="scss" scoped>
   @import '@/assets/css/variable/color.scss';
-  .reply {
+  .reply-list {
     padding-top: 20px;
     border-top: 1px solid $border-color-base;
     display: flex;
@@ -115,11 +115,6 @@ export default {
           > span {
             margin-right: 60px;
             cursor: pointer;
-
-            &:last-child {
-              margin-right: 0;
-              cursor: default;
-            }
 
             > .text {
               margin-left: 5px;

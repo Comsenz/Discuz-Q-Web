@@ -1,8 +1,11 @@
 <template>
   <div class="global">
-    <Avatar :user="author" :size="size" />
+    <Avatar :user="author" :size="size" :round="round" />
     <div class="title-info">
-      <div class="author-name">{{ author.username }}{{ author.groups ? ' (' + author.groups[0].name + ')' : '' }}</div>
+      <div class="author-name">
+        {{ author.username }}
+        <span v-if="author.groups" class="pop">{{ author.groups[0].name }}</span>
+      </div>
       <div class="timer">
         <slot />
       </div>
@@ -16,12 +19,15 @@ export default {
   props: {
     author: {
       type: Object,
-      default: () => {
-      }
+      default: () => {}
     },
     size: {
       type: Number,
       default: 50
+    },
+    round: {
+      type: Boolean,
+      default: false
     }
   }
 }
@@ -31,6 +37,7 @@ export default {
   @import '@/assets/css/variable/color.scss';
   .global {
     display: flex;
+    align-items: center;
     > .title-info {
       margin-left: 15px;
       margin-top: 5px;
@@ -38,6 +45,15 @@ export default {
       .author-name {
         font-size: 16px;
         font-weight: bold;
+        > .pop {
+          font-size: 14px;
+          line-height: 16px;
+          border-radius: 8px;
+          padding: 2px 10px;
+          margin-left: 6px;
+          background: $background-color-grey;
+          color: $font-color-grey;
+        }
       }
 
       .timer {

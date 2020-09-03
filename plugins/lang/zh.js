@@ -347,7 +347,8 @@ export default {
     before: '前',
     sendMessage: '发消息',
     recommend: '相关推荐',
-    toWatch: '去看看'
+    toWatch: '去看看',
+    viewDetail: '查看详情'
   },
   pay: {
     checkoutCounter: '收银台',
