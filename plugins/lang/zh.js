@@ -794,7 +794,10 @@ export default {
     codeused2: '该邀请码已经使用',
     codeexpired2: '该邀请码已经过期',
     codenotfound2: '该邀请码不存在',
-    codeforbid2: '您当前已登录了帐号，无法使用邀请码进行注册，请退出后重试。'
+    codeforbid2: '您当前已登录了帐号，无法使用邀请码进行注册，请退出后重试。',
+    price: '费用',
+    role: '角色',
+    to: '至'
   },
   // 搜索
   search: {

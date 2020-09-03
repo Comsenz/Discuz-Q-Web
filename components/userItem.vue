@@ -54,6 +54,9 @@ export default {
   display: flex;
   &.simple{
     padding:10px 0;
+    .name{
+      max-width:120px;
+    }
   }
   .flex{
     display: flex;
