@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading" element-loading-background="#fff" class="page-post">
+  <div v-loading="loading" class="page-post">
     <main>
       <div class="container-post">
         <topic-header
@@ -109,7 +109,7 @@ export default {
   methods: {
     getThread() {
       return this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include: threadInclude }}]).then(data => {
-        if (data.isDeleted) return this.$router.push('/demo')
+        if (data.isDeleted) return this.$router.push('/404')
         this.thread = data
         this.article = data.firstPost
         this.loading = false
@@ -117,7 +117,6 @@ export default {
         this.initManagementList(data)
         this.initPaidInformation(data)
         this.initActions(data, this.article)
-        console.log('data', data)
       }, e => this.handleError(e))
     },
     getWalletBalance() {

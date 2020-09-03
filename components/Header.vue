@@ -255,6 +255,7 @@ export default {
       float: left;
       width: 150px;
       height: 35px;
+      cursor: pointer;
       @media screen and ( max-width: 1005px ) {
         width: 135px;
         height: 30px;

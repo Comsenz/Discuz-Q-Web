@@ -21,7 +21,7 @@
       />
     </div>
     <div v-if="unpaid && threadType === 1" class="hide-content-tip">{{ $t('pay.contentHide') }}</div>
-    <div class="tag" @click="skipIndexPage">{{ category.name }}</div>
+    <div v-if="category.name" class="tag" @click="skipIndexPage">{{ category.name }}</div>
     <video-pop v-if="showVideoPop" :cover-url="video.cover_url" :url="video.media_url" @remove="showVideoPop = false" />
   </article>
 </template>

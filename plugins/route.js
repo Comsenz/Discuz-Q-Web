@@ -4,7 +4,6 @@
 export default ({ app }) => {
   const { store, router } = app
   router.beforeEach(async(to, from, next) => {
-    console.log('to =>', to)
     if (process.client) {
       // 获取站点信息
       if (!store.state.site.info.id) {
