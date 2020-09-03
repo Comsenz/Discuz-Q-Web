@@ -5,7 +5,7 @@
         <avatar-component :author="comment.user" :size="45">
           {{ timerDiff(comment.updatedAt) + $t('topic.before') }}..
         </avatar-component>
-        <div v-if="comment.isApproved === 1" class="checking">{{ $t('topic.inReview') }}</div>
+        <div v-if="comment.isApproved === 0" class="checking">{{ $t('topic.inReview') }}</div>
       </div>
       <div class="container-detail">
         <div class="content-html" @click="showAll($event, index, commentList)" v-html="formatSummary(comment)" />
