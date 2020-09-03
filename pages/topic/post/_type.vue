@@ -30,9 +30,6 @@ import handleError from '@/mixin/handleError'
 export default {
   name: 'Post',
   mixins: [handleError, publishResource],
-  // meta: {
-  //   requiresAuth: true
-  // },
   data() {
     return {
       categoryList: [],
