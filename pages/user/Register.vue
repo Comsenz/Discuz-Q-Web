@@ -609,6 +609,9 @@ export default {
         height: 155px;
         border: 1px dashed black;
         margin-top: 26px;
+        img{
+          width:100%;
+        }
       }
       .qrcode2 {
         margin: 0 auto;
