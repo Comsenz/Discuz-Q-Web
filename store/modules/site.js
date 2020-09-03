@@ -2,8 +2,10 @@
 import service from '@/api/request'
 // import { utils } from '@/library/jsonapi-vuex/index'
 
-const state = {
-  info: {}
+const state = () => {
+  return {
+    info: {}
+  }
 }
 
 const mutations = {

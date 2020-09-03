@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading" element-loading-background="#fff" class="page-post">
+  <div v-loading="loading" class="page-post">
     <main>
       <div class="container-post">
         <topic-header
@@ -50,19 +50,18 @@
         <comment :thread-id="threadId" />
       </div>
     </main>
-    <topic-aside :author="thread.user || {}" :forums="forums || {}" />
+    <topic-aside :author="thread.user || {}" />
   </div>
 </template>
 
 <script>
 const threadInclude = 'posts.replyUser,user.groups,user,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers'
-import forums from '@/mixin/forums'
 import handleError from '@/mixin/handleError'
 
 export default {
   name: 'Post',
   layout: 'custom_layout',
-  mixins: [forums, handleError],
+  mixins: [handleError],
   data() {
     return {
       thread: {},
@@ -100,6 +99,10 @@ export default {
     },
     rewardOrPay() {
       return parseFloat(this.paidInformation.price) > 0 ? 'pay' : 'reward'
+    },
+    forums() {
+      console.log(this.$store.state.site.info.attributes, 'info')
+      return this.$store.state.site.info.attributes || {}
     }
   },
   created() {
@@ -109,7 +112,7 @@ export default {
   methods: {
     getThread() {
       return this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include: threadInclude }}]).then(data => {
-        if (data.isDeleted) return this.$router.push('/demo')
+        if (data.isDeleted) return this.$router.push('/404')
         this.thread = data
         this.article = data.firstPost
         this.loading = false
@@ -117,7 +120,6 @@ export default {
         this.initManagementList(data)
         this.initPaidInformation(data)
         this.initActions(data, this.article)
-        console.log('data', data)
       }, e => this.handleError(e))
     },
     getWalletBalance() {

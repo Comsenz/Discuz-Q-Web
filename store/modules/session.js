@@ -24,13 +24,15 @@ const setUserInfoStore = (context, results, resolve) => {
   resolve(resData)
 }
 
-const state = {
-  userId: 0,
-  wxLogin: false,
-  accessToken,
-  auth: {},
-  categoryId: 0,
-  categoryIndex: 0
+const state = () => {
+  return {
+    userId: 0,
+    wxLogin: false,
+    accessToken,
+    auth: {},
+    categoryId: 0,
+    categoryIndex: 0
+  }
 }
 
 const actions = {

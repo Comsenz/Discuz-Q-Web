@@ -60,6 +60,10 @@ export default {
       switch (id) {
         case '/my/profile': return 0
         case '/my/wallet': return 1
+        case '/my/favorite': return 2
+        case '/my/notice': return 3
+        case '/my/circleinfo': return 4
+        case '/my/sitemanagement': return 5
         default: return 0
       }
     }
@@ -87,6 +91,7 @@ export default {
   .padd {
     padding-left: 30px !important;
     padding: 0 65px;
+    position: relative;
   }
   .divided{
     border-top:1px solid #EFEFEF;

@@ -10,7 +10,7 @@
       </div>
     </div>
     <advertising style="margin-top: 15px;" />
-    <copyright :forums="forums" />
+    <copyright />
   </div>
 </template>
 
@@ -25,10 +25,6 @@ export default {
       type: Object,
       default: () => {
       }
-    },
-    forums: {
-      type: Object,
-      default: () => {}
     }
   },
   data() {
