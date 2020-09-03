@@ -344,7 +344,7 @@ export default {
         this.$message.error('手机号不能为空')
       } else if (!this.checked) {
         this.$message.error('请同意协议')
-      } else if (this.forums && this.forums.set_reg && this.forums.set_reg.register_captcha) {
+      } else if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha) {
         this.toTCaptcha()
       } else {
         this.sendVerifyCode()
