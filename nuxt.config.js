@@ -95,6 +95,21 @@ export default {
   ** See https://nuxtjs.org/api/configuration-build/
   */
   build: {
+    // analyze: true,
+    // 生产环境抽离css
+    extractCSS: process.env.NODE_ENV === 'production',
+    optimization: {
+      splitChunks: {
+        cacheGroups: {
+          styles: {
+            name: 'styles',
+            test: /\.(css|vue|scss)$/,
+            chunks: 'all',
+            enforce: true
+          }
+        }
+      }
+    },
     // transpile: [/^element-ui/],
     // element 按需加载
     babel: {
