@@ -163,7 +163,6 @@ export default {
         }
       }
       await this.$store.dispatch('jv/get', params).then(data => {
-        console.log('forum data => ', data)
         this.forums = data
         // 判断付费站点
         if ((data.set_site.site_mode === 'pay' && +this.userId === 0) || (data.set_site.site_mode === 'pay' && !this.userInfo.paid)) {

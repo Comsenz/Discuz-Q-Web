@@ -23,19 +23,19 @@
           @tab-click="changeactive"
         >
           <el-tab-pane
-            :label="$t('profile.topic')+ ` (${userInfo.threadCount})`"
+            :label="$t('profile.topic')+ ` (${userInfo.threadCount || ''})`"
             name="1"
           />
           <el-tab-pane
-            :label="$t('profile.following')+ ` (${userInfo.fansCount})`"
+            :label="$t('profile.following')+ ` (${userInfo.fansCount || ''})`"
             name="2"
           />
           <el-tab-pane
-            :label="$t('profile.followers')+ ` (${userInfo.followCount})`"
+            :label="$t('profile.followers')+ ` (${userInfo.followCount || ''})`"
             name="3"
           />
           <el-tab-pane
-            :label="$t('profile.likes')+ ` (${userInfo.likedCount})`"
+            :label="$t('profile.likes')+ ` (${userInfo.likedCount || ''})`"
             name="4"
           />
         </el-tabs>
@@ -125,21 +125,21 @@
           @tab-click="changeactive"
         >
           <el-tab-pane
-            :label="$t('profile.topic')+ ` (${userInfo.threadCount})`"
+            :label="$t('profile.topic')+ ` (${userInfo.threadCount || ''})`"
             name="1"
           >
             <topic :user-id="userId" />
           </el-tab-pane>
           <el-tab-pane
-            :label="$t('profile.likes')+ ` (${userInfo.likedCount})`"
+            :label="$t('profile.likes')+ ` (${userInfo.likedCount || ''})`"
             name="2"
           >2222</el-tab-pane>
           <el-tab-pane
-            :label="$t('profile.following')+ ` (${userInfo.fansCount})`"
+            :label="$t('profile.following')+ ` (${userInfo.fansCount || ''})`"
             name="3"
           >3333</el-tab-pane>
           <el-tab-pane
-            :label="$t('profile.followers')+ ` (${userInfo.followCount})`"
+            :label="$t('profile.followers')+ ` (${userInfo.followCount || ''})`"
             name="4"
           >44</el-tab-pane>
         </el-tabs>

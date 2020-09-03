@@ -11,8 +11,9 @@
         :index="item.index"
         :class="item.classname"
         @click="currentInfo(index)"
-      >{{ $t(item.content) }}
-        <span :class="['arrow',isActive(index)]">></span>
+      >
+        <span slot="title">{{ $t(item.content) }}</span>
+        <span :class="['arrow',isActive(index)]"><i class="el-icon-arrow-right icon" /></span>
       </el-menu-item>
 
     </el-menu>
@@ -23,15 +24,19 @@
 
 <script>
 export default {
+  name: 'UserCenter',
+  // meta: {
+  //   requiresAuth: true
+  // },
   data() {
     return {
       currentNumber: 0,
       menuList: [
-        { index: '/my/profile', classname: 'margtop padd', content: 'profile.myprofile' },
+        { index: '/my/profile', classname: 'padd', content: 'profile.myprofile' },
         { index: '/my/wallet', classname: 'padd', content: 'profile.mywallet' },
         { index: '/my/favorite', classname: 'padd', content: 'profile.myfavorite' },
         { index: '/my/notice', classname: 'padd', content: 'profile.notice' },
-        { index: '/my/circleinfo', classname: 'margtop padd', content: 'manage.circleinfo' },
+        { index: '/my/circleinfo', classname: 'padd divided', content: 'manage.circleinfo' },
         { index: '/my/sitemanagement', classname: 'padd', content: 'manage.siteManagement' }]
 
     }
@@ -76,28 +81,35 @@ export default {
   justify-content: flex-start;
   margin: 0;
   min-height: 0px;
-  .margtop {
-    margin-top: 20px;
+  .el-menu{
+    padding-top: 20px;
   }
   .padd {
     padding-left: 30px !important;
     padding: 0 65px;
   }
+  .divided{
+    border-top:1px solid #EFEFEF;
+    margin-top:15px;
+  }
   .arrow {
-    // margin-left: 55px;
     position: absolute;
+    top:50%;
     right: 20px;
-    font-weight: 100;
-    line-height: 57px;
-    font-size: large;
-    color: #303133;
+    transform: translateY(-50%);
+    color: #6D6D6D;
+    .icon{
+      font-size:12px;
+    }
+  }
+  ::v-deep.el-menu-item {
+    height: 46px;
+    line-height: 46px;
   }
   ::v-deep.el-menu-item.is-active {
     color: black;
     font-weight: bold;
     background: white;
-    font-family: MicrosoftYaHei-Bold;
-    //  visibility: hidden;
   }
   ::v-deep.el-menu-item:focus,
   .el-menu-item:hover {

@@ -7,7 +7,7 @@
       class="myprofile-c"
       style="padding-bottom:0px"
     >
-      <div class="myprofile-top">
+      <div class="myprofile-top mtop">
         <Avatar
           :user="userInfo"
           :size="50"
@@ -830,6 +830,7 @@ export default {
   .myprofile-top {
     display: flex;
     flex-direction: row;
+    margin-top:20px;
     .sig {
       font-size: 16px;
       color: #6d6d6d;
@@ -857,6 +858,9 @@ export default {
       cursor: pointer;
     }
   }
+  .mtop{
+    margin-top:0px;
+  }
   .myprofile-bottom {
     display: flex;
     margin-top: 14px;
@@ -881,7 +885,7 @@ export default {
     font-size: 16px;
     margin-right: 55px;
     // background: red;
-    padding-bottom: 15px;
+    padding-bottom: 20px;
     margin-top: 15px;
     width: 460px;
     font-family: Microsoft YaHei;

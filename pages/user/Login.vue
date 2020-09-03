@@ -35,10 +35,11 @@
             <span class="agree">{{ $t('user.status') }} </span>
           </el-checkbox>
           <div class="logorreg">
-            <span v-if="register">尚无账号，立即<span
-              style="color: #1878f3;cursor:pointer;"
-              @click="toRegister"
-            > {{ $t('user.register') }}</span></span>
+            <span v-if="register">尚无账号，立即
+              <span
+                style="color: #1878f3;cursor:pointer;"
+                @click="toRegister"
+              > {{ $t('user.register') }}</span></span>
             <nuxt-link
               to="/modify/findpwd"
               class="findpass"
@@ -296,7 +297,7 @@ export default {
     phoneRegister() {
       if (this.phoneNumber === '') {
         this.$message.error('手机号不能为空')
-      } else if (this.forums && this.forums.set_reg && this.forums.set_reg.register_captcha) {
+      } else if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha) {
         this.toTCaptcha()
       } else {
         this.sendVerifyCode()
