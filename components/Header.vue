@@ -164,13 +164,6 @@ export default {
       }
       await this.$store.dispatch('jv/get', params).then(data => {
         this.forums = data
-        // 判断付费站点
-        if ((data.set_site.site_mode === 'pay' && +this.userId === 0) || (data.set_site.site_mode === 'pay' && !this.userInfo.paid)) {
-          const urlList = ['/site/info', '/site/parner-invite', '/user/login', '/user/register', '/modify/findpwd', '/modify/resetpwd', '/modify/resetpwdsuccess']
-          if (!urlList.includes(this.$route.path)) {
-            this.$router.replace('/site/info')
-          }
-        }
         if (this.forums && this.forums.set_reg && this.forums.set_reg.register_close) {
           this.canReg = false
         } else {
