@@ -70,7 +70,8 @@ export default {
       title: '提示',
       confirm: '确定',
       cancel: '取消',
-      error: '输入的数据不合法!'
+      error: '输入的数据不合法!',
+      modifySuccess: '修改成功'
     },
     // 上传
     upload: {
@@ -702,6 +703,8 @@ export default {
     bindingmobile: '绑定手机',
     password: '密码',
     modify: '修改',
+    cancelModify: '取消修改',
+    confirmModify: '确定修改',
     wechat: '微信',
     certification: '实名认证',
     tocertification: '去认证',
