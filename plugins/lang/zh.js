@@ -474,7 +474,11 @@ export default {
     periodvalidity: '有效期至',
     myauthority: '我的权限',
     setting: '设置',
-    noContent: '暂无内容'
+    noContent: '暂无内容',
+    userCount: '成员总数',
+    normal: '正常',
+    disable: '禁用',
+    modifyRole: '配置身份'
   },
   // 消息页面
   notice: {
