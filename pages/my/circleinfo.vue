@@ -24,21 +24,25 @@
         </div>
         <div class="create-time">
           <div class="label">{{ $t('manage.creationtime') }}</div>
-          <div v-if="forums.set_site && forums.set_site.site_install" class="value">{{ (forums.set_site && forums.set_site.site_install).substr(0, 10) }}</div>
+          <div v-if="forums && forums.set_site && forums.set_site.site_install" class="value">{{ (forums.set_site && forums.set_site.site_install).substr(0, 10) }}</div>
         </div>
       </div>
       <div class="site-detail">
         <div class="header">
           <div class="title base-font-size">{{ $t('manage.siteintroduction') }}</div>
-          <div class="modify">{{ $t('profile.modify') }}</div>
+          <div v-if="+groupsId === 1" class="modify" @click="handleModify">{{ isModify ? $t('profile.cancelModify') : $t('profile.modify') }}</div>
         </div>
-        <div class="content base-font-size">
-          {{ forums.set_site && forums.set_site.site_introduction }}
+        <div v-if="forums && forums.set_site" v-loading="loading" class="content base-font-size">
+          <template v-if="isModify">
+            <el-input v-model="inputInfo" type="textarea" :rows="5" />
+            <el-button type="primary" @click="confirmModify">{{ $t('profile.confirmModify') }}</el-button>
+          </template>
+          <template v-else>{{ forums.set_site.site_introduction }}</template>
         </div>
       </div>
-      <div v-if="forums.set_site" class="circlemode">
+      <div v-if="forums && forums.set_site" class="circlemode">
         <div class="title base-font-size">{{ $t('site.circlemode') }} \ {{ $t('site.price') }}</div>
-        <div v-if="forums.set_site.site_mode === 'public'" class="content base-font-size grey-color">{{ $t('site.publicmode') }} \ {{ $t('post.free') }}  </div>
+        <div v-if="forums.set_site &&forums.set_site.site_mode === 'public'" class="content base-font-size grey-color">{{ $t('site.publicmode') }} \ {{ $t('post.free') }}  </div>
         <div v-else class="content base-font-size grey-color">{{ $t('site.paymentmode') }} \ {{ $t('post.yuanItem') }}{{ forums.set_site.site_price }}（{{ $t('site.periodvalidity') + forums.set_site.site_expire + $t('site.day') }}）</div>
       </div>
       <div class="permission">
@@ -51,7 +55,7 @@
             <div class="name base-font-size">{{ userInfo.username }}</div>
             <div class="role">{{ $t('site.role') }}:{{ forums.user && forums.user.groups && forums.user.groups.length > 0 && forums.user.groups[0].name || '' }}</div>
             <div v-if="userInfo.joinedAt" class="join-time">{{ $t('manage.joinedTime') }}:{{ userInfo.joinedAt.substr(0, 10) }}
-              <template v-if="forums.set_site.site_mode === 'pay'">,{{ $t('site.periodvalidity') + $t('site.to') + handleExpiredAt(userInfo.expiredAt) }}
+              <template v-if="forums && forums.set_site.site_mode === 'pay'">,{{ $t('site.periodvalidity') + $t('site.to') + handleExpiredAt(userInfo.expiredAt) }}
                 <template v-if="userInfo.expiredAt">({{ $t('pay.surplus') + handleDays(userInfo.expiredAt) + $t('site.day') }})</template>
               </template>
             </div>
@@ -68,30 +72,67 @@
 </template>
 
 <script>
-import forums from '@/mixin/forums'
+import handleError from '@/mixin/handleError'
 import { timestamp2day } from '@/utils/time'
 export default {
   name: 'SiteInfo',
-  mixins: [forums],
+  mixins: [handleError],
   // meta: {
   //   requiresAuth: true
   // },
   data() {
     return {
       userId: this.$store.state.user.info.id, // 获取当前登陆用户的ID
+      groupsId: '',
+      inputInfo: '',
+      isModify: false,
+      loading: false,
       permissionList: [] // 用户权限
     }
   },
   computed: {
+    forums() {
+      const forums = this.$store.state.site.info.attributes
+      return forums
+    },
     userInfo() {
       return this.$store.state.user.info.attributes || {}
     }
   },
   mounted() {
+    this.inputInfo = this.forums && this.forums.set_site && this.forums.set_site.site_introduction
+    this.groupsId = this.forums && this.forums.user && this.forums.user.groups && this.forums.user.groups.length > 0 && this.forums.user.groups[0].id
     this.getPermissions()
-    console.log('state', this.$store.state)
   },
   methods: {
+    handleModify() {
+      this.isModify = !this.isModify
+    },
+    confirmModify() {
+      const params = {
+        data: [{
+          attributes: {
+            key: 'site_introduction',
+            value: this.inputInfo,
+            tag: 'default'
+          }
+        }]
+      }
+      this.loading = true
+      this.$store.dispatch('jv/post', [{ _jv: { type: 'settings' }}, { data: params }]).then(async(res) => {
+        try {
+          await this.$store.dispatch('site/getSiteInfo')
+        } catch (error) {
+          console.log(error)
+        }
+        this.isModify = false
+        this.$message.success(this.$t('discuzq.msgBox.modifySuccess'))
+      }).catch(e => {
+        this.handleError(e)
+      }).finally(() => {
+        this.loading = false
+      })
+    },
     // 调用 用户组权限 接口
     getPermissions() {
       const params = {
@@ -99,7 +140,7 @@ export default {
         include: ['permission']
       }
       this.$store.dispatch('jv/get', ['groups', { params }]).then(res => {
-        const groupsId = this.forums.user && this.forums.user.groups && this.forums.user.groups.length > 0 && this.forums.user.groups[0].id
+        const groupsId = this.forums && this.forums.user && this.forums.user.groups && this.forums.user.groups.length > 0 && this.forums.user.groups[0].id
         res.forEach(item => {
           if (+item._jv.id === +groupsId) {
             this.permissionList = item.permission
@@ -138,6 +179,9 @@ export default {
 }
 .base-font-size{
   font-size: 16px;
+  @media screen and ( max-width: 1005px ) {
+    font-size: 14px;
+  }
 }
 .site-info{
   display: flex;
@@ -178,6 +222,12 @@ export default {
   .content{
     margin-top: 15px;
     color: #000;
+    ::v-deep.el-textarea__inner{
+      font-family: inherit;
+    }
+    .el-button{
+      margin-top: 16px;
+    }
   }
 }
 .circlemode{
