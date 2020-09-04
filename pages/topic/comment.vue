@@ -8,7 +8,7 @@
           </avatar-component>
           <div class="delete-comment">
             <div class="wrapper" @click="deleteComment({ id: comment._jv.id, type: 'comment' })">
-              <svg-icon type="trash" style="font-size: 16px" @click="deleteComment" />
+              <svg-icon type="trash" style="font-size: 16px" />
               <span>{{ $t('topic.delete') }}</span>
             </div>
           </div>
@@ -147,7 +147,6 @@ export default {
         include: replyInclude
       }
       return this.$store.dispatch('jv/patch', params).then(data => {
-        console.log(data)
         this.$set(this.replyList, index, data)
       }, e => this.handleError(e))
     }

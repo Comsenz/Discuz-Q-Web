@@ -4,36 +4,37 @@
       {{ $t('topic.publishAt') }} {{ timerDiff(thread.createdAt) + $t('topic.before') }} ..
       （{{ $t('topic.editAt') }} {{ timerDiff(thread.updatedAt) + $t('topic.before') }}）
     </avatar-component>
-    <el-dropdown
-      v-show="managementList.some(item => item.canOpera)"
-      class="dropdown"
-      placement="bottom"
-      trigger="click"
-      @command="handleCommand"
-      @visible-change="visibile => isManagementDrop = visibile"
-    >
-      <div :class="{'management': true, 'on-drop': isManagementDrop}">
-        <Icon name="icon-management" />
-        {{ $t('topic.management') }}
+    <div class="container-management">
+      <el-dropdown
+        v-if="managementList.length > 0"
+        class="dropdown"
+        placement="bottom"
+        trigger="click"
+        @command="handleCommand"
+        @visible-change="visibile => isManagementDrop = visibile"
+      >
+        <div :class="{'management': true, 'on-drop': isManagementDrop}">
+          <svg-icon type="setting" class="icon-setting" style="font-size: 16px" />
+          <span> {{ $t('topic.management') }} </span>
+        </div>
+        <el-dropdown-menu slot="dropdown" style="padding: 0 10px">
+          <el-dropdown-item
+            v-for="(item, index) in managementList"
+            :key="index"
+            :command="{command: item.command ,item}"
+            style="border-bottom: 1px solid #EDEDED; width: 98px; text-align: center"
+          >{{ item.text }}
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+      <div v-if="thread.isEssence" class="essence">
+        <svg-icon style="font-size: 50px;" type="essence" />
       </div>
-      <el-dropdown-menu slot="dropdown" style="padding: 0 10px">
-        <el-dropdown-item
-          v-for="(item, index) in managementList"
-          :key="index"
-          :command="{command: item.command ,item}"
-          style="border-bottom: 1px solid #EDEDED; width: 98px; text-align: center"
-        >{{ item.text }}
-        </el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
-    <div v-if="managementList[1].isStatus || false" class="essence">
-      <svg-icon style="font-size: 50px;" type="essence" />
     </div>
   </div>
 </template>
 
 <script>
-import dayjs from 'dayjs'
 import timerDiff from '@/mixin/timerDiff'
 
 export default {
@@ -59,11 +60,7 @@ export default {
     }
   },
   methods: {
-    formatDate(date) {
-      return dayjs(date).format('YYYY-MM-DD HH:mm')
-    },
     handleCommand({ command, item }) {
-      // TODO 去发帖
       if (command === 'toEdit') return this.$router.push('/topic/post/' + this.thread.type + '?threadId=' + this.thread._jv.id)
       if (command === 'isDeleted') return this.deleteConfirm(item)
       this.$emit('managementSelected', item)
@@ -91,27 +88,32 @@ export default {
     display: flex;
     justify-content: space-between;
 
-    > .dropdown {
-      height: 20px;
+    > .container-management {
+      display: flex;
+      > .dropdown {
+        height: 20px;
 
-      > .management {
-        cursor: pointer;
-        color: $font-color-grey;
+        > .management {
+          line-height: 16px;
+          cursor: pointer;
+          color: $font-color-grey;
 
-        &:focus {
-          border: none;
-          outline: none;
-        }
+          &:focus {
+            border: none;
+            outline: none;
+          }
 
-        &.on-drop {
-          color: $color-blue-base;
+          &.on-drop {
+            color: $color-blue-base;
+            > .icon-setting {
+              fill: $color-blue-base;
+            }
+          }
         }
       }
+      > .essence {
+        transform: translateY(-20px);
+      }
     }
-    > .essence {
-      transform: translateY(-20px);
-    }
-
   }
-
 </style>

@@ -143,6 +143,8 @@ export default {
           item.text = item.isStatus ? this.$t('topic.cancelSticky') : this.$t('topic.sticky')
         }
       })
+      this.thread.isEessence = data.isEssence
+      this.managementList = this.managementList.filter(item => item.canOpera)
     },
     initActions(data, firstPost) {
       if (data) {
