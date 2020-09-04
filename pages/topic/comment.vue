@@ -48,6 +48,7 @@ const commentInclude = 'user,likedUsers,commentPosts,commentPosts.user,commentPo
 const replyInclude = 'replyUser,user.groups,user,images'
 import handleError from '@/mixin/handleError'
 import timerDiff from '@/mixin/timerDiff'
+import service from '@/api/request'
 
 export default {
   name: 'Comment',
@@ -59,6 +60,8 @@ export default {
     try {
       const thread = await store.dispatch('jv/get', [`threads/${threadId}`, { params: { include: threadInclude }}])
       const comment = await store.dispatch('jv/get', [`posts/${commentId}`, { params: { include: commentInclude }}])
+      const { data: { included: commentIncluded }} = await service.get(`posts/${commentId}`, { include: commentInclude })
+      if (comment && commentIncluded) comment.user = commentIncluded.filter(item => item.type === 'users')[0].attributes
       return { thread, comment }
     } catch (e) {
       console.log('ssr err', e)
@@ -90,8 +93,8 @@ export default {
   created() {
     // 需要加 user.groups
     // if (Object.keys(this.comment).length === 0) this.getComment()
-    if (Object.keys(this.thread).length === 0) this.getThread()
-    this.getComment()
+    // if (Object.keys(this.thread).length === 0) this.getThread()
+    // this.getComment()
     this.getReplyList()
   },
   methods: {
@@ -120,9 +123,8 @@ export default {
           include: replyInclude
         }
       }]).then(response => {
-        this.replyLoading = false
         this.replyList = response
-      }, e => this.handleError(e))
+      }, e => this.handleError(e)).finally(() => { this.replyLoading = false })
     },
     deleteComment({ id, type }) {
       const params = {
