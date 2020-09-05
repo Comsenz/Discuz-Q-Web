@@ -4,7 +4,7 @@
     role="img"
     :title="type"
     aria-hidden="true"
-    @click.stop="$emit('click')"
+    @click="$emit('click')"
   >
     <use :xlink:href="'#' + type" />
   </svg>

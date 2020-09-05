@@ -3,7 +3,7 @@
     <Avatar :user="author" :size="size" :round="round" />
     <div class="title-info">
       <div class="author-name">
-        {{ author.username }}
+        <span class="username"> {{ author.username }} </span>
         <span v-if="author.groups" class="pop">{{ author.groups[0].name }}</span>
       </div>
       <div class="timer">
@@ -45,12 +45,15 @@ export default {
       .author-name {
         font-size: 16px;
         font-weight: bold;
+        > .username {
+          margin-right: 6px;
+        }
         > .pop {
+          white-space: nowrap;
           font-size: 14px;
           line-height: 16px;
           border-radius: 8px;
           padding: 2px 10px;
-          margin-left: 6px;
           background: $background-color-grey;
           color: $font-color-grey;
         }

@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading" class="page-post">
+  <div class="page-post">
     <main>
       <div class="container-post">
         <topic-header
@@ -62,6 +62,16 @@ export default {
   name: 'Post',
   layout: 'custom_layout',
   mixins: [handleError],
+  async asyncData({ store, query }) {
+    const threadId = '2071'
+    try {
+      const threadData = await store.dispatch('jv/get', [`threads/${threadId}`, { params: { include: threadInclude }}])
+      console.log(threadData, 123123123)
+      return { thread: threadData, article: threadData.firstPost, postId: threadData.firstPost._jv.id }
+    } catch (e) {
+      console.log('ssr err', e)
+    }
+  },
   data() {
     return {
       thread: {},
@@ -86,8 +96,7 @@ export default {
       ],
       showCheckoutCounter: false,
       showPasswordInput: false,
-      showWxPay: false,
-      loading: true
+      showWxPay: false
     }
   },
   computed: {
@@ -101,7 +110,6 @@ export default {
       return parseFloat(this.paidInformation.price) > 0 ? 'pay' : 'reward'
     },
     forums() {
-      console.log(this.$store.state.site.info.attributes, 'info')
       return this.$store.state.site.info.attributes || {}
     }
   },
@@ -115,7 +123,6 @@ export default {
         if (data.isDeleted) return this.$router.push('/404')
         this.thread = data
         this.article = data.firstPost
-        this.loading = false
         this.postId = this.article._jv.id
         this.initManagementList(data)
         this.initPaidInformation(data)
@@ -143,6 +150,8 @@ export default {
           item.text = item.isStatus ? this.$t('topic.cancelSticky') : this.$t('topic.sticky')
         }
       })
+      this.thread.isEessence = data.isEssence
+      this.managementList = this.managementList.filter(item => item.canOpera)
     },
     initActions(data, firstPost) {
       if (data) {
