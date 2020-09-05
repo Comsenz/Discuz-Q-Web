@@ -3,33 +3,31 @@
     <!-- 钱包信息 -->
     <div class="mywallet-top">
       <div class="mywallet-topitem">
-        <span class="margbtm">{{ $t('profile.availableamount') }}</span>
-        <span class="amount">{{ `¥ ${dataInfo.available_amount || 0.0}` }}
+        <div class="margbtm">{{ $t('profile.availableamount') }}</div>
+        <div class="amount">{{ `¥ ${dataInfo.available_amount || 0.0}` }}
           <span
             class="availmount"
             @click="showWithdraw"
-          >{{ $t('modify.withdratitle') }}</span>
-        </span>
+          >{{ $t('modify.withdratitle') }}</span></div>
       </div>
       <div class="mywallet-topitem mymarg">
-        <span class="margbtm">{{ $t('profile.freezeamount') }}</span>
-        <span
+        <div class="margbtm">{{ $t('profile.freezeamount') }}</div>
+        <div
           v-if="dataInfo.freeze_amount > 0"
           class="amount"
           style="color:#FA5151;"
-        >{{ `¥ ${dataInfo.freeze_amount || 0.0}` }}</span>
-        <span
+        >{{ `¥ ${dataInfo.freeze_amount || 0.0}` }}</div>
+        <div
           v-else
           class="amount"
-        >{{ `¥ ${dataInfo.freeze_amount || 0.0}` }}</span>
-
+        >{{ `¥ ${dataInfo.freeze_amount || 0.0}` }}</div>
       </div>
       <div
-        class="mywallet-topitem mymarg"
+        class="mywallet-topitem"
         style="margin-right:30px;text-align:right"
       >
-        <span class="margbtm">{{ $t('pay.payPassword') }}</span>
-        <span
+        <div class="margbtm">{{ $t('pay.payPassword') }}</div>
+        <div
           v-if="hasPassword"
           style="cursor: pointer;"
           @click="changePassword"
@@ -37,8 +35,8 @@
           <svg-icon
             style="width:16px; height:16px;margin-right:5px;"
             type="shield"
-          />已设置 / 修改 </span>
-        <span
+          />已设置 / 修改</div>
+        <div
           v-else
           style="cursor: pointer;"
           @click="setPassword"
@@ -47,7 +45,7 @@
             style="width:16px; height:16px;margin-right:5px;"
             type="warning"
           />{{ $t('profile.setpaypassword') }}
-        </span>
+        </div>
       </div>
       <!-- 设置钱包密码 -->
       <div v-if="hasPassword">
@@ -1191,19 +1189,19 @@ export default {
   .mywallet-top {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     .mymarg {
-      margin-left: 240px;
-      // @media screen and (max-width: 1005px) {
-      //   margin-left: 150px;
-      // }
+      text-align: center;
     }
     .mywallet-topitem {
-      display: flex;
-      flex-direction: column;
-      // flex: 1;
+      // display: flex;
+      // flex-direction: column;
+      flex: 1;
       color: #6d6d6d;
       .amount {
         font-size: 20px;
+        color: #000000;
+        min-width: 115px;
       }
       .availmount {
         font-size: 14px;
@@ -1223,6 +1221,11 @@ export default {
     border: none;
     background: transparent;
     box-shadow: none;
+    padding-right: 30px;
+    @media screen and (max-width: 1005px) {
+      width: 100%;
+      max-width: 750px;
+    }
   }
   .margleft {
     margin-left: 30px;

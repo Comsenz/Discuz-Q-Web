@@ -81,7 +81,7 @@
         size="medium"
         type="primary"
         @click="btncash"
-      >{{ $t('pay.surePay') }}</el-button>
+      >确认提现</el-button>
     </div>
   </message>
 </template>
@@ -287,9 +287,10 @@ export default {
             this.contint = ''
             this.procedures = 0
             // 重新更新数据
-            this.$store.dispatch('user/getUserInfo', this.userId)
+            // this.$store.dispatch('user/getUserInfo', this.userId)
             this.$message.success(this.$t('modify.withdrawal'))
             this.$emit('close')
+            this.$router.go(0)
           }
         }, e => this.handleError(e))
     },

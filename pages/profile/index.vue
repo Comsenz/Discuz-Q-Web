@@ -31,11 +31,11 @@
             name="2"
           />
           <el-tab-pane
-            :label="$t('profile.following')+ ` (${userInfo.fansCount || 0})`"
+            :label="$t('profile.following')+ ` (${userInfo.followCount || 0})`"
             name="3"
           />
           <el-tab-pane
-            :label="$t('profile.followers')+ ` (${userInfo.followCount || 0})`"
+            :label="$t('profile.followers')+ ` (${userInfo.fansCount || 0})`"
             name="4"
           />
 
@@ -134,13 +134,15 @@
             name="2"
           >2222</el-tab-pane>
           <el-tab-pane
-            :label="$t('profile.following')+ ` (${userInfo.fansCount || 0})`"
+            :label="$t('profile.following')+ ` (${userInfo.followCount || 0})`"
             name="3"
           >3333</el-tab-pane>
           <el-tab-pane
-            :label="$t('profile.followers')+ ` (${userInfo.followCount || 0})`"
+            :label="$t('profile.followers')+ ` (${userInfo.fansCount || 0})`"
             name="4"
-          >44</el-tab-pane>
+          >
+            <follwers :user-id="userId" @changeFollow="changeFollow" />
+          </el-tab-pane>
         </el-tabs>
       </div>
       <div style="width:300px; margin-top:15px;">
@@ -221,6 +223,7 @@ export default {
         include: 'users'
       }
       this.$store.dispatch('jv/get', [`forum`, { params }]).then(res => {
+        console.log('用户信息', res)
         if (res.other && res.other.can_create_dialog) {
           this.can_create_dialog = true
         } else {

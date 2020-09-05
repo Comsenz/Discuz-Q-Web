@@ -35,9 +35,10 @@
             <span class="agree">{{ $t('user.status') }} </span>
           </el-checkbox>
           <div class="logorreg">
-            <span v-if="register">尚无账号，立即
+            <span>尚无账号，立即
               <span
-                style="color: #1878f3;cursor:pointer;"
+                v-if="canReg"
+                style="color: #1878f3;cursor:pointer; margin-left:-3px;"
                 @click="toRegister"
               > {{ $t('user.register') }}</span></span>
             <nuxt-link
@@ -82,13 +83,8 @@
           @keyup.enter.native="PhoneLogin"
         />
         <div class="agreement">
-          <el-checkbox v-model="checked">
-            <span class="agree">我已阅读并同意 </span>
-            <nuxt-link
-              to="agreement"
-              class="agreement_text"
-            >《用户服务隐私协议》</nuxt-link>
-          </el-checkbox>
+          <el-checkbox v-model="checked" />
+          <reg-agreement />
         </div>
         <el-button
           type="primary"
@@ -193,7 +189,8 @@ export default {
       qcloud_sms: false, // 默认不开启短信功能
       code: '', // 注册邀请码
       token: '', // token,
-      loading: false
+      loading: false,
+      canReg: false
 
     }
   },
@@ -222,6 +219,9 @@ export default {
     }
     if (this.forums && this.forums.qcloud) {
       this.qcloud_sms = this.forums.qcloud.qcloud_sms
+    }
+    if (this.forums && this.forums.set_reg && this.forums.set_reg.register_close) {
+      this.canReg = true
     }
     console.log(this.forums)
     this.QRcode()
@@ -611,6 +611,9 @@ export default {
         height: 155px;
         border: 1px dashed black;
         margin-top: 26px;
+        img {
+          width: 100%;
+        }
       }
       .qrcode2 {
         margin: 0 auto;
@@ -626,7 +629,7 @@ export default {
     }
   }
   .agreement {
-    width: 300px;
+    width: 310px;
     // margin-left: 90px;
     margin-left: 70px;
     margin-top: 5px;
@@ -635,7 +638,8 @@ export default {
       color: #1878f3;
     }
     .findpass {
-      float: right;
+      // float: right;
+      margin-left: 105px;
     }
     .logorreg {
       margin-top: 28px;
@@ -672,7 +676,7 @@ export default {
   .disabled {
     background-color: #ededed;
     border-color: #ddd;
-    color: #57a3f3;
+    // color: #57a3f3;
     cursor: not-allowed; // 鼠标变化
   }
 }

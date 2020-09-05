@@ -83,8 +83,7 @@
           v-model="inputVal"
           type="text"
           placeholder="请输入签名内容"
-          class="myprofile-btom"
-          style="border:none;font-size:16px;margin-left:15px;margin-top:13px;"
+          class="myprofile-btom textarea"
           @input="fun"
         />
         {{ $t('modify.canalsoinput') }}
@@ -155,11 +154,7 @@
 
         <el-button
           type="primary"
-          style="
-                display: block;
-                width: 300px;
-                background: #1878f3;
-                margin-bottom:48px;"
+          class="ebutton"
           @click="mobileComfirm"
         >确定修改</el-button>
       </div>
@@ -244,12 +239,7 @@
 
         <el-button
           type="primary"
-          style="
-                display: block;
-                width: 300px;
-                background: #1878f3;
-                margin-top:10px;
-                margin-bottom:48px"
+          class="ebutton"
           @click="passSub"
         >确定修改</el-button>
       </div>
@@ -301,12 +291,7 @@
 
         <el-button
           type="primary"
-          style="
-                display: block;
-                width: 300px;
-                background: #1878f3;
-                margin-top:10px;
-                margin-bottom:48px"
+          class="ebutton"
           @click="realSub"
         >确定提交</el-button>
       </div>
@@ -830,7 +815,7 @@ export default {
   .myprofile-top {
     display: flex;
     flex-direction: row;
-    margin-top:20px;
+    margin-top: 20px;
     .sig {
       font-size: 16px;
       color: #6d6d6d;
@@ -858,8 +843,8 @@ export default {
       cursor: pointer;
     }
   }
-  .mtop{
-    margin-top:0px;
+  .mtop {
+    margin-top: 0px;
   }
   .myprofile-bottom {
     display: flex;
@@ -890,6 +875,21 @@ export default {
     width: 460px;
     // font-family: Microsoft YaHei;
     color: #000000;
+  }
+  .ebutton {
+    display: block;
+    width: 300px;
+    background: #1878f3;
+    margin-bottom: 48px;
+    margin-top: 10px;
+  }
+  .textarea {
+    border: none;
+    font-size: 16px;
+    margin-left: 15px;
+    margin-top: 13px;
+    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+      "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   }
   .phone-input {
     width: 209px;
