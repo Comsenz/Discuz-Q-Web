@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading" class="page-comment">
+  <div class="page-comment">
     <main>
       <div class="container-comment">
         <div class="title">
@@ -69,10 +69,9 @@ export default {
   },
   data() {
     return {
-      loading: false,
-      isPositiveSort: true,
       thread: {},
       comment: {},
+      isPositiveSort: true,
       replyList: [],
       replyLoading: false
     }
@@ -91,10 +90,8 @@ export default {
     }
   },
   created() {
-    // 需要加 user.groups
-    // if (Object.keys(this.comment).length === 0) this.getComment()
-    // if (Object.keys(this.thread).length === 0) this.getThread()
-    // this.getComment()
+    if (Object.keys(this.comment).length === 0) this.getComment()
+    if (Object.keys(this.thread).length === 0) this.getThread()
     this.getReplyList()
   },
   methods: {

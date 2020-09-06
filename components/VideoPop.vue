@@ -41,6 +41,7 @@ export default {
       let pass = true
       e.path.forEach(item => {
         if (item.id === 'video-pop') pass = false
+        if (item.classList && item.classList.contains('svg-icon-video-play')) pass = false
       })
       if (!pass) return
       this.$emit('remove')

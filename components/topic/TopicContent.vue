@@ -2,14 +2,16 @@
   <article class="global">
     <h2 class="title">{{ title }}</h2>
     <div class="content-html" v-html="formatTopicTab(article.contentHtml || '')" />
-    <img
-      v-if="video.cover_url"
-      class="video-img-cover"
-      :src="video.cover_url"
-      :alt="video.file_name"
-      @click.stop="openVideo"
-    >
-    <div v-if="article.images && article.images.length > 0" class="images">
+    <div v-if="video.cover_url" class="container-video-img-cover">
+      <img
+        class="video-img-cover"
+        :src="video.cover_url"
+        :alt="video.file_name"
+        @click.stop="openVideo"
+      >
+      <svg-icon type="video-play" class="icon-play" style="font-size: 50px" @click="showVideoPop = true" />
+    </div>
+    <div v-if="article.images && article.images.length > 0" class="images" @click="unpaid ? openVideo() : ''">
       <el-image
         v-for="(image, index) in article.images"
         :key="index"
@@ -18,7 +20,11 @@
         :alt="image.filename"
         :preview-src-list="unpaid ? [] : [...article.images.map(item => item.thumbUrl)]"
         fit="cover"
-      />
+      >
+        <div slot="placeholder" class="image-slot">
+          <i class="el-icon-loading" />
+        </div>
+      </el-image>
     </div>
     <div v-if="unpaid && threadType === 1" class="hide-content-tip">{{ $t('pay.contentHide') }}</div>
     <div v-if="category.name" class="tag" @click="skipIndexPage">{{ category.name }}</div>
@@ -161,6 +167,16 @@ export default {
         border-radius: 5px;
         margin-right: 20px;
         margin-bottom: 20px;
+        > .image-slot{
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          height: 100%;
+          background: #f5f7fa;
+          color: #909399;
+          font-size: 22px;
+        }
       }
     }
 
@@ -178,11 +194,21 @@ export default {
       }
     }
 
-    > .video-img-cover {
-      display: block;
+    > .container-video-img-cover {
+      position: relative;
       margin-top: 30px;
       width: 400px;
       cursor: pointer;
+      > .video-img-cover {
+        display: block;
+        width: 400px;
+      }
+      > .icon-play {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
     }
 
     > .hide-content-tip {

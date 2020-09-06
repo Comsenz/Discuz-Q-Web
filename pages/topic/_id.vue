@@ -2,6 +2,7 @@
   <div class="page-post">
     <main>
       <div class="container-post">
+        <div v-if="thread.isApproved === 0" class="checking">内容正在审核中，审核通过后才能正常显示！</div>
         <topic-header
           :author="thread.user || {}"
           :thread="thread"
@@ -24,7 +25,7 @@
           :user-lists="[thread.paidUsers || [], thread.rewardedUsers || [], article.likedUsers || []]"
           @payOrReward="showCheckoutCounter = true"
         />
-        <topic-actions :actions="actions || []" @clickAction="postCommand" />
+        <topic-actions :thread-id="threadId" :actions="actions || []" @clickAction="postCommand" />
         <topic-checkout-counter
           v-if="showCheckoutCounter"
           :thread-type="thread.type || 0"
@@ -62,11 +63,19 @@ export default {
   name: 'Post',
   layout: 'custom_layout',
   mixins: [handleError],
-  async asyncData({ store, query }) {
-    const threadId = '2071'
+  async asyncData({ params, store }) {
     try {
-      const threadData = await store.dispatch('jv/get', [`threads/${threadId}`, { params: { include: threadInclude }}])
-      console.log(threadData, 123123123)
+      const params = {
+        include: 'users'
+      }
+      // const author = store.dispatch('jv/get', [`forum`, { params }]).then(res => {
+      //   if (res.other && res.other.can_create_dialog) {
+      //     this.can_create_dialog = true
+      //   } else {
+      //     this.can_create_dialog = false
+      //   }
+      // })
+      const threadData = await store.dispatch('jv/get', [`threads/${params.id}`, { params: { include: threadInclude }}])
       return { thread: threadData, article: threadData.firstPost, postId: threadData.firstPost._jv.id }
     } catch (e) {
       console.log('ssr err', e)
@@ -77,7 +86,6 @@ export default {
       thread: {},
       article: {},
       postId: 0,
-      // TODO 后端数据不完整，留着后面做
       actions: [
         { text: this.$t('topic.read'), count: 0, command: '', canOpera: false, icon: 'book' },
         { text: this.$t('topic.getLike'), count: 0, command: 'isLiked', canOpera: false, isStatus: false, icon: 'like' },
@@ -121,6 +129,7 @@ export default {
     getThread() {
       return this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include: threadInclude }}]).then(data => {
         if (data.isDeleted) return this.$router.push('/404')
+        console.log('thread => ', data)
         this.thread = data
         this.article = data.firstPost
         this.postId = this.article._jv.id
@@ -242,7 +251,7 @@ export default {
     },
     afterDeleted() {
       this.$message({ typeInformation: 'success', message: this.$t('topic.deleteSuccessAndJumpToBack') })
-      setTimeout(() => { this.$router.push('/') }, 1500)
+      setTimeout(() => { this.$router.push('/') }, 1000)
     }
   }
 }
@@ -265,6 +274,15 @@ export default {
         padding: 20px;
         width: 100%;
         background: #ffffff;
+        > .checking {
+          margin-bottom: 20px;
+          border-radius: 5px;
+          text-align: center;
+          background: $background-color-grey;
+          height: 35px;
+          line-height: 35px;
+          color: $font-color-grey;
+        }
       }
     }
   }

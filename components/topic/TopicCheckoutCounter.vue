@@ -233,7 +233,11 @@ export default {
         }
 
         &.hide-avatar {
+          .svg-icon {
+            cursor: pointer;
+          }
           span {
+            cursor: pointer;
             margin-left: 10px;
           }
         }
