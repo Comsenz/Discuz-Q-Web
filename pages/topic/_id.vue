@@ -65,9 +65,9 @@ export default {
   mixins: [handleError],
   async asyncData({ params, store }) {
     try {
-      const params = {
-        include: 'users'
-      }
+      // const params = {
+      //   include: 'users'
+      // }
       // const author = store.dispatch('jv/get', [`forum`, { params }]).then(res => {
       //   if (res.other && res.other.can_create_dialog) {
       //     this.can_create_dialog = true
@@ -78,7 +78,7 @@ export default {
       const threadData = await store.dispatch('jv/get', [`threads/${params.id}`, { params: { include: threadInclude }}])
       return { thread: threadData, article: threadData.firstPost, postId: threadData.firstPost._jv.id }
     } catch (e) {
-      console.log('ssr err', e)
+      console.log('ssr err')
     }
   },
   data() {

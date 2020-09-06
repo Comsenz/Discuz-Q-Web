@@ -30,6 +30,9 @@ import handleError from '@/mixin/handleError'
 export default {
   name: 'Post',
   mixins: [handleError, publishResource],
+  validate({ params }) {
+    return parseFloat(params.type) < 4
+  },
   data() {
     return {
       categoryList: [],

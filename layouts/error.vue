@@ -2,6 +2,7 @@
   <div class="container">
     <svg-icon type="404" style="font-size: 180px" />
     <h1 class="tip">{{ $t('core.page_not_found') }}</h1>
+    <span v-if="error.params">{{ error.params }}</span>
     <NuxtLink to="/">
       <button>
         {{ $t('core.back_home') }}
@@ -12,7 +13,9 @@
 
 <script>
 export default {
-  layout: 'error_layout'
+  layout: 'error_layout',
+  // eslint-disable-next-line vue/require-prop-types
+  props: ['error']
 }
 </script>
 
