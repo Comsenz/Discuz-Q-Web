@@ -27,7 +27,7 @@
       </el-image>
     </div>
     <div v-if="unpaid && threadType === 1" class="hide-content-tip">{{ $t('pay.contentHide') }}</div>
-    <div v-if="category.name" class="tag" @click="skipIndexPage">{{ category.name }}</div>
+    <nuxt-link v-if="category.name" :to="{path: '/', query: { categoryId: category._jv.id } }" class="tag">{{ category.name }}</nuxt-link>
     <video-pop v-if="showVideoPop" :cover-url="video.cover_url" :url="video.media_url" @remove="showVideoPop = false" />
   </article>
 </template>
@@ -100,10 +100,6 @@ export default {
     openVideo() {
       if (this.unpaid) return this.$emit('payForVideo')
       this.showVideoPop = true
-    },
-    skipIndexPage() {
-      // TODO
-      console.log('跳到首页的某个地方')
     }
   }
 
