@@ -57,13 +57,8 @@
         </div>
 
         <div class="agreement">
-          <el-checkbox v-model="checked">
-            <span class="agree">我已阅读并同意 </span>
-            <nuxt-link
-              to="agreement"
-              class="agreement_text"
-            >《用户服务隐私协议》</nuxt-link>
-          </el-checkbox>
+          <el-checkbox v-model="checked" />
+          <reg-agreement />
           <div class="logorreg">
             <span
               v-if="register"
@@ -105,13 +100,8 @@
           @keyup.enter.native="PhoneLogin"
         />
         <div class="agreement">
-          <el-checkbox v-model="checked">
-            <span class="agree">我已阅读并同意 </span>
-            <nuxt-link
-              to="agreement"
-              class="agreement_text"
-            >《用户服务隐私协议》</nuxt-link>
-          </el-checkbox>
+          <el-checkbox v-model="checked" />
+          <reg-agreement />
         </div>
         <el-button
           type="primary"
@@ -133,7 +123,7 @@
 
             <div class="qrcode">
               <img
-                src="@/assets/qrcode.png"
+                :src="info.img"
                 alt=""
               >
 
@@ -172,7 +162,7 @@ import { status } from '@/library/jsonapi-vuex/index'
 import { SITE_PAY } from '@/common/const'
 
 const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
-
+let QuickLogin = null
 export default {
   name: 'Register',
   mixins: [
@@ -198,6 +188,7 @@ export default {
       verifyCode: '',
       activeName: '0', // 默认激活tab
       canClickNum: false,
+      info: '', // 微信二维码数据
       forums: '',
       Reason: '', // 注册原因
       url: '', // 上一个页面的路径
@@ -250,7 +241,7 @@ export default {
     if (this.forums && this.forums.set_reg) {
       this.validate = this.forums.set_reg.register_validate
     }
-    // this.QRcode()
+    this.QRcode()
     this.changeactive()
   },
   methods: {
@@ -528,6 +519,45 @@ export default {
           })
       }
     },
+    // 微信二维码
+    QRcode() {
+      const _params = {
+        _jv: {
+          type: '/oauth/wechat/web/user'
+        }
+      }
+      this.$store.dispatch('jv/get', _params).then(data => {
+        // console.log('user data => ', data)
+        if (data) {
+          this.info = data
+          this.scene_str = data.scene_str
+          console.log(this.scene_str)
+          QuickLogin = setInterval(() => {
+            if (this.loginStatus) {
+              clearInterval(QuickLogin)
+              return
+            }
+            this.getLoginStatus(this.scene_str)
+          }, 10000)
+        }
+      })
+    },
+    // 微信扫码登录状态
+    getLoginStatus(scene_str) {
+      const params = {
+        _jv: {
+          type: `oauth/wechat/web/user/serach`
+        },
+        scene_str: scene_str
+      }
+      console.log(params)
+      this.$store.dispatch('jv/get', `/oauth/wechat/web/user/serach?scene_str=${scene_str}`).then(data => {
+        console.log('user data => ', data)
+        if (data.id) {
+          this.loginStatus = true
+        }
+      })
+    },
     jump2Login() {
       console.log('跳转到登录页面')
       this.$router.push(
@@ -539,14 +569,10 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
-//@import url(); 引入公共css类
 .register {
   display: flex;
   width: 400px;
   margin-top: 62px;
-  // margin-bottom: 178px;
-  // height: 466px;
-  // background: red;
   flex-direction: column;
   .register-title {
     width: 130px;
@@ -609,8 +635,8 @@ export default {
         height: 155px;
         border: 1px dashed black;
         margin-top: 26px;
-        img{
-          width:100%;
+        img {
+          width: 100%;
         }
       }
       .qrcode2 {
@@ -627,7 +653,7 @@ export default {
     }
   }
   .agreement {
-    width: 300px;
+    width: 310px;
     margin-left: 70px;
     margin-top: 5px;
     font-size: 14px;
@@ -662,9 +688,9 @@ export default {
     margin-left: -4px;
   }
   .disabled {
-    background-color: #EDEDED;
+    background-color: #ededed;
     border-color: #ddd;
-    color: #57a3f3;
+    // color: #57a3f3;
     cursor: not-allowed; // 鼠标变化
   }
 }

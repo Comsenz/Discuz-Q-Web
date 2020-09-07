@@ -474,7 +474,11 @@ export default {
     periodvalidity: '有效期至',
     myauthority: '我的权限',
     setting: '设置',
-    noContent: '暂无内容'
+    noContent: '暂无内容',
+    userCount: '成员总数',
+    normal: '正常',
+    disable: '禁用',
+    modifyRole: '配置身份'
   },
   // 消息页面
   notice: {
@@ -647,7 +651,10 @@ export default {
     },
     user: {
       view: '查看某个用户信息权限',
-      edit: '编辑用户状态'
+      edit: '编辑用户状态',
+      agreement: '注册登录表示您同意',
+      agreementRegister: '注册协议',
+      agreementPrivacy: '隐私政策 '
     },
     userFollow: {
       create: '关注用户'

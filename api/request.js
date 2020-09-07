@@ -24,6 +24,7 @@ service.interceptors.request.use(
     return oConfig
   },
   oError => {
+    console.log('req err => ', oError)
     return Promise.reject(oError)
   }
 )
@@ -33,6 +34,64 @@ service.interceptors.response.use(
     return oRes
   },
   oError => {
+    // console.log('res err => ', oError.response)
+    // console.log(oError.response.data)
+    console.log(oError.response.status)
+    // console.log(oError.response.headers)
+    if (oError.response && oError.response.data && oError.response.data.errors) {
+      oError.response.data.errors.forEach(error => {
+        switch (error.code) {
+          case 'access_denied':
+            console.log('token 无效 重新请求')
+            // token 无效 重新请求
+            if (process.client) {
+              localStorage.removeItem('access_token')
+            }
+            // delete response.config.header.Authorization;
+            break
+          case 'model_not_found':
+            console.log('模型未找到')
+            // app.$store.dispatch('forum/setError', {
+            //   code: 'type_404',
+            //   status: 500,
+            // });
+            break
+          case 'permission_denied':
+            console.log('没有查看权限')
+            // app.$store.dispatch('forum/setError', {
+            //   code: 'type_401',
+            //   status: 500,
+            // });
+            break
+          case 'site_closed':
+            console.log('site_closed')
+            // uni.showToast({
+            //   icon: 'none',
+            //   title: i18n.t(`core.${error.code}`),
+            // });
+            break
+          case 'not_install':
+          case 'ban_user':
+            break
+          default:
+            // if (response.config.custom.showTost) {
+            //   clearTimeout(tostTimeout);
+            //   tostTimeout = setTimeout(() => {
+            //     // eslint-disable-next-line no-nested-ternary
+            //     const title = error.detail
+            //       ? Array.isArray(error.detail)
+            //         ? error.detail[0]
+            //         : error.detail
+            //       : i18n.t(`core.${error.code}`);
+            //     uni.showToast({
+            //       icon: 'none',
+            //       title,
+            //     });
+            //   });
+            // }
+        }
+      })
+    }
     return Promise.reject(oError)
   }
 )

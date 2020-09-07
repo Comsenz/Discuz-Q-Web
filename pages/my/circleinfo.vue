@@ -109,6 +109,7 @@ export default {
       this.isModify = !this.isModify
     },
     confirmModify() {
+      if (this.loading) return
       const params = {
         data: [{
           attributes: {

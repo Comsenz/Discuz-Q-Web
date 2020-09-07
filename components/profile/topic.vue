@@ -77,9 +77,6 @@ export default {
           this.loadingType = res.length === this.pageSize ? 'more' : 'nomore'
           this.data = [...this.data, ...res]
           console.log('当前主题数据', this.data)
-          // if (type && type === 'pullDownRefresh') {
-          //   uni.stopPullDownRefresh()
-          // }
         })
     }
   }

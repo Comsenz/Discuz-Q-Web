@@ -41,7 +41,7 @@ export default {
     width: 1005px;
     background: #F4F5F6;
     margin: 15px auto 0;
-    padding: 0 15px;
+    // padding: 0 15px;
     @media screen and ( max-width: 1005px ) {
       width: 100%;
       min-width: 768px;
