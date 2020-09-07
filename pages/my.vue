@@ -41,7 +41,7 @@ export default {
 
     }
   },
-  created() {
+  mounted() {
     this.setCurrentRoute()
   },
   methods: {
@@ -54,6 +54,7 @@ export default {
     },
     isActive(index) {
       // console.log('ddddd', index)
+      this.currentNumber = this.switchCase(this.$route.path)
       return [this.currentNumber === index ? 'show' : 'hide']
     },
     switchCase(id) {

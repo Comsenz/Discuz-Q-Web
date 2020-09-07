@@ -13,6 +13,7 @@
           :size="50"
           :round="true"
           class="avatar"
+          :is-real="userInfo.isReal"
         />
 
         <div class="usr">
@@ -22,16 +23,21 @@
         <span
           v-if="userInfo && userInfo.isReal"
           class="iden"
-        >已实名认证
+        >
+          <svg-icon
+            type="auth"
+            class="auth-icon"
+          />
+          <span class="real">已实名认证</span>
         </span>
         <span
           v-else
           class="iden"
         >
           <svg-icon
-            style="width:16px; height:16px"
+            class="auth-icon"
             type="warning"
-          /> <span style="margin-left:2px; color:#FA5151;">未实名认证</span>
+          /> <span class="nreal">未实名认证</span>
         </span>
         <span
           class="setavatar"
@@ -90,12 +96,7 @@
         {{ num - wordnumber }}{{ $t('modify.wordnumber') }}
         <el-button
           type="primary"
-          style="
-                display: block;
-                margin-left: 15px;
-                width: 300px;
-                background: #1878f3;
-                margin-bottom:48px;"
+          class="sigbutton"
           @click="sigComfirm"
         >确定修改</el-button>
       </div>
@@ -109,12 +110,18 @@
           @click="mobileModify"
         >{{ (!isMobileModify ?!userInfo.mobile ? '绑定手机': $t('profile.modify') : '取消修改') }}</span>
       </div>
-      <div v-show="!isMobileModify" class="myprofile-btom" style="color:#8590A6">
+      <div
+        v-show="!isMobileModify"
+        class="myprofile-btom2"
+      >
         {{ userInfo.mobile ? userInfo.mobile : $t('modify.setphontitle') }}
       </div>
       <!-- 修改手机号 -->
-      <div v-show="(isMobileModify && userInfo.mobile)" class="myprofile-btom">
-        <div style="font-size:20px;font-weight:bold;margin-bottom:10px">
+      <div
+        v-show="(isMobileModify && userInfo.mobile)"
+        class="myprofile-btom"
+      >
+        <div class="pmobile">
           {{ userInfo.mobile }}
         </div>
         <div>
@@ -134,7 +141,6 @@
           <el-input
             v-model="newphon"
             :placeholder="$t('modify.setphontitle')"
-            style="width:300px"
             class="passbtom"
             @input="changeinput"
           />
@@ -159,7 +165,10 @@
         >确定修改</el-button>
       </div>
       <!-- 新用户绑定手机号 -->
-      <div v-show="(isMobileModify && !userInfo.mobile)" class="myprofile-btom">
+      <div
+        v-show="(isMobileModify && !userInfo.mobile)"
+        class="myprofile-btom"
+      >
         <div>
           <el-input
             ref="oldphone"
@@ -187,12 +196,7 @@
 
         <el-button
           type="primary"
-          style="
-                display: block;
-                width: 300px;
-                background: #1878f3;
-                margin-bottom:48px;
-                margin-top:10px;"
+          class="ebutton"
           @click="dingphon"
         >确定修改</el-button>
       </div>
@@ -206,10 +210,16 @@
           @click="passModify"
         >{{ (!isPassModify ? $t('profile.modify') : '取消修改') }}</span>
       </div>
-      <div v-show="!isPassModify" class="myprofile-btom" style="color:#8590A6">
+      <div
+        v-show="!isPassModify"
+        class="myprofile-btom2"
+      >
         {{ userInfo && userInfo.hasPassword ?'已设置':'未设置密码' }}
       </div>
-      <div v-show="isPassModify" class="myprofile-btom">
+      <div
+        v-show="isPassModify"
+        class="myprofile-btom"
+      >
 
         <div>
           <el-input
@@ -254,14 +264,21 @@
           @click="wechatModify"
         >{{ (!isWechatModify ? $t('profile.modify') : '取消修改') }}</span>
       </div>
-      <div v-show="!isWechatModify" class="myprofile-btom" style="color:#8590A6">
+      <div
+        v-show="!isWechatModify"
+        class="myprofile-btom2"
+      >
         {{ userInfo && userInfo.wechat ?userInfo.wechat.nickname :'未绑定微信' }}
       </div>
     </div>
 
     <!-- 实名验证 -->
     <!-- qcloud_faceid是否开启实名认证 -->
-    <div v-if="!userInfo.realname && forums.qcloud && forums.qcloud.qcloud_faceid" class="myprofile-c" style="border-bottom:0px;">
+    <div
+      v-if="!userInfo.realname && forums.qcloud && forums.qcloud.qcloud_faceid"
+      class="myprofile-c"
+      style="border-bottom:0px;"
+    >
       <div class="myprofile-top">
         <span class="sig">{{ $t('modify.realnametitle') }}</span>
         <span
@@ -269,10 +286,16 @@
           @click="realModify"
         >{{ (!isRealModify ? $t('profile.tocertification') : '暂不认证') }}</span>
       </div>
-      <div v-show="!isRealModify" class="myprofile-btom" style="color:#8590A6">
+      <div
+        v-show="!isRealModify"
+        class="myprofile-btom2"
+      >
         {{ userInfo && userInfo.realname ?'已设置':'未实名认证' }}
       </div>
-      <div v-show="isRealModify" class="myprofile-btom">
+      <div
+        v-show="isRealModify"
+        class="myprofile-btom"
+      >
 
         <div>
           <el-input
@@ -296,12 +319,15 @@
         >确定提交</el-button>
       </div>
     </div>
-    <div v-if="userInfo.realname && forums.qcloud && forums.qcloud.qcloud_faceid" class="myprofile-c">
+    <div
+      v-if="userInfo.realname && forums.qcloud && forums.qcloud.qcloud_faceid"
+      class="myprofile-c"
+    >
       <div class="myprofile-top">
         <span class="sig">{{ $t('modify.realnametitle') }}</span>
       </div>
-      <div class="myprofile-btom" style="color:#8590A6">
-        {{ userInfo && userInfo.realname ?userInfo.realname:'未实名认证2' }}
+      <div class="myprofile-btom2">
+        {{ userInfo && userInfo.realname ?userInfo.realname:'' }}
       </div>
     </div>
   </div>
@@ -809,6 +835,13 @@ export default {
   flex-direction: column;
   border-bottom: 1px solid #e4e4e4;
   padding-bottom: 20px;
+  .sigbutton {
+    display: block;
+    margin-left: 15px;
+    width: 300px;
+    background: #1878f3;
+    margin-bottom: 48px;
+  }
   .disnone {
     display: none;
   }
@@ -816,6 +849,10 @@ export default {
     display: flex;
     flex-direction: row;
     margin-top: 20px;
+    .auth-icon {
+      width: 16px;
+      height: 16px;
+    }
     .sig {
       font-size: 16px;
       color: #6d6d6d;
@@ -834,6 +871,13 @@ export default {
     }
     .iden {
       margin-left: 10px;
+      .nreal {
+        margin-left: 2px;
+        color: #fa5151;
+      }
+      .real {
+        margin-left: 2px;
+      }
     }
     .setavatar {
       flex: 1;
@@ -869,12 +913,26 @@ export default {
     margin-left: 17px;
     font-size: 16px;
     margin-right: 55px;
-    // background: red;
     padding-bottom: 20px;
     margin-top: 15px;
     width: 460px;
     // font-family: Microsoft YaHei;
     color: #000000;
+    .pmobile {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+  }
+  .myprofile-btom2 {
+    margin-left: 17px;
+    font-size: 16px;
+    margin-right: 55px;
+    padding-bottom: 20px;
+    margin-top: 15px;
+    width: 460px;
+    // font-family: Microsoft YaHei;
+    color: #8590a6;
   }
   .ebutton {
     display: block;

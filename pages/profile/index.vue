@@ -132,16 +132,26 @@
           <el-tab-pane
             :label="$t('profile.likes')+ ` (${userInfo.likedCount || 0})`"
             name="2"
-          >2222</el-tab-pane>
+          ><like :user-id="userId" /></el-tab-pane>
           <el-tab-pane
             :label="$t('profile.following')+ ` (${userInfo.followCount || 0})`"
             name="3"
-          >3333</el-tab-pane>
+          >
+            <following
+              ref="following"
+              :user-id="userId"
+              @changeFollow="changeFollow"
+            />
+          </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.followers')+ ` (${userInfo.fansCount || 0})`"
             name="4"
           >
-            <follwers :user-id="userId" @changeFollow="changeFollow" />
+            <follwers
+              ref="followers"
+              :user-id="userId"
+              @changeFollow="changeFollow"
+            />
           </el-tab-pane>
         </el-tabs>
       </div>
@@ -240,7 +250,7 @@ export default {
         .run(() => this.$store
           .dispatch('jv/get', [`users/${userId}`, { params }])
           .then(res => {
-            console.log('关注后', res)
+            console.log('关注与取消关注用户信息重新获取', res)
             this.userInfo = res
             this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
             if (res.isDeleted) {

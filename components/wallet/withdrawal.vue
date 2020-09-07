@@ -1,7 +1,6 @@
 <template>
   <message
     title="提现申请"
-    style="width:620px"
     @close="$emit('close')"
   >
     <div class="top">
