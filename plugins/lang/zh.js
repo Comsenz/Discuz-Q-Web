@@ -260,6 +260,7 @@ export default {
     pleaseEnterAPostTitle: '请输入帖子标题'
   },
   topic: {
+    attachment: '附件',
     topicPageTitle: '内容详情页',
     commentPageTitle: '评论详情页',
     topictitle: '#话题#',

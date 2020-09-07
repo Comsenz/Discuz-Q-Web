@@ -1,6 +1,6 @@
 <template>
   <div v-loading="payLoading" class="page-post">
-    <main>
+    <main v-loading="articleLoading">
       <div class="container-post">
         <div v-if="thread.isApproved === 0" class="checking">内容正在审核中，审核通过后才能正常显示！</div>
         <topic-header
@@ -62,17 +62,13 @@ export default {
   name: 'Post',
   layout: 'custom_layout',
   mixins: [handleError],
-  async asyncData({ params, store }, callback) {
+  async asyncData({ params, store }) {
     try {
-      const resData = {}
       const threadData = await store.dispatch('jv/get', [`threads/${params.id}`, { params: { include: threadInclude }}])
-      resData.thread = threadData
-      resData.article = threadData.firstPost
-      resData.postId = threadData.firstPost._jv.id
-      callback(null, resData)
+      return { thread: threadData, article: threadData.firstPost, postId: threadData.firstPost._jv.id }
     } catch (e) {
       console.log('ssr err')
-      callback(null, {})
+      return { articleLoading: true }
     }
   },
   data() {
@@ -97,7 +93,8 @@ export default {
       showCheckoutCounter: false,
       showPasswordInput: false,
       showWxPay: false,
-      payLoading: false
+      payLoading: false,
+      articleLoading: false
     }
   },
   computed: {
@@ -121,21 +118,17 @@ export default {
     getThread() {
       return this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include: threadInclude }}]).then(data => {
         if (data.isDeleted) return this.$router.push('/404')
-        console.log('thread => ', data)
+        this.articleLoading = false
         this.thread = data
         this.article = data.firstPost
         this.postId = this.article._jv.id
-        this.initManagementList(data)
-        this.initPaidInformation(data)
-        this.initActions(data, this.article)
+        this.initData()
       }, e => this.handleError(e))
     },
-    getWalletBalance() {
-      const params = { _jv: { type: `/wallet/user/${this.userId}` }}
-      this.$store.dispatch('jv/get', params).then(data => {
-        this.userWallet.availableAmount = data.available_amount
-        this.userWallet.canWalletPay = data.user.canWalletPay
-      }, e => this.handleError(e))
+    initData() {
+      this.initManagementList(this.thread)
+      this.initPaidInformation(this.thread)
+      this.initActions(this.thread, this.article)
     },
     initPaidInformation(data) {
       for (const key in this.paidInformation) this.paidInformation[key] = data[key]

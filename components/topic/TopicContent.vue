@@ -26,6 +26,15 @@
         </div>
       </el-image>
     </div>
+    <div v-if="(article.attachments || []).length > 0" class="container-attachment">
+      <h3 class="name">{{ $t('topic.attachment') }}</h3>
+      <div class="attachments">
+        <div v-for="(item, index) in article.attachments" :key="index" class="attachment-item" @click="downloadAttachment(item.url)">
+          <svg-icon :type="extensionValidate(item.extension)" style="font-size: 18px" />
+          <span>{{ item.fileName }}</span>
+        </div>
+      </div>
+    </div>
     <div v-if="unpaid && threadType === 1" class="hide-content-tip">{{ $t('pay.contentHide') }}</div>
     <nuxt-link v-if="category.name" :to="{path: '/', query: { categoryId: category._jv.id } }" class="tag">{{ category.name }}</nuxt-link>
     <video-pop v-if="showVideoPop" :cover-url="video.cover_url" :url="video.media_url" @remove="showVideoPop = false" />
@@ -34,6 +43,7 @@
 
 <script>
 import s9e from '@/utils/s9e'
+const extensionList = ['7Z', 'AI', 'APK', 'CAD', 'CDR', 'DOC', 'EPS', 'EXE', 'IPA', 'MP3', 'MP4', 'PDF', 'PPT', 'PSD', 'RAR', 'TXT', 'XLS', 'XLSX', 'ZIP']
 
 export default {
   name: 'TopicContent',
@@ -100,6 +110,12 @@ export default {
     openVideo() {
       if (this.unpaid) return this.$emit('payForVideo')
       this.showVideoPop = true
+    },
+    extensionValidate(extension) {
+      return extensionList.indexOf(extension.toUpperCase()) > 0 ? extension.toUpperCase() : 'UNKNOWN'
+    },
+    downloadAttachment(url) {
+      if (process.client) window.open(url, '_self')
     }
   }
 
@@ -192,6 +208,39 @@ export default {
           border-radius: 5px;
           margin-right: 5px;
           margin-bottom: 5px
+        }
+      }
+    }
+
+    > .container-attachment {
+      margin-top: 30px;
+      > .name {
+        color: #6D6D6D;
+        font-weight: bold;
+        font-size: 16px;
+      }
+      > .attachments {
+        .attachment-item {
+          cursor: pointer;
+          margin-top: 10px;
+          width: 100%;
+          height: 40px;
+          border-radius: 5px;
+          border: 1px solid $border-color-base;
+          padding: 0 10px;
+          display: flex;
+          align-items: center;
+          &:hover {
+            border: 1px solid $color-blue-base;
+          }
+          > span {
+            font-size: 16px;
+            width: 400px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-left: 10px;
+            white-space: nowrap;
+          }
         }
       }
     }
