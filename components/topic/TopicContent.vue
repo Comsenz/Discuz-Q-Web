@@ -71,13 +71,14 @@ export default {
   },
   computed: {
     unpaid() {
+      if (this.paidInformation.paid) this.removeTextHideCover()
       return !(this.paidInformation.paid || parseFloat(this.paidInformation.price) === 0)
     }
   },
   watch: {
     article: {
       handler() {
-        this.$nextTick(this.addTextHideCover)
+        this.addTextHideCover()
       },
       deep: true
     }
@@ -87,9 +88,14 @@ export default {
       return s9e.parse(html)
     },
     addTextHideCover() {
-      if (!this.unpaid && this.threadType === 1) return
+      if (this.threadType !== 1) return
+      if (!this.unpaid) return
       const contentHtml = document.querySelector('.content-html')
       if (parseInt(contentHtml.offsetHeight) > 100) contentHtml.classList.add('hide-cover')
+    },
+    removeTextHideCover() {
+      const contentHtml = document.querySelector('.content-html')
+      contentHtml.classList.remove('hide-cover')
     },
     openVideo() {
       if (this.unpaid) return this.$emit('payForVideo')

@@ -74,11 +74,19 @@
                 <svg-icon class="active-svg-wallet" style="fill: #8590a6;font-size: 18px" type="wallet" />
                 <span>{{ $t('pay.walletPay') }}</span>
                 <div class="pay-tip">
-                  <span v-if="enoughBalance">{{ $t('pay.walletBalance') }}</span>
-                  <!--TODO 去改密码-->
-                  <a v-else href="/" style="color: red">{{ $t('pay.walletBalanceNo') }}</a>
-                  <span v-if="!userWallet.canWalletPay">{{ $t('pay.needToResetPassword') }}</span>
-                  <span v-else>￥ {{ userWallet.availableAmount }}</span>
+                  <div v-if="enoughBalance">
+                    <nuxt-link v-if="!userWallet.canWalletPay" to="/my/wallet" class="not-enough-balance">{{ $t('pay.needToResetPassword') }}</nuxt-link>
+                    <div>{{ $t('pay.walletBalance') }}</div>
+                  </div>
+                  <div v-else>
+                    <nuxt-link v-if="!userWallet.canWalletPay" to="/my/wallet" class="not-enough-balance">{{ $t('pay.needToResetPassword') }}</nuxt-link>
+                    <span v-else class="not-enough-balance">{{ $t('pay.walletBalanceNo') }}</span>
+                  </div>
+                  <div>
+                    <span>￥ {{ userWallet.walletBalance }}</span>
+                    <!-- TODO 电脑端没充值 -->
+                    <nuxt-link v-if="!enoughBalance" to="#" class="recharge">  {{ $t('pay.walletRecharge') }}</nuxt-link>
+                  </div>
                 </div>
               </div>
               <div class="pay-amount">￥{{ showAmount }}</div>
@@ -90,7 +98,7 @@
     <div class="bottom">
       <span>￥ {{ showAmount + $t('pay.rmb') + $t('pay.payTo') + '，' + user.username || '' }} {{ $t('pay.ofAccount') }}</span>
       <el-button v-if="payWay === 'wxPay'" size="medium" type="primary" @click="$emit('paying', { payWay, hideAvatar, rewardAmount })">{{ $t('pay.scanPay') }}</el-button>
-      <el-button v-if="payWay === 'walletPay'" :disabled="!enoughBalance" size="medium" type="primary" @click="$emit('paying', { payWay, hideAvatar, rewardAmount })">{{ $t('pay.surePay') }}</el-button>
+      <el-button v-if="payWay === 'walletPay'" :disabled="!enoughBalance || !userWallet.canWalletPay" size="medium" type="primary" @click="$emit('paying', { payWay, hideAvatar, rewardAmount })">{{ $t('pay.surePay') }}</el-button>
     </div>
   </message-box>
 </template>
@@ -119,11 +127,6 @@ export default {
     rewardOrPay: {
       type: String,
       default: ''
-    },
-    userWallet: {
-      type: Object,
-      default: () => {
-      }
     }
   },
   data() {
@@ -139,11 +142,15 @@ export default {
     showAmount() {
       return this.rewardOrPay === 'reward' ? this.rewardAmount : this.amount
     },
+    userWallet() {
+      const { attributes: { walletBalance, canWalletPay }} = this.$store.state.user.info
+      return { walletBalance, canWalletPay }
+    },
     enoughBalance() {
       if (this.rewardOrPay === 'reward') {
-        return parseFloat(this.rewardAmount || '0') < parseFloat(this.userWallet.availableAmount)
+        return parseFloat(this.rewardAmount || '0') < parseFloat(this.userWallet.walletBalance)
       } else {
-        return parseFloat(this.amount) < parseFloat(this.userWallet.availableAmount)
+        return parseFloat(this.amount) < parseFloat(this.userWallet.walletBalance)
       }
     }
   }
@@ -291,9 +298,15 @@ export default {
                   margin-top: 10px;
                   color: $font-color-grey;
 
-                  > span, a {
+                  .not-enough-balance {
+                    color: red;
+                  }
+                  .recharge {
+                    color: $color-blue-base;
+                  }
+                  span, a{
+                    display: inline-block;
                     line-height: 22px;
-                    display: block;
                   }
                 }
               }

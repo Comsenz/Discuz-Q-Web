@@ -1,5 +1,5 @@
 <template>
-  <div class="page-post">
+  <div v-loading="payLoading" class="page-post">
     <main>
       <div class="container-post">
         <div v-if="thread.isApproved === 0" class="checking">内容正在审核中，审核通过后才能正常显示！</div>
@@ -32,7 +32,6 @@
           :user="thread.user || {}"
           :amount="thread.price || 0"
           :content="article.summaryText || ''"
-          :user-wallet="userWallet"
           :reward-or-pay="rewardOrPay"
           @close="showCheckoutCounter = false"
           @paying="paying"
@@ -89,8 +88,6 @@ export default {
       ],
       paidInformation: { price: '0', paid: false, paidUsers: [], paidCount: 0 },
       payment: { orderNo: '', payment_type: 0, status: 0, wechat_qrcode: '', rewardAmount: '' },
-      userWallet: { availableAmount: '0.00', canWalletPay: false },
-      payPassword: { password: '', confirmPassword: '' },
       managementList: [
         { name: 'canEdit', command: 'toEdit', isStatus: false, canOpera: false, text: this.$t('topic.edit'), type: '0' },
         { name: 'canEssence', command: 'isEssence', isStatus: false, canOpera: false, text: this.$t('topic.essence'), type: '1' },
@@ -99,7 +96,8 @@ export default {
       ],
       showCheckoutCounter: false,
       showPasswordInput: false,
-      showWxPay: false
+      showWxPay: false,
+      payLoading: false
     }
   },
   computed: {
@@ -118,7 +116,6 @@ export default {
   },
   mounted() {
     this.getThread()
-    this.getWalletBalance()
   },
   methods: {
     getThread() {
@@ -179,15 +176,16 @@ export default {
       if (payWay === 'walletPay') {
         this.payment.payment_type = 20
         this.showPasswordInput = true
-        this.createOrder(hideAvatar, this.rewardOrPay === 'reward' ? rewardAmount : this.thread.price)
+        this.createOrder(hideAvatar, this.rewardOrPay === 'reward' ? rewardAmount : this.thread.price).finally(() => { this.payLoading = false })
       } else if (payWay === 'wxPay') {
         this.payment.payment_type = 10
-        if (!this.forums.paycenter.wxpay_close) return this.$message.warning('微信支付功能已关闭')
-        // TODO Loading
-        this.createOrder(hideAvatar, this.rewardOrPay === 'reward' ? rewardAmount : this.thread.price).then(() => this.payOrder())
+        if (!this.forums.paycenter.wxpay_close) return this.$message.warning(this.$t('pay.wxPayClose'))
+        this.createOrder(hideAvatar, this.rewardOrPay === 'reward' ? rewardAmount : this.thread.price).then(() => this.payOrder()).finally(() => { this.payLoading = false })
       }
     },
     createOrder(hideAvatar, amount = 0) {
+      if (this.payLoading) return
+      this.payLoading = true
       const params = {
         _jv: { type: `/orders` },
         type: this.rewardOrPay === 'reward' ? '2' : '3',
@@ -206,7 +204,7 @@ export default {
         payment_type: this.payment.payment_type,
         pay_password: password
       }
-      this.$store.dispatch('jv/post', params).then(data => {
+      return this.$store.dispatch('jv/post', params).then(data => {
         if (this.payment.payment_type === 10) {
           this.wxPayActive(data)
         } else {
