@@ -1,5 +1,9 @@
 <template>
-  <a style="display: block" :href="preventJump ? 'javascript:void(0)' : ('/profile?userId=' + user.id)" :class="[sizeClass]">
+  <a
+    style="display: block"
+    :href="preventJump ? 'javascript:void(0)' : ('/profile?userId=' + user.id)"
+    :class="[sizeClass]"
+  >
     <img
       v-if="avatarUrl && !errorUrl"
       :src="user.avatarUrl"
@@ -7,9 +11,18 @@
       :alt="user.username"
       @error="error"
     >
-    <div v-else-if="styleText" :class="['avatar', sizeClass, roundClass]" :style="styleText">
+    <div
+      v-else-if="styleText"
+      :class="['avatar', sizeClass, roundClass]"
+      :style="styleText"
+    >
       {{ usernameAt }}
     </div>
+    <svg-icon
+      v-if="isReal"
+      type="auth"
+      class="auth-icon"
+    />
   </a>
 </template>
 
@@ -20,7 +33,7 @@ export default {
   props: {
     user: {
       type: [Object, String],
-      default: () => {}
+      default: () => { }
     },
     size: {
       type: [Number, String],
@@ -31,6 +44,10 @@ export default {
       default: false
     },
     preventJump: {
+      type: Boolean,
+      default: false
+    },
+    isReal: {
       type: Boolean,
       default: false
     }
@@ -77,62 +94,71 @@ export default {
 </script>
 
 <style lang="scss" scoped>
- .avatar-size-100 {
-    width: 100px;
-    height: 100px;
-    border-radius: 18px;
-  }
-  .avatar-size-80 {
-    width: 80px;
-    height: 80px;
-    border-radius: 14px;
-  }
+.avatar-size-100 {
+  width: 100px;
+  height: 100px;
+  border-radius: 18px;
+}
+.avatar-size-80 {
+  width: 80px;
+  height: 80px;
+  border-radius: 14px;
+}
 
-  .avatar-size-70 {
-    width: 70px;
-    height: 70px;
-    border-radius: 12px;
-  }
+.avatar-size-70 {
+  width: 70px;
+  height: 70px;
+  border-radius: 12px;
+}
 
-  .avatar-size-60 {
-    width: 60px;
-    height: 60px;
-    border-radius: 10px;
-  }
-  .avatar-size-50 {
-    width: 50px;
-    height: 50px;
-    border-radius: 8px;
-  }
-  .avatar-size-45 {
-    width: 45px;
-    height: 45px;
-    border-radius: 8px;
-  }
-   .avatar-size-40 {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-  }
-  .avatar-size-35 {
-    width: 35px;
-    height: 35px;
-    border-radius: 6px;
-  }
-  .avatar-size-30 {
-    width: 30px;
-    height: 30px;
-    border-radius: 6px;
-  }
+.avatar-size-60 {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+}
+.avatar-size-50 {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+}
+.avatar-size-45 {
+  width: 45px;
+  height: 45px;
+  border-radius: 8px;
+}
+.avatar-size-40 {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+}
+.avatar-size-35 {
+  width: 35px;
+  height: 35px;
+  border-radius: 6px;
+}
+.avatar-size-30 {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+}
 
-  .round {
-    border-radius: 50% !important;
-  }
+.round {
+  border-radius: 50% !important;
+}
 
-  .avatar {
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+.avatar {
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.auth-icon {
+  position: absolute;
+  right: 0;
+  bottom: 0px;
+  // z-index: 8;
+  width: 11px;
+  height: 13px;
+}
 </style>

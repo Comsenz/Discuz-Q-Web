@@ -1,54 +1,55 @@
 <template>
-  <div v-if="followerList">
+  <div v-if="followingList">
     <div
-      v-for="(Item, index) in followerList"
+      v-for="(Item, index) in followingList"
       :key="index"
       class="user-item-container"
       @click.stop="toUser(Item.toUser.id)"
     >
       <div class="flex user-item">
         <avatar
-          :user="Item.fromUser"
+          :user="Item.toUser"
           :size="45"
         />
         <div class="info">
           <div class="flex">
-            <span class="name text-hidden">{{ Item.fromUser.username }}</span>
+            <span class="name text-hidden">{{ Item.toUser.username }}</span>
             <span
-              v-if="Item.fromUser.groups"
+              v-if="Item.toUser.groups"
               class="role"
-            >{{ Item.fromUser && Item.fromUser.groups
-              ? Item.fromUser.groups[0].name
+            >{{ Item.toUser && Item.toUser.groups
+              ? Item.toUser.groups[0].name
               : '' }}</span>
           </div>
           <div class="flex count">
-            <div class="count-item">{{ $t('profile.topic') }} {{ Item.fromUser.threadCount || 0 }}</div>
-            <div class="count-item">{{ $t('profile.following') }} {{ Item.fromUser.followCount || 0 }}</div>
-            <div class="count-item">{{ $t('profile.followers') }} {{ Item.fromUser.fansCount || 0 }}</div>
+            <div class="count-item">{{ $t('profile.topic') }} {{ Item.toUser.threadCount || 0 }}</div>
+            <div class="count-item">{{ $t('profile.following') }} {{ Item.toUser.followCount || 0 }}</div>
+            <div class="count-item">{{ $t('profile.followers') }} {{ Item.toUser.fansCount || 0 }}</div>
           </div>
         </div>
       </div>
       <!-- follow 关注状态 0：未关注 1：已关注 2：互相关注 -->
 
       <el-button
-        v-if="(Item.fromUser && Item.fromUser.id) != currentLoginId"
+        v-if="(Item.toUser && Item.toUser.id) != currentLoginId"
         type="text"
         class="follow"
-        @click="addFollow(Item.fromUser, index)"
+        @click="addFollow(Item.toUser, index)"
       >
         <svg-icon
-          v-if="Item.fromUser.follow === 2"
+          v-if="Item.toUser.follow === 2"
           type="follow-heart"
           class="follow-icon"
         />
         {{
-          (Item.fromUser && Item.fromUser.follow) == 0
+          (Item.toUser && Item.toUser.follow) == 0
             ? $t('profile.following')
-            : (Item.fromUser && Item.fromUser.follow) == 1
+            : (Item.toUser && Item.toUser.follow) == 1
               ? $t('profile.followed')
               : $t('profile.mutualfollow')
         }}
       </el-button>
+
     </div>
     <loading v-if="loading" />
     <template v-else>
@@ -62,10 +63,10 @@
         class="no-more"
       >
         <svg-icon
-          v-if="followerList.length === 0"
+          v-if="followingList.length === 0"
           type="empty"
           class="empty-icon"
-        />{{ followerList.length > 0 ? '没有更多了' : '暂无信息' }}
+        />{{ followingList.length > 0 ? '没有更多了' : '暂无信息' }}
       </div>
     </template>
   </div>
@@ -74,7 +75,7 @@
 import { status } from '@/library/jsonapi-vuex/index'
 
 export default {
-  name: 'Followers',
+  name: 'Following',
   props: {
     userId: {
       type: String,
@@ -84,7 +85,7 @@ export default {
   data() {
     return {
       loadingType: '',
-      followerList: [],
+      followingList: [],
       pageSize: 10,
       pageNum: 1, // 当前页数
       currentLoginId: this.$store.getters['session/get']('userId'),
@@ -93,15 +94,15 @@ export default {
     }
   },
   mounted() {
-    this.getFollowerList()
+    this.getFollowingList()
   },
   methods: {
-    // 获取用户粉丝列表
-    getFollowerList(type) {
+    // 获取用户关注列表
+    getFollowingList(type) {
       this.loading = true
       const params = {
-        include: ['fromUser', 'fromUser.groups'],
-        'filter[type]': 2,
+        include: ['toUser', 'toUser.groups'],
+        'filter[type]': 1,
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         'filter[user_id]': this.userId
@@ -109,16 +110,15 @@ export default {
       status
         .run(() => this.$store.dispatch('jv/get', ['follow', { params }]))
         .then(res => {
-          console.log('当前用户粉丝列表', res)
           if (res._jv) {
             delete res._jv
           }
           this.loading = false
           this.hasMore = res.length === this.pageSize
           if (type === 'change') {
-            this.followerList = res
+            this.followingList = res
           } else {
-            this.followerList = [...this.followerList, ...res]
+            this.followingList = [...this.followingList, ...res]
           }
         })
     },
@@ -145,12 +145,12 @@ export default {
             this.$emit('changeFollow', { userId: this.userId })
           }
           // is_mutual 是否互相关注 1 是 0 否
-          const item = this.followerList[index]
+          const item = this.followingList[index]
           console.log('当前你与自己粉丝或别人粉丝的关注状态', item)
           // 深拷贝防止vuex 修改state报错
           const item2 = JSON.parse(JSON.stringify(item))
-          item2.fromUser.follow = res.is_mutual === 1 ? 2 : 1
-          this.$set(this.followerList, index, item2)
+          item2.toUser.follow = res.is_mutual === 1 ? 2 : 1
+          this.$set(this.followingList, index, item2)
         })
     },
     // 取消关注
@@ -162,12 +162,18 @@ export default {
         if (this.userId === this.currentLoginId) {
           this.$emit('changeFollow', { userId: this.userId })
         }
-        const item = this.followerList[index]
+        const item = this.followingList[index]
         // 深拷贝防止vuex 修改state报错
         const item2 = JSON.parse(JSON.stringify(item))
-        item2.fromUser.follow = 0
-        this.$set(this.followerList, index, item2)
+        item2.toUser.follow = 0
+        this.$set(this.followingList, index, item2)
       })
+    },
+    loadMore() {
+      if (this.hasMore) {
+        this.pageNum += 1
+        this.getFollowingList()
+      }
     },
     toUser(userId) {
       this.$router.push(`/profile?userId=${userId}`)
@@ -176,6 +182,8 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import "@/assets/css/variable/color.scss";
+
 .user-item-container {
   padding: 20px;
   border-bottom: 1px solid #e4e4e4;
@@ -239,5 +247,21 @@ export default {
       font-size: 13px;
     }
   }
+}
+.empty-icon {
+  width: 20px;
+  height: 18px;
+  margin-right: 10px;
+}
+.load-more {
+  color: $color-blue-base;
+  border: 1px solid $color-blue-base;
+  font-size: 16px;
+  text-align: center;
+  padding: 12px 0;
+  line-height: 1;
+  cursor: pointer;
+  margin: 20px;
+  border-radius: 2px;
 }
 </style>

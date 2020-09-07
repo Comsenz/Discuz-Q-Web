@@ -39,12 +39,6 @@ export default {
   },
   data() {
     return {
-      userId: this.$store.getters['session/get']('userId') // 获取当前登陆用户的ID
-    }
-  },
-  computed: {
-    userInfo() {
-      return this.$store.getters['jv/get'](`/users/${this.userId}`)
     }
   }
 }

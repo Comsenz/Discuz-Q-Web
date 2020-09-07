@@ -1,5 +1,5 @@
 <template>
-  <div class="topic">
+  <div class="like">
     <div class="post-list">
       <post-item
         v-for="(item, index) in data"
@@ -45,34 +45,34 @@ export default {
       pageNum: 1, // 当前页数
       currentLoginId: this.$store.getters['session/get']('userId'),
       loading: false,
-      hasMore: false
+      hasMore: false,
+      editThreadId: ''
     }
   },
   mounted() {
-    this.loadThreads()
+    this.loadlikes()
   },
   methods: {
-    // 加载当前主题数据
-    loadThreads(type) {
+    // 加载当前点赞数据
+    loadlikes(type) {
       this.loading = true
       const params = {
-        'filter[isDeleted]': 'no',
         include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         'filter[isApproved]': 1,
-        'filter[userId]': this.userId
+        'filter[user_id]': this.userId
       }
       status
-        .run(() => this.$store.dispatch('jv/get', ['threads', { params }]))
+        .run(() => this.$store.dispatch('jv/get', ['threads/likes', { params }]))
         .then(res => {
           if (res._jv) {
             delete res._jv
           }
+          console.log('点赞数据', res)
           this.loading = false
           this.hasMore = res.length === this.pageSize
           this.data = [...this.data, ...res]
-          console.log('当前主题数据', this.data)
         })
     },
     loadMore() {
@@ -85,7 +85,7 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
-@import '@/assets/css/variable/color.scss';
+@import "@/assets/css/variable/color.scss";
 .empty-icon {
   width: 20px;
   height: 18px;

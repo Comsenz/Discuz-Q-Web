@@ -8,7 +8,8 @@
           <span
             class="availmount"
             @click="showWithdraw"
-          >{{ $t('modify.withdratitle') }}</span></div>
+          >{{ $t('modify.withdratitle') }}</span>
+        </div>
       </div>
       <div class="mywallet-topitem mymarg">
         <div class="margbtm">{{ $t('profile.freezeamount') }}</div>
@@ -22,10 +23,7 @@
           class="amount"
         >{{ `¥ ${dataInfo.freeze_amount || 0.0}` }}</div>
       </div>
-      <div
-        class="mywallet-topitem"
-        style="margin-right:30px;text-align:right"
-      >
+      <div class="mywallet-topitem mywallet-r">
         <div class="margbtm">{{ $t('pay.payPassword') }}</div>
         <div
           v-if="hasPassword"
@@ -33,17 +31,18 @@
           @click="changePassword"
         >
           <svg-icon
-            style="width:16px; height:16px;margin-right:5px;"
             type="shield"
-          />已设置 / 修改</div>
+            class="shield-icon"
+          />已设置 / 修改
+        </div>
         <div
           v-else
           style="cursor: pointer;"
           @click="setPassword"
         >
           <svg-icon
-            style="width:16px; height:16px;margin-right:5px;"
             type="warning"
+            class="shield-icon"
           />{{ $t('profile.setpaypassword') }}
         </div>
       </div>
@@ -51,6 +50,7 @@
       <div v-if="hasPassword">
         <wallet-password
           v-if="showPasswordInput"
+          ref="walletpass"
           :error="passError"
           @close="showPasswordInput = false"
           @password="validatePass"
@@ -63,6 +63,7 @@
         />
         <repeat-newpassword
           v-if="showNewverify2"
+          ref="repeatnewpass"
           :error="codeError"
           @close="showNewverify2 = false"
           @password="checkpass2"
@@ -76,6 +77,7 @@
         />
         <repeat-password
           v-if="repPasswordInput"
+          ref="repeatpass"
           :error="codeError"
           @close="repPasswordInput = false"
           @password="setPass2"
@@ -248,7 +250,8 @@
           >
             <template slot-scope="scope">
               <span v-html="amountFormat(scope.row.change_freeze_amount)" />
-            </template></el-table-column>
+            </template>
+          </el-table-column>
         </el-table>
         <!-- 分页器 -->
         <el-pagination
@@ -332,7 +335,8 @@
           >
             <template slot-scope="scope">
               <span v-html="amountFormat(scope.row.change_available_amount)" />
-            </template></el-table-column>
+            </template>
+          </el-table-column>
         </el-table>
         <!-- 分页器 -->
         <el-pagination
@@ -416,7 +420,8 @@
           >
             <template slot-scope="scope">
               <span v-html="amountFormat(scope.row)" />
-            </template></el-table-column>
+            </template>
+          </el-table-column>
         </el-table>
         <!-- 分页器 -->
         <el-pagination
@@ -643,23 +648,11 @@ export default {
           }
         })
         .catch(err => {
-          this.$message.error(this.$t('modify.authenfailed'))
+          // this.$message.error(this.$t('modify.authenfailed'))
+          this.$refs.walletpass.empty()
           this.passError = true
-
+          this.handleError(err)
           console.log('error', err)
-          // if (err.statusCode === 422) {
-          //   this.sun = true
-          //   const [
-          //     {
-          //       detail: [sun]
-          //     }
-          //   ] = err.data.errors
-          //   this.test = sun
-          // } else if (err.statusCode === 500) {
-          //   this.sun = true
-          //   this.test = this.i18n.t('modify.passwordinputerro')
-          // }
-          // this.empty()
         })
       console.log('password', password)
     },
@@ -724,6 +717,12 @@ export default {
         })
         .catch(err => {
           console.log(err)
+          if (this.$refs.repeatnewpass) {
+            this.$refs.repeatnewpass.empty()
+          }
+          if (this.$refs.repeatpass) {
+            this.$refs.repeatpass.empty()
+          }
           this.codeError = true
           this.handleError(err)
         })
@@ -1198,6 +1197,12 @@ export default {
       // flex-direction: column;
       flex: 1;
       color: #6d6d6d;
+      .shield-icon {
+        width: 16px;
+        height: 16px;
+        margin-right: 5px;
+        vertical-align: text-top;
+      }
       .amount {
         font-size: 20px;
         color: #000000;
@@ -1215,6 +1220,10 @@ export default {
         margin-bottom: 10px;
       }
     }
+    .mywallet-r {
+      margin-right: 30px;
+      text-align: right;
+    }
   }
   .register-select {
     margin-top: 63px;
@@ -1226,9 +1235,20 @@ export default {
       width: 100%;
       max-width: 750px;
     }
+    @media screen and (max-width: 900px) {
+      width: 100%;
+      max-width: 700px;
+    }
+     @media screen and (max-width: 850px) {
+      width: 100%;
+      max-width: 650px;
+    }
   }
   .margleft {
     margin-left: 30px;
+      @media screen and (max-width: 850px) {
+      margin-left:0px
+    }
   }
 }
 
