@@ -1,6 +1,6 @@
 <template>
   <div class="global">
-    <aside-header :author="author" :billboard="billboard" :followed="followed" @follow="follow" @unFollow="unFollow" @chat="chat" />
+    <aside-header :author="author" :billboard="billboard" :followed="followed" :can-follow="canFollow" @follow="follow" @unFollow="unFollow" @chat="chat" />
     <div class="recommend block">
       <div class="title">{{ $t('topic.recommend') }}</div>
       <div v-for="(item, index) in threeEssenceThread" :key="index" class="container-post">
@@ -40,6 +40,14 @@ export default {
       ]
     }
   },
+  computed: {
+    canFollow() {
+      if (this.author.id) {
+        return this.$store.getters['session/get']('userId') !== this.author.id.toString()
+      }
+      return false
+    }
+  },
   watch: {
     author: {
       handler(val) {
@@ -75,6 +83,7 @@ export default {
       return Math.floor(Math.random() * length)
     },
     follow() {
+      if (!this.canFollow) return
       const params = { _jv: { type: `follow` }, 'to_user_id': this.author.id.toString() }
       return this.$store.dispatch('jv/post', params).then(() => {
         this.followed = true

@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="buttons">
-      <button @click="followed ? $emit('unFollow') : $emit('follow')">{{ followed ? $t('home.followed') : $t('home.follow') }}</button>
+      <button :class="{disabled: !canFollow}" :disabled="!canFollow" @click="followed ? $emit('unFollow') : $emit('follow')">{{ followed ? $t('home.followed') : $t('home.follow') }}</button>
       <button @click="$emit('chat')">{{ $t('topic.sendMessage') }}</button>
     </div>
   </div>
@@ -33,6 +33,10 @@ export default {
       default: () => []
     },
     followed: {
+      type: Boolean,
+      default: false
+    },
+    canFollow: {
       type: Boolean,
       default: false
     }
@@ -98,6 +102,10 @@ export default {
         line-height: 35px;
         border-radius: 3px;
         text-align: center;
+
+        &.disabled {
+          cursor: not-allowed;
+        }
 
         &:nth-child(1) {
           color: white;

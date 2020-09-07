@@ -63,22 +63,17 @@ export default {
   name: 'Post',
   layout: 'custom_layout',
   mixins: [handleError],
-  async asyncData({ params, store }) {
+  async asyncData({ params, store }, callback) {
     try {
-      // const params = {
-      //   include: 'users'
-      // }
-      // const author = store.dispatch('jv/get', [`forum`, { params }]).then(res => {
-      //   if (res.other && res.other.can_create_dialog) {
-      //     this.can_create_dialog = true
-      //   } else {
-      //     this.can_create_dialog = false
-      //   }
-      // })
+      const resData = {}
       const threadData = await store.dispatch('jv/get', [`threads/${params.id}`, { params: { include: threadInclude }}])
-      return { thread: threadData, article: threadData.firstPost, postId: threadData.firstPost._jv.id }
+      resData.thread = threadData
+      resData.article = threadData.firstPost
+      resData.postId = threadData.firstPost._jv.id
+      callback(null, resData)
     } catch (e) {
       console.log('ssr err')
+      callback(null, {})
     }
   },
   data() {
@@ -121,7 +116,7 @@ export default {
       return this.$store.state.site.info.attributes || {}
     }
   },
-  created() {
+  mounted() {
     this.getThread()
     this.getWalletBalance()
   },
@@ -215,7 +210,7 @@ export default {
         if (this.payment.payment_type === 10) {
           this.wxPayActive(data)
         } else {
-          this.$message.success('支付成功')
+          this.$message.success(this.$t('pay.paySuccess'))
           this.getThread()
         }
       }, e => this.handleError(e)).finally(() => { this.showPasswordInput = false })
@@ -227,7 +222,7 @@ export default {
         const id = setInterval(() => {
           if (this.payment.status === 1) {
             clearInterval(id)
-            this.$message.success('支付成功')
+            this.$message.success(this.$t('pay.paySuccess'))
             this.showWxPay = false
             this.getThread()
           }
