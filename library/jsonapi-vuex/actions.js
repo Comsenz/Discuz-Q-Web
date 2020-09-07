@@ -222,7 +222,10 @@ const actions = (api, conf) => {
 
         // NOTE: We deliberately process included records after any `deleteRecord` mutations
         // to avoid deleting any included records that we just added.
-        return utils.preserveJSON(context.getters.get(data), results.data)
+        // return utils.preserveJSON(context.getters.get(data), results.data)
+        // fix: 防止preserveJSON直接改 store state
+        return utils.preserveJSON(utils.deepCopy(context.getters.get(data)), results.data)
+        // return utils.preserveJSON(utils._copy(context.getters.get(data)), results.data)
       })
     },
     /**
