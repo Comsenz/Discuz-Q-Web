@@ -11,8 +11,10 @@
   </div>
 </template>
 <script>
+import handleError from '@/mixin/handleError'
 export default {
   name: 'RecommendUser',
+  mixins: [handleError],
   // 异步数据用法
   async asyncData({ params, store }) {
     const _params = {

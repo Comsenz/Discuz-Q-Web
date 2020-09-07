@@ -13,6 +13,7 @@
         </div>
         <el-input
           v-model="inputVal"
+          auto-complete="new-password"
           size="medium"
           :placeholder="$t('search.search')"
           class="h-search"

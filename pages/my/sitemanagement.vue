@@ -20,8 +20,8 @@
     </header>
     <main>
       <el-tabs v-model="activeName">
-        <el-tab-pane label="成员管理" name="manage"><users-manage /></el-tab-pane>
-        <el-tab-pane label="邀请成员" name="invite"><invite-user /></el-tab-pane>
+        <el-tab-pane v-if="forums && forums.other && forums.other.can_view_user_list" label="成员管理" name="manage"><users-manage /></el-tab-pane>
+        <el-tab-pane v-if="forums && forums.other && forums.other.can_create_invite" label="邀请成员" name="invite"><invite-user /></el-tab-pane>
       </el-tabs>
     </main>
   </div>
@@ -78,10 +78,11 @@ export default {
       padding-bottom:5px;
     }
     .el-tabs__item{
-      font-size: 18px;
+      font-size: 16px;
+      color: #B5B5B5;
       &.is-active{
         color:#000;
-        font-size: 20px;
+        font-size: 18px;
         font-weight:bold;
       }
     }
