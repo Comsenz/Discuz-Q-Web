@@ -1,6 +1,7 @@
 // route在server render也会跑
 // client执行顺序 => beforeEach - middleware - afterEach
 // server执行顺序 => beforeEach - afterEach - middleware
+const freePath = ['/user/login', '/user/register', '/site/info']
 export default ({ app }) => {
   const { store, router } = app
   router.beforeEach(async(to, from, next) => {
@@ -15,7 +16,6 @@ export default ({ app }) => {
       }
       // 获取用户信息
       const userId = store.getters['session/get']('userId')
-      console.log('user id => ', userId)
       if (!store.state.user.info.id && userId > 0) {
         try {
           await store.dispatch('user/getUserInfo', userId)
@@ -25,11 +25,22 @@ export default ({ app }) => {
           console.log(error)
         }
       }
+
+      // 网站关闭
+
+      // 网站付费拦截
+      if (freePath.includes(to.path)) return next()
+      const { attributes: { set_site: site_info }} = store.state.site.info
+      console.log(store.state.site.info, 'forums')
+      const { attributes: user_info } = store.state.user.info
+      if (site_info.site_mode && site_info.site_mode === 'pay') {
+        if (userId === '0' || user_info && !user_info.paid) return next({ path: '/site/info' })
+      }
+      next()
     }
     next()
   })
   router.afterEach((to, from) => {
-    console.log(to.path)
     console.log('afterEach')
   })
 }

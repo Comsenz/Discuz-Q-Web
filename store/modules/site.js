@@ -21,7 +21,7 @@ const actions = {
   getSiteInfo: ({ commit }) => {
     // context.commit(SET_USER_ID, payload)
     return new Promise((resolve, reject) => {
-      service.get('/forum').then(res => {
+      service.get('/forum', { params: { include: 'users' }}).then(res => {
         if (res.status === 200 && res.data && res.data.data) {
           commit('SET_SITE_INFO', res.data.data)
           resolve(res.data.data)
