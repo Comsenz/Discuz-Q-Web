@@ -191,6 +191,7 @@ export default {
         margin-top: 10px;
 
         ::v-deep p {
+          display: inline;
           font-size: 16px;
         }
 

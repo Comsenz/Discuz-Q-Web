@@ -81,7 +81,7 @@ export default {
   },
   computed: {
     unpaid() {
-      if (this.paidInformation.paid) this.removeTextHideCover()
+      if (process.client && this.paidInformation.paid) this.removeTextHideCover()
       return !(this.paidInformation.paid || parseFloat(this.paidInformation.price) === 0)
     }
   },
@@ -105,7 +105,7 @@ export default {
     },
     removeTextHideCover() {
       const contentHtml = document.querySelector('.content-html')
-      contentHtml.classList.remove('hide-cover')
+      if (contentHtml) contentHtml.classList.remove('hide-cover')
     },
     openVideo() {
       if (this.unpaid) return this.$emit('payForVideo')

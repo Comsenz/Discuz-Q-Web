@@ -175,7 +175,7 @@ export default {
       return ''
     },
     textarea() {
-      return document.querySelector(`.${this.selector} #textarea`)
+      return process.client ? document.querySelector(`.${this.selector} #textarea`) : ''
     }
   },
   watch: {

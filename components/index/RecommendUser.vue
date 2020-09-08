@@ -24,6 +24,7 @@ export default {
       'page[number]': 1,
       'filter[status]': 'normal'
     }
+    console.log('123123')
     try {
       const data = await store.dispatch('jv/get', ['users', { _params }])
       return { userList: [...data] }

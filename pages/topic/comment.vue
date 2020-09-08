@@ -1,6 +1,6 @@
 <template>
   <div class="page-comment">
-    <main>
+    <main v-loading="loading">
       <div class="container-comment">
         <div class="title">
           <avatar-component :author="comment.user || {}">
@@ -64,7 +64,8 @@ export default {
       if (comment && commentIncluded) comment.user = commentIncluded.filter(item => item.type === 'users')[0].attributes
       return { thread, comment }
     } catch (e) {
-      console.log('ssr err', e)
+      console.log('ssr err')
+      return { loading: true }
     }
   },
   data() {
@@ -73,7 +74,8 @@ export default {
       comment: {},
       isPositiveSort: true,
       replyList: [],
-      replyLoading: false
+      replyLoading: false,
+      loading: false
     }
   },
   computed: {
@@ -90,8 +92,8 @@ export default {
     }
   },
   mounted() {
-    if (Object.keys(this.comment).length === 0) this.getComment()
     if (Object.keys(this.thread).length === 0) this.getThread()
+    if (Object.keys(this.comment).length === 0) this.getComment().then(() => { this.loading = false })
     this.getReplyList()
   },
   methods: {

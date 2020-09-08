@@ -29,7 +29,6 @@ export default ({ app }) => {
       // 网站付费拦截
       if (freePath.includes(to.path)) return next()
       const { attributes: { set_site: site_info }} = store.state.site.info
-      console.log(store.state.site.info, 'forums')
       const { attributes: user_info } = store.state.user.info
       if (site_info.site_mode && site_info.site_mode === 'pay') {
         if (userId === '0' || user_info && !user_info.paid) return next({ path: '/site/info' })
