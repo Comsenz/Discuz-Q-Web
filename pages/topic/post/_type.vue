@@ -70,7 +70,7 @@ export default {
       return this.$route.query.categoryId
     }
   },
-  created() {
+  mounted() {
     this.getCategoryList()
     this.getThread()
   },

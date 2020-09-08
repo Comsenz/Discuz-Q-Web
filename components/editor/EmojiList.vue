@@ -16,7 +16,7 @@ export default {
       emojiList: []
     }
   },
-  created() {
+  mounted() {
     this.getEmojiList()
   },
   methods: {

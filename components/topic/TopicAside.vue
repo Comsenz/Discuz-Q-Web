@@ -1,7 +1,7 @@
 <template>
   <div class="global">
     <aside-header :author="author" :billboard="billboard" :followed="followed" :can-follow="canFollow" @follow="follow" @unFollow="unFollow" @chat="chat" />
-    <div class="recommend block">
+    <div v-loading="threeEssenceThread.length === 0" class="recommend block">
       <div class="title">{{ $t('topic.recommend') }}</div>
       <div v-for="(item, index) in threeEssenceThread" :key="index" class="container-post">
         <div class="content-html" v-html="item.firstPost.summaryText" />
@@ -59,7 +59,7 @@ export default {
       deep: true
     }
   },
-  created() {
+  mounted() {
     this.getEssenceThread()
   },
   methods: {
@@ -117,6 +117,7 @@ export default {
       margin-top: 15px;
       background: #fff;
       padding: 20px;
+      min-height: 100px;
       > .title {
         font-size: 16px;
         font-weight: bolder;

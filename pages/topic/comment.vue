@@ -89,7 +89,7 @@ export default {
       this.getReplyList()
     }
   },
-  created() {
+  mounted() {
     if (Object.keys(this.comment).length === 0) this.getComment()
     if (Object.keys(this.thread).length === 0) this.getThread()
     this.getReplyList()

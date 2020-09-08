@@ -52,7 +52,7 @@ export default {
       return this.loading || this.noMore
     }
   },
-  created() {
+  mounted() {
     this.getTopics()
   },
   methods: {
