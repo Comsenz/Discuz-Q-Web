@@ -28,7 +28,6 @@ export default {
       }
     }
     this.$store.dispatch('jv/get', _params).then(data => {
-      console.log('user data => ', data)
       this.info = data
     })
   }

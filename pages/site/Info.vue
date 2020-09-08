@@ -40,7 +40,7 @@
       </p>
       <p class="member-img">
         <span
-          v-for="(item, index) in userList"
+          v-for="(item, index) in forums.users"
           :key="index"
           class="img"
         >
@@ -114,12 +114,8 @@
 </template>
 
 <script>
-import forums from '@/mixin/forums'
 let payWechat = null
 export default {
-  mixins: [
-    forums
-  ],
   data() {
     return {
       isLogin: this.$store.getters['session/get']('isLogin'),
@@ -132,46 +128,14 @@ export default {
       payStatus: false, // 订单支付状态
       orderSn: '', // 订单编号
       codeUrl: '' // 二维码支付url，base64
-
     }
   },
   computed: {
-    userId() {
-      return this.$store.getters['session/get']('userId')
+    forums() {
+      return this.$store.state.site.info.attributes || {}
     }
   },
-  mounted() {
-    this.searchUser()
-    this.userInfo()
-  },
   methods: {
-    userInfo() {
-      const params = {
-        include: 'groups,wechat'
-      }
-      this.$store.dispatch('jv/get', [`users/${this.userId}`, { params }]).then(res => {
-        console.log('当前用户信息', res)
-        if (res.paid) {
-          window.location.href = '/'
-        }
-      })
-    },
-    async searchUser() {
-      const params = {
-        include: 'groups',
-        'page[number]': this.pageNum,
-        'page[limit]': this.pageSize,
-        'filter[username]': `*${this.searchText}*`
-      }
-      if (this.searchText === '') {
-        await this.$store.dispatch('jv/get', ['users', { params }]).then(res => {
-          console.log('获取20个用户信息：', res)
-          if (res && res._jv) {
-            this.userList = [...this.userList, ...res]
-          }
-        })
-      }
-    },
     tologin() {
       this.$router.push('/user/login')
     },
