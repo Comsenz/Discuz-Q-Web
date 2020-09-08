@@ -57,7 +57,7 @@
         </div>
 
         <div class="agreement">
-          <el-checkbox v-model="checked" />
+          <!-- <el-checkbox v-model="checked" /> -->
           <reg-agreement />
           <div class="logorreg">
             <span
@@ -100,7 +100,7 @@
           @keyup.enter.native="PhoneLogin"
         />
         <div class="agreement">
-          <el-checkbox v-model="checked" />
+          <!-- <el-checkbox v-model="checked" /> -->
           <reg-agreement />
         </div>
         <el-button
@@ -114,41 +114,24 @@
         <div class="quick">
           <div class="quick-container">
             <div class="quick-title">
-              <img
-                src="@/assets/wechat.png"
-                alt=""
-              >
+              <img src="@/assets/wechat.png">
               <span>微信扫码注册</span>
             </div>
-
             <div class="qrcode">
-              <img
-                :src="info.img"
-                alt=""
-              >
-
+              <img :src="info.img">
             </div>
             <span>请用微信扫一扫扫码上方二维码</span>
           </div>
-          <div class="quick-container">
+          <!-- <div class="quick-container">
             <div class="quick-title">
-              <img
-                src="@/assets/qq.png"
-                alt=""
-              >
+              <img src="@/assets/qq.png">
               <span>qq一键注册</span>
             </div>
-
             <div class="qrcode2">
-              <img
-                src="@/assets/qq-big.png"
-                alt=""
-              >
-
+              <img src="@/assets/qq-big.png">
             </div>
             <span>点击用QQ号码登陆注册</span>
-          </div>
-
+          </div> -->
         </div>
       </el-tab-pane>
     </el-tabs>
@@ -291,7 +274,6 @@ export default {
           this.$router.push('/site/info')
         }
       })
-      // this.$store.dispatch('forum/setError', { loading: false })
     },
     // tab激活
     changeactive() {

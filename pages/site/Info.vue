@@ -100,7 +100,7 @@
     />
     <el-dialog
       :visible.sync="qrcodeShow"
-      width="15%"
+      width="320px"
       class="model"
       :show-close="false"
     >

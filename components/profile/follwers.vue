@@ -129,15 +129,12 @@ export default {
       }, {
         value: '1',
         label: '主题数'
-
       }, {
         value: '2',
         label: '关注数'
-
       }, {
         value: '3',
         label: '粉丝数'
-
       }]
     }
   },
@@ -155,11 +152,7 @@ export default {
         'page[limit]': this.pageSize,
         'filter[user_id]': this.userId,
         'filter[username]': `${this.inputVal}`
-
       }
-      // if (this.inputVal) {
-      //   params.filter['username'] = `*${this.inputVal}*`
-      // }
       console.log('params', params)
       status
         .run(() => this.$store.dispatch('jv/get', ['follow', { params }]))
