@@ -1,10 +1,40 @@
 <template>
-  <div v-if="followerList">
+  <div>
+    <div class="ftop">
+      <el-select
+        v-model="value"
+        placeholder="请选择"
+        class="fselect"
+        @change="confirm"
+      >
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+      <el-input
+        v-model="inputVal"
+        size="medium"
+        :placeholder="$t('search.search')"
+        class="h-search"
+        @change="onClickSearch"
+        @keyup.enter.native="onClickSearch"
+      >
+        <i
+          slot="suffix"
+          class="el-icon-search el-input__icon"
+          @click="onClickSearch"
+        />
+      </el-input>
+    </div>
+
     <div
       v-for="(Item, index) in followerList"
       :key="index"
       class="user-item-container"
-      @click.stop="toUser(Item.toUser.id)"
+      @click.stop="toUser(Item.fromUser.id)"
     >
       <div class="flex user-item">
         <avatar
@@ -79,17 +109,36 @@ export default {
     userId: {
       type: String,
       default: ''
+
     }
   },
   data() {
     return {
+      value: '',
+      inputVal: '',
       loadingType: '',
       followerList: [],
       pageSize: 10,
       pageNum: 1, // 当前页数
       currentLoginId: this.$store.getters['session/get']('userId'),
       loading: false,
-      hasMore: false
+      hasMore: false,
+      options: [{
+        value: '',
+        label: this.$t('profile.all')
+      }, {
+        value: '1',
+        label: '主题数'
+
+      }, {
+        value: '2',
+        label: '关注数'
+
+      }, {
+        value: '3',
+        label: '粉丝数'
+
+      }]
     }
   },
   mounted() {
@@ -104,8 +153,14 @@ export default {
         'filter[type]': 2,
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
-        'filter[user_id]': this.userId
+        'filter[user_id]': this.userId,
+        'filter[username]': `${this.inputVal}`
+
       }
+      // if (this.inputVal) {
+      //   params.filter['username'] = `*${this.inputVal}*`
+      // }
+      console.log('params', params)
       status
         .run(() => this.$store.dispatch('jv/get', ['follow', { params }]))
         .then(res => {
@@ -171,11 +226,35 @@ export default {
     },
     toUser(userId) {
       this.$router.push(`/profile?userId=${userId}`)
+    },
+    confirm(e) {
+
+    },
+    onClickSearch() {
+      this.pageNum = 1
+      this.getFollowerList('change')
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+@import "@/assets/css/variable/color.scss";
+.ftop {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 20px;
+  ::v-deep.h-search {
+    width: 225px;
+    height: 32px;
+  }
+  ::v-deep.fselect {
+    width: 130px;
+    height: 32px;
+  }
+  ::v-deep .el-input__inner {
+    height: 32px;
+  }
+}
 .user-item-container {
   padding: 20px;
   border-bottom: 1px solid #e4e4e4;
@@ -239,5 +318,21 @@ export default {
       font-size: 13px;
     }
   }
+}
+.empty-icon {
+  width: 20px;
+  height: 18px;
+  margin-right: 10px;
+}
+.load-more {
+  color: $color-blue-base;
+  border: 1px solid $color-blue-base;
+  font-size: 16px;
+  text-align: center;
+  padding: 12px 0;
+  line-height: 1;
+  cursor: pointer;
+  margin: 20px;
+  border-radius: 2px;
 }
 </style>
