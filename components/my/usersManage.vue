@@ -1,30 +1,40 @@
 <template>
   <div class="user-manage">
     <div class="filter-cont">
-      <el-select v-model="groupId" placeholder="请选择">
+      <!-- 筛选 -->
+      <el-select v-model="selectedGroup" :placeholder="$t('profile.pleaseselect')" @change="onChangeFilter">
+        <el-option label="所有身份" value="" size="medium" />
         <el-option
-          v-for="item in typeOptions"
+          v-for="item in groupList"
           :key="item.value"
           :label="item.label"
           :value="item.value"
           size="medium"
         />
       </el-select>
-      <div class="content">共有15人</div>
+      <div class="content">
+        <template v-if="!loading">
+          <template v-if="searchText">{{ $t('manage.searchResult', { searchText, total }) }}</template>
+          <template v-else>{{ $t('manage.userTotal', { total }) }}</template>
+        </template>
+      </div>
+      <!-- 搜索 -->
       <el-input v-model="searchText" placeholder="请输入成员名称" class="search" @keyup.enter.native="onClickSearch">
         <i slot="suffix" class="el-icon-search el-input__icon" />
       </el-input>
-      <el-select v-model="handleValue" placeholder="请选择">
+      <!-- 批量操作 -->
+      <el-select v-model="handleValue" placeholder="批量操作" :disabled="forums && forums.other && !forums.other.can_edit_user_group" @change="onChangeGroup">
         <el-option
-          v-for="item in handleOptions"
+          v-for="item in groupList"
           :key="item.value"
-          :label="item.label"
+          :disabled="item.value === '7'"
+          :label="'设为' + item.label"
           :value="item.value"
           size="medium"
         />
       </el-select>
     </div>
-    <el-table v-loading="loading" :data="userList">
+    <el-table v-if="userList.length > 0" ref="multipleTable" v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="35" />
       <el-table-column prop="username" label="成员名称" />
       <el-table-column label="身份">
@@ -42,14 +52,28 @@
         <template slot-scope="scope">{{ scope.row.updatedAt | formatDate }}</template>
       </el-table-column>
       <el-table-column label="操作" width="80">
-        <template>
-          {{ $t('manage.modifyRole') }}
+        <template slot-scope="scope">
+          <span v-if="forums && forums.other && !forums.other.can_edit_user_group" class="disable">{{ $t('manage.modifyRole') }}</span>
+          <el-dropdown v-else class="handle-dropdown" placement="bottom" trigger="click" disabled @command="handleCommand">
+            <span class="el-dropdown-link">
+              {{ $t('manage.modifyRole') }}
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item v-for="(item,index) in groupList" :key="index" :command="{'userId':scope.row._jv.id, 'command':item.value}" :disabled="item.value === '7' ">设为{{ item.label }}</el-dropdown-item>
+              <el-dropdown-item v-if="userInfo && userInfo.canEdit && scope.row.status === 0" :command="{'userId':scope.row._jv.id, 'command':'disable'}">{{ $t('manage.disable') }}</el-dropdown-item>
+              <el-dropdown-item v-else-if="userInfo && userInfo.canEdit && scope.row.status === 1" :command="{'userId':scope.row._jv.id, 'command':'normal'}">{{ $t('manage.cancelDisable') }}</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </template>
       </el-table-column>
     </el-table>
+    <div v-if="!loading && userList.length <= 0" class="no-more">
+      <svg-icon type="empty" class="empty-icon" />{{ $t('discuzq.list.noData') }}
+    </div>
     <div class="pagination">
       <el-pagination
         background
+        hide-on-single-page
         :current-page="pageNum"
         :page-sizes="[10, 20, 50, 100]"
         :page-size="pageSize"
@@ -74,36 +98,44 @@ export default {
   data() {
     return {
       loading: false,
-      groupId: '',
-      typeOptions: [
-        {
-          label: '所有身份',
-          value: 'all'
-        }
-      ],
+      selectedGroup: '', // 筛选项 选中的用户组
+      groupId: [], // 用于接口的用户组数组
+      groupList: [], // 用户组列表
       handleValue: '',
-      handleOptions: [
-        {
-          label: '批量操作',
-          value: 'all'
-        }
-      ],
       pageNum: 1,
       pageSize: 10,
-      total: 10,
+      total: 0,
       searchText: '',
-      userList: []
+      userList: [], // 用户列表
+      selectedHandle: '', //  配置身份 选中的操作
+      multipleSelection: [] // 多选
+    }
+  },
+  computed: {
+    forums() {
+      return this.$store.state.site.info.attributes || {}
+    },
+    userInfo() {
+      return this.$store.state.user.info.attributes || {}
     }
   },
   mounted() {
+    console.log('forums', this.forums)
+    console.log('userInfo', this.userInfo)
     this.getUserList()
     this.getGroupList()
   },
   methods: {
     // 获取用户组
     getGroupList() {
-      this.$store.dispatch('jv/get', ['groups', {}]).then(res => {
-        console.log('groups', res)
+      const params = {}
+      this.$store.dispatch('jv/get', ['groups', { params }]).then(res => {
+        res.forEach(item => {
+          this.groupList.push({
+            label: item.name,
+            value: item._jv.id
+          })
+        })
       })
     },
     getUserList() {
@@ -112,7 +144,7 @@ export default {
         include: 'groups',
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
-        'filter[group_id]': this.groupId,
+        'filter[group_id][]': this.groupId,
         'filter[username]': `*${this.searchText}*`
       }
       this.$store.dispatch('jv/get', ['users', { params }]).then((res) => {
@@ -128,10 +160,18 @@ export default {
       })
     },
     onClickSearch() {
-      if (!this.searchText) {
-        this.$message.error('请输入成员名称')
-        return
+      this.reloadList()
+    },
+    // 过滤用户组
+    onChangeFilter(e) {
+      if (e) {
+        this.groupId = [e]
+      } else {
+        this.groupId = []
       }
+      this.reloadList()
+    },
+    reloadList() {
       this.pageNum = 1
       this.getUserList()
     },
@@ -143,6 +183,108 @@ export default {
     handleCurrentChange(val) {
       this.pageNum = val
       this.getUserList()
+    },
+    // 配置身份下拉框
+    handleCommand(e) {
+      if (e.command === 'disable' || e.command === 'normal') {
+        const status = e.command === 'disable' ? 1 : 0
+        this.modifyUserStatus(status, e.userId)
+      } else {
+        this.modifyUserGroup(e.command, e.userId)
+      }
+    },
+    // 多选操作
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+      console.log('val', val)
+    },
+    // 批量操作
+    onChangeGroup(val) {
+      this.modifyUserGroup(val)
+      this.handleValue = ''
+    },
+    // 编辑用户身份
+    modifyUserGroup(groupId, userId) {
+      const data = []
+      if (userId && groupId) {
+        data.push({
+          attributes: {
+            id: userId,
+            groupId: parseInt(groupId, 10)
+          }
+        })
+      } else {
+        if (this.multipleSelection && this.multipleSelection.length > 0) {
+          for (let i = 0; i < this.multipleSelection.length; i += 1) {
+            data.push({
+              attributes: {
+                id: this.multipleSelection[i].id,
+                groupId: parseInt(groupId, 10)
+              }
+            })
+          }
+        } else {
+          this.$message.error(this.$t('manage.selectUser'))
+        }
+      }
+      const params = [
+        {
+          _jv: {
+            type: 'users'
+          }
+        },
+        {
+          data: {
+            data
+          }
+        }
+      ]
+      this.loading = true
+      this.$store.dispatch('jv/patch', params).then(res => {
+        if (res) {
+          this.$message.success('修改成功')
+          this.getUserList()
+        }
+      }, e => {
+        this.handleError(e)
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    // 修改用户状态
+    modifyUserStatus(status, userId) {
+      // const params = [
+      //   {
+      //     _jv: {
+      //       type: 'users'
+      //     }
+      //   },
+      //   {
+      //     data: {
+      //       attributes: {
+      //         'status': status
+      //       }
+      //     }
+      //   }
+      // ]
+      const params = {
+        data: {
+          attributes: {
+            status: status
+          }
+        }
+      }
+      this.loading = true
+      this.$store.dispatch('jv/patch', [{ _jv: { type: `users/${userId}` }}, { data: params }]).then(res => {
+        if (res) {
+          this.$message.success('修改成功')
+          this.getUserList()
+        }
+      }, e => {
+        this.handleError(e)
+      }).finally(() => {
+        this.loading = false
+      })
     }
   }
 }
@@ -168,13 +310,33 @@ export default {
 .red{
   color: #fa5151;
 }
-::v-deep .el-table thead tr {
-  color: #303133;
-  background-color: #fafafa;
+.el-table{
+  margin-top: 10px;
+  ::v-deep thead th {
+    color: #303133;
+    background-color: #fafafa;
+  }
 }
 .pagination {
   text-align: right;
   padding-top: 20px;
   padding-bottom: 20px;
+}
+.handle-dropdown{
+  .el-dropdown-link{
+    color: #8590A6;
+    cursor: pointer;
+  }
+}
+.disable{
+  cursor: no-drop;
+  color: #8590A6;
+}
+::v-deep .el-dropdown-menu__item:not(.is-disabled):hover {
+  background-color: transparent;
+  color: #409EFF;
+}
+.no-more{
+  margin-top: 40px;
 }
 </style>

@@ -481,7 +481,13 @@ export default {
     userCount: '成员总数',
     normal: '正常',
     disable: '禁用',
-    modifyRole: '配置身份'
+    cancelDisable: '解除禁用',
+    modifyRole: '配置身份',
+    userTotal: '共有{total} 人',
+    searchResult: '找到 "{searchText}" 搜索结果 {total}条',
+    selectUser: '请先选择成员',
+    remainDay: '有效期剩余{day}天',
+    remain0Day: '有效期剩余0天'
   },
   // 消息页面
   notice: {
