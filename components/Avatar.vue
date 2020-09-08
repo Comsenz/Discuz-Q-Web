@@ -1,5 +1,6 @@
 <template>
   <a
+    v-if="user"
     style="display: block"
     :href="preventJump ? 'javascript:void(0)' : ('/profile?userId=' + user.id)"
     :class="[sizeClass]"

@@ -1,11 +1,11 @@
 <template>
   <div class="site-info-container">
     <div v-if="forums">
-      <el-image
+      <img
         :src="forums.set_site && forums.set_site.site_logo ? forums.set_site.site_logo : require('static/logo.png')"
         alt="logo"
         class="logo"
-      />
+      >
       <div class="site-info">
         <div class="avatar">
           <avatar :user="{ username: forums.set_site && forums.set_site.site_author.username, avatarUrl: forums.set_site && forums.set_site.site_author.avatar}" :size="40" :round="true" />
@@ -168,9 +168,15 @@ export default {
 @import '@/assets/css/variable/color.scss';
 .site-info-container{
   padding-right:30px;
+  padding-bottom: 30px;
+  @media screen and ( max-width: 1005px ) {
+    padding-right: 15px;
+    padding-bottom: 20px;
+  }
 }
 .logo{
-  width: 294px;
+  // width: 294px;
+  height: 88px;
 }
 .grey-color{
   color: $font-color-grey;

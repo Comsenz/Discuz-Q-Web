@@ -17,7 +17,7 @@
       </el-menu-item>
 
     </el-menu>
-    <nuxt-child style="margin-top:40px;margin-left:30px; width:100%;min-height:800px; " />
+    <nuxt-child class="my-main" />
 
   </div>
 </template>
@@ -93,6 +93,9 @@ export default {
     padding-left: 30px !important;
     padding: 0 65px;
     position: relative;
+    @media screen and ( max-width: 1005px ) {
+      padding: 0 40px;
+    }
   }
   .divided{
     border-top:1px solid #EFEFEF;
@@ -104,6 +107,9 @@ export default {
     right: 20px;
     transform: translateY(-50%);
     color: #6D6D6D;
+    @media screen and ( max-width: 1005px ) {
+      right: 10px;
+    }
     .icon{
       font-size:12px;
     }
@@ -120,6 +126,16 @@ export default {
   ::v-deep.el-menu-item:focus,
   .el-menu-item:hover {
     background: white;
+  }
+}
+.my-main{
+  margin-top:40px;
+  margin-left:30px;
+  width:100%;
+  min-height:800px;
+  @media screen and ( max-width: 1005px ) {
+    margin-top:20px;
+    margin-left:15px;
   }
 }
 </style>

@@ -2,6 +2,7 @@
 
 const tags = {
     topic: text => {
+        if(!text) return
         const regexp = /<span\s*id="topic"\s*value="(?<value>\w+)"\s*>(?<string>[^<]+)<\/span>/igum;
         return text.replace(regexp, match => {
             return match.replace(regexp, (content, value, text) => {
@@ -11,6 +12,7 @@ const tags = {
         });
     },
     usermention: text => {
+        if(!text) return
         const regexp = /<span\s*id="member"\s*value="(?<value>\w+)"\s*>(?<string>[^<]+)<\/span>/igum;
         return text.replace(regexp, match => {
             return match.replace(regexp, (content, value, text) => {
