@@ -26,8 +26,6 @@ export default ({ app }) => {
         }
       }
 
-      // 网站关闭
-
       // 网站付费拦截
       if (freePath.includes(to.path)) return next()
       const { attributes: { set_site: site_info }} = store.state.site.info

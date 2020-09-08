@@ -2,7 +2,7 @@
   <div v-loading="payLoading" class="page-post">
     <main v-loading="articleLoading">
       <div class="container-post">
-        <div v-if="thread.isApproved === 0" class="checking">内容正在审核中，审核通过后才能正常显示！</div>
+        <div v-if="thread.isApproved === 0" class="checking">{{ $t('topic.examineTip') }}</div>
         <topic-header
           :author="thread.user || {}"
           :thread="thread"
@@ -148,20 +148,27 @@ export default {
       this.managementList = this.managementList.filter(item => item.canOpera)
     },
     initActions(data, firstPost) {
+      const viewInfo = { ...this.actions[0] }
+      const favorInfo = { ...this.actions[2] }
+      const likeInfo = { ...this.actions[1] }
       if (data) {
-        this.actions[0].count = data.viewCount
-        this.actions[2].isStatus = data.isFavorite
-        this.actions[2].text = this.actions[2].isStatus ? this.$t('topic.collectionAlready') : this.$t('topic.collection')
-        this.actions[2].icon = this.actions[2].isStatus ? 'favored' : 'favor'
-        this.actions[2].canOpera = data.canFavorite
+        viewInfo.count = data.viewCount
+        favorInfo.isStatus = data.isFavorite
+        favorInfo.text = favorInfo.isStatus ? this.$t('topic.collectionAlready') : this.$t('topic.collection')
+        favorInfo.icon = favorInfo.isStatus ? 'favored' : 'favor'
+        favorInfo.canOpera = data.canFavorite
       }
       if (firstPost) {
-        this.actions[1].count = firstPost.likeCount
-        this.actions[1].isStatus = firstPost.isLiked
-        this.actions[1].canOpera = firstPost.canLike
-        this.actions[1].text = this.actions[1].isStatus ? this.$t('topic.liked') : this.$t('topic.getLike')
-        this.actions[1].icon = this.actions[1].isStatus ? 'liked' : 'like'
+        likeInfo.count = firstPost.likeCount
+        likeInfo.isStatus = firstPost.isLiked
+        likeInfo.canOpera = firstPost.canLike
+        likeInfo.text = likeInfo.isStatus ? this.$t('topic.liked') : this.$t('topic.getLike')
+        likeInfo.icon = likeInfo.isStatus ? 'liked' : 'like'
       }
+
+      this.$set(this.actions, 0, viewInfo)
+      this.$set(this.actions, 1, likeInfo)
+      this.$set(this.actions, 2, favorInfo)
     },
     paying({ payWay, hideAvatar, rewardAmount }) {
       this.payment.rewardAmount = rewardAmount
