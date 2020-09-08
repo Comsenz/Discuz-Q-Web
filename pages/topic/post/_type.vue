@@ -26,10 +26,11 @@
 const threadInclude = 'firstPost,firstPost.images,firstPost.attachments,category,threadVideo'
 import publishResource from '@/mixin/publishResource'
 import handleError from '@/mixin/handleError'
+import tencentCaptcha from '@/mixin/tencentCaptcha'
 
 export default {
   name: 'Post',
-  mixins: [handleError, publishResource],
+  mixins: [tencentCaptcha, handleError, publishResource],
   validate({ params }) {
     return parseFloat(params.type) < 4
   },
@@ -68,6 +69,9 @@ export default {
     },
     categoryId() {
       return this.$route.query.categoryId
+    },
+    forums() {
+      return this.$store.state.site.info.attributes || {}
     }
   },
   mounted() {
@@ -131,7 +135,7 @@ export default {
       if (this.type === '4' && !this.post.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
       return 'success'
     },
-    publish() {
+    async publish() {
       if (this.checkPublish() !== 'success') return
       this.onPublish = true
       if (this.isEditor) {
@@ -160,6 +164,7 @@ export default {
       }
       this.publishThreadResource(params, this.post)
       params = this.publishPostResource(params, this.post)
+      params = await this.checkCaptcha(params)
       return this.$store.dispatch('jv/post', params).then(data => {
         this.$router.push(`/topic/${data._jv.id}`)
       }, e => this.handleError(e)).finally(() => {
@@ -168,7 +173,7 @@ export default {
     },
     editPostPublish() {
       // 用于 更新 content image attached
-      const postParams = {
+      let postParams = {
         _jv: {
           type: `posts`,
           relationships: {}
@@ -176,12 +181,12 @@ export default {
         content: this.post.text
       }
       if (this.threadId) postParams._jv.id = this.threadId
-      this.publishPostResource(postParams, this.post)
+      postParams = this.publishPostResource(postParams, this.post)
       return this.$store.dispatch('jv/patch', [postParams, { url: `/posts/${this.post.id}` }])
     },
-    editThreadPublish() {
+    async editThreadPublish() {
       // 用于 更新 title video category payment
-      const threadParams = {
+      let threadParams = {
         _jv: {
           type: `threads`,
           relationships: {
@@ -196,7 +201,8 @@ export default {
       threadParams.type = this.type
       threadParams.price = this.payment.isPaid ? this.payment.price : 0
       threadParams.free_words = this.payment.isPaid ? this.payment.freeWords : 0
-      this.publishThreadResource(threadParams, this.post)
+      threadParams = this.publishThreadResource(threadParams, this.post)
+      threadParams = await this.checkCaptcha(threadParams)
       return this.$store.dispatch('jv/patch', [threadParams, { url: `/threads/${this.threadId}` }])
     }
   }

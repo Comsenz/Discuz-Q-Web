@@ -52,8 +52,8 @@
             @attachedChange="e => onPostContentChange(e.key, e.value)"
           />
         </div>
-        <span v-if="typeInformation && typeInformation.text" class="tip">
-          {{ typeInformation.textLimit>=typeInformation.text.length ? $t('post.note', { num: textLimit - text.length }) : $t('post.exceed', { num: text.length - textLimit }) }}
+        <span v-if="typeInformation && typeInformation.textLimit && post.text " class="tip">
+          {{ typeInformation.textLimit>=post.text.length ? $t('post.note', { num: typeInformation.textLimit - post.text.length }) : $t('post.exceed', { num: post.text.length - typeInformation.textLimit }) }}
         </span>
         <div class="emoji-list">
           <emoji-list v-show="showEmoji" @selectEmoji="selectActions" />

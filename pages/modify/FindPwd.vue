@@ -14,7 +14,7 @@
           v-if="!canCountDown"
           :disabled="isVerifyDisabled"
           :class="{disabled: isVerifyDisabled}"
-          @click="sendverify"
+          @click="sendVerifyCode"
         >
           {{ $t('modify.sendVerifyCode') }}
         </button>
@@ -50,28 +50,13 @@
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
 import handleError from '@/mixin/handleError'
+import tencentCaptcha from '@/mixin/tencentCaptcha'
 
-const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
 export default {
   name: 'Findpwd',
-  // middleware: 'auth',
-  // meta: {
-  //   requiresAuth: true
-  // },
   mixins: [
-    tcaptchs, handleError
+    tencentCaptcha, handleError
   ],
-  async asyncData({ params, store }) {
-    const _params = {
-      _jv: {
-        type: 'forum'
-      }
-    }
-
-    const data = await store.dispatch('jv/get', _params)
-    // console.log('asyncData =>', data)
-    return { forums: data }
-  },
   data() {
     return {
       phoneNumber: '',
@@ -83,7 +68,6 @@ export default {
       newPassword: '',
       newPasswordRepeat: '',
       username: '',
-      forums: '',
       url: '', // 上一个页面的路径
       validate: false, // 默认不开启注册审核
       code: '', // 注册邀请码
@@ -95,6 +79,11 @@ export default {
       captcha_rand_str: '', // 腾讯云验证码返回随机字符串
       ticket: '',
       randstr: ''
+    }
+  },
+  computed: {
+    forums() {
+      return this.$store.state.site.info.attributes || {}
     }
   },
   mounted() {
@@ -147,15 +136,12 @@ export default {
       }, 1000)
     },
     async sendVerifyCode() {
-      const params = {
+      let params = {
         _jv: { type: 'sms/send' },
         mobile: this.phoneNumber,
         type: 'reset_pwd'
       }
-      if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha_app_id) {
-        params.captcha_rand_str = this.randstr
-        params.captcha_ticket = this.ticket
-      }
+      params = await this.checkCaptcha(params)
       status.run(() => this.$store.dispatch('jv/post', params))
         .then(res => {
           if (res.interval) this.countDown(res.interval)
@@ -194,30 +180,6 @@ export default {
             if (process.client) window.localStorage.setItem('username', res.username)
             this.$router.push('/modify/resetpwdsuccess')
           }, e => this.handleError(e))
-      }
-    },
-    sendverify() {
-      if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha) {
-        this.toTCaptcha()
-      } else {
-        this.sendVerifyCode()
-      }
-    },
-    // 验证码
-    toTCaptcha() {
-      console.log('---------验证码-------')
-      if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha_app_id) {
-        // eslint-disable-next-line no-undef
-        this.captcha = new TencentCaptcha(this.forums.qcloud.qcloud_captcha_app_id, res => {
-          console.log('h5验证码', res)
-          if (res.ret === 0) {
-            this.ticket = res.ticket
-            this.randstr = res.randstr
-            this.sendVerifyCode()
-          }
-        })
-        // 显示验证码
-        this.captcha.show()
       }
     }
   }
