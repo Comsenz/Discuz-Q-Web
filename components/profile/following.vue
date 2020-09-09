@@ -148,7 +148,7 @@ export default {
     getFollowingList(type) {
       this.loading = true
       const params = {
-        include: ['toUser', 'toUser.groups'],
+        include: 'toUser,toUser.groups',
         'filter[type]': 1,
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
@@ -225,7 +225,8 @@ export default {
     },
     toUser(userId) {
       this.$router.push(`/profile?userId=${userId}`)
-    }, confirm(e) {
+    },
+    confirm(e) {
 
     },
     onClickSearch() {

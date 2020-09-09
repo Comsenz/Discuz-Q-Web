@@ -50,19 +50,31 @@
         />
       </div>
       <div class="myprofile-bottom">
-        <div class="myprofile-title marglef">
+        <div
+          class="myprofile-title marglef"
+          @click="toTopic"
+        >
           <span>{{ $t('profile.topic') }}</span>
           <span class="num">{{ userInfo.threadCount }}</span>
         </div>
-        <div class="myprofile-title">
+        <div
+          class="myprofile-title"
+          @click="toFollowing"
+        >
           <span>{{ $t('profile.following') }}</span>
           <span class="num">{{ userInfo.fansCount }}</span>
         </div>
-        <div class="myprofile-title">
+        <div
+          class="myprofile-title"
+          @click="toFollowers"
+        >
           <span>{{ $t('profile.followers') }}</span>
           <span class="num">{{ userInfo.followCount }}</span>
         </div>
-        <div class="myprofile-title">
+        <div
+          class="myprofile-title"
+          @click="toLikes"
+        >
           <span>{{ $t('profile.likes') }}</span>
           <span class="num">{{ userInfo.likedCount }}</span>
         </div>
@@ -386,18 +398,6 @@ export default {
         this.signcontent = newValue
       }
     }
-    // usersId() {
-    //   console.log(this.userId)
-
-    //   return this.$store.getters['session/get']('userId')
-    // }
-    // userInfo() {
-    //   const userInfo = this.$store.getters['jv/get'](`users/${this.userId}`)
-    //   console.log(userInfo)
-    //   userInfo.groupsName = userInfo.groups ? userInfo.groups[0].name : ''
-    //   this.setNum(userInfo)
-    //   return userInfo
-    // }
   },
   mounted() {
     this.userinfo()
@@ -435,7 +435,6 @@ export default {
         }
       }, 1000)
     },
-    // 使用计算属性获取不到userinfo,直接请求接口就可以了
     userinfo() {
       this.userId = this.$store.getters['session/get']('userId')
 
@@ -610,7 +609,7 @@ export default {
             const promsget = {
               _jv: {
                 type: 'users',
-                id: this.userid
+                id: this.userId
               }
               // include: 'groups',
             }
@@ -713,7 +712,7 @@ export default {
             const promsget = {
               _jv: {
                 type: 'users',
-                id: this.userid
+                id: this.userId
               }
               // include: 'groups',
             }
@@ -809,7 +808,7 @@ export default {
             const promsget = {
               _jv: {
                 type: 'users',
-                id: this.userid
+                id: this.userId
               }
               // include: 'groups',
             }
@@ -823,7 +822,20 @@ export default {
             })
           }
         }, e => this.handleError(e))
+    },
+    toTopic() {
+      this.$router.push(`/profile?userId=${this.userId}&current=1`)
+    },
+    toFollowing() {
+      this.$router.push(`/profile?userId=${this.userId}&current=2`)
+    },
+    toFollowers() {
+      this.$router.push(`/profile?userId=${this.userId}&current=3`)
+    },
+    toLikes() {
+      this.$router.push(`/profile?userId=${this.userId}&current=4`)
     }
+
   }
 }
 </script>

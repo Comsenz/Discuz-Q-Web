@@ -1,21 +1,25 @@
 <template>
-  <div class="profile">
+  <div
+    v-loading="loading"
+    class="profile"
+  >
     <!-- 个人主页头部 -->
     <div
       v-show="headFixed"
       class="isFixed"
     >
       <div class="headcon">
-        <Avatar
-          :user="userInfo"
-          :size="40"
-          class="avatar"
-        />
-        <div class="profile-info">
-          <span class="info-name">{{ userInfo.username || '' }}</span>
-          <span class="info-actor">{{ userInfo.groupsName }}</span>
+        <div class="hinfo">
+          <Avatar
+            :user="userInfo"
+            :size="40"
+            class="avatar"
+          />
+          <div class="profile-info">
+            <span class="info-name">{{ userInfo.username || '' }}</span>
+            <span class="info-actor">{{ userInfo.groupsName }}</span>
+          </div>
         </div>
-
         <el-tabs
           v-model="activeName"
           class="register-select"
@@ -70,10 +74,7 @@
       </div>
     </div>
     <!-- 个人主页头部2 -->
-    <div
-      v-show="!headFixed"
-      class="profile-h"
-    >
+    <div class="profile-h">
       <Avatar
         :user="userInfo"
         :size="100"
@@ -93,6 +94,7 @@
       >
         <!-- follow 关注状态 0：未关注 1：已关注 2：互相关注 -->
         <el-button
+          v-if="userInfo"
           type="primary"
           plain
           size="small"
@@ -103,7 +105,7 @@
             ? `+ ${$t('profile.following')}`
             : userInfo.follow == 1
               ? $t('profile.followed')
-              : $t('profile.mutualfollow')
+              : $t('profile.mutualfollow') || ''
         }}</el-button>
         <el-button
           v-if="can_create_dialog"
@@ -167,12 +169,12 @@
 </template>
 
 <script>
-import forums from '@/mixin/forums'
 import { status } from '@/library/jsonapi-vuex/index'
+import handleError from '@/mixin/handleError'
 
 export default {
   layout: 'custom_layout',
-  mixins: [forums],
+  mixins: [handleError],
   data() {
     return {
       userId: 0, // 路由获取的用户id
@@ -182,8 +184,15 @@ export default {
       activeName: '1', // 默认激活tab
       can_create_dialog: false, // 创建私信权利
       headFixed: false,
-      dialogId: 0
+      loading: false,
+      dialogId: 0,
+      offsetTop: 0
 
+    }
+  },
+  computed: {
+    forums() {
+      return this.$store.state.site.info.attributes || {}
     }
   },
   created() {
@@ -191,11 +200,14 @@ export default {
     this.userId = userId || this.currentLoginId
     this.current = current
     this.changeactive()
-    this.userinfo()
+    this.getUserInfo(this.userId)
     this.getAuth()
   },
   mounted() {
     window.addEventListener('scroll', this.handleScroll)
+    // this.$nextTick(() => {
+    //   this.offsetTop = document.querySelector('.profile-h').offsetTop
+    // })
   },
   destroyed() {
     window.removeEventListener('scroll', this.handleScroll)
@@ -206,45 +218,29 @@ export default {
       // const offsetTop = document.querySelector('.profile-h').offsetTop
       // console.log(scrollTop)
       // console.log(offsetTop)
-      if (scrollTop > 50) {
+      if (scrollTop > 220) {
         this.headFixed = true
       } else {
         this.headFixed = false
       }
     },
-    // 初始化获取用户信息
-    userinfo() {
-      const params = {
-        include: 'groups'
-      }
-      this.$store.dispatch('jv/get', [`users/${this.userId}`, { params }]).then(res => {
-        console.log('useriinfo', res)
-        this.userInfo = res
-        this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
-      })
-    },
     // tab激活
     changeactive() {
       this.activeName = this.current ? this.current : this.activeName
-      console.log(this.activeName)
     },
     // 私信权限判断
     getAuth() {
       // 用户组等改变会改变私信权限
-      const params = {
-        include: 'users'
+      console.log('用户信息', this.forums)
+      if (this.forums.other && this.forums.other.can_create_dialog) {
+        this.can_create_dialog = true
+      } else {
+        this.can_create_dialog = false
       }
-      this.$store.dispatch('jv/get', [`forum`, { params }]).then(res => {
-        console.log('用户信息', res)
-        if (res.other && res.other.can_create_dialog) {
-          this.can_create_dialog = true
-        } else {
-          this.can_create_dialog = false
-        }
-      })
     },
     // 获取用户信息
     getUserInfo(userId) {
+      // this.loading = true
       const params = {
         include: 'groups,dialog'
       }
@@ -253,28 +249,18 @@ export default {
           .dispatch('jv/get', [`users/${userId}`, { params }])
           .then(res => {
             console.log('关注与取消关注用户信息重新获取', res)
-            this.userInfo = res
-            this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
             if (res.isDeleted) {
-              this.$store.dispatch('forum/setError', {
-                code: 'user_deleted',
-                status: 500
-              })
-              this.loaded = false
+              this.$message.error('用户不存在')
             } else {
-              this.loaded = true
+              this.loading = false
               this.dialogId = res.dialog ? res.dialog._jv.id : 0
+              this.userInfo = res
+              this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
             }
           }))
         .catch(err => {
-          this.loaded = false
-          if (err.statusCode === 404) {
-            console.log('没找到')
-            this.$store.dispatch('forum/setError', {
-              code: 'user_deleted',
-              status: 500
-            })
-          }
+          this.loading = false
+          this.handleError(err)
         })
     },
     // 添加关注
@@ -406,10 +392,14 @@ export default {
       width: 1005px;
       height: 65px;
       display: flex;
+      justify-content: space-between;
+      .hinfo {
+        display: flex;
+      }
       .profile-info {
         display: flex;
         flex-direction: column;
-        flex: 1;
+        // flex: 1;
         margin-left: 10px;
         .info-name {
           font-size: 16px;
@@ -426,10 +416,10 @@ export default {
         border: none;
         background: transparent;
         box-shadow: none;
-        flex: 3;
+        // flex: 3;
       }
       .profile-btn {
-        flex: 1;
+        // flex: 1;
         .h-button1 {
           width: 70px;
           height: 35px;
@@ -439,6 +429,7 @@ export default {
           font-size: 14px;
           border-radius: 0px;
           margin-left: 0px;
+          padding: 9px 0px;
         }
         .h-button2 {
           width: 70px;
@@ -448,6 +439,7 @@ export default {
           border-color: #1878f3;
           font-size: 14px;
           border-radius: 0px;
+          padding: 9px 0px;
         }
       }
       ::v-deep .el-tabs__content {

@@ -78,7 +78,7 @@ export default {
     loadMore() {
       if (this.hasMore) {
         this.pageNum += 1
-        this.loadThreads()
+        this.loadlikes()
       }
     }
   }
