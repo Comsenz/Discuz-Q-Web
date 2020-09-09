@@ -6,7 +6,7 @@
     <Avatar :user="item.user" class="avatar" />
     <div class="main-cont">
       <div class="top-flex">
-        <div class="user-name">{{ item.user && item.user.username }}</div>
+        <nuxt-link v-if="item.user" :to="`/profile?userId=${item.user.id}`" class="user-name">{{ item.user.username }}</nuxt-link>
         <div class="time">{{ $t('topic.publishAt') }} {{ timerDiff(item.createdAt) }}{{ $t('topic.before') }}</div>
       </div>
       <template v-if="item.firstPost">
@@ -58,7 +58,7 @@
             <div class="btn comment" @click="toDetail">
               <svg-icon type="comment" class="icon" />
               {{ $t('topic.comment') }} {{ item.firstPost.comment > 0 ? item.firstPost.comment : '' }}</div>
-            <share-popover :threads-id="item._jv.id">
+            <share-popover v-if="item._jv && item._jv.id" :threads-id="item._jv.id">
               <div class="btn share">
                 <svg-icon type="link" class="icon" />
                 {{ $t('topic.share') }}
@@ -120,18 +120,18 @@ export default {
     // 跳转详情页
     toDetail() {
       if (!this.canViewPostsFn()) return
-      this.$router.push({ path: `/topic/${this.item._jv.id}` })
+      this.$router.push({ path: `/topic/${this.item._jv && this.item._jv.id}` })
     },
     // 点击图片 判断是否付费， 未付费跳转详情页
     onClickImage() {
       if (!this.unpaid || !this.canViewPostsFn()) return
-      this.$router.push({ path: `/topic/${this.item._jv.id}` })
+      this.$router.push({ path: `/topic/${this.item._jv && this.item._jv.id}` })
     },
     // 点击视频 判断是否付费， 未付费跳转详情页
     openVideo() {
       if (!this.canViewPostsFn()) return
       if (this.unpaid) {
-        this.$router.push({ path: `/topic/${this.item._jv.id}` })
+        this.$router.push({ path: `/topic/${this.item._jv && this.item._jv.id}` })
       } else {
         this.showVideoPop = true
       }

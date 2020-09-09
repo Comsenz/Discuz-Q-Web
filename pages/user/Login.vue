@@ -35,15 +35,14 @@
             <span class="agree">{{ $t('user.status') }} </span>
           </el-checkbox>
           <div class="logorreg">
-            <span>尚无账号，立即
+            <span v-if="canReg">尚无账号，立即
               <span
-                v-if="canReg"
                 style="color: #1878f3;cursor:pointer; margin-left:-3px;"
                 @click="toRegister"
               > {{ $t('user.register') }}</span></span>
             <nuxt-link
               to="/modify/findpwd"
-              class="findpass"
+              :class="['findpass',iscanReg()]"
             >{{ $t('modify.findpawdtitle') }}</nuxt-link>
           </div>
         </div>
@@ -83,7 +82,7 @@
           @keyup.enter.native="PhoneLogin"
         />
         <div class="agreement">
-          <el-checkbox v-model="checked" />
+          <!-- <el-checkbox v-model="checked" /> -->
           <reg-agreement />
         </div>
         <el-button
@@ -100,44 +99,27 @@
         <div class="quick">
           <div class="quick-container">
             <div class="quick-title">
-              <img
-                src="@/assets/wechat.png"
-                alt=""
-              >
+              <img src="@/assets/wechat.png">
               <span>微信扫码登录</span>
             </div>
-
             <div class="qrcode">
-              <img
-                :src="info.img"
-                alt=""
-              >
-
+              <img :src="info.img">
             </div>
             <span>请用微信扫一扫扫码上方二维码</span>
           </div>
-          <div class="quick-container">
+          <!-- <div class="quick-container">
             <div class="quick-title">
-              <img
-                src="@/assets/qq.png"
-                alt=""
-              >
+              <img src="@/assets/qq.png">
               <span>qq一键登录</span>
             </div>
-
             <div
               class="qrcode2"
               @click="qqLogin"
             >
-              <img
-                src="@/assets/qq-big.png"
-                alt=""
-              >
-
+              <img src="@/assets/qq-big.png">
             </div>
             <span>点击用QQ号码登陆注册</span>
-          </div>
-
+          </div> -->
         </div>
       </el-tab-pane>
     </el-tabs>
@@ -158,13 +140,12 @@ export default {
   mixins: [handleError, tcaptchs],
   async asyncData({ params, store }) {
     const _params = {
-      _jv: {
-        type: 'forum'
-      }
+      include: 'users',
+      'filter[tag]': 'agreement'
     }
 
-    const data = await store.dispatch('jv/get', _params)
-    // console.log('asyncData =>', data)
+    const data = await store.dispatch('jv/get', [`forum`, { _params }])
+    console.log('asyncData =>', data)
     return { forums: data }
   },
   data() {
@@ -223,7 +204,6 @@ export default {
     if (this.forums && this.forums.set_reg && this.forums.set_reg.register_close) {
       this.canReg = true
     }
-    console.log(this.forums)
     this.QRcode()
     this.changeactive()
   },
@@ -294,7 +274,6 @@ export default {
           this.$router.push('/site/info')
         }
       })
-      this.$store.dispatch('forum/setError', { loading: false })
     },
     // 手机号
     phoneRegister() {
@@ -416,14 +395,6 @@ export default {
             }
           }
         }
-        if (this.register_captcha && this.validate) {
-          params.data.attributes.register_reason = this.reason
-          params.data.attributes.captcha_ticket = this.ticket
-          params.data.attributes.captcha_rand_str = this.randstr
-        }
-        if (this.validate) {
-          params.data.attributes.register_reason = this.reason
-        }
         if (this.register_captcha) {
           params.data.attributes.captcha_ticket = this.ticket
           params.data.attributes.captcha_rand_str = this.randstr
@@ -525,6 +496,9 @@ export default {
     },
     toRegister() {
       this.$router.push(`/user/register?url=${this.url}&code=${this.code}`)
+    },
+    iscanReg() {
+      return [this.canReg ? '' : 'noreg']
     }
 
   }
@@ -539,9 +513,6 @@ export default {
   display: flex;
   width: 400px;
   margin-top: 62px;
-  // margin-bottom: 178px;
-  // height: 466px;
-  // background: red;
   flex-direction: column;
   .register-title {
     width: 130px;
@@ -643,6 +614,11 @@ export default {
     }
     .logorreg {
       margin-top: 28px;
+      .noreg {
+        position: absolute;
+        top: 140px;
+        margin-left: 235px;
+      }
     }
     .agree {
       color: #6d6d6d;

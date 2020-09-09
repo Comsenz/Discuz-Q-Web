@@ -34,7 +34,7 @@ export default {
     },
     isFollow: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   data() {

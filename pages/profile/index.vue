@@ -116,7 +116,7 @@
       </div>
     </div>
     <div class="profile-c">
-      <div style="width:700px;margin: 15px 15px 0 0;">
+      <div class="profile-cc">
         <el-tabs
           v-model="activeName"
           type="border-card"
@@ -132,7 +132,9 @@
           <el-tab-pane
             :label="$t('profile.likes')+ ` (${userInfo.likedCount || 0})`"
             name="2"
-          ><like :user-id="userId" /></el-tab-pane>
+          >
+            <like :user-id="userId" />
+          </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.following')+ ` (${userInfo.followCount || 0})`"
             name="3"
@@ -383,6 +385,10 @@ export default {
       ::v-deep.el-tabs__header {
         padding: 20px;
       }
+    }
+    .profile-cc {
+      width: 700px;
+      margin: 15px 15px 0 0;
     }
   }
   .isFixed {

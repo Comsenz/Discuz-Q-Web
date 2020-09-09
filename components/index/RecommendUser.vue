@@ -16,23 +16,22 @@ export default {
   name: 'RecommendUser',
   mixins: [handleError],
   // 异步数据用法
-  async asyncData({ params, store }) {
-    const _params = {
-      include: 'groups',
-      sort: 'createdAt',
-      'page[limit]': 4,
-      'page[number]': 1,
-      'filter[status]': 'normal'
-    }
-    console.log('123123')
-    try {
-      const data = await store.dispatch('jv/get', ['users', { _params }])
-      return { userList: [...data] }
-    } catch (error) {
-      console.log('ssr err')
-      return { list: [] }
-    }
-  },
+  // async asyncData({ params, store }) {
+  //   const _params = {
+  //     include: 'groups',
+  //     sort: 'createdAt',
+  //     'page[limit]': 4,
+  //     'page[number]': 1,
+  //     'filter[status]': 'normal'
+  //   }
+  //   try {
+  //     const data = await store.dispatch('jv/get', ['users', { _params }])
+  //     return { userList: [...data] }
+  //   } catch (error) {
+  //     console.log('ssr err')
+  //     return { list: [] }
+  //   }
+  // },
   data() {
     return {
       user: {

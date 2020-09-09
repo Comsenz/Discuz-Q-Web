@@ -2,14 +2,13 @@
   <div class="user-manage">
     <div class="filter-cont">
       <!-- 筛选 -->
-      <el-select v-model="selectedGroup" :placeholder="$t('profile.pleaseselect')" @change="onChangeFilter">
-        <el-option label="所有身份" value="" size="medium" />
+      <el-select v-model="selectedGroup" :placeholder="$t('profile.pleaseselect')" size="medium" @change="onChangeFilter">
+        <el-option :label="$t('manage.allIdentity')" value="" />
         <el-option
           v-for="item in groupList"
           :key="item.value"
           :label="item.label"
           :value="item.value"
-          size="medium"
         />
       </el-select>
       <div class="content">
@@ -19,39 +18,49 @@
         </template>
       </div>
       <!-- 搜索 -->
-      <el-input v-model="searchText" placeholder="请输入成员名称" class="search" @keyup.enter.native="onClickSearch">
+      <el-input v-model="searchText" :placeholder="$t('manage.pleaseInputUserName')" class="search" size="medium" @keyup.enter.native="onClickSearch">
         <i slot="suffix" class="el-icon-search el-input__icon" />
       </el-input>
       <!-- 批量操作 -->
-      <el-select v-model="handleValue" placeholder="批量操作" :disabled="forums && forums.other && !forums.other.can_edit_user_group" @change="onChangeGroup">
+      <el-select v-model="handleValue" :placeholder="$t('manage.batchOperate')" :disabled="forums && forums.other && !forums.other.can_edit_user_group" size="medium" @change="onChangeGroup">
         <el-option
           v-for="item in groupList"
           :key="item.value"
           :disabled="item.value === '7'"
-          :label="'设为' + item.label"
+          :label="$t('manage.set') + item.label"
           :value="item.value"
-          size="medium"
         />
       </el-select>
     </div>
-    <el-table v-if="userList.length > 0" ref="multipleTable" v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
+    <el-table v-if="userList.length > 0" ref="multipleTable" v-loading="loading" :data="userList" style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="35" />
-      <el-table-column prop="username" label="成员名称" />
-      <el-table-column label="身份">
+      <el-table-column :label="$t('manage.userName')" min-width="100">
+        <template slot-scope="scope">
+          <div class="flex">
+            <avatar :user="{ username: scope.row.username, avatarUrl: scope.row.avatarUrl}" :size="30" :round="true" />
+            <span class="user-name">{{ scope.row.username }}</span>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('manage.identity')">
         <template slot-scope="scope">{{ scope.row.groups && scope.row.groups.length > 0 && scope.row.groups[0] ? scope.row.groups[0].name : '' }}</template>
       </el-table-column>
-      <el-table-column label="状态" width="60">
+      <el-table-column :label="$t('profile.status')" min-width="60">
         <template slot-scope="scope">
           <template v-if="scope.row.status === 0">{{ $t('manage.normal') }}</template>
           <span v-else class="red">{{ $t('manage.disable') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="圈龄" width="60" />
-      <el-table-column label="加入方式" />
+      <el-table-column label="圈龄">
+        <template slot-scope="scope">
+          {{ scope.row.createdAt | formatDateDay }}
+        </template>
+      </el-table-column>
+      <!-- <el-table-column label="加入方式" /> -->
       <el-table-column label="最后发言时间" width="140">
         <template slot-scope="scope">{{ scope.row.updatedAt | formatDate }}</template>
       </el-table-column>
-      <el-table-column label="操作" width="80">
+      <el-table-column fixed="right" :label="$t('manage.operate')" width="80">
         <template slot-scope="scope">
           <span v-if="forums && forums.other && !forums.other.can_edit_user_group" class="disable">{{ $t('manage.modifyRole') }}</span>
           <el-dropdown v-else class="handle-dropdown" placement="bottom" trigger="click" disabled @command="handleCommand">
@@ -59,7 +68,7 @@
               {{ $t('manage.modifyRole') }}
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item v-for="(item,index) in groupList" :key="index" :command="{'userId':scope.row._jv.id, 'command':item.value}" :disabled="item.value === '7' ">设为{{ item.label }}</el-dropdown-item>
+              <el-dropdown-item v-for="(item,index) in groupList" :key="index" :command="{'userId':scope.row._jv.id, 'command':item.value}" :disabled="item.value === '7' ">{{ $t('manage.set') + item.label }}</el-dropdown-item>
               <el-dropdown-item v-if="userInfo && userInfo.canEdit && scope.row.status === 0" :command="{'userId':scope.row._jv.id, 'command':'disable'}">{{ $t('manage.disable') }}</el-dropdown-item>
               <el-dropdown-item v-else-if="userInfo && userInfo.canEdit && scope.row.status === 1" :command="{'userId':scope.row._jv.id, 'command':'normal'}">{{ $t('manage.cancelDisable') }}</el-dropdown-item>
             </el-dropdown-menu>
@@ -77,7 +86,7 @@
         :current-page="pageNum"
         :page-sizes="[10, 20, 50, 100]"
         :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
+        :layout="layout"
         :total="total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -87,11 +96,14 @@
 </template>
 <script>
 import handleError from '@/mixin/handleError'
-import { formatDate } from '@/utils/time'
+import { formatDate, dateDay } from '@/utils/time'
 export default {
   filters: {
     formatDate(date) {
       return formatDate(date, 'yyyy-MM-dd hh:mm')
+    },
+    formatDateDay(date) {
+      return dateDay(date)
     }
   },
   mixins: [handleError],
@@ -108,7 +120,9 @@ export default {
       searchText: '',
       userList: [], // 用户列表
       selectedHandle: '', //  配置身份 选中的操作
-      multipleSelection: [] // 多选
+      multipleSelection: [], // 多选
+      layout: 'total, sizes, prev, pager, next, jumper',
+      isPad: false
     }
   },
   computed: {
@@ -120,10 +134,17 @@ export default {
     }
   },
   mounted() {
-    console.log('forums', this.forums)
-    console.log('userInfo', this.userInfo)
     this.getUserList()
     this.getGroupList()
+    // window.onresize = () => {
+    //   if (document.documentElement.clientWidth < 1050 && document.documentElement.clientWidth >= 768) {
+    //     this.isPad = true
+    //     this.layout = 'prev, pager, next'
+    //   } else {
+    //     this.isPad = false
+    //     this.layout = 'total, sizes, prev, pager, next, jumper'
+    //   }
+    // }
   },
   methods: {
     // 获取用户组
@@ -148,7 +169,6 @@ export default {
         'filter[username]': `*${this.searchText}*`
       }
       this.$store.dispatch('jv/get', ['users', { params }]).then((res) => {
-        console.log('res', res)
         if (res) {
           this.total = res._jv.json.meta.total
           this.userList = res
@@ -196,7 +216,6 @@ export default {
     // 多选操作
     handleSelectionChange(val) {
       this.multipleSelection = val
-      console.log('val', val)
     },
     // 批量操作
     onChangeGroup(val) {
@@ -253,20 +272,6 @@ export default {
     },
     // 修改用户状态
     modifyUserStatus(status, userId) {
-      // const params = [
-      //   {
-      //     _jv: {
-      //       type: 'users'
-      //     }
-      //   },
-      //   {
-      //     data: {
-      //       attributes: {
-      //         'status': status
-      //       }
-      //     }
-      //   }
-      // ]
       const params = {
         data: {
           attributes: {
@@ -290,6 +295,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.user-manage{
+  overflow-x: auto;
+}
 .filter-cont {
   display: flex;
   align-items: center;
@@ -299,9 +307,15 @@ export default {
   }
   .el-select {
     width: 140px;
+    @media screen and ( max-width: 1005px ) {
+      width: 120px;
+    }
   }
   .el-input {
     width: 220px;
+    @media screen and ( max-width: 1005px ) {
+      width: 140px;
+    }
   }
   .search {
     margin-right: 10px;
@@ -338,5 +352,12 @@ export default {
 }
 .no-more{
   margin-top: 40px;
+}
+.user-name{
+  margin-left: 10px;
+}
+.flex{
+  display: flex;
+  align-items: center;
 }
 </style>

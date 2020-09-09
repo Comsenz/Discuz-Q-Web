@@ -3,6 +3,7 @@
     v-if="(forums.agreement && forums.agreement.register) || (forums.agreement && forums.agreement.privacy)"
     class="reg-agreement"
   >
+    <el-checkbox v-model="checked" />
     <span class="agree">{{ $t('permission.user.agreement') }}</span>
     <span
       v-if="forums.agreement && forums.agreement.register"
@@ -35,7 +36,8 @@ export default {
       forums: '',
       popTitle: '',
       popDetail: '',
-      showagree: false
+      showagree: false,
+      checked: true
     }
   },
   mounted() {
@@ -70,7 +72,7 @@ export default {
 </script>
 <style lang='scss' scoped>
 .reg-agreement {
-  display:inline-block;
+  display: inline-block;
   .agree {
     color: #6d6d6d;
   }
@@ -78,11 +80,11 @@ export default {
     // display: inline-block;
     // width: 80px;
     margin-left: -7px;
-    color:#409eff;
+    color: #409eff;
     cursor: pointer;
   }
   .content {
-    height:500px;
+    height: 500px;
     width: 1005px;
     white-space: pre-wrap;
     line-height: 30px;
