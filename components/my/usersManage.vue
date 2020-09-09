@@ -32,7 +32,7 @@
         />
       </el-select>
     </div>
-    <el-table v-if="userList.length > 0" ref="multipleTable" v-loading="loading" :data="userList" style="width: 100%" @selection-change="handleSelectionChange">
+    <el-table ref="multipleTable" v-loading="loading" :data="userList" style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="35" />
       <el-table-column :label="$t('manage.userName')" min-width="100">
         <template slot-scope="scope">
@@ -63,7 +63,7 @@
       <el-table-column fixed="right" :label="$t('manage.operate')" width="80">
         <template slot-scope="scope">
           <span v-if="forums && forums.other && !forums.other.can_edit_user_group" class="disable">{{ $t('manage.modifyRole') }}</span>
-          <el-dropdown v-else class="handle-dropdown" placement="bottom" trigger="click" disabled @command="handleCommand">
+          <el-dropdown v-else class="handle-dropdown" placement="bottom" trigger="click" @command="handleCommand">
             <span class="el-dropdown-link">
               {{ $t('manage.modifyRole') }}
             </span>
@@ -76,13 +76,14 @@
         </template>
       </el-table-column>
     </el-table>
-    <div v-if="!loading && userList.length <= 0" class="no-more">
+    <!-- <div v-if="!loading && userList.length <= 0" class="no-more">
       <svg-icon type="empty" class="empty-icon" />{{ $t('discuzq.list.noData') }}
-    </div>
+    </div> -->
     <div class="pagination">
       <el-pagination
         background
         hide-on-single-page
+        :pager-count="5"
         :current-page="pageNum"
         :page-sizes="[10, 20, 50, 100]"
         :page-size="pageSize"
@@ -136,15 +137,6 @@ export default {
   mounted() {
     this.getUserList()
     this.getGroupList()
-    // window.onresize = () => {
-    //   if (document.documentElement.clientWidth < 1050 && document.documentElement.clientWidth >= 768) {
-    //     this.isPad = true
-    //     this.layout = 'prev, pager, next'
-    //   } else {
-    //     this.isPad = false
-    //     this.layout = 'total, sizes, prev, pager, next, jumper'
-    //   }
-    // }
   },
   methods: {
     // 获取用户组
@@ -335,6 +327,12 @@ export default {
   text-align: right;
   padding-top: 20px;
   padding-bottom: 20px;
+  @media screen and ( max-width: 1005px ) {
+    ::v-deep .el-pagination__sizes{
+      display: none;
+    }
+  }
+
 }
 .handle-dropdown{
   .el-dropdown-link{
