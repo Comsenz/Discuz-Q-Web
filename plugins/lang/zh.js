@@ -71,7 +71,10 @@ export default {
       confirm: '确定',
       cancel: '取消',
       error: '输入的数据不合法!',
-      modifySuccess: '修改成功'
+      modifySuccess: '修改成功',
+      operateSuccess: '操作成功',
+      createSuccess: '创建成功',
+      copySuccess: '链接复制成功'
     },
     // 上传
     upload: {
@@ -291,6 +294,8 @@ export default {
     readAlready: '读过',
     collection: '收藏',
     collectionAlready: '已收藏',
+    confirmCancelCollection: '确认取消收藏？',
+    cancelCollectionSuccess: '取消收藏成功',
     item: '条',
     author: '作者',
     content: '内容',
@@ -350,7 +355,8 @@ export default {
     sendMessage: '发消息',
     recommend: '相关推荐',
     toWatch: '去看看',
-    viewDetail: '查看详情'
+    viewDetail: '查看详情',
+    allPost: '全部帖子（{total}）'
   },
   pay: {
     checkoutCounter: '收银台',
@@ -458,6 +464,7 @@ export default {
     invalid: '已失效',
     overdue: '已过期',
     setInvalid: '设为无效',
+    invitationUrl: '邀请链接',
     generateInvitationUrl: '生成邀请链接',
     notSelected: '尚未选',
     selected: '操作已选',
@@ -482,12 +489,21 @@ export default {
     normal: '正常',
     disable: '禁用',
     cancelDisable: '解除禁用',
+    allIdentity: '所有身份',
+    identity: '身份',
     modifyRole: '配置身份',
+    pleaseInputUserName: '请输入成员名称',
     userTotal: '共有{total} 人',
     searchResult: '找到 "{searchText}" 搜索结果 {total}条',
     selectUser: '请先选择成员',
-    remainDay: '有效期剩余{day}天',
-    remain0Day: '有效期剩余0天'
+    set: '设为',
+    userName: '成员名称',
+    remainDay: '{day}天',
+    remain0Day: '0天',
+    urlType: '链接类型',
+    batchOperate: '批量操作',
+    operate: '操作',
+    confirmDelete: '确认设为无效?'
   },
   // 消息页面
   notice: {

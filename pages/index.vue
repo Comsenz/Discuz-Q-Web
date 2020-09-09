@@ -1,15 +1,15 @@
 <template>
-  <div class="container">
+  <div v-loading="index_loading" class="container">
     <main class="cont-left">
       <index-filter @onChangeFilter="onChangeFilter" @onChangeType="onChangeType" @onChangeSort="onChangeSort" />
-      <div class="list-top">
-        <div v-for="(item, index) in stickyList" :key="index" class="list-top-item">
+      <div v-if="threadsStickyData.length > 0" class="list-top">
+        <div v-for="(item, index) in threadsStickyData" :key="index" class="list-top-item">
           <div class="top-label">{{ $t('home.sticky') }}</div>
-          <nuxt-link :to="`/topic/${item._jv.id}`" class="top-title">
+          <nuxt-link :to="`/topic/${item._jv && item._jv.id}`" class="top-title">
             <template v-if="item.type === 1">
               {{ item.title }}
             </template>
-            <div v-else v-html="formatRichText(item.firstPost.summary)" />
+            <div v-else v-html="formatRichText(item.firstPost && item.firstPost.summary)" />
           </nuxt-link>
         </div>
       </div>
@@ -17,17 +17,17 @@
         <div class="new-post-cont">有 {{ newThreadsCount }} 条新发布的内容 <span class="refresh" @click="reloadThreadsList">点击刷新</span></div>
       </div>
       <div class="post-list">
-        <post-item v-for="(item, index) in threadsList" :key="index" :item="item" />
+        <post-item v-for="(item, index) in threadsData" :key="index" :item="item" />
         <loading v-if="loading" />
         <template v-else>
           <div v-if="hasMore" class="load-more" @click="loadMore">{{ $t('topic.showMore') }}</div>
-          <div v-else class="no-more"><svg-icon v-if="threadsList.length === 0" type="empty" class="empty-icon" />{{ threadsList.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noData') }}</div>
+          <div v-else class="no-more"><svg-icon v-if="threadsData.length === 0" type="empty" class="empty-icon" />{{ threadsData.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noData') }}</div>
         </template>
       </div>
     </main>
     <aside class="cont-right">
       <div class="category background-color">
-        <category :post-loading="loading" @onChange="onChangeCategory" />
+        <category :post-loading="loading" :list="categoryData" @onChange="onChangeCategory" />
       </div>
       <div class="background-color">
         <advertising />
@@ -49,11 +49,12 @@ export default {
   name: 'Index',
   mixins: [forums, handleError],
   // 异步数据用法
-  async asyncData({ params, store }, callback) {
+  async asyncData({ params, store, query }, callback) {
     const threadsStickyParams = {
       'filter[isSticky]': 'yes',
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no',
+      'filter[categoryId]': query.categoryId,
       include: ['firstPost']
     }
     const threadsParams = {
@@ -67,18 +68,25 @@ export default {
       const resData = {}
       const threadsStickyData = await store.dispatch('jv/get', ['threads', { threadsStickyParams }])
       const threadsData = await store.dispatch('jv/get', ['threads', { threadsParams }])
+      const categoryData = await store.dispatch('jv/get', ['categories', {}])
       // 处理一下data
       if (Array.isArray(threadsStickyData)) {
-        resData.threadsStickyData = threadsStickyData
+        resData.threadsStickyData = threadsStickyData.slice(0, 5)
       } else if (threadsStickyData && threadsStickyData._jv && threadsStickyData._jv.json) {
-        resData.threadsStickyData = threadsStickyData._jv.json.data || []
+        resData.threadsStickyData = threadsStickyData._jv.json.data.slice(0, 5) || []
       }
 
       if (Array.isArray(threadsData)) {
-        resData.threadsData = threadsData
+        resData.threadsData = threadsData.slice(0, 10)
       } else if (threadsData && threadsData._jv && threadsData._jv.json) {
-        resData.threadsData = threadsData._jv.json.data || []
+        resData.threadsData = threadsData._jv.json.data.slice(0, 10) || []
       }
+      if (Array.isArray(categoryData)) {
+        resData.categoryData = categoryData
+      } else if (categoryData && categoryData._jv && categoryData._jv.json) {
+        resData.categoryData = categoryData._jv.json.data || []
+      }
+      console.log('resData', resData)
       callback(null, resData)
     } catch (error) {
       console.log('ssr err')
@@ -88,8 +96,10 @@ export default {
   data() {
     return {
       loading: false,
-      stickyList: [], // 置顶主题列表
-      threadsList: [], // 主题列表
+      index_loading: true,
+      threadsStickyData: [], // 置顶主题列表
+      threadsData: [], // 主题列表
+      categoryData: [], // 分类列表
       pageNum: 1, // 当前页码
       pageSize: 10, // 每页多少条数据
       categoryId: 0, // 分类id 0全部
@@ -108,12 +118,9 @@ export default {
     }
   },
   mounted() {
-    if (this.stickyList.length === 0) {
-      this.getThreadsSticky()
-    }
-    if (this.threadsList.length === 0) {
-      this.getThreadsList()
-    }
+    this.getCategoryList()
+    this.getThreadsSticky()
+    this.getThreadsList()
   },
   destroyed() {
     this.tiemr = null
@@ -122,6 +129,7 @@ export default {
   methods: {
     // 置顶主题
     getThreadsSticky() {
+      this.threadsStickyData = []
       const params = {
         'filter[isSticky]': 'yes',
         'filter[isApproved]': 1,
@@ -130,7 +138,8 @@ export default {
         include: ['firstPost']
       }
       this.$store.dispatch('jv/get', ['threads', { params }]).then(data => {
-        this.stickyList = [...data]
+        console.log('data', data)
+        this.threadsStickyData = [...data]
       })
     },
     // 非置顶主题
@@ -158,9 +167,9 @@ export default {
       this.$store.dispatch('jv/get', ['threads', { params }]).then(data => {
         this.hasMore = data.length === this.pageSize
         if (this.pageNum === 1) {
-          this.threadsList = data
+          this.threadsData = data
         } else {
-          this.threadsList = [...this.threadsList, ...data]
+          this.threadsData = [...this.threadsData, ...data]
         }
         clearInterval(this.timer)
         this.timer = setInterval(() => {
@@ -172,6 +181,7 @@ export default {
         this.handleError(e)
       }).finally(() => {
         this.loading = false
+        this.index_loading = false
       })
     },
     loadMore() {
@@ -179,6 +189,15 @@ export default {
         this.pageNum += 1
         this.getThreadsList()
       }
+    },
+    // 分类列表
+    getCategoryList() {
+      this.$store.dispatch('jv/get', ['categories', {}]).then(res => {
+        const resData = [...res] || []
+        this.categoryData = [{ _jv: { id: 0 }, name: this.$t('topic.whole') }, ...resData]
+      }, e => {
+        this.handleError(e)
+      })
     },
     // 轮询查看是否有新主题
     autoLoadThreads(count) {
@@ -201,7 +220,7 @@ export default {
     reloadThreadsList() {
       this.pageNum = 1
       this.newThreadsCount = 0
-      this.threadsList = []
+      this.threadsData = []
       this.getThreadsList()
     },
     // 点击分类
@@ -209,7 +228,7 @@ export default {
       this.$router.push({ url: '/', query: { categoryId: id !== 0 ? id : '' }})
       this.categoryId = id
       this.reloadThreadsList()
-      this.stickyList = []
+      this.threadsStickyData = []
       this.getThreadsSticky()
     },
     // 筛选

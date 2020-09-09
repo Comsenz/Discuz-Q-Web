@@ -53,6 +53,27 @@ export const timestamp2day = timestamp => {
   const interval = timestamp - Math.round(new Date() / 1000)
   return parseInt(interval / (60 * 60 * 24), 0)
 }
+/**
+ * 圈龄（当前时间减去加入时间再转换为天，月，年）
+ * @param {*} date 加入时间
+ * @return 天，月，年
+ * example:
+ * dateDay(2020-04-16T19:26:23+08:00)
+ */
+export const dateDay = date => {
+  const timestamp = Math.round(new Date(date) / 1000)
+  const interval = Math.round(new Date() / 1000) - timestamp
+  const day = parseInt(interval / (60 * 60 * 24), 0)
+  if (day > 365) {
+    const year = parseInt(interval / (60 * 60 * 24) / 365, 0)
+    return year + '年'
+  }
+  // if (day > 30) {
+  //   const month = parseInt(interval / (60 * 60 * 24) / 30, 0)
+  //   return month + '个月'
+  // }
+  return day + '天'
+}
 export const formatDate = (date, fmt) => {
   const _date = new Date(date)
   const o = {

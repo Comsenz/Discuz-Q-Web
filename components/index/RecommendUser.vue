@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading" class="recommend-user-container">
+  <div v-if="userList.length > 0" v-loading="loading" class="recommend-user-container">
     <div class="recommend-user-title">{{ $t('home.recommentUser') }}</div>
     <div class="recommend-user-list">
       <user-item v-for="(item, index) in userList" :key="index" :item="item" show="simple" />
@@ -11,27 +11,25 @@
   </div>
 </template>
 <script>
-import handleError from '@/mixin/handleError'
 export default {
   name: 'RecommendUser',
-  mixins: [handleError],
   // 异步数据用法
-  async asyncData({ params, store }) {
-    const _params = {
-      include: 'groups',
-      sort: 'createdAt',
-      'page[limit]': 4,
-      'page[number]': 1,
-      'filter[status]': 'normal'
-    }
-    try {
-      const data = await store.dispatch('jv/get', ['users', { _params }])
-      return { userList: [...data] }
-    } catch (error) {
-      console.log('ssr err')
-      return { list: [] }
-    }
-  },
+  // async asyncData({ params, store }) {
+  //   const _params = {
+  //     include: 'groups',
+  //     sort: 'createdAt',
+  //     'page[limit]': 4,
+  //     'page[number]': 1,
+  //     'filter[status]': 'normal'
+  //   }
+  //   try {
+  //     const data = await store.dispatch('jv/get', ['users', { _params }])
+  //     return { userList: [...data] }
+  //   } catch (error) {
+  //     console.log('ssr err')
+  //     return { list: [] }
+  //   }
+  // },
   data() {
     return {
       user: {
@@ -64,8 +62,6 @@ export default {
         if (res.length > 0) {
           this.refresh()
         }
-      }, e => {
-        this.handleError(e)
       }).finally(() => {
       })
     },

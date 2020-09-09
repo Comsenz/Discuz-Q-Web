@@ -36,7 +36,7 @@
     </main>
     <aside class="cont-right">
       <div class="category background-color">
-        <category :post-loading="loading" @onChange="onChangeCategory" />
+        <category :post-loading="loading" :list="categoryData" @onChange="onChangeCategory" />
       </div>
       <advertising />
       <copyright :forums="forums" />
@@ -51,9 +51,26 @@ export default {
   layout: 'custom_layout',
   name: 'Index',
   mixins: [forums, handleError],
+  // 异步数据用法
+  async asyncData({ params, store }, callback) {
+    try {
+      const resData = {}
+      const categoryData = await store.dispatch('jv/get', ['categories', {}])
+      if (Array.isArray(categoryData)) {
+        resData.categoryData = categoryData
+      } else if (categoryData && categoryData._jv && categoryData._jv.json) {
+        resData.categoryData = categoryData._jv.json.data || []
+      }
+      callback(null, resData)
+    } catch (error) {
+      console.log('ssr err')
+      callback(null, {})
+    }
+  },
   data() {
     return {
       loading: false,
+      categoryData: [],
       threadsList: [], // 主题列表
       pageNum: 1, // 当前页码
       pageSize: 10, // 每页多少条数据
@@ -76,6 +93,7 @@ export default {
     '$route': 'init'
   },
   mounted() {
+    this.getCategoryList()
     this.init()
   },
   methods: {
@@ -85,6 +103,15 @@ export default {
         this.getUserList()
         this.getThreadsList()
       }
+    },
+    // 分类列表
+    getCategoryList() {
+      this.$store.dispatch('jv/get', ['categories', {}]).then(res => {
+        const resData = [...res] || []
+        this.categoryData = [{ _jv: { id: 0 }, name: this.$t('topic.whole') }, ...resData]
+      }, e => {
+        this.handleError(e)
+      })
     },
     getUserList() {
       this.userList = []

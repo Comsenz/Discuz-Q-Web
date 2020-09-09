@@ -5,7 +5,7 @@
         <div class="label">{{ $t('manage.userCount') }}</div>
         <div class="value">{{ forums.other && forums.other.count_users }}</div>
       </div>
-      <div class="item">
+      <!-- <div class="item">
         <div class="label">{{ $t('manage.disable') }}</div>
         <div class="value">75</div>
       </div>
@@ -16,12 +16,21 @@
       <div class="item">
         <div class="label">邀请加入率</div>
         <div class="value">75</div>
+      </div> -->
+      <div v-if="forums && forums.other && forums.other.can_create_invite" class="item item-invite">
+        <div class="label">邀请成员</div>
+        <el-dropdown class="handle-dropdown" placement="bottom" trigger="click" disabled @command="handleCommand">
+          <el-button type="text" size="medium" class="create-url">{{ $t('manage.generateInvitationUrl') }}</el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item v-for="(item,index) in Object.keys(groupMap)" :key="index" :command="item">{{ groupMap[item] + $t('manage.invitationUrl') }}</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </div>
     </header>
     <main>
       <el-tabs v-model="activeName">
         <el-tab-pane v-if="forums && forums.other && forums.other.can_view_user_list" label="成员管理" name="manage"><users-manage /></el-tab-pane>
-        <el-tab-pane v-if="forums && forums.other && forums.other.can_create_invite" label="邀请成员" name="invite"><invite-user /></el-tab-pane>
+        <el-tab-pane v-if="forums && forums.other && forums.other.can_create_invite" label="邀请成员" name="invite"><invite-user v-if="activeName === 'invite'" :group-map="groupMap" /></el-tab-pane>
       </el-tabs>
     </main>
   </div>
@@ -34,7 +43,8 @@ export default {
   data() {
     return {
       loading: false,
-      activeName: 'manage'
+      activeName: 'manage',
+      groupMap: {}
     }
   },
   computed: {
@@ -44,13 +54,75 @@ export default {
   },
   mounted() {
     console.log('forums', this.forums)
+    this.getGroupList()
+  },
+  methods: {
+    // 获取用户组
+    getGroupList() {
+      const params = {
+        'filter[type]': 'invite'
+      }
+      this.$store.dispatch('jv/get', ['groups', { params }]).then(res => {
+        if (res && res.length > 0) {
+          const groupMap = {}
+          res.forEach(item => {
+            groupMap[item._jv.id] = item.name
+          })
+          this.groupMap = groupMap
+        }
+      }, e => {
+        this.handleError(e)
+      })
+    },
+    handleCommand(command) {
+      this.createAdminInvite(command)
+    },
+    // 管理员创建邀请链接
+    createAdminInvite(groupId) {
+      if (this.loading) return
+      this.loading = true
+      const params = {
+        data: {
+          attributes: {
+            group_id: groupId
+          }
+        }
+      }
+      this.$store.dispatch('jv/post', [{ _jv: { type: 'invite' }}, { data: params }]).then((res) => {
+        this.$message.success(this.$t('discuzq.msgBox.createSuccess'))
+        if (res) {
+          this.copyLink(res.code)
+        }
+      }, e => {
+        this.handleError(e)
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    copyLink(code) {
+      const oInput = document.createElement('input')
+      if (process.client) {
+        oInput.value = window.location.host + '/site/partner-invite?code=' + code
+        oInput.id = 'copyInput'
+        document.body.appendChild(oInput)
+        oInput.select()
+        document.execCommand('Copy')
+      }
+      // this.$message.success(this.$t('discuzq.msgBox.copySuccess'))
+      setTimeout(() => {
+        oInput.remove()
+      }, 100)
+    }
   }
 }
 </script>
 <style lang='scss' scoped>
 @import '@/assets/css/variable/color.scss';
 .user-manage-container{
-  padding-right: 30px;
+  padding: 0 30px;
+  @media screen and ( max-width: 1005px ) {
+    padding: 0 15px;
+  }
   .flex{
     display: flex;
     align-items: center;
@@ -66,6 +138,9 @@ export default {
         font-size: 20px;
         margin-top: 10px;
       }
+    }
+    .item-invite{
+      text-align:right;
     }
   }
   .el-tabs ::v-deep{
