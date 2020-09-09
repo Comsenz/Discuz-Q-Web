@@ -61,7 +61,7 @@
         <div class="topic-list">
           <topic-list v-show="showTopic" @selectedTopic="selectActions" />
         </div>
-        <div class="actions">
+        <div :class="['actions', editorStyle]">
           <div class="block">
             <template v-for="(action, index) in actions">
               <svg-icon v-if="action.show" :key="index" :type="action.icon" class="svg" style="font-size: 20px" @click="onActions(action.toggle)" />
@@ -279,7 +279,7 @@ export default {
 
       > input {
         width: 100%;
-        background: #f7f7f7;
+        background: $background-color-grey;
       }
 
       > .input-title {
@@ -291,7 +291,7 @@ export default {
 
       > .input-text {
         width: 100%;
-        background: #f7f7f7;
+        background: $background-color-grey;
         border: none;
         display: block;
         position: relative;
@@ -304,6 +304,7 @@ export default {
         &.post { min-height: 200px; }
         &.comment { min-height: 120px; }
         &.reply { min-height: 80px; }
+        &.chat { min-height: 120px; background: #fff; overflow: auto; }
       }
 
     }
@@ -314,10 +315,11 @@ export default {
       position: relative;
       margin-top: 30px;
       &.reply { margin-top: 0; margin-left: 60px; }
+      &.chat { margin-top: 0 }
     }
 
     .resources-list {
-      background: #f7f7f7;
+      background: $background-color-grey;
       padding: 20px;
     }
 
@@ -328,6 +330,7 @@ export default {
       padding: 0 10px;
       align-items: center;
       background: #ffffff;
+      &.chat { background: $background-color-grey }
 
       > .block {
         padding: 0 10px;

@@ -15,14 +15,17 @@
       <button :class="{disabled: !canFollow}" :disabled="!canFollow" @click="followed ? $emit('unFollow') : $emit('follow')">{{ followed ? $t('home.followed') : $t('home.follow') }}</button>
       <button @click="$emit('chat')">{{ $t('topic.sendMessage') }}</button>
     </div>
+    <chat-box :dialog="dialog || {}" />
   </div>
 </template>
 
 <script>
+const include = 'groups,dialog'
 import timerDiff from '@/mixin/timerDiff'
+import handleError from '@/mixin/handleError'
 export default {
   name: 'AsideHeader',
-  mixins: [timerDiff],
+  mixins: [handleError, timerDiff],
   props: {
     author: {
       type: Object,
@@ -39,6 +42,30 @@ export default {
     canFollow: {
       type: Boolean,
       default: false
+    }
+  },
+  data() {
+    return {
+      dialog: { id: '', name: '' }
+    }
+  },
+  watch: {
+    author: {
+      handler() {
+        this.getAuthorInfo()
+      }
+    },
+    deep: true
+  },
+  methods: {
+    getAuthorInfo() {
+      return this.$store.dispatch('jv/get', [`users/${this.author._jv.id}`, { params: { include }}]).then(res => {
+        if (res.dialog) {
+          this.dialog.id = res.dialog._jv.id
+          this.dialog.name = this.author.username
+        }
+        console.log('dialog -> ', this.dialog)
+      }, e => this.handleError(e))
     }
   }
 }

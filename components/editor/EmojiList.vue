@@ -57,6 +57,7 @@ export default {
     }
 
     > .emoji-list {
+      border-radius: 5px;
       width: 370px;
       height: 200px;
       z-index: 10;

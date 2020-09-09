@@ -1,7 +1,7 @@
 <template>
   <article class="global">
     <h2 class="title">{{ title }}</h2>
-    <div class="content-html" v-html="formatTopicTab(article.contentHtml || '')" />
+    <div class="content-html" v-html="formatTopicHTML(article.contentHtml || '')" />
     <div v-if="video.cover_url" class="container-video-img-cover">
       <img
         class="video-img-cover"
@@ -94,7 +94,7 @@ export default {
     }
   },
   methods: {
-    formatTopicTab(html) {
+    formatTopicHTML(html) {
       return s9e.parse(html)
     },
     addTextHideCover() {
@@ -277,7 +277,7 @@ export default {
       border-radius: 12.5px;
       margin-right: 15px;
       margin-top: 35px;
-      background: #F7F7F7;
+      background: $background-color-grey;
       color: #777;
       font-size: 12px;
     }

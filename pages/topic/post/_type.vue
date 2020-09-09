@@ -229,7 +229,7 @@ export default {
       line-height: 25px;
       padding: 0 10px;
       border-radius: 12.5px;
-      background: #F7F7F7;
+      background: $background-color-grey;
       font-size: 14px;
       color: #777777;
       margin-right: 10px;
