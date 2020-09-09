@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading" class="recommend-user-container">
+  <div v-if="userList.length > 0" v-loading="loading" class="recommend-user-container">
     <div class="recommend-user-title">{{ $t('home.recommentUser') }}</div>
     <div class="recommend-user-list">
       <user-item v-for="(item, index) in userList" :key="index" :item="item" show="simple" />
@@ -11,10 +11,8 @@
   </div>
 </template>
 <script>
-import handleError from '@/mixin/handleError'
 export default {
   name: 'RecommendUser',
-  mixins: [handleError],
   // 异步数据用法
   // async asyncData({ params, store }) {
   //   const _params = {
@@ -64,8 +62,6 @@ export default {
         if (res.length > 0) {
           this.refresh()
         }
-      }, e => {
-        this.handleError(e)
       }).finally(() => {
       })
     },

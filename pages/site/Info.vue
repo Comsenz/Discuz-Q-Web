@@ -61,10 +61,7 @@
         <span class="workdate2">{{ forums.set_site && forums.set_site.site_introduction }}</span>
       </p>
     </div>
-    <p
-      v-if="isLogin"
-      v-cloak
-    >
+    <p v-if="isLogin">
       <span>{{ $t('site.justonelaststepjoinnow') }}</span>
       <span class="bold">
         {{ forums.set_site && forums.set_site.site_name }}
@@ -82,11 +79,7 @@
             : ` / ${$t('site.permanent')}`
         }}</el-button>
     </p>
-    <p
-      v-if="!isLogin"
-      v-cloak
-    >
-
+    <p v-if="!isLogin">
       <el-button
         type="primary"
         class="r-button"
@@ -94,38 +87,34 @@
       >{{ $t('site.join') }}{{ $t('site.site') }}</el-button>
 
     </p>
-    <div
+    <!-- <div
       v-if="qrcodeShow"
       class="qrco-overlay"
-    />
-    <el-dialog
+    /> -->
+    <topic-wx-pay v-if="qrcodeShow" :qr-code="codeUrl" @close="qrcodeShow = false" />
+    <!-- <el-dialog
       :visible.sync="qrcodeShow"
       width="320px"
       class="model"
       :show-close="false"
     >
-      <img
-        :src="codeUrl"
-        alt=""
-      >
-    </el-dialog>
+      <img :src="codeUrl">
+    </el-dialog> -->
 
   </div>
 </template>
 
 <script>
+import handleError from '@/mixin/handleError'
 let payWechat = null
 export default {
+  mixins: [handleError],
+
   data() {
     return {
       isLogin: this.$store.getters['session/get']('isLogin'),
-      pageSize: 7,
-      pageNum: 1,
-      userList: [],
-      searchText: '',
-      isAnonymous: '0',
       qrcodeShow: false,
-      payStatus: false, // 订单支付状态
+      payStatus: 0, // 订单支付状态
       orderSn: '', // 订单编号
       codeUrl: '' // 二维码支付url，base64
     }
@@ -157,7 +146,7 @@ export default {
         console.log('---order info ---', res)
         this.orderSn = res.order_sn
         this.orderPay(10, value, this.orderSn, '3') // pc浏览器
-      })
+      }, e => this.handleError(e))
     },
     // 订单支付
     orderPay(type, value, orderSn, browserType) {
@@ -174,7 +163,6 @@ export default {
           if (res) {
             this.codeUrl = res.wechat_qrcode
             this.payShowStatus = false
-            // this.$refs.codePopup.open()
             this.qrcodeShow = true
             payWechat = setInterval(() => {
               if (this.payStatus === 1) {
@@ -182,11 +170,10 @@ export default {
                 return
               }
               this.getOrderStatus(this.orderSn, browserType)
-              // uni.hideLoading()
             }, 3000)
           }
         }
-      })
+      }, e => this.handleError(e))
     },
     // 查询订单支状 browserType: 0是小程序，1是微信浏览器，2是h5，3是pc
     getOrderStatus(orderSn, browserType) {
@@ -201,7 +188,6 @@ export default {
             this.coverLoading = false
             if (browserType === '3') {
               // 这是pc扫码支付完成
-              // this.$refs.codePopup.close()
               this.qrcodeShow = false
             }
             window.location.href = '/'
@@ -214,79 +200,6 @@ export default {
         })
     }
   }
-  // 用于全局判断站点是否是付费
-  // async onLaunch() {
-  //   const init = async () => {
-  //     const forums = await this.$store.dispatch('jv/get', [
-  //       'forum',
-  //       {
-  //         params: {
-  //           include: 'users'
-  //         }
-  //       }
-  //     ])
-  //     const userId = this.$store.getters['session/get']('userId')
-  //     let user = {}
-  //     if (userId) {
-  //       const params = {
-  //         include: 'groups,wechat'
-  //       }
-  //       user = await this.$store.dispatch('jv/get', [`users/${userId}`, { params }])
-  //       uni.setStorageSync(STORGE_GET_USER_TIME, new Date().getTime())
-  //     }
-  //     this.statisticsCode = forums.set_site.site_stat
-  //     uni.$emit('stat', {
-  //       statisticsCode: this.statisticsCode
-  //     })
-  //     let currentPage = {}
-  //     const pages = getCurrentPages()
-  //     if (pages.length > 0) {
-  //       currentPage = pages[pages.length - 1]
-  //     }
-  //     if (forums.set_site.site_mode === SITE_PAY && currentPage.route !== 'pages/site/partner-invite') {
-  //       // #ifndef H5
-  //       const res = uni.getSystemInfoSync()
-  //       if (res.platform === 'ios') {
-  //         this.$store.dispatch('forum/setError', { loading: false, code: 'dataerro' })
-  //         return
-  //       }
-  //       // #endif
-  //       if (pages.length > 0) {
-  //         currentPage = pages[pages.length - 1]
-  //         if (!user.paid && currentPage.route !== 'pages/site/info') {
-  //           uni.redirectTo({
-  //             url: '/pages/site/info'
-  //           })
-  //         }
-  //       } else if (!user.paid) {
-  //         uni.redirectTo({
-  //           url: '/pages/site/info'
-  //         })
-  //       }
-  //     }
-  //     // #ifdef H5
-  //     this.globalData.appLoadedStatus = true
-  //     uni.$emit('apploaded')
-  //     // #endif
-  //     if (!this.$store.state.forum.error.code) {
-  //       this.$store.dispatch('forum/setError', { loading: false })
-  //     }
-  //   }
-  //   try {
-  //     await init()
-  //   } catch (errs) {
-  //     if (errs && errs.data && errs.data.errors) {
-  //       if (errs.data.errors[0].code === 'access_denied') {
-  //         this.$store.dispatch('session/logout').then(init)
-  //       } else {
-  //         this.$store.dispatch('forum/setError', {
-  //           loading: false,
-  //           ...errs.data.errors[0]
-  //         })
-  //       }
-  //     }
-  //   }
-  // }
 }
 </script>
 <style lang='scss' scoped>
@@ -305,6 +218,9 @@ export default {
 ::v-deep .model {
   .el-dialog__body {
     padding: 0;
+  }
+  img {
+    width: 100%;
   }
 }
 [v-cloak] {

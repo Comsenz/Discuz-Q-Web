@@ -217,6 +217,12 @@ export default {
         this.$set(this.followerList, index, item2)
       })
     },
+    loadMore() {
+      if (this.hasMore) {
+        this.pageNum += 1
+        this.getFollowerList()
+      }
+    },
     toUser(userId) {
       this.$router.push(`/profile?userId=${userId}`)
     },

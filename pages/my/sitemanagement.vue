@@ -119,9 +119,9 @@ export default {
 <style lang='scss' scoped>
 @import '@/assets/css/variable/color.scss';
 .user-manage-container{
-  padding-right: 30px;
+  padding: 0 30px;
   @media screen and ( max-width: 1005px ) {
-    padding-right: 15px;
+    padding: 0 15px;
   }
   .flex{
     display: flex;

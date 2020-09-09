@@ -36,7 +36,7 @@
         />
       </el-select> -->
     </div>
-    <el-table v-if="inviteList.length > 0" ref="multipleTable" v-loading="loading" :data="inviteList" @selection-change="handleSelectionChange">
+    <el-table ref="multipleTable" v-loading="loading" :data="inviteList" @selection-change="handleSelectionChange">
       <!-- <el-table-column type="selection" width="35" /> -->
       <el-table-column prop="title" :label="$t('manage.urlType')" />
       <el-table-column prop="time" :label="$t('site.periodvalidity')" />
@@ -53,13 +53,14 @@
         </template>
       </el-table-column>
     </el-table>
-    <div v-if="!loading && inviteList.length <= 0" class="no-more">
+    <!-- <div v-if="!loading && inviteList.length <= 0" class="no-more">
       <svg-icon type="empty" class="empty-icon" />{{ $t('discuzq.list.noData') }}
-    </div>
+    </div> -->
     <div class="pagination">
       <el-pagination
         background
         hide-on-single-page
+        :pager-count="5"
         :current-page="pageNum"
         :page-sizes="[10, 20, 50, 100]"
         :page-size="pageSize"
@@ -316,6 +317,11 @@ export default {
   text-align: right;
   padding-top: 20px;
   padding-bottom: 20px;
+  @media screen and ( max-width: 1005px ) {
+    ::v-deep .el-pagination__sizes{
+      display: none;
+    }
+  }
 }
 .btn{
   color: $font-color-grey;

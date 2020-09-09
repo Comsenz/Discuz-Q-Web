@@ -294,6 +294,8 @@ export default {
     readAlready: '读过',
     collection: '收藏',
     collectionAlready: '已收藏',
+    confirmCancelCollection: '确认取消收藏？',
+    cancelCollectionSuccess: '取消收藏成功',
     item: '条',
     author: '作者',
     content: '内容',
@@ -353,7 +355,8 @@ export default {
     sendMessage: '发消息',
     recommend: '相关推荐',
     toWatch: '去看看',
-    viewDetail: '查看详情'
+    viewDetail: '查看详情',
+    allPost: '全部帖子（{total}）'
   },
   pay: {
     checkoutCounter: '收银台',

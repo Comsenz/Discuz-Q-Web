@@ -31,20 +31,43 @@ export default {
   data() {
     return {
       currentNumber: 0,
-      menuList: [
-        { index: '/my/profile', classname: 'padd', content: 'profile.myprofile' },
+      menuList: [{ index: '/my/profile', classname: 'padd', content: 'profile.myprofile' },
         { index: '/my/wallet', classname: 'padd', content: 'profile.mywallet' },
         { index: '/my/favorite', classname: 'padd', content: 'profile.myfavorite' },
         { index: '/my/notice', classname: 'padd', content: 'profile.notice' },
-        { index: '/my/circleinfo', classname: 'padd divided', content: 'manage.circleinfo' },
-        { index: '/my/sitemanagement', classname: 'padd', content: 'manage.siteManagement' }]
+        { index: '/my/circleinfo', classname: 'padd divided', content: 'manage.circleinfo' }]
 
     }
   },
+  computed: {
+    forums() {
+      return this.$store.state.site.info.attributes || {}
+    },
+    userId() {
+      return this.$store.state.user.info.id
+    }
+  },
   mounted() {
+    this.initMenu()
     this.setCurrentRoute()
   },
   methods: {
+    initMenu() {
+      // 判断是否登录
+      if (!this.userId) {
+        this.$message.error(this.$t('core.not_authenticated'))
+        this.$router.push('/')
+      }
+      const _other = this.forums && this.forums.other
+      // 有成员列表和邀请的权限才显示成员管理
+      if (_other.can_view_user_list || _other.can_create_invite) {
+        this.menuList.push({ index: '/my/sitemanagement', classname: 'padd', content: 'manage.siteManagement' })
+      } else {
+        if (this.$route.path === '/my/sitemanagement') {
+          this.$router.push({ path: '/my/profile' })
+        }
+      }
+    },
     setCurrentRoute() {
       console.log('routtttt', this.$route)
       this.currentNumber = this.switchCase(this.$route.path)
@@ -130,12 +153,12 @@ export default {
 }
 .my-main{
   margin-top:40px;
-  margin-left:30px;
   width:100%;
   min-height:800px;
+  flex: 1;
+  overflow-x: auto;
   @media screen and ( max-width: 1005px ) {
     margin-top:20px;
-    margin-left:15px;
   }
 }
 </style>

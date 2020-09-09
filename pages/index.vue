@@ -71,15 +71,15 @@ export default {
       const categoryData = await store.dispatch('jv/get', ['categories', {}])
       // 处理一下data
       if (Array.isArray(threadsStickyData)) {
-        resData.threadsStickyData = threadsStickyData
+        resData.threadsStickyData = threadsStickyData.slice(0, 5)
       } else if (threadsStickyData && threadsStickyData._jv && threadsStickyData._jv.json) {
-        resData.threadsStickyData = threadsStickyData._jv.json.data || []
+        resData.threadsStickyData = threadsStickyData._jv.json.data.slice(0, 5) || []
       }
 
       if (Array.isArray(threadsData)) {
-        resData.threadsData = threadsData
+        resData.threadsData = threadsData.slice(0, 10)
       } else if (threadsData && threadsData._jv && threadsData._jv.json) {
-        resData.threadsData = threadsData._jv.json.data || []
+        resData.threadsData = threadsData._jv.json.data.slice(0, 10) || []
       }
       if (Array.isArray(categoryData)) {
         resData.categoryData = categoryData

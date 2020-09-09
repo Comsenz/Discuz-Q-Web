@@ -7,7 +7,7 @@
     <div class="main-cont">
       <div class="top-flex">
         <nuxt-link v-if="item.user" :to="`/profile?userId=${item.user.id}`" class="user-name">{{ item.user.username }}</nuxt-link>
-        <div class="time">{{ $t('topic.publishAt') }} {{ timerDiff(item.createdAt) }}{{ $t('topic.before') }}</div>
+        <div v-if="item.createdAt" class="time">{{ $t('topic.publishAt') }} {{ timerDiff(item.createdAt) }}{{ $t('topic.before') }}</div>
       </div>
       <template v-if="item.firstPost">
         <div class="first-post" @click.self="toDetail">
@@ -58,14 +58,16 @@
             <div class="btn comment" @click="toDetail">
               <svg-icon type="comment" class="icon" />
               {{ $t('topic.comment') }} {{ item.firstPost.comment > 0 ? item.firstPost.comment : '' }}</div>
-            <share-popover v-if="item._jv && item._jv.id" :threads-id="item._jv.id">
+            <share-popover v-if="item._jv && item._jv.id && showShare" :threads-id="item._jv.id">
               <div class="btn share">
                 <svg-icon type="link" class="icon" />
                 {{ $t('topic.share') }}
               </div>
             </share-popover>
           </div>
-          <div class="reply-btn" @click="toDetail">{{ $t('topic.reply') }}</div>
+          <slot name="bottom-right">
+            <div class="reply-btn" @click="toDetail">{{ $t('topic.reply') }}</div>
+          </slot>
         </div>
       </template>
     </div>
@@ -80,6 +82,10 @@ export default {
     item: {
       type: Object,
       default: () => {}
+    },
+    showShare: {
+      type: Boolean,
+      default: true
     }
   },
   data() {

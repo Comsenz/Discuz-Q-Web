@@ -34,7 +34,7 @@
       </p>
       <p class="member-img">
         <span
-          v-for="(item, index) in userList"
+          v-for="(item, index) in forums.users"
           :key="index"
           class="img"
         >
@@ -66,7 +66,8 @@
           <span
             v-for="(item, index) in permission"
             :key="index"
-          >{{ $t(`permission.${item.permission}`) }}</span> </div>
+          >{{ $t(`permission.${item.permission}`) }}</span>
+        </div>
       </div>
 
       <!-- 站点介绍 -->
@@ -78,7 +79,7 @@
     <p>
       <span class="bold">{{ inviteData.user && inviteData.user.username }}</span>
       邀请您，作为
-      <span class="bold">{{ `[ ${inviteData.group && inviteData.group.name} ]` }}</span>加入
+      <span class="bold">{{ `[ ${inviteData.group && inviteData.group.name ? inviteData.group.name : ''} ]` }}</span>加入
       <span class="bold">{{ forums.set_site && forums.set_site.site_name }}</span>
       {{ $t('site.site') }}
     </p>
@@ -116,15 +117,12 @@
 
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
-import forums from '@/mixin/forums'
 import loginAuth from '@/mixin/loginAuth'
 export default {
-  mixins: [
-    forums, loginAuth
-  ],
+  mixins: [loginAuth],
   data() {
     return {
-      isLogin: '',
+      isLogin: this.$store.getters['session/get']('isLogin'),
       pageSize: 7,
       pageNum: 1,
       userList: [],
@@ -139,9 +137,12 @@ export default {
 
     }
   },
+  computed: {
+    forums() {
+      return this.$store.state.site.info.attributes || {}
+    }
+  },
   mounted() {
-    this.isLoginh()
-    this.searchUser() // 站点数据没有用户数据，这里自行请求user接口
     const { code } = this.$route.query
     this.inviteCode = code
     this.getInviteInfo(this.inviteCode)
@@ -155,28 +156,8 @@ export default {
         })
         .catch(_ => { })
     },
-    isLoginh() {
-      this.isLogin = !!window.localStorage.getItem('access_token')
-      console.log(this.isLogin)
-    },
-    async searchUser() {
-      const params = {
-        include: 'groups',
-        'page[number]': this.pageNum,
-        'page[limit]': this.pageSize,
-        'filter[username]': `*${this.searchText}*`
-      }
-      if (this.searchText === '') {
-        await this.$store.dispatch('jv/get', ['users', { params }]).then(res => {
-          console.log('获取20个用户信息：', res)
-          if (res && res._jv) {
-            this.userList = [...this.userList, ...res]
-          }
-        })
-      }
-    },
-    async getInviteInfo(code) {
-      await status
+    getInviteInfo(code) {
+      status
         .run(() => this.$store.dispatch('jv/get', `invite/${code}`)
           .then(res => {
             console.log('邀请信息', res)
@@ -410,7 +391,7 @@ export default {
       color: #909399;
     }
     .myauth-c {
-      flex: 5;
+      flex: 4;
       font-size: 12px;
       font-family: Microsoft YaHei;
       margin-right: 11px;
@@ -418,8 +399,8 @@ export default {
       span {
         margin-right: 5px;
         background: #f7f7f7;
-        margin-top: 5px;
-        padding: 4px 10px;
+        // margin-top: 5px;
+        padding: 4.5px 10px;
       }
     }
   }
