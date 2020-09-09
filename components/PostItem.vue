@@ -7,7 +7,7 @@
     <div class="main-cont">
       <div class="top-flex">
         <nuxt-link v-if="item.user" :to="`/profile?userId=${item.user.id}`" class="user-name">{{ item.user.username }}</nuxt-link>
-        <div class="time">{{ $t('topic.publishAt') }} {{ timerDiff(item.createdAt) }}{{ $t('topic.before') }}</div>
+        <div v-if="item.createdAt" class="time">{{ $t('topic.publishAt') }} {{ timerDiff(item.createdAt) }}{{ $t('topic.before') }}</div>
       </div>
       <template v-if="item.firstPost">
         <div class="first-post" @click.self="toDetail">
