@@ -236,6 +236,7 @@ export default {
           }
         } else {
           this.$message.error(this.$t('manage.selectUser'))
+          return
         }
       }
       const params = [

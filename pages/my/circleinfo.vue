@@ -167,9 +167,11 @@ export default {
 <style lang='scss' scoped>
 @import '@/assets/css/variable/color.scss';
 .site-info-container{
+  margin-left:30px;
   padding-right:30px;
   padding-bottom: 30px;
   @media screen and ( max-width: 1005px ) {
+    margin-left:15px;
     padding-right: 15px;
     padding-bottom: 20px;
   }

@@ -280,6 +280,10 @@ export default {
 </script>
 <style lang='scss' scoped>
 .mywallet {
+  padding-left: 30px;
+  @media screen and ( max-width: 1005px ) {
+    padding-left: 0 15px;
+  }
   .mywallet-top {
     display: flex;
     flex-direction: row;

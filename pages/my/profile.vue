@@ -829,7 +829,12 @@ export default {
 </script>
 <style lang='scss' scoped>
 //@import url(); 引入公共css类
-
+.myprofile{
+  padding-left: 30px;
+  @media screen and ( max-width: 1005px ) {
+    padding-left: 0 15px;
+  }
+}
 .myprofile-c {
   display: flex;
   flex-direction: column;

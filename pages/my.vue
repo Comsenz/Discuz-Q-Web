@@ -153,14 +153,12 @@ export default {
 }
 .my-main{
   margin-top:40px;
-  margin-left:30px;
   width:100%;
   min-height:800px;
   flex: 1;
   overflow-x: auto;
   @media screen and ( max-width: 1005px ) {
     margin-top:20px;
-    margin-left:15px;
   }
 }
 </style>
