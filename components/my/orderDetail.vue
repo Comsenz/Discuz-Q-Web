@@ -43,11 +43,10 @@
       <el-table-column
         prop="titleType"
         label="记录描述"
-        width="311"
       />
       <el-table-column
         label="时间"
-        width="177"
+        width="140"
         prop="created_at"
         :formatter="dateFormat"
       />
@@ -299,8 +298,20 @@ export default {
 .orderDetail {
   .margleft {
     margin-left: 30px;
-    @media screen and (max-width: 850px) {
-      margin-left: 0px;
+    @media screen and (max-width: 900px) {
+      margin-left: 60px;
+    }
+  }
+}
+.selector {
+  .el-date-editor {
+    @media screen and (max-width: 900px) {
+      width: 160px;
+    }
+  }
+  .el-select {
+    @media screen and (max-width: 900px) {
+      width: 120px;
     }
   }
 }

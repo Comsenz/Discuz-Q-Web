@@ -101,51 +101,26 @@ export default {
       default: ''
     }
   },
-  // 异步数据用法
-  async asyncData({ params, store }) {
-    try {
-      const params = {
-        _jv: {
-          type: 'forum'
-        }
-      }
-      const data = await store.dispatch('jv/get', params)
-      return { forums: data }
-    } catch (error) {
-      console.log('ssr err')
-      return { list: {}}
-    }
-  },
   data() {
     return {
       inputVal: '',
-      isLogin: '',
+      isLogin: this.$store.getters['session/get']('isLogin'),
       activeIndex: '1',
-      userInfo: '',
-      userId: '',
+      userId: this.$store.getters['session/get']('userId'),
       code: '', // 邀请码
-      canReg: '',
-      forums: ''
+      canReg: ''
 
     }
   },
-  // 从store中获取userid获取userinfo，但getters这个方法没起作用
-  //
   computed: {
-    // userId() {
-    //   return this.$store.getters['session/get']('userId')
-    // },
-    // userInfo() {
-    //   console.log(this.userId)
-    //   const userInfo = this.$store.getters['jv/get'](`/users/${this.userId}`)
-    //   console.log('userInfo', userInfo)
-    //   userInfo.groupsName = userInfo.groups ? userInfo.groups[0].name : ''
-    //   // this.setNum(userInfo)
-    //   return userInfo
-    // }
+    forums() {
+      return this.$store.state.site.info.attributes || {}
+    },
+    userInfo() {
+      return this.$store.state.user.info.attributes || {}
+    }
   },
   mounted() {
-    this.isLoginh()
     this.userinfo()
     const { code } = this.$route.query
     if (code !== 'undefined') {
@@ -157,38 +132,18 @@ export default {
     }
   },
   methods: {
-    async forumh() {
-      const params = {
-        _jv: {
-          type: 'forum'
-        }
+    forumh() {
+      if (this.forums && this.forums.set_reg && this.forums.set_reg.register_close) {
+        this.canReg = false
+      } else {
+        this.canReg = true
       }
-      await this.$store.dispatch('jv/get', params).then(data => {
-        this.forums = data
-        if (this.forums && this.forums.set_reg && this.forums.set_reg.register_close) {
-          this.canReg = false
-        } else {
-          this.canReg = true
-        }
-      })
-    },
-    isLoginh() {
-      if (process.client) this.isLogin = !!window.localStorage.getItem('access_token')
     },
     ExitLogin() {
-      this.isLogin = window.localStorage.removeItem('access_token')
       this.$store.dispatch('session/logout').then(() => window.location.reload())
     },
-    async userinfo() {
-      this.userId = this.$store.getters['session/get']('userId')
-      if (!this.userId || +this.userId === 0) return
-      const params = {
-        _jv: { type: `/users/${this.userId}` }
-      }
-      await this.$store.dispatch('jv/get', params).then(res => {
-        this.userInfo = res
-        this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
-      })
+    userinfo() {
+      this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
     },
     registerurl() {
       this.$router.push(`/user/register?url='/'&validate=${this.forums.set_reg.register_validate}&code=${this.code}`)
@@ -223,7 +178,7 @@ export default {
   background: rgba(255, 255, 255, 1);
   box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.03);
   opacity: 1;
-  @media screen and ( max-width: 1005px ) {
+  @media screen and (max-width: 1005px) {
     height: 50px;
     width: 100%;
     min-width: 768px;
@@ -235,11 +190,11 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    .flex{
+    .flex {
       display: flex;
       align-items: center;
     }
-    @media screen and ( max-width: 1005px ) {
+    @media screen and (max-width: 1005px) {
       width: 100%;
       min-width: 768px;
       padding: 0 14px;
@@ -250,7 +205,7 @@ export default {
       width: 150px;
       height: 35px;
       cursor: pointer;
-      @media screen and ( max-width: 1005px ) {
+      @media screen and (max-width: 1005px) {
         width: 135px;
         height: 30px;
       }
@@ -263,20 +218,20 @@ export default {
       width: 298px;
       height: 36px;
       float: left;
-      @media screen and ( max-width: 1005px ) {
+      @media screen and (max-width: 1005px) {
         width: 200px;
         height: 30px;
       }
       .el-input__inner {
         border-radius: 0px;
         color: #000;
-        @media screen and ( max-width: 1005px ) {
+        @media screen and (max-width: 1005px) {
           height: 30px;
           line-height: 30px;
         }
       }
-      @media screen and ( max-width: 1005px ) {
-        .el-input__icon{
+      @media screen and (max-width: 1005px) {
+        .el-input__icon {
           line-height: 30px;
         }
       }
@@ -321,7 +276,7 @@ export default {
         font-size: 16px;
         /* margin-top: -5px; */
         margin-left: 30px;
-        @media screen and ( max-width: 1005px ) {
+        @media screen and (max-width: 1005px) {
           font-size: 14px;
         }
       }
@@ -329,7 +284,7 @@ export default {
         margin-left: 5px;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width:120px;
+        max-width: 120px;
       }
       .h-button4:hover {
         background: none;

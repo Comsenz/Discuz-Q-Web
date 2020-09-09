@@ -3,7 +3,7 @@
     <div class="ftop">
       <el-select
         v-model="value"
-        placeholder="请选择"
+        placeholder="目前接口不支持排序"
         class="fselect"
         @change="confirm"
       >
