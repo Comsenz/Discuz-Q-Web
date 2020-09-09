@@ -215,6 +215,10 @@ export default {
       this.$emit(`update:payment`, _payment)
     },
     autoHeight() {
+      setTimeout(() => {
+        this.textarea.style.height = 'auto'
+        this.textarea.style.height = this.textarea.scrollHeight + 'px'
+      }, 500)
       this.textarea.onkeyup = function() {
         this.style.height = 'auto'
         this.style.height = this.scrollHeight + 'px'
@@ -295,6 +299,7 @@ export default {
         line-height: 16px;
         padding: 15px;
         overflow: hidden;
+        overscroll-behavior: contain;
         transition: all 200ms linear;
         &.post { min-height: 200px; }
         &.comment { min-height: 120px; }

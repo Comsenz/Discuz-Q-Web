@@ -248,11 +248,11 @@ export default {
     > .container-video-img-cover {
       position: relative;
       margin-top: 30px;
-      width: 400px;
+      max-width: 400px;
       cursor: pointer;
       > .video-img-cover {
         display: block;
-        width: 400px;
+        max-width: 400px;
       }
       > .icon-play {
         position: absolute;

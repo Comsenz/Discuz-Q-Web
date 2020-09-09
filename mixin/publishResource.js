@@ -21,8 +21,8 @@ module.exports = {
     },
     publishThreadResource(params, thread) {
       if (thread.videoList.length > 0) {
-        params.file_id = this.videoList[0].id
-        params.file_name = this.videoList[0].name
+        params.file_id = this.post.videoList[0].id
+        params.file_name = this.post.videoList[0].name
       }
       return params
     }
