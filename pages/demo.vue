@@ -6,6 +6,7 @@
     <el-button type="info">信息按钮</el-button>
     <el-button type="warning">警告按钮</el-button>
     <el-button type="danger" @click="storeCommit">store commit</el-button>
+    <div id="vditor" />
     <p>svg</p>
     <div>
       <svg-icon style="font-size: 100px;" type="alipay" />
@@ -19,6 +20,8 @@
 </template>
 
 <script>
+// 只在前端渲染
+const Vditor = process.client ? require('vditor') : ''
 export default {
   // 异步数据用法
   async asyncData({ params, store }) {
@@ -38,6 +41,21 @@ export default {
     }
   },
   mounted() {
+    console.log('Vditor => ', Vditor)
+    if (Vditor) {
+      this.contentEditor = new Vditor('vditor', {
+        height: 500,
+        toolbarConfig: {
+          pin: true
+        },
+        cache: {
+          enable: false
+        },
+        after: () => {
+          this.contentEditor.setValue('hello, Vditor + Vue!')
+        }
+      })
+    }
     const params = {
       _jv: {
         type: 'users?page[limit]=4'
@@ -47,6 +65,9 @@ export default {
     this.$store.dispatch('jv/get', params).then(data => {
       console.log('user data => ', data)
     })
+  },
+  destroyed() {
+    this.contentEditor && this.contentEditor.destroy()
   },
   methods: {
     getData() {

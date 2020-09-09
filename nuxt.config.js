@@ -41,7 +41,8 @@ export default {
   */
   css: [
     'element-ui/lib/theme-chalk/index.css',
-    '@/assets/css/reset.scss'
+    '@/assets/css/reset.scss',
+    'vditor/src/assets/scss/index.scss'
   ],
   /*
   ** Plugins to load before mounting the App
