@@ -58,14 +58,16 @@
             <div class="btn comment" @click="toDetail">
               <svg-icon type="comment" class="icon" />
               {{ $t('topic.comment') }} {{ item.firstPost.comment > 0 ? item.firstPost.comment : '' }}</div>
-            <share-popover v-if="item._jv && item._jv.id" :threads-id="item._jv.id">
+            <share-popover v-if="item._jv && item._jv.id && showShare" :threads-id="item._jv.id">
               <div class="btn share">
                 <svg-icon type="link" class="icon" />
                 {{ $t('topic.share') }}
               </div>
             </share-popover>
           </div>
-          <div class="reply-btn" @click="toDetail">{{ $t('topic.reply') }}</div>
+          <slot name="bottom-right">
+            <div class="reply-btn" @click="toDetail">{{ $t('topic.reply') }}</div>
+          </slot>
         </div>
       </template>
     </div>
@@ -80,6 +82,10 @@ export default {
     item: {
       type: Object,
       default: () => {}
+    },
+    showShare: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
