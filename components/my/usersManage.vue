@@ -37,8 +37,8 @@
       <el-table-column :label="$t('manage.userName')" min-width="100">
         <template slot-scope="scope">
           <div class="flex">
-            <avatar :user="{ username: scope.row.username, avatarUrl: scope.row.avatarUrl}" :size="30" :round="true" />
-            <span class="user-name">{{ scope.row.username }}</span>
+            <avatar :user="{ id: scope.row.id, username: scope.row.username, avatarUrl: scope.row.avatarUrl}" :size="30" :round="true" />
+            <nuxt-link :to="`/profile?userId=${scope.row.id}`" class="user-name">{{ scope.row.username }}</nuxt-link>
           </div>
         </template>
       </el-table-column>

@@ -3,7 +3,7 @@
     <div class="ftop">
       <el-select
         v-model="value"
-        placeholder="请选择"
+        placeholder="目前接口不支持排序"
         class="fselect"
         @change="confirm"
       >
@@ -124,7 +124,7 @@ export default {
       hasMore: false,
       options: [{
         value: '',
-        label: this.$t('profile.all')
+        label: '接口不支持排序'
       }, {
         value: '1',
         label: '主题数'

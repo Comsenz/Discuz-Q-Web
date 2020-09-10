@@ -379,7 +379,6 @@ export default {
         .dispatch('session/h5Register', params)
         .then(res => {
           this.loading = false
-          console.log('注册成功', res)
           if (res && res.data && res.data.data && res.data.data.id) {
             console.log('注册成功', res)
             this.logind()
@@ -392,10 +391,9 @@ export default {
             res.data.errors[0]
           ) {
             const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code
+            const errorText = res.data.errors[0].detail ? res.data.errors[0].detail[0] : this.$t(`core.${error}`)
             console.log('error', error)
-            this.$message.error(
-              this.$t(`core.${error}`)
-            )
+            this.$message.error(errorText)
           }
           if (
             res &&
@@ -408,6 +406,7 @@ export default {
           }
         })
         .catch(err => {
+          this.loading = false
           console.log(err)
         })
     },
@@ -481,10 +480,9 @@ export default {
               res.data.errors[0]
             ) {
               const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code
+              const errorText = res.data.errors[0].detail ? res.data.errors[0].detail[0] : this.$t(`core.${error}`)
               console.log('error', error)
-              this.$message.error(
-                this.$t(`core.${error}`)
-              )
+              this.$message.error(errorText)
             }
             if (
               res &&
@@ -497,6 +495,7 @@ export default {
             }
           })
           .catch(err => {
+            this.loading = false
             console.log(err)
           })
       }

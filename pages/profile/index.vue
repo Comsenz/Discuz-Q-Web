@@ -393,6 +393,12 @@ export default {
       height: 65px;
       display: flex;
       justify-content: space-between;
+      @media screen and (max-width: 1005px) {
+        width: 100%;
+        min-width: 768px;
+        padding: 15px 14px;
+        height: 50px;
+      }
       .hinfo {
         display: flex;
       }

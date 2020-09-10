@@ -30,6 +30,7 @@
     <el-table
       v-loading="loading"
       :data="dataList"
+      style="width:100%"
     >
       <el-table-column
         type="selection"
@@ -43,12 +44,11 @@
       <el-table-column
         prop="cash_status"
         label="记录描述"
-        width="311"
         :formatter="statusFormat2"
       />
       <el-table-column
         label="时间"
-        width="177"
+        width="140"
         prop="created_at"
         :formatter="dateFormat"
       />
@@ -271,8 +271,20 @@ export default {
 .cashDialog {
   .margleft {
     margin-left: 30px;
-    @media screen and (max-width: 850px) {
-      margin-left: 0px;
+    @media screen and (max-width: 900px) {
+      margin-left: 60px;
+    }
+  }
+}
+.selector {
+.el-date-editor {
+    @media screen and (max-width: 900px) {
+      width: 160px;
+    }
+  }
+  .el-select {
+    @media screen and (max-width: 900px) {
+      width: 120px;
     }
   }
 }

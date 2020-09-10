@@ -43,11 +43,10 @@
       <el-table-column
         prop="change_desc"
         label="记录描述"
-        width="311"
       />
       <el-table-column
         label="时间"
-        width="275"
+        width="140"
         prop="created_at"
         :formatter="dateFormat"
       />

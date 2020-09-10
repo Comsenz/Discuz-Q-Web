@@ -330,18 +330,18 @@ export default {
     background: transparent;
     box-shadow: none;
     padding-right: 30px;
-    @media screen and (max-width: 1005px) {
-      width: 100%;
-      max-width: 750px;
-    }
-    @media screen and (max-width: 900px) {
-      width: 100%;
-      max-width: 700px;
-    }
-    @media screen and (max-width: 850px) {
-      width: 100%;
-      max-width: 650px;
-    }
+    // @media screen and (max-width: 1005px) {
+    //   width: 100%;
+    //   max-width: 750px;
+    // }
+    // @media screen and (max-width: 900px) {
+    //   width: 100%;
+    //   max-width: 700px;
+    // }
+    // @media screen and (max-width: 850px) {
+    //   width: 100%;
+    //   max-width: 650px;
+    // }
   }
   .margleft {
     margin-left: 30px;
