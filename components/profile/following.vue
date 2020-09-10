@@ -46,7 +46,7 @@
             <span
               v-if="Item.toUser.groups"
               class="role"
-            >{{ Item.toUser && Item.toUser.groups
+            >{{ Item.toUser && Item.toUser.groups && Item.toUser.groups[0]
               ? Item.toUser.groups[0].name
               : '' }}</span>
           </div>
@@ -158,6 +158,7 @@ export default {
       status
         .run(() => this.$store.dispatch('jv/get', ['follow', { params }]))
         .then(res => {
+          console.log('用户关注列表', res)
           if (res._jv) {
             delete res._jv
           }
@@ -168,6 +169,7 @@ export default {
           } else {
             this.followingList = [...this.followingList, ...res]
           }
+          console.log('用户关注列表2', this.followingList)
         })
     },
     // 添加关注

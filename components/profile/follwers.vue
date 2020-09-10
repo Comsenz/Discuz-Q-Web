@@ -47,7 +47,7 @@
             <span
               v-if="Item.fromUser.groups"
               class="role"
-            >{{ Item.fromUser && Item.fromUser.groups
+            >{{ Item.fromUser && Item.fromUser.groups && Item.fromUser.groups[0]
               ? Item.fromUser.groups[0].name
               : '' }}</span>
           </div>

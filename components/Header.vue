@@ -58,6 +58,7 @@
           :size="35"
           :round="true"
           class="avatar"
+          :is-real="userInfo.isReal"
         />
         <el-button
           v-if="userInfo.username"
@@ -108,14 +109,12 @@ export default {
       activeIndex: '1',
       userId: this.$store.getters['session/get']('userId'),
       code: '', // 邀请码
-      canReg: ''
+      canReg: '',
+      forums: ''
 
     }
   },
   computed: {
-    forums() {
-      return this.$store.state.site.info.attributes || {}
-    },
     userInfo() {
       return this.$store.state.user.info.attributes || {}
     }
@@ -133,11 +132,16 @@ export default {
   },
   methods: {
     forumh() {
-      if (this.forums && this.forums.set_reg && this.forums.set_reg.register_close) {
-        this.canReg = false
-      } else {
-        this.canReg = true
-      }
+      console.log('userinfo', this.userInfo)
+      this.$store.dispatch('site/getSiteInfo').then(res => {
+        this.forums = res.attributes
+        if (this.forums && this.forums.set_reg && this.forums.set_reg.register_close) {
+          console.log('register c', this.forums.set_reg.register_close)
+          this.canReg = false
+        } else {
+          this.canReg = true
+        }
+      })
     },
     ExitLogin() {
       this.$store.dispatch('session/logout').then(() => window.location.reload())

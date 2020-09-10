@@ -4,7 +4,7 @@
     <div class="mywallet-top">
       <div class="mywallet-topitem">
         <div class="margbtm">{{ $t('profile.availableamount') }}</div>
-        <div class="amount">{{ `¥ ${dataInfo.available_amount || 0.0}` }}
+        <div class="amount">{{ `¥ ${dataInfo && dataInfo.available_amount || 0.0}` }}
           <span
             class="availmount"
             @click="showWithdraw"
@@ -17,11 +17,11 @@
           v-if="dataInfo.freeze_amount > 0"
           class="amount"
           style="color:#FA5151;"
-        >{{ `¥ ${dataInfo.freeze_amount || 0.0}` }}</div>
+        >{{ `¥ ${dataInfo && dataInfo.freeze_amount || 0.0}` }}</div>
         <div
           v-else
           class="amount"
-        >{{ `¥ ${dataInfo.freeze_amount || 0.0}` }}</div>
+        >{{ `¥ ${dataInfo && dataInfo.freeze_amount || 0.0}` }}</div>
       </div>
       <div class="mywallet-topitem mywallet-r">
         <div class="margbtm">{{ $t('pay.payPassword') }}</div>
@@ -136,14 +136,9 @@ export default {
       passError: false, // 修改原密码
       codeError: false, // 再次输入密码错误判断
       loadingType: '', // 读取状态
-      dataInfo: {}, // 钱包信息
+      dataInfo: '', // 钱包信息
       hasPassword: false,
       userId: this.$store.getters['session/get']('userId') // 获取当前登陆用户的ID
-    }
-  },
-  computed: {
-    userInfo() {
-      return this.$store.getters['jv/get'](`/users/${this.userId}`)
     }
   },
   mounted() {
@@ -272,7 +267,7 @@ export default {
           this.dataInfo = res
           this.hasPassword = res.user.canWalletPay
           console.log('钱包信息', this.dataInfo)
-        })
+        }, e => this.handleError(e))
     }
   }
 
