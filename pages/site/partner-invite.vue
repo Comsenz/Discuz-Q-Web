@@ -83,7 +83,7 @@
       <span class="bold">{{ forums.set_site && forums.set_site.site_name }}</span>
       {{ $t('site.site') }}
     </p>
-    <p>
+    <div>
       <el-button
         type="primary"
         class="r-button"
@@ -92,7 +92,7 @@
         {{ $t('site.accepttheinvitationandbecome') }}
         {{ inviteData.group && inviteData.group.name }}
       </el-button>
-    </p>
+    </div>
     <!-- 验证提示 -->
     <el-dialog
       title="提示"

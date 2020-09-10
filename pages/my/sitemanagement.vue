@@ -53,10 +53,17 @@ export default {
     }
   },
   mounted() {
-    console.log('forums', this.forums)
     this.getGroupList()
+    this.reloadForums()
   },
   methods: {
+    async reloadForums() {
+      try {
+        await this.$store.dispatch('site/getSiteInfo')
+      } catch (err) {
+        console.log('getuUserInfo err', err)
+      }
+    },
     // 获取用户组
     getGroupList() {
       const params = {

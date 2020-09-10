@@ -103,8 +103,16 @@ export default {
     this.inputInfo = this.forums && this.forums.set_site && this.forums.set_site.site_introduction
     this.groupsId = this.forums && this.forums.user && this.forums.user.groups && this.forums.user.groups.length > 0 && this.forums.user.groups[0].id
     this.getPermissions()
+    this.reloadForums()
   },
   methods: {
+    async reloadForums() {
+      try {
+        await this.$store.dispatch('site/getSiteInfo')
+      } catch (err) {
+        console.log('getuUserInfo err', err)
+      }
+    },
     handleModify() {
       this.isModify = !this.isModify
     },
@@ -260,6 +268,9 @@ export default {
       margin-left:15px;
       .role,.join-time{
         color: $font-color-grey;
+      }
+      .role{
+        margin: 3px 0;
       }
       .permission-list{
         margin-top:15px;
