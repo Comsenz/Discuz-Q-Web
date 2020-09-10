@@ -31,7 +31,8 @@ import {
   Pagination,
   InfiniteScroll,
   Upload,
-  Progress
+  Progress,
+  Badge
 } from 'element-ui'
 
 Vue.use(Button, { locale })
@@ -61,6 +62,6 @@ Vue.use(Pagination, { locale })
 Vue.use(InfiniteScroll, { locale })
 Vue.use(Upload, { locale })
 Vue.use(Progress, { locale })
-
+Vue.use(Badge, { locale })
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm

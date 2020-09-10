@@ -12,7 +12,10 @@
         :class="item.classname"
         @click="currentInfo(index)"
       >
-        <span slot="title">{{ $t(item.content) }}</span>
+        <span slot="title" class="menu-title">
+          {{ $t(item.content) }}
+          <span v-if="item.index === '/my/notice' && userInfo.unreadNotifications > 0" class="unread-notice">{{ userInfo.unreadNotifications > 99 ? '99+' : userInfo.unreadNotifications }}</span>
+        </span>
         <span :class="['arrow',isActive(index)]"><i class="el-icon-arrow-right icon" /></span>
       </el-menu-item>
 
@@ -25,9 +28,6 @@
 <script>
 export default {
   name: 'UserCenter',
-  // meta: {
-  //   requiresAuth: true
-  // },
   data() {
     return {
       currentNumber: 0,
@@ -45,6 +45,9 @@ export default {
     },
     userId() {
       return this.$store.state.user.info.id
+    },
+    userInfo() {
+      return this.$store.state.user.info.attributes || {}
     }
   },
   mounted() {
@@ -76,7 +79,6 @@ export default {
       this.currentNumber = index
     },
     isActive(index) {
-      // console.log('ddddd', index)
       this.currentNumber = this.switchCase(this.$route.path)
       return [this.currentNumber === index ? 'show' : 'hide']
     },
@@ -149,6 +151,15 @@ export default {
   ::v-deep.el-menu-item:focus,
   .el-menu-item:hover {
     background: white;
+  }
+}
+.menu-title{
+  .unread-notice{
+    font-size:12px;
+    color: #fff;
+    background: #FF0000;
+    padding:1px 6px;
+    border-radius:6px;
   }
 }
 .my-main{
