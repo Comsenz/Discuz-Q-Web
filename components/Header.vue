@@ -71,8 +71,13 @@
         <el-button
           type="primary"
           size="small"
-          class="h-button4"
-        >{{ $t('home.tabsNews') }}</el-button>
+          class="h-button4 notice-btn"
+          @click="jumptoNews"
+        >
+          <div class="flex">{{ $t('home.tabsNews') }}
+            <span v-if="userInfo.unreadNotifications > 0" class="unread-notice">{{ userInfo.unreadNotifications > 99 ? '99+' : userInfo.unreadNotifications }}</span>
+          </div>
+        </el-button>
 
         <el-button
           type="primary"
@@ -110,8 +115,8 @@ export default {
       userId: this.$store.getters['session/get']('userId'),
       code: '', // 邀请码
       canReg: '',
-      forums: ''
-
+      forums: '',
+      timer: null // 定时器
     }
   },
   computed: {
@@ -129,6 +134,11 @@ export default {
     if (this.$route.query.q) {
       this.inputVal = this.$route.query.q
     }
+    this.reloadUserInfo()
+  },
+  destroyed() {
+    this.tiemr = null
+    clearInterval(this.timer)
   },
   methods: {
     forumh() {
@@ -146,6 +156,20 @@ export default {
     ExitLogin() {
       this.$store.dispatch('session/logout').then(() => window.location.reload())
     },
+    // 轮询获取用户信息，用于判断是否有新消息
+    reloadUserInfo() {
+      if (this.userInfo && this.userInfo.id) {
+        clearInterval(this.timer)
+        this.timer = setInterval(this.getUserInfo, 30000)
+      }
+    },
+    async getUserInfo() {
+      try {
+        await this.$store.dispatch('user/getUserInfo', this.userId)
+      } catch (err) {
+        console.log('header getuUserInfo err', err)
+      }
+    },
     userinfo() {
       this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
     },
@@ -154,6 +178,9 @@ export default {
     },
     jumptoperson() {
       this.$router.push(`/profile?userId=${this.userId}`)
+    },
+    jumptoNews() {
+      this.$router.push('/my/notice')
     },
     loginurl() {
       this.$router.push('/user/login')
@@ -314,6 +341,19 @@ export default {
       }
       ::v-deep.el-menu--horizontal > .el-menu-item.is-active {
         border-bottom: none;
+      }
+      .notice-btn{
+        .flex{
+          display: flex;
+          align-items: center;
+        }
+        .unread-notice{
+          font-size:12px;
+          color: #fff;
+          background: #FF0000;
+          padding:1px 6px;
+          border-radius:6px;
+        }
       }
     }
     .avatar {

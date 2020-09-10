@@ -13,9 +13,9 @@
     </div>
     <div class="buttons">
       <button :class="{disabled: !canFollow}" :disabled="!canFollow" @click="followed ? $emit('unFollow') : $emit('follow')">{{ followed ? $t('home.followed') : $t('home.follow') }}</button>
-      <button @click="$emit('chat')">{{ $t('topic.sendMessage') }}</button>
+      <button @click="chatting = true">{{ $t('topic.sendMessage') }}</button>
     </div>
-    <chat-box :dialog="dialog || {}" />
+    <chat-box v-if="chatting" :dialog="dialog || {}" @close="chatting = false" />
   </div>
 </template>
 
@@ -46,7 +46,8 @@ export default {
   },
   data() {
     return {
-      dialog: { id: '', name: '' }
+      dialog: { id: '', name: '' },
+      chatting: false
     }
   },
   watch: {
@@ -60,11 +61,9 @@ export default {
   methods: {
     getAuthorInfo() {
       return this.$store.dispatch('jv/get', [`users/${this.author._jv.id}`, { params: { include }}]).then(res => {
-        if (res.dialog) {
-          this.dialog.id = res.dialog._jv.id
-          this.dialog.name = this.author.username
-        }
+        if (res.dialog) this.dialog.id = res.dialog._jv.id
         console.log('dialog -> ', this.dialog)
+        this.dialog.name = this.author.username
       }, e => this.handleError(e))
     }
   }

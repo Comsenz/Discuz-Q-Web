@@ -406,6 +406,14 @@ export default {
   auth: {
     userinfo: '获取头像和昵称'
   },
+  // 私信
+  chat: {
+    chatWithYou: '与你对话',
+    noMore: '没有更多了',
+    loadRecord: '查看更多消息',
+    messageCannotBeBlack: '消息内容不能为空',
+    messageLengthCannotOver: '消息内容不能超过 450 字'
+  },
   // 首页
   home: {
     all: '所有',
@@ -518,6 +526,7 @@ export default {
     rewardedMe: ' 打赏了我',
     payedMe: ' 支付了我',
     system: '系统通知',
+    chat: '与你的私信',
     admin: '管理员',
     delete: '删除',
     send: '发送',

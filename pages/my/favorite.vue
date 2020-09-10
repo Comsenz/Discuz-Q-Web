@@ -91,7 +91,7 @@ export default {
         }).finally(() => {
           this.loading = false
         })
-      })
+      }).catch(_ => {})
     }
   }
 }

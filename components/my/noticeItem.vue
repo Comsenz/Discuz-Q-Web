@@ -1,39 +1,38 @@
 <template>
   <div class="notice-item">
-    <div class="item-cont">
-      <div class="avatar">
-        <div v-if="item.type === 'system'" class="system-avatar">
-          <svg-icon type="system-notice" class="icon" />
-        </div>
-        <avatar v-else :user="{ id: item.user_id,username: item.user_name, avatarUrl: item.user_avatar}" :size="50" />
+    <div class="avatar">
+      <div v-if="item.type === 'system'" class="system-avatar">
+        <svg-icon type="system-notice" class="icon" />
       </div>
-      <div class="detail">
-        <div class="top">
-          <template v-if="item.type !== 'system'">
-            <nuxt-link v-if="item.user_name" :to="`/profile?userId=${item.user_id}`" class="user-name">{{ item.user_name }}<span v-if="item.thread_user_groups === '管理员'" class="text">({{ item.thread_user_groups }})</span></nuxt-link><span class="text">{{ typeMap[item.type] }}</span>
-          </template>
-          <div v-if="item.title && item.type === 'system'" class="user-name">{{ item.title }}</div>
-          <div class="time">{{ timerDiff(item.created_at) + $t('topic.before') }}</div>
-        </div>
-        <nuxt-link v-if="item.post_content" :to="`/topic/comment?threadId=${item.thread_id}&commentId=${item.post_id}`" class="post-content" v-html="item.post_content" />
-        <nuxt-link v-if="(item.thread_title || item.content) && item.type !== 'system'" :to="`/topic/${item.thread_id}`" class="thread">
-          <div class="thread-user-name">{{ item.thread_username }}:</div>
-          <div class="thread-title">
-            <div v-if="item.thread_title" v-html="item.thread_title" />
-            <div v-else-if="item.content" v-html="item.content" />
-          </div>
-          <div class="to-detail">前往</div>
-        </nuxt-link>
-        <div v-if="item.type === 'system'" class="post-content">{{ item.content }}</div>
-        <div v-if="item.type === 'rewarded' && item.amount" class="amount">+ {{ $t('post.yuanItem') + item.amount }}</div>
+      <avatar v-else :user="{ id: item.user_id,username: item.user_name, avatarUrl: item.user_avatar}" :size="50" />
+    </div>
+    <div class="detail">
+      <div class="top">
+        <template v-if="item.type !== 'system'">
+          <nuxt-link v-if="item.user_name" :to="`/profile?userId=${item.user_id}`" class="user-name">{{ item.user_name }}<span v-if="item.thread_user_groups === '管理员'" class="text">({{ item.thread_user_groups }})</span></nuxt-link><span class="text">{{ typeMap[item.type] }}</span>
+        </template>
+        <div v-if="item.title && item.type === 'system'" class="user-name">{{ item.title }}</div>
+        <div class="time">{{ timerDiff(item.created_at) + $t('topic.before') }}</div>
       </div>
+      <nuxt-link v-if="item.post_content" :to="`/topic/comment?threadId=${item.thread_id}&commentId=${item.post_id}`" class="post-content" v-html="item.post_content" />
+      <nuxt-link v-if="(item.thread_title || item.content) && item.type !== 'system'" :to="`/topic/${item.thread_id}`" class="thread">
+        <div class="thread-user-name">{{ item.thread_username }}:</div>
+        <div class="thread-title">
+          <div v-if="item.thread_title" v-html="item.thread_title" />
+          <div v-else-if="item.content" v-html="item.content" />
+        </div>
+        <div class="to-detail">{{ $t('notice.toDetail') }}</div>
+      </nuxt-link>
+      <div v-if="item.type === 'system'" class="post-content">{{ item.content }}</div>
+      <div v-if="item.type === 'rewarded' && item.amount" class="amount">+ {{ $t('post.yuanItem') + item.amount }}</div>
     </div>
   </div>
 </template>
 <script>
+import handleError from '@/mixin/handleError'
 import timerDiff from '@/mixin/timerDiff'
 export default {
-  mixins: [timerDiff],
+  mixins: [timerDiff, handleError],
   props: {
     item: {
       type: Object,
@@ -50,6 +49,9 @@ export default {
         'system': this.$t('notice.system')
       }
     }
+  },
+  methods: {
+
   }
 }
 </script>
@@ -57,18 +59,22 @@ export default {
 @import '@/assets/css/variable/color.scss';
 @import '@/assets/css/variable/mixin.scss';
 .notice-item{
-  padding:30px 0 0 30px;
+  padding:30px;
+  display: flex;
+  position: relative;
   @media screen and ( max-width: 1005px ) {
-    padding:15px 0 0 15px;
+    padding:15px;
   }
-  .item-cont{
-    display: flex;
-    border-bottom: 1px solid #E4E4E4;
-    padding-right:30px;
-    padding-bottom: 30px;
+  &:after{
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right:0;
+    width: calc(100% - 30px);
+    height: 1px;
+    background: #E4E4E4;
     @media screen and ( max-width: 1005px ) {
-      padding-right:15px;
-      padding-bottom: 15px;
+      width: calc(100% - 15px);
     }
   }
   .avatar{
@@ -119,7 +125,7 @@ export default {
       }
     }
     .post-content{
-      margin:10px 0;
+      padding:10px 0 0;
       display: block;
     }
     .thread{
