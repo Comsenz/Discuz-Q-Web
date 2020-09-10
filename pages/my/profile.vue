@@ -941,6 +941,9 @@ export default {
     padding-bottom: 20px;
     margin-top: 15px;
     width: 460px;
+    @media screen and (max-width: 1005px) {
+        width:390px;
+      }
     // font-family: Microsoft YaHei;
     color: #000000;
     .pmobile {

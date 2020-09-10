@@ -224,8 +224,11 @@ export default {
     if (this.forums && this.forums.set_reg) {
       this.validate = this.forums.set_reg.register_validate
     }
-    this.QRcode()
+    // this.QRcode()
     this.changeactive()
+  },
+  destroyed() {
+    clearInterval(QuickLogin)
   },
   methods: {
     countDown(interval) {
@@ -277,6 +280,9 @@ export default {
     },
     // tab激活
     changeactive() {
+      if (this.activeName === '2') {
+        this.QRcode()
+      }
       this.activeName = this.forums ? this.forums.set_reg.register_type.toString() : ''
       this.canClickNum = this.activeName !== '1'
       console.log(this.canClickNum)

@@ -74,7 +74,7 @@
       </div>
     </div>
     <!-- 个人主页头部2 -->
-    <div class="profile-h">
+    <div v-if="userInfo && forums" class="profile-h">
       <Avatar
         :user="userInfo"
         :size="100"
@@ -240,7 +240,7 @@ export default {
     },
     // 获取用户信息
     getUserInfo(userId) {
-      // this.loading = true
+      this.loading = true
       const params = {
         include: 'groups,dialog'
       }

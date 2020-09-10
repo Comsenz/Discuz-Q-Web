@@ -205,7 +205,7 @@ export default {
     if (this.forums && this.forums.set_reg && this.forums.set_reg.register_close) {
       this.canReg = true
     }
-    this.QRcode()
+    // this.QRcode()
     this.changeactive()
   },
   destroyed() {
@@ -240,9 +240,12 @@ export default {
     },
     // tab激活
     changeactive() {
+      if (this.activeName === '2') {
+        this.QRcode()
+      }
       this.activeName = this.forums ? this.forums.set_reg.register_type.toString() : ''
       this.canClickNum = this.activeName !== '1'
-      console.log(this.canClickNum)
+      console.log(this.activeName)
     },
 
     logind() {
