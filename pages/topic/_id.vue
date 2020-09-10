@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="payLoading" class="page-post">
+  <div v-loading="payLoading" element-loading-background="rgba(0, 0, 0, 0)" class="page-post">
     <main v-loading="articleLoading">
       <div class="container-post">
         <div v-if="thread.isApproved === 0" class="checking">{{ $t('topic.examineTip') }}</div>
@@ -39,6 +39,7 @@
         <topic-password
           v-if="showPasswordInput"
           :price="payment.rewardAmount ? payment.rewardAmount : (thread.price || 0)"
+          :password-error="passwordError"
           @close="showPasswordInput = false"
           @password="payOrder"
         />
@@ -94,7 +95,8 @@ export default {
       showPasswordInput: false,
       showWxPay: false,
       payLoading: false,
-      articleLoading: false
+      articleLoading: false,
+      passwordError: false
     }
   },
   computed: {
@@ -209,9 +211,16 @@ export default {
           this.wxPayActive(data)
         } else {
           this.$message.success(this.$t('pay.paySuccess'))
+          this.passwordError = false
+          this.showPasswordInput = false
           this.getThread()
         }
-      }, e => this.handleError(e)).finally(() => { this.showPasswordInput = false })
+      }, e => {
+        const { response: { data: { errors }}} = e
+        if (errors[0].code === 'pay_password_failures_times_toplimit') this.showPasswordInput = false
+        if (errors[0].code === 'validation_error') this.passwordError = true
+        this.handleError(e)
+      })
     },
     wxPayActive(data) {
       this.payment.wechat_qrcode = data.wechat_qrcode

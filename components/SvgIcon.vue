@@ -6,7 +6,7 @@
     aria-hidden="true"
     @click="$emit('click')"
   >
-    <use :xlink:href="'#' + type" @click="$emit('click')" />
+    <use :xlink:href="'#' + type" />
   </svg>
 </template>
 

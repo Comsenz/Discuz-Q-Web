@@ -9,7 +9,7 @@
         </div>
       </div>
       <div class="block input-password">
-        <password-input @password="password => $emit('password', password)" />
+        <password-input :error="passwordError" @password="password => $emit('password', password)" />
         <div class="title">{{ $t('pay.payPassword') }}</div>
       </div>
     </div>
@@ -23,6 +23,10 @@ export default {
     price: {
       type: [Number, String],
       default: ''
+    },
+    passwordError: {
+      type: Boolean,
+      default: false
     }
   }
 }

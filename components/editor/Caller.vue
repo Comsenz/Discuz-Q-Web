@@ -14,7 +14,7 @@
       <div class="tip">{{ $t('post.searchFriends') }}</div>
       <div class="container-search-list">
         <label>
-          <input type="text" class="input-caller" @input="searchUser">
+          <input :placeholder="$t('post.pleaseInput')" type="text" class="input-caller" @input="searchUser">
         </label>
         <div class="infinite-list-wrapper" style="overflow:auto">
           <ul v-infinite-scroll="load" infinite-scroll-disabled="disabled">

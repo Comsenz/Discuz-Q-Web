@@ -84,8 +84,6 @@
                   </div>
                   <div>
                     <span>￥ {{ userWallet.walletBalance }}</span>
-                    <!-- TODO 电脑端没充值 -->
-                    <nuxt-link v-if="!enoughBalance" to="#" class="recharge">  {{ $t('pay.walletRecharge') }}</nuxt-link>
                   </div>
                 </div>
               </div>

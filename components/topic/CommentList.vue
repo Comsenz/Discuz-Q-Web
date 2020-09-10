@@ -123,7 +123,7 @@ export default {
     formatSummary(comment) {
       let html
       if (comment.contentHtml !== comment.summary) {
-        html = comment.summary + `&nbsp&nbsp&nbsp<button style="color: #00479B; cursor: pointer" class="showAllComment">全部<button>`
+        html = comment.summary + `&nbsp&nbsp&nbsp<button style="color: #00479B; cursor: pointer" class="showAllComment">${this.$t('topic.all')}<button>`
       } else {
         html = comment.contentHtml
       }

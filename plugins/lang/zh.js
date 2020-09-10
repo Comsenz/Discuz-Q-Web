@@ -275,6 +275,7 @@ export default {
     topicList: '话题列表',
     personUnit: '人',
     delete: '删除',
+    all: '全部',
     management: '管理',
     reply: '回复',
     replyAlready: '已有回复',

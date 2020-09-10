@@ -18,6 +18,11 @@ export default {
       password: ''
     }
   },
+  watch: {
+    error(val) {
+      if (val) this.password = ''
+    }
+  },
   mounted() {
     document.addEventListener('keyup', this.onInput)
   },
