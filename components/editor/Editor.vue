@@ -55,16 +55,19 @@
         <span v-if="typeInformation && typeInformation.textLimit && post.text " class="tip">
           {{ typeInformation.textLimit>=post.text.length ? $t('post.note', { num: typeInformation.textLimit - post.text.length }) : $t('post.exceed', { num: post.text.length - typeInformation.textLimit }) }}
         </span>
-        <div class="emoji-list">
-          <emoji-list v-show="showEmoji" @selectEmoji="selectActions" />
-        </div>
-        <div class="topic-list">
-          <topic-list v-show="showTopic" @selectedTopic="selectActions" />
-        </div>
         <div :class="['actions', editorStyle]">
           <div class="block">
             <template v-for="(action, index) in actions">
-              <svg-icon v-if="action.show" :key="index" :type="action.icon" class="svg" style="font-size: 20px" @click="onActions(action.toggle)" />
+              <popover v-if="action.show && action.icon !== 'call'" :key="index" class="svg">
+                <template v-slot:pop>
+                  <emoji-list v-if="action.icon === 'emoji'" @selectEmoji="selectActions" />
+                  <topic-list v-else @selectedTopic="selectActions" />
+                </template>
+                <template v-slot:activeNode>
+                  <svg-icon :type="action.icon" style="font-size: 20px" @click="onActions(action.toggle)" />
+                </template>
+              </popover>
+              <svg-icon v-else-if="action.show" :key="index" :type="action.icon" class="svg" style="font-size: 20px" @click="onActions(action.toggle)" />
             </template>
           </div>
           <div class="block">
@@ -333,6 +336,7 @@ export default {
       &.chat { background: $background-color-grey }
 
       > .block {
+        display: flex;
         padding: 0 10px;
         border-left: 1px solid $border-color-base;
 
@@ -340,7 +344,7 @@ export default {
           border: 0;
         }
 
-        > .svg {
+        .svg {
           cursor: pointer;
           margin-left: 20px;
 
@@ -362,16 +366,5 @@ export default {
       color: #D0D4DC;
     }
 
-    .emoji-list {
-      position: absolute;
-      bottom: -205px;
-      left: 0;
-    }
-
-    .topic-list {
-      position: absolute;
-      top: calc(100% + 5px);
-      left: 80px;
-    }
   }
 </style>

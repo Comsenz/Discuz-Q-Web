@@ -82,7 +82,6 @@ export default {
       }, e => this.handleError(e))
     },
     load() {
-      console.log('load')
       // bug 避免无 searchList 是触发
       if (this.searchList.length > 0) {
         this.loading = true
@@ -98,25 +97,10 @@ export default {
   @import '@/assets/css/variable/color.scss';
   $font-color: #6D6D6D;
   .container-search-list {
-    min-height: 45px;
+    height: 245px;
     min-width: 200px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, .3);
-    border-radius: 8px;
-    &::after {
-      content: '';
-      display: block;
-      width: 20px;
-      height: 20px;
-      position: absolute;
-      border-radius: 5px;
-      transform: rotate(45deg);
-      background: #ffffff;
-      border-left: 1px solid $border-color-base;
-      border-top: 1px solid $border-color-base;
-      top: -10px;
-      left: 20px;
-      z-index: 2;
-    }
+    border-radius: 6px;
     .input-topic {
       height: 45px;
       line-height: 45px;
@@ -126,6 +110,8 @@ export default {
       padding: 0 10px;
       color: #6D6D6D;
       font-size: 14px;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
       border-bottom: 1px solid $border-color-base;
     }
     > .infinite-list-wrapper {

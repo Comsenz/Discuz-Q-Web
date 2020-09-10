@@ -188,7 +188,7 @@ export default {
     > .chat-content {
       background: $background-color-grey;
       padding: 0 30px 30px 30px;
-      height: 500px;
+      height: 430px;
       overflow: auto;
       overscroll-behavior: contain;
       > .load-tip {
