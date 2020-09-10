@@ -112,6 +112,7 @@ export default {
     },
     postCommentPublish() {
       if (!this.comment.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
+      if (this.comment.text.length > this.commentType.textLimit) return this.$message.warning(this.$t('post.messageLengthCannotOver'))
       this.onCommentPublish = true
       const commentParams = {
         _jv: {

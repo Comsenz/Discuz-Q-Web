@@ -125,8 +125,9 @@ export default {
       })
     },
     checkPublish() {
-      // 0 文字帖 1 帖子 2 视频 3 图片 4 评论
-      if (!this.categorySelectedId && this.type !== 4) return this.$message.warning(this.$t('post.theClassifyCanNotBeBlank'))
+      // 0 文字帖 1 帖子 2 视频 3 图片
+      if (!this.categorySelectedId) return this.$message.warning(this.$t('post.theClassifyCanNotBeBlank'))
+      if (this.post.text.length > this.typeInformation[this.type].textLimit) return this.$message.warning(this.$t('post.messageLengthCannotOver'))
       if (this.type === '0' && !this.post.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
       if (this.type === '1' && !this.post.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
       if (this.type === '1' && !this.post.title) return this.$message.warning(this.$t('post.theTitleCanNotBeBlank'))

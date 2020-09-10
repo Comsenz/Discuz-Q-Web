@@ -250,6 +250,7 @@ export default {
     yuanItem: '￥',
     yuan: '元',
     customize: '自定义',
+    messageLengthCannotOver: '内容字数超出限制',
     theTitleCanNotBeBlank: '标题不能为空',
     theContentCanNotBeBlank: '内容不能为空',
     theClassifyCanNotBeBlank: '请选择分类',

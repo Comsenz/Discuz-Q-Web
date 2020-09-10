@@ -134,6 +134,7 @@ export default {
     },
     replyPublish(id) {
       if (!this.replyPost.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
+      if (this.replyPost.text.length > this.replyType.textLimit) return this.$message.warning(this.$t('post.messageLengthCannotOver'))
       this.onReplyPublish = true
       const replyParams = {
         _jv: {
