@@ -124,7 +124,7 @@ export default {
       hasMore: false,
       options: [{
         value: '',
-        label: this.$t('profile.all')
+        label: '接口不支持排序'
       }, {
         value: '1',
         label: '主题数'
