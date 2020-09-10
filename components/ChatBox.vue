@@ -1,11 +1,12 @@
 <template>
   <div class="chat-box">
     <div class="header">
-      <span class="name">小李子</span>
-      <span>与你对话</span>
-      <svg-icon class="icon-close" type="close" style="font-size: 16px" />
+      <span class="name">{{ dialog.name }}</span>
+      <span>{{ $t('chat.chatWithYou') }}</span>
+      <svg-icon class="icon-close" type="close" style="font-size: 16px" @click="$emit('close')" />
     </div>
     <div id="xxx" ref="chatContent" class="chat-content">
+      <div v-if="loadMoreMessage" class="load-tip">{{ noMore ? $t('chat.noMore') : $t('chat.loadRecord') }}</div>
       <div v-for="(item, index) in recordList" :key="index" class="record">
         <div v-if="item.user_id === parseInt(userId)" class="record-item mine">
           <div class="message">
@@ -26,12 +27,13 @@
       </div>
     </div>
     <editor
-      class="editor-chat"
+      class="chat-editor"
       editor-style="chat"
+      selector="chat-editor"
       :type-information="chatType"
       :post.sync="chatContent"
       :on-publish="onChatPublish"
-      @publish="postChatPublish"
+      @publish="chatPublish"
     />
     <Cover />
   </div>
@@ -52,71 +54,98 @@ export default {
   data() {
     return {
       recordList: [],
+      recordTotal: 0,
       pageLimit: 10,
+      pollId: '',
       onChatPublish: false,
       chatContent: { text: '', imageList: [], attachedList: [] },
-      chatType: { type: 4, textLimit: 450, showPayment: false, showTitle: false, showImage: true, showVideo: false,
-        showAttached: false, showMarkdown: false, showEmoji: true, showTopic: false, showCaller: false }
+      chatType: { type: 4, textLimit: 450, showPayment: false, showTitle: false, showImage: false, showVideo: false,
+        showAttached: false, showMarkdown: false, showEmoji: true, showTopic: false, showCaller: false },
+      loadMoreMessage: false
     }
   },
   computed: {
     userId() {
       return this.$store.getters['session/get']('userId')
+    },
+    noMore() {
+      return this.recordList.length === this.recordTotal
     }
   },
   watch: {
     dialog: {
       handler(val) {
-        if (val.id && val.name) this.getChatRecord()
+        if (val.id && val.name) this.getChatRecord(val.id).then(() => this.$nextTick(() => { this.$refs.chatContent.scrollTop = this.$refs.chatContent.scrollHeight }))
       },
       deep: true,
       immediate: true
     }
   },
+  mounted() {
+    if (process.client) {
+      this.activePolling()
+      this.scrollListener()
+    }
+  },
+  beforeDestroy() {
+    process.client && window.clearInterval(this.pollId)
+  },
   methods: {
-    getChatRecord() {
-      const params = {
-        'filter[dialog_id]': this.dialog.id,
-        include: 'user,user.groups',
-        'page[number]': 1,
-        'page[limit]': this.pageLimit,
-        sort: 'createdAt'
-      }
+    scrollListener() {
+      this.$refs.chatContent.addEventListener('scroll', e => {
+        if (e.target.scrollTop === 0) {
+          if (this.loadMoreMessage) return
+          this.loadMoreMessage = true
+          this.pageLimit += 10
+          this.getChatRecord(this.dialog.id)
+        }
+      })
+    },
+    activePolling() {
+      this.pollId = window.setInterval(() => {
+        if (this.dialog.id) this.getChatRecord(this.dialog.id)
+      }, 1500)
+    },
+    getChatRecord(id) {
+      const params = { 'filter[dialog_id]': id, include: 'user,user.groups', 'page[number]': 1, 'page[limit]': this.pageLimit, sort: '-createdAt' }
       return this.$store.dispatch('jv/get', ['dialog/message', { params }]).then(res => {
-        this.recordList = res
+        const { _jv: { json: { meta: { total }}}} = res
+        this.recordList = [...res].reverse()
         this.onChatPublish = false
-        this.$nextTick(() => {
-          this.$refs.chatContent.scrollTop = 999
-        })
+        if (this.recordTotal !== total && !this.loadMoreMessage) this.$nextTick(() => { this.$refs.chatContent.scrollTop = this.$refs.chatContent.scrollHeight })
+        this.loadMoreMessage = false
+        this.recordTotal = total
       }, e => this.handleError(e))
     },
     formatDate(date) {
       return dayjs(new Date(date)).format('YYYY-MM-DD HH:mm')
     },
-    postChatPublish() {
-      if (!this.chatContent.text) return this.$message.warning('消息内容不能为空')
-      if (!this.chatContent.text.length > 450) return this.$message.warning('消息内容不能超过 450 字')
+    postMessage() {
+      const params = { _jv: { type: 'dialog/message' }, dialog_id: this.dialog.id, message_text: this.chatContent.text }
+      this.$store.dispatch('jv/post', params).then(() => {
+        this.getChatRecord(this.dialog.id)
+        this.chatContent.text = ''
+      }, e => {
+        this.onChatPublish = false
+        this.handleError(e)
+      })
+    },
+    createDialogAndPost() {
+      const params = { _jv: { type: 'dialog' }, recipient_username: this.dialog.name, message_text: this.chatContent.text }
+      this.$store.dispatch('jv/post', params).then(res => {
+        this.getChatRecord(res._jv.id)
+        this.chatContent.text = ''
+      }, e => {
+        this.onChatPublish = false
+        this.handleError(e)
+      })
+    },
+    chatPublish() {
+      if (!this.chatContent.text) return this.$message.warning(this.$t('chat.messageCannotBeBlack'))
+      if (this.chatContent.text.length > 450) return this.$message.warning(this.$t('chat.messageLengthCannotOver'))
+      if (this.onChatPublish) return
       this.onChatPublish = true
-      if (this.dialog.id) {
-        const params = {
-          _jv: {
-            type: 'dialog/message'
-          },
-          dialog_id: this.dialog.id,
-          message_text: this.chatContent.text
-        }
-        // 调用发送消息接口
-        this.$store.dispatch('jv/post', params).then(res => {
-          console.log('message ->', res)
-          this.getChatRecord()
-          this.chatContent.text = ''
-        }, e => {
-          this.onChatPublish = false
-          this.handleError(e)
-        })
-      } else {
-        alert('哈哈哈, 没人和你聊天')
-      }
+      this.dialog.id ? this.postMessage() : this.createDialogAndPost()
     }
   }
 }
@@ -162,6 +191,10 @@ export default {
       height: 500px;
       overflow: auto;
       overscroll-behavior: contain;
+      > .load-tip {
+        text-align: center;
+        color: $font-color-grey
+      }
       > .record {
         position: relative;
         > .record-item {
@@ -171,8 +204,9 @@ export default {
           > .message {
             margin-left: 20px;
             > .message-box {
+              word-break: break-all;
               position: relative;
-              padding: 10px;
+              padding: 15px;
               max-width: 360px;
               background: #ffffff;
               border: 1px solid $border-color-base;
@@ -196,6 +230,7 @@ export default {
                 background: #ffffff;
                 border-left: 1px solid $border-color-base;
                 border-bottom: 1px solid $border-color-base;
+                border-radius: 1px;
                 transform: rotate(45deg);
               }
             }
@@ -218,7 +253,10 @@ export default {
                 right: 70px;
               }
               > .message-box {
+                background: #d1e0ff;
+                text-align: left;
                 &::before {
+                  background: #d1e0ff;
                   left: auto;
                   right: -6px;
                   border: none;
@@ -233,7 +271,7 @@ export default {
       }
 
     }
-    > .editor-chat {
+    > .chat-editor {
       margin-top: 0 !important;
     }
   }

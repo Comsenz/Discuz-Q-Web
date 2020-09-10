@@ -1,6 +1,6 @@
 <template>
   <div class="global">
-    <aside-header :author="author" :billboard="billboard" :followed="followed" :can-follow="canFollow" @follow="follow" @unFollow="unFollow" @chat="chat" />
+    <aside-header :author="author" :billboard="billboard" :followed="followed" :can-follow="canFollow" @follow="follow" @unFollow="unFollow" />
     <div v-loading="threeEssenceThread.length === 0" class="recommend block">
       <div class="title">{{ $t('topic.recommend') }}</div>
       <div v-for="(item, index) in threeEssenceThread" :key="index" class="container-post">
@@ -95,10 +95,6 @@ export default {
       }]).then(() => {
         this.followed = false
       }, e => this.handleError(e))
-    },
-    chat() {
-      // TODO 实时聊天
-      alert('chat')
     }
   }
 }
