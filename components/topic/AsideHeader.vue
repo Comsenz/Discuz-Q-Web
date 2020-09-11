@@ -17,7 +17,7 @@
         :disabled="!canFollow"
         @click="followed ? $emit('unFollow') : $emit('follow')"
       >{{ followed ? $t('home.followed') : $t('home.follow') }}</button>
-      <button @click="chatting = true">{{ $t('topic.sendMessage') }}</button>
+      <button v-permission="openChatBox">{{ $t('topic.sendMessage') }}</button>
     </div>
     <chat-box v-if="chatting" :dialog="dialog || {}" @close="chatting = false" />
   </div>
@@ -69,6 +69,9 @@ export default {
         console.log('dialog -> ', this.dialog)
         this.dialog.name = this.author.username
       }, e => this.handleError(e))
+    },
+    openChatBox() {
+      this.chatting = true
     }
   }
 }

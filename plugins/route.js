@@ -33,7 +33,7 @@ export default ({ app }) => {
       if (site_info.site_mode && site_info.site_mode === 'pay') {
         if (userId === '0' || user_info && !user_info.paid) return next({ path: '/site/info' })
       }
-      next()
+      return next()
     }
     next()
   })

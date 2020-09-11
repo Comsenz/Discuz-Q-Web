@@ -9,7 +9,7 @@
       accept="image/*"
       :file-list="imageList"
       :limit="9"
-      :disabled="imageList.length >= 9"
+      :disabled="imageList.length > 9"
       list-type="picture-card"
       class="resources-upload"
       :on-progress="() => $emit('update:onUploadImage', true)"

@@ -18,7 +18,7 @@
       >
         <svg-icon style="font-size: 20px; margin-top: 10px; fill: #8590A6" type="drop-down" />
       </div>
-      <button v-if="command[usersIndex].showButton && command[usersIndex].buttonText" @click="$emit('payOrReward', command[usersIndex].title)">
+      <button v-if="command[usersIndex].showButton && command[usersIndex].buttonText" @click="onClick(command, usersIndex)">
         <svg-icon style="font-size: 18px; fill: white" type="heart" />
         <span>{{ $t(`topic.${command[usersIndex].buttonText}`) }}</span>
       </button>
@@ -79,6 +79,11 @@ export default {
   methods: {
     showMore(obj, length) {
       obj.value < length ? obj.value += 24 : obj.value = 24
+    },
+    onClick(command, usersIndex) {
+      const userId = this.$store.state.user.info.id
+      if (!userId || userId === '0') return this.$message.error(this.$t('user.pleaseLogin'))
+      return this.$emit('payOrReward', command[usersIndex].title)
     }
   }
 }
