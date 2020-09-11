@@ -2,12 +2,12 @@
   <div class="header">
     <div class="header-container">
       <div class="flex">
-        <div class="logo" @click="home">
+        <nuxt-link to="/" class="logo">
           <img
-            :src="headImg != '' && headImg != null ? headImg : require('static/logo.png')"
+            :src="forums && forums.set_site && forums.set_site.site_header_logo ? forums.set_site.site_header_logo : require('static/logo.png')"
             alt="头部logo"
           >
-        </div>
+        </nuxt-link>
         <el-input
           v-model="inputVal"
           autocomplete="off"
@@ -19,74 +19,33 @@
           <i slot="suffix" class="el-icon-search el-input__icon" @click="onClickSearch" />
         </el-input>
       </div>
-      <div v-if="!isLogin" class="h-button">
-        <el-button
-          type="primary"
-          plain
-          size="small"
-          class="h-button1"
-          @click="loginurl"
-        >{{ $t('user.login') }}</el-button>
-
-        <el-button
-          :disabled="canReg"
-          type="primary"
-          size="small"
-          class="h-button2"
-          @click="registerurl"
-        >{{ $t('user.register') }}</el-button>
+      <!-- 未登录 -->
+      <div v-if="!userId">
+        <el-button size="small" class="h-button h-button1" @click="login">{{ $t('user.login') }}</el-button>
+        <el-button :disabled="forums && forums.set_reg && forums.set_reg.register_close" size="small" class="h-button h-button2" @click="register">{{ $t('user.register') }}</el-button>
       </div>
-      <div v-else-if="JSON.stringify(userInfo) !== '{}'" class="h-button">
-        <!-- <Avatar
-          :user="userInfo"
+      <!-- 已登录 -->
+      <div v-if="userId && JSON.stringify(userInfo) !== '{}'" class="flex">
+        <avatar
+          :user="{ id: userInfo.id, username: userInfo.username, avatarUrl: userInfo.avatarUrl}"
           :size="35"
           :round="true"
-          class="avatar"
           :is-real="userInfo.isReal"
-        /> -->
-        <!-- <div v-if="userInfo.username" class="h-button4 marleft" @click="jumptoperson">
+        />
+        <nuxt-link v-if="userInfo.username && userInfo.id" :to="`/profile?userId=${userInfo.id}`" class="menu-item user-name">
           {{ userInfo.username }}
-        </div>
-        <div class="h-button4 notice-btn" @click="jumptoNews">
-          <div class="flex">
+        </nuxt-link>
+        <nuxt-link to="/my/notice" class="menu-item notice-btn">
+          <span class="flex">
             {{ $t('home.tabsNews') }}
             <span
               v-if="userInfo.unreadNotifications && userInfo.unreadNotifications > 0"
               class="unread-notice"
             >{{ userInfo.unreadNotifications > 99 ? '99+' : userInfo.unreadNotifications }}</span>
-          </div>
-        </div> -->
-        <!-- <el-button
-          v-if="userInfo.username"
-          type="primary"
-          size="small"
-          class="h-button4 marleft"
-          @click="jumptoperson"
-        >{{ userInfo.username }}</el-button> -->
-
-        <!-- <el-button type="primary" size="small" class="h-button4 notice-btn" @click="jumptoNews">
-          <span class="flex">
-            {{ $t('home.tabsNews') }}
-            <span
-              v-if="userInfo.unreadNotifications > 0"
-              class="unread-notice"
-            >{{ userInfo.unreadNotifications > 99 ? '99+' : userInfo.unreadNotifications }}</span>
           </span>
-        </el-button> -->
-
-        <el-button
-          type="primary"
-          size="small"
-          class="h-button4"
-          @click="jumpprofile"
-        >{{ $t('profile.personalhomepage') }}</el-button>
-
-        <el-button
-          type="primary"
-          size="small"
-          class="h-button4"
-          @click="ExitLogin"
-        >{{ $t('user.logout') }}</el-button>
+        </nuxt-link>
+        <nuxt-link to="/my/profile" class="menu-item">{{ $t('profile.personalhomepage') }}</nuxt-link>
+        <div class="menu-item" @click="logout">{{ $t('user.logout') }}</div>
       </div>
     </div>
   </div>
@@ -104,35 +63,34 @@ export default {
   data() {
     return {
       inputVal: '',
-      isLogin: this.$store.getters['session/get']('isLogin'),
-      userId: this.$store.getters['session/get']('userId'),
       code: '', // 邀请码
       canReg: false,
-      forums: {},
       timer: null // 定时器
     }
   },
   computed: {
+    userId() {
+      return this.$store.state.user.info.id
+    },
+    forums() {
+      return this.$store.state.site.info.attributes || {}
+    },
     userInfo() {
       return process.client ? this.$store.state.user.info.attributes || {} : {}
     }
   },
   mounted() {
-    console.log('userinfo', this.userInfo)
+    console.log('userId', this.userId, this.userInfo)
     const { code } = this.$route.query
     if (code !== 'undefined') {
       this.code = code
     }
-    console.log('userinfo1', this.userInfo)
-    this.forumh()
     if (process.client && this.$route.query.q) {
       this.inputVal = this.$route.query.q
     }
-    console.log('userinfo2', this.userInfo)
     if (process.client) {
       this.reloadUserInfo()
     }
-    console.log('userinfo3', this.userInfo)
   },
   destroyed() {
     if (process.client) {
@@ -141,26 +99,13 @@ export default {
     }
   },
   methods: {
-    forumh() {
-      // console.log('userinfo', this.userInfo)
-      // this.$store.dispatch('site/getSiteInfo').then((res) => {
-      //   this.forums = res.attributes
-      //   if (
-      //     this.forums &&
-      //     this.forums.set_reg &&
-      //     this.forums.set_reg.register_close
-      //   ) {
-      //     console.log('register c', this.forums.set_reg.register_close)
-      //     this.canReg = false
-      //   } else {
-      //     this.canReg = true
-      //   }
-      // })
-    },
-    ExitLogin() {
+    // 退出
+    logout() {
       this.$store
         .dispatch('session/logout')
-        .then(() => window.location.reload())
+        .then(() => {
+          this.$router.push('/')
+        })
     },
     // 轮询获取用户信息，用于判断是否有新消息
     reloadUserInfo() {
@@ -173,33 +118,16 @@ export default {
       try {
         await this.$store.dispatch('user/getUserInfo', this.userId)
       } catch (err) {
-        console.log('header getuUserInfo err', err)
+        console.log('header getUserInfo err', err)
       }
     },
-    userinfo() {
-      this.userInfo.groupsName = this.userInfo.groups
-        ? this.userInfo.groups[0].name
-        : ''
-    },
-    registerurl() {
+    register() {
       this.$router.push(
-        `/user/register?url='/'&validate=${this.forums.set_reg.register_validate}&code=${this.code}`
+        `/user/register?url='/'&validate=${this.forums && this.forums.set_reg && this.forums.set_reg.register_validate}&code=${this.code}`
       )
     },
-    jumptoperson() {
-      this.$router.push(`/profile?userId=${this.userId}`)
-    },
-    jumptoNews() {
-      this.$router.push('/my/notice')
-    },
-    loginurl() {
+    login() {
       this.$router.push('/user/login')
-    },
-    home() {
-      this.$router.push('/')
-    },
-    jumpprofile() {
-      this.$router.push('/my/profile')
     },
     onClickSearch() {
       if (this.inputVal) {
@@ -210,11 +138,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-[v-cloak] {
-  display: none !important;
-}
 .header {
-  // min-width: 1032px;
   height: 65px;
   background: rgba(255, 255, 255, 1);
   box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.03);
@@ -242,7 +166,6 @@ export default {
       height: 50px;
     }
     .logo {
-      float: left;
       width: 150px;
       height: 35px;
       cursor: pointer;
@@ -258,7 +181,6 @@ export default {
       margin-left: 30px;
       width: 298px;
       height: 36px;
-      float: left;
       @media screen and (max-width: 1005px) {
         width: 180px;
         height: 30px;
@@ -279,92 +201,50 @@ export default {
     }
 
     .h-button {
+      width: 60px;
       height: 35px;
-      float: right;
-      .h-button1 {
-        width: 60px;
-        height: 35px;
+      border-color: #1878f3;
+      font-size: 14px;
+      border-radius: 0px;
+      &.h-button1 {
+        background: #ffffff;
         color: #1878f3;
-        background: #ffffff;
-        border-color: #1878f3;
-        font-size: 14px;
-        border-radius: 0px;
       }
-      .h-button2 {
-        width: 60px;
-        height: 35px;
-        color: #ffff;
+      &.h-button2 {
+        color: #fff;
         background: #1878f3;
-        border-color: #1878f3;
+      }
+    }
+    .menu-item {
+      color: #6d6d6d;
+      font-size: 16px;
+      margin-left: 30px;
+      cursor: pointer;
+      @media screen and (max-width: 1005px) {
         font-size: 14px;
-        border-radius: 0px;
+        margin-left: 15px;
       }
-      .h-button3 {
-        // width: 60px;
-        // height: 35px;
-        padding: 9px 15px;
-        color: #6d6d6d;
-        background: #ffffff;
-        // border-color: #1878f3;
-      }
-      .h-button4 {
-        // width: 60px;
-        height: 35px;
-        padding: 0;
-        border: none;
-        background-color: #ffffff;
-        color: #6d6d6d;
-        font-size: 16px;
-        /* margin-top: -5px; */
-        margin-left: 30px;
-        @media screen and (max-width: 1005px) {
-          font-size: 14px;
-          margin-left: 15px;
-        }
-      }
-      .marleft {
-        margin-left: 5px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 120px;
-      }
-      .h-button4:hover {
-        background: none;
-        background-color: none;
+      &:hover{
         color: black;
       }
-      .h-button4:active {
-        background: none;
-        background-color: none;
-        color: black;
+    }
+    .user-name {
+      margin-left: 5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 120px;
+    }
+    .notice-btn {
+      .flex {
+        display: flex;
+        align-items: center;
       }
-      ::v-deep .el-menu--horizontal > .el-menu-item {
-        float: right;
-        height: 40px;
-        line-height: unset;
-        /* margin: 0; */
-        //  border-bottom: 2px solid transparent;
-        // color: #909399;
-      }
-
-      ::v-deep.el-menu.el-menu--horizontal {
-        border-bottom: none;
-      }
-      ::v-deep.el-menu--horizontal > .el-menu-item.is-active {
-        border-bottom: none;
-      }
-      .notice-btn {
-        .flex {
-          display: flex;
-          align-items: center;
-        }
-        .unread-notice {
-          font-size: 12px;
-          color: #fff;
-          background: #ff0000;
-          padding: 1px 6px;
-          border-radius: 6px;
-        }
+      .unread-notice {
+        font-size: 12px;
+        color: #fff;
+        background: #ff0000;
+        padding: 1px 6px;
+        border-radius: 6px;
       }
     }
     .avatar {
@@ -381,13 +261,5 @@ export default {
   height: 14px;
   display: inline-block;
   vertical-align: middle;
-}
-/* .search-logo img{
-  width: 100%;
-  height: 100%;
-  display: inline-block
-} */
-.log-r {
-  float: right;
 }
 </style>
