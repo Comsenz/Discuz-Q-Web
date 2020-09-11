@@ -86,7 +86,6 @@ export default {
       } else if (categoryData && categoryData._jv && categoryData._jv.json) {
         resData.categoryData = categoryData._jv.json.data || []
       }
-      console.log('resData', resData)
       callback(null, resData)
     } catch (error) {
       console.log('ssr err')
@@ -138,7 +137,6 @@ export default {
         include: ['firstPost']
       }
       this.$store.dispatch('jv/get', ['threads', { params }]).then(data => {
-        console.log('data', data)
         this.threadsStickyData = [...data]
       })
     },
@@ -175,8 +173,6 @@ export default {
         this.timer = setInterval(() => {
           this.autoLoadThreads(data._jv.json.meta.threadCount)
         }, 30000)
-
-        console.log('threadsList', data)
       }, e => {
         this.handleError(e)
       }).finally(() => {
@@ -233,7 +229,6 @@ export default {
     },
     // 筛选
     onChangeFilter(val) {
-      console.log('val', val)
       this.threadEssence = ''
       this.fromUserId = ''
       if (val === 'isEssence') {
