@@ -11,10 +11,14 @@ export default {
     cover.style.background = 'rgba(0, 0, 0, .4)'
     cover.style.zIndex = '10'
     cover.id = 'cover'
-    document.querySelector('body').appendChild(cover)
+    if (process.client) {
+      document.querySelector('body').appendChild(cover)
+    }
   },
   destroyed() {
-    document.querySelector('#cover').remove()
+    if (process.client) {
+      document.querySelector('#cover').remove()
+    }
   },
   render() {
     return ''

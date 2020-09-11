@@ -12,13 +12,13 @@
       :alt="user.username"
       @error="error"
     >
-    <div
+    <span
       v-else-if="styleText"
       :class="['avatar', sizeClass, roundClass]"
       :style="styleText"
     >
       {{ usernameAt }}
-    </div>
+    </span>
     <svg-icon
       v-if="isReal"
       type="auth"

@@ -4,6 +4,7 @@
     class="myprofile"
   >
     <div
+      v-if="userInfo"
       class="myprofile-c"
       style="padding-bottom:0px"
     >
@@ -18,7 +19,7 @@
 
         <div class="usr">
           <span class="usrname">{{ userInfo.username }}</span>
-          <span class="usrid">{{ userInfo && userInfo.groupsName ? userInfo.groupsName : '默认用户' }}</span>
+          <span class="usrid">{{ userInfo && userInfo.groupsName ? userInfo.groupsName : '' }}</span>
         </div>
         <span
           v-if="userInfo && userInfo.isReal"
@@ -81,7 +82,10 @@
       </div>
     </div>
     <!-- 签名 -->
-    <div class="myprofile-c">
+    <div
+      v-if="userInfo"
+      class="myprofile-c"
+    >
       <div class="myprofile-top">
         <span class="sig">{{ $t('modify.signaturetitle') }}</span>
         <span
@@ -114,7 +118,10 @@
       </div>
     </div>
     <!-- 手机号 -->
-    <div class="myprofile-c">
+    <div
+      v-if="userInfo"
+      class="myprofile-c"
+    >
       <div class="myprofile-top">
         <span class="sig">{{ $t('profile.mobile') }}</span>
         <span
@@ -214,7 +221,10 @@
       </div>
     </div>
     <!-- 密码 -->
-    <div class="myprofile-c">
+    <div
+      v-if="userInfo"
+      class="myprofile-c"
+    >
       <div class="myprofile-top">
         <span class="sig">{{ $t('profile.password') }}</span>
         <span
@@ -233,7 +243,8 @@
         class="myprofile-btom"
       >
 
-        <div>
+        <form>
+
           <el-input
             ref="oldpass"
             v-model="oldPassWord"
@@ -257,18 +268,20 @@
             show-password
           />
 
-        </div>
-
-        <el-button
-          type="primary"
-          class="ebutton"
-          @click="passSub"
-        >确定修改</el-button>
+          <el-button
+            type="primary"
+            class="ebutton"
+            @click="passSub"
+          >确定修改</el-button>
+        </form>
       </div>
     </div>
 
     <!-- 微信 -->
-    <div class="myprofile-c">
+    <div
+      v-if="userInfo"
+      class="myprofile-c"
+    >
       <div class="myprofile-top">
         <span class="sig">{{ $t('profile.wechat') }}</span>
         <span
@@ -287,7 +300,7 @@
     <!-- 实名验证 -->
     <!-- qcloud_faceid是否开启实名认证 -->
     <div
-      v-if="!userInfo.realname && forums.qcloud && forums.qcloud.qcloud_faceid"
+      v-if="userInfo && !userInfo.realname && forums &&forums.qcloud && forums.qcloud.qcloud_faceid"
       class="myprofile-c"
       style="border-bottom:0px;"
     >
@@ -332,7 +345,7 @@
       </div>
     </div>
     <div
-      v-if="userInfo.realname && forums.qcloud && forums.qcloud.qcloud_faceid"
+      v-if="userInfo && userInfo.realname && forums &&forums.qcloud && forums.qcloud.qcloud_faceid"
       class="myprofile-c"
     >
       <div class="myprofile-top">
@@ -347,14 +360,13 @@
 
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
-import forums from '@/mixin/forums'
 import handleError from '@/mixin/handleError'
 const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
 export default {
-  mixins: [forums, handleError, tcaptchs],
+  mixins: [handleError, tcaptchs],
   data() {
     return {
-      userId: '',
+      userId: this.$store.getters['session/get']('userId'),
       userInfo: '',
       num: 140,
       wordnumber: '',
@@ -397,6 +409,10 @@ export default {
       set(newValue) {
         this.signcontent = newValue
       }
+    },
+    forums() {
+      const forums = this.$store.state.site.info.attributes
+      return forums
     }
   },
   mounted() {
@@ -448,6 +464,8 @@ export default {
         this.signcontent = this.userInfo.signature
         this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
         this.wordnumber = this.signcontent.length
+      }, e => {
+        this.handleError(e)
       })
     },
     setAvatar() {
@@ -484,6 +502,8 @@ export default {
           this.$message.success(this.$t('modify.modificationsucc'))
           this.$router.go(0)
         }
+      }, e => {
+        this.handleError(e)
       })
     },
     // 手机位数简单校验
@@ -841,9 +861,9 @@ export default {
 </script>
 <style lang='scss' scoped>
 //@import url(); 引入公共css类
-.myprofile{
+.myprofile {
   padding-left: 30px;
-  @media screen and ( max-width: 1005px ) {
+  @media screen and (max-width: 1005px) {
     padding-left: 0 15px;
   }
 }
@@ -933,6 +953,9 @@ export default {
     padding-bottom: 20px;
     margin-top: 15px;
     width: 460px;
+    @media screen and (max-width: 1005px) {
+      width: 390px;
+    }
     // font-family: Microsoft YaHei;
     color: #000000;
     .pmobile {

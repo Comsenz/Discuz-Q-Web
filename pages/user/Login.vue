@@ -35,7 +35,7 @@
             <span class="agree">{{ $t('user.status') }} </span>
           </el-checkbox>
           <div class="logorreg">
-            <span v-if="canReg">尚无账号，立即
+            <span v-if="canReg">尚无帐号，立即
               <span
                 style="color: #1878f3;cursor:pointer; margin-left:-3px;"
                 @click="toRegister"
@@ -205,7 +205,7 @@ export default {
     if (this.forums && this.forums.set_reg && this.forums.set_reg.register_close) {
       this.canReg = true
     }
-    this.QRcode()
+    // this.QRcode()
     this.changeactive()
   },
   destroyed() {
@@ -240,9 +240,12 @@ export default {
     },
     // tab激活
     changeactive() {
+      if (this.activeName === '2') {
+        this.QRcode()
+      }
       this.activeName = this.forums ? this.forums.set_reg.register_type.toString() : ''
       this.canClickNum = this.activeName !== '1'
-      console.log(this.canClickNum)
+      console.log(this.activeName)
     },
 
     logind() {
@@ -350,7 +353,7 @@ export default {
               res.data.errors &&
               res.data.errors[0].code === 'register_validate'
             ) {
-              this.$message.error('账号审核中，请等管理员审核通过')
+              this.$message.error('帐号审核中，请等管理员审核通过')
               this.$router.push('/')
             }
           })
@@ -433,7 +436,7 @@ export default {
               res.data.errors &&
               res.data.errors[0].code === 'register_validate'
             ) {
-              this.$message.error('账号审核中，请等管理员审核通过')
+              this.$message.error('帐号审核中，请等管理员审核通过')
               this.$router.push('/')
             }
           })

@@ -79,14 +79,14 @@
             : ` / ${$t('site.permanent')}`
         }}</el-button>
     </p>
-    <p v-if="!isLogin">
+    <div v-if="!isLogin">
       <el-button
         type="primary"
         class="r-button"
         @click="tologin"
       >{{ $t('site.join') }}{{ $t('site.site') }}</el-button>
 
-    </p>
+    </div>
     <!-- <div
       v-if="qrcodeShow"
       class="qrco-overlay"

@@ -5,6 +5,7 @@
         v-model="value"
         placeholder="目前接口不支持排序"
         class="fselect"
+        size="small"
         @change="confirm"
       >
         <el-option
@@ -16,7 +17,7 @@
       </el-select>
       <el-input
         v-model="inputVal"
-        size="medium"
+        size="small"
         :placeholder="$t('search.search')"
         class="h-search"
         @change="onClickSearch"
@@ -47,7 +48,7 @@
             <span
               v-if="Item.fromUser.groups"
               class="role"
-            >{{ Item.fromUser && Item.fromUser.groups
+            >{{ Item.fromUser && Item.fromUser.groups && Item.fromUser.groups[0]
               ? Item.fromUser.groups[0].name
               : '' }}</span>
           </div>
@@ -249,6 +250,7 @@ export default {
   ::v-deep.fselect {
     width: 130px;
     height: 32px;
+    visibility: hidden;
   }
   ::v-deep .el-input__inner {
     height: 32px;

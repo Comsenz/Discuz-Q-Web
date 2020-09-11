@@ -63,7 +63,7 @@
             <span
               v-if="register"
               @click="jump2Login"
-            >已有账号，立即<nuxt-link to="/user/login">{{ $t('user.login') }}</nuxt-link> </span>
+            >已有帐号，立即<nuxt-link to="/user/login">{{ $t('user.login') }}</nuxt-link> </span>
           </div>
         </div>
         <el-button
@@ -224,8 +224,11 @@ export default {
     if (this.forums && this.forums.set_reg) {
       this.validate = this.forums.set_reg.register_validate
     }
-    this.QRcode()
+    // this.QRcode()
     this.changeactive()
+  },
+  destroyed() {
+    clearInterval(QuickLogin)
   },
   methods: {
     countDown(interval) {
@@ -277,6 +280,9 @@ export default {
     },
     // tab激活
     changeactive() {
+      if (this.activeName === '2') {
+        this.QRcode()
+      }
       this.activeName = this.forums ? this.forums.set_reg.register_type.toString() : ''
       this.canClickNum = this.activeName !== '1'
       console.log(this.canClickNum)
@@ -401,7 +407,7 @@ export default {
             res.data.errors &&
             res.data.errors[0].code === 'register_validate'
           ) {
-            this.$message.error('账号审核中，请等管理员审核通过')
+            this.$message.error('帐号审核中，请等管理员审核通过')
             this.$router.push(`/user/warning?username=${this.userName}`)
           }
         })
@@ -490,7 +496,7 @@ export default {
               res.data.errors &&
               res.data.errors[0].code === 'register_validate'
             ) {
-              this.$message.error('账号审核中，请等管理员审核通过')
+              this.$message.error('帐号审核中，请等管理员审核通过')
               this.$router.push(`/user/warning?username=${this.phoneNumber}`)
             }
           })

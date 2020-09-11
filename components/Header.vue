@@ -13,7 +13,7 @@
         </div>
         <el-input
           v-model="inputVal"
-          auto-complete="new-password"
+          autocomplete="off"
           size="medium"
           :placeholder="$t('search.search')"
           class="h-search"
@@ -58,6 +58,7 @@
           :size="35"
           :round="true"
           class="avatar"
+          :is-real="userInfo.isReal"
         />
         <el-button
           v-if="userInfo.username"
@@ -70,8 +71,13 @@
         <el-button
           type="primary"
           size="small"
-          class="h-button4"
-        >{{ $t('home.tabsNews') }}</el-button>
+          class="h-button4 notice-btn"
+          @click="jumptoNews"
+        >
+          <div class="flex">{{ $t('home.tabsNews') }}
+            <span v-if="userInfo.unreadNotifications > 0" class="unread-notice">{{ userInfo.unreadNotifications > 99 ? '99+' : userInfo.unreadNotifications }}</span>
+          </div>
+        </el-button>
 
         <el-button
           type="primary"
@@ -108,14 +114,12 @@ export default {
       activeIndex: '1',
       userId: this.$store.getters['session/get']('userId'),
       code: '', // 邀请码
-      canReg: ''
-
+      canReg: '',
+      forums: '',
+      timer: null // 定时器
     }
   },
   computed: {
-    forums() {
-      return this.$store.state.site.info.attributes || {}
-    },
     userInfo() {
       return this.$store.state.user.info.attributes || {}
     }
@@ -130,17 +134,41 @@ export default {
     if (this.$route.query.q) {
       this.inputVal = this.$route.query.q
     }
+    this.reloadUserInfo()
+  },
+  destroyed() {
+    this.tiemr = null
+    clearInterval(this.timer)
   },
   methods: {
     forumh() {
-      if (this.forums && this.forums.set_reg && this.forums.set_reg.register_close) {
-        this.canReg = false
-      } else {
-        this.canReg = true
-      }
+      console.log('userinfo', this.userInfo)
+      this.$store.dispatch('site/getSiteInfo').then(res => {
+        this.forums = res.attributes
+        if (this.forums && this.forums.set_reg && this.forums.set_reg.register_close) {
+          console.log('register c', this.forums.set_reg.register_close)
+          this.canReg = false
+        } else {
+          this.canReg = true
+        }
+      })
     },
     ExitLogin() {
       this.$store.dispatch('session/logout').then(() => window.location.reload())
+    },
+    // 轮询获取用户信息，用于判断是否有新消息
+    reloadUserInfo() {
+      if (this.userInfo && this.userInfo.id) {
+        clearInterval(this.timer)
+        this.timer = setInterval(this.getUserInfo, 30000)
+      }
+    },
+    async getUserInfo() {
+      try {
+        await this.$store.dispatch('user/getUserInfo', this.userId)
+      } catch (err) {
+        console.log('header getuUserInfo err', err)
+      }
     },
     userinfo() {
       this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
@@ -150,6 +178,9 @@ export default {
     },
     jumptoperson() {
       this.$router.push(`/profile?userId=${this.userId}`)
+    },
+    jumptoNews() {
+      this.$router.push('/my/notice')
     },
     loginurl() {
       this.$router.push('/user/login')
@@ -219,7 +250,7 @@ export default {
       height: 36px;
       float: left;
       @media screen and (max-width: 1005px) {
-        width: 200px;
+        width: 180px;
         height: 30px;
       }
       .el-input__inner {
@@ -278,6 +309,7 @@ export default {
         margin-left: 30px;
         @media screen and (max-width: 1005px) {
           font-size: 14px;
+          margin-left: 15px;
         }
       }
       .marleft {
@@ -310,6 +342,19 @@ export default {
       }
       ::v-deep.el-menu--horizontal > .el-menu-item.is-active {
         border-bottom: none;
+      }
+      .notice-btn{
+        .flex{
+          display: flex;
+          align-items: center;
+        }
+        .unread-notice{
+          font-size:12px;
+          color: #fff;
+          background: #FF0000;
+          padding:1px 6px;
+          border-radius:6px;
+        }
       }
     }
     .avatar {

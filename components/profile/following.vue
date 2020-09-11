@@ -5,6 +5,7 @@
         v-model="value"
         placeholder="目前接口不支持排序"
         class="fselect"
+        size="small"
         @change="confirm"
       >
         <el-option
@@ -16,7 +17,7 @@
       </el-select>
       <el-input
         v-model="inputVal"
-        size="medium"
+        size="small"
         :placeholder="$t('search.search')"
         class="h-search"
         @change="onClickSearch"
@@ -46,7 +47,7 @@
             <span
               v-if="Item.toUser.groups"
               class="role"
-            >{{ Item.toUser && Item.toUser.groups
+            >{{ Item.toUser && Item.toUser.groups && Item.toUser.groups[0]
               ? Item.toUser.groups[0].name
               : '' }}</span>
           </div>
@@ -158,6 +159,7 @@ export default {
       status
         .run(() => this.$store.dispatch('jv/get', ['follow', { params }]))
         .then(res => {
+          console.log('用户关注列表', res)
           if (res._jv) {
             delete res._jv
           }
@@ -168,6 +170,7 @@ export default {
           } else {
             this.followingList = [...this.followingList, ...res]
           }
+          console.log('用户关注列表2', this.followingList)
         })
     },
     // 添加关注
@@ -249,6 +252,7 @@ export default {
   ::v-deep.fselect {
     width: 130px;
     height: 32px;
+    visibility: hidden;
   }
   ::v-deep .el-input__inner {
     height: 32px;
