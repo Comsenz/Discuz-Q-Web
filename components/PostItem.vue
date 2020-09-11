@@ -57,7 +57,7 @@
               {{ item.firstPost.isLiked ? $t('topic.liked') : $t('topic.like') }} {{ item.firstPost.likeCount > 0 ? item.firstPost.likeCount : '' }}</div>
             <div class="btn comment" @click="toDetail">
               <svg-icon type="comment" class="icon" />
-              {{ $t('topic.comment') }} {{ item.firstPost.comment > 0 ? item.firstPost.comment : '' }}</div>
+              {{ $t('topic.comment') }} {{ item.postCount - 1 > 0 ? item.postCount - 1 : '' }}</div>
             <share-popover v-if="item._jv && item._jv.id && showShare" :threads-id="item._jv.id">
               <div class="btn share">
                 <svg-icon type="link" class="icon" />

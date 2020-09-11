@@ -65,7 +65,7 @@ export default {
       inputVal: '',
       code: '', // 邀请码
       canReg: false,
-      timer: null // 定时器
+      userInfoTimer: null // 定时器
     }
   },
   computed: {
@@ -80,7 +80,6 @@ export default {
     }
   },
   mounted() {
-    console.log('userId', this.userId, this.userInfo)
     const { code } = this.$route.query
     if (code !== 'undefined') {
       this.code = code
@@ -94,8 +93,8 @@ export default {
   },
   destroyed() {
     if (process.client) {
-      this.timer = null
-      clearInterval(this.timer)
+      this.userInfoTimer = null
+      clearInterval(this.userInfoTimer)
     }
   },
   methods: {
@@ -110,8 +109,9 @@ export default {
     // 轮询获取用户信息，用于判断是否有新消息
     reloadUserInfo() {
       if (this.userInfo && this.userInfo.id) {
-        clearInterval(this.timer)
-        this.timer = setInterval(this.getUserInfo, 30000)
+        clearInterval(this.userInfoTimer)
+        const _this = this
+        this.userInfoTimer = setInterval(_this.getUserInfo, 30000)
       }
     },
     async getUserInfo() {
