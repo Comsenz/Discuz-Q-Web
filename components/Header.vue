@@ -2,10 +2,7 @@
   <div class="header">
     <div class="header-container">
       <div class="flex">
-        <div
-          class="logo"
-          @click="home"
-        >
+        <div class="logo" @click="home">
           <img
             :src="headImg != '' && headImg != null ? headImg : require('static/logo.png')"
             alt="头部logo"
@@ -19,18 +16,10 @@
           class="h-search"
           @keyup.enter.native="onClickSearch"
         >
-          <i
-            slot="suffix"
-            class="el-icon-search el-input__icon"
-            @click="onClickSearch"
-          />
+          <i slot="suffix" class="el-icon-search el-input__icon" @click="onClickSearch" />
         </el-input>
       </div>
-      <div
-        v-if="!isLogin"
-        v-cloak
-        class="h-button"
-      >
+      <div v-if="!isLogin" class="h-button">
         <el-button
           type="primary"
           plain
@@ -46,13 +35,8 @@
           class="h-button2"
           @click="registerurl"
         >{{ $t('user.register') }}</el-button>
-
       </div>
-      <div
-        v-else
-        v-cloak
-        class="h-button"
-      >
+      <div v-else-if="userInfo" class="h-button">
         <Avatar
           :user="userInfo"
           :size="35"
@@ -66,16 +50,15 @@
           size="small"
           class="h-button4 marleft"
           @click="jumptoperson"
-        >{{ userInfo?userInfo.username:'' }}</el-button>
+        >{{ userInfo.username }}</el-button>
 
-        <el-button
-          type="primary"
-          size="small"
-          class="h-button4 notice-btn"
-          @click="jumptoNews"
-        >
-          <div class="flex">{{ $t('home.tabsNews') }}
-            <span v-if="userInfo.unreadNotifications > 0" class="unread-notice">{{ userInfo.unreadNotifications > 99 ? '99+' : userInfo.unreadNotifications }}</span>
+        <el-button type="primary" size="small" class="h-button4 notice-btn" @click="jumptoNews">
+          <div class="flex">
+            {{ $t('home.tabsNews') }}
+            <span
+              v-if="userInfo.unreadNotifications > 0"
+              class="unread-notice"
+            >{{ userInfo.unreadNotifications > 99 ? '99+' : userInfo.unreadNotifications }}</span>
           </div>
         </el-button>
 
@@ -92,7 +75,6 @@
           class="h-button4"
           @click="ExitLogin"
         >{{ $t('user.logout') }}</el-button>
-
       </div>
     </div>
   </div>
@@ -131,21 +113,29 @@ export default {
       this.code = code
     }
     this.forumh()
-    if (this.$route.query.q) {
+    if (process.client && this.$route.query.q) {
       this.inputVal = this.$route.query.q
     }
-    this.reloadUserInfo()
+    if (process.client) {
+      this.reloadUserInfo()
+    }
   },
   destroyed() {
-    this.tiemr = null
-    clearInterval(this.timer)
+    if (process.client) {
+      this.timer = null
+      clearInterval(this.timer)
+    }
   },
   methods: {
     forumh() {
       console.log('userinfo', this.userInfo)
-      this.$store.dispatch('site/getSiteInfo').then(res => {
+      this.$store.dispatch('site/getSiteInfo').then((res) => {
         this.forums = res.attributes
-        if (this.forums && this.forums.set_reg && this.forums.set_reg.register_close) {
+        if (
+          this.forums &&
+          this.forums.set_reg &&
+          this.forums.set_reg.register_close
+        ) {
           console.log('register c', this.forums.set_reg.register_close)
           this.canReg = false
         } else {
@@ -154,7 +144,9 @@ export default {
       })
     },
     ExitLogin() {
-      this.$store.dispatch('session/logout').then(() => window.location.reload())
+      this.$store
+        .dispatch('session/logout')
+        .then(() => window.location.reload())
     },
     // 轮询获取用户信息，用于判断是否有新消息
     reloadUserInfo() {
@@ -171,10 +163,14 @@ export default {
       }
     },
     userinfo() {
-      this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
+      this.userInfo.groupsName = this.userInfo.groups
+        ? this.userInfo.groups[0].name
+        : ''
     },
     registerurl() {
-      this.$router.push(`/user/register?url='/'&validate=${this.forums.set_reg.register_validate}&code=${this.code}`)
+      this.$router.push(
+        `/user/register?url='/'&validate=${this.forums.set_reg.register_validate}&code=${this.code}`
+      )
     },
     jumptoperson() {
       this.$router.push(`/profile?userId=${this.userId}`)
@@ -343,17 +339,17 @@ export default {
       ::v-deep.el-menu--horizontal > .el-menu-item.is-active {
         border-bottom: none;
       }
-      .notice-btn{
-        .flex{
+      .notice-btn {
+        .flex {
           display: flex;
           align-items: center;
         }
-        .unread-notice{
-          font-size:12px;
+        .unread-notice {
+          font-size: 12px;
           color: #fff;
-          background: #FF0000;
-          padding:1px 6px;
-          border-radius:6px;
+          background: #ff0000;
+          padding: 1px 6px;
+          border-radius: 6px;
         }
       }
     }
