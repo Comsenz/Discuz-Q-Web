@@ -35,7 +35,7 @@
             <span class="agree">{{ $t('user.status') }} </span>
           </el-checkbox>
           <div class="logorreg">
-            <span v-if="canReg">尚无账号，立即
+            <span v-if="canReg">尚无帐号，立即
               <span
                 style="color: #1878f3;cursor:pointer; margin-left:-3px;"
                 @click="toRegister"
@@ -353,7 +353,7 @@ export default {
               res.data.errors &&
               res.data.errors[0].code === 'register_validate'
             ) {
-              this.$message.error('账号审核中，请等管理员审核通过')
+              this.$message.error('帐号审核中，请等管理员审核通过')
               this.$router.push('/')
             }
           })
@@ -436,7 +436,7 @@ export default {
               res.data.errors &&
               res.data.errors[0].code === 'register_validate'
             ) {
-              this.$message.error('账号审核中，请等管理员审核通过')
+              this.$message.error('帐号审核中，请等管理员审核通过')
               this.$router.push('/')
             }
           })

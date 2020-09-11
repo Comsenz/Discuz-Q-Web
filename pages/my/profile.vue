@@ -82,7 +82,10 @@
       </div>
     </div>
     <!-- 签名 -->
-    <div v-if="userInfo" class="myprofile-c">
+    <div
+      v-if="userInfo"
+      class="myprofile-c"
+    >
       <div class="myprofile-top">
         <span class="sig">{{ $t('modify.signaturetitle') }}</span>
         <span
@@ -115,7 +118,10 @@
       </div>
     </div>
     <!-- 手机号 -->
-    <div v-if="userInfo" class="myprofile-c">
+    <div
+      v-if="userInfo"
+      class="myprofile-c"
+    >
       <div class="myprofile-top">
         <span class="sig">{{ $t('profile.mobile') }}</span>
         <span
@@ -215,7 +221,10 @@
       </div>
     </div>
     <!-- 密码 -->
-    <div v-if="userInfo" class="myprofile-c">
+    <div
+      v-if="userInfo"
+      class="myprofile-c"
+    >
       <div class="myprofile-top">
         <span class="sig">{{ $t('profile.password') }}</span>
         <span
@@ -234,7 +243,8 @@
         class="myprofile-btom"
       >
 
-        <div>
+        <form>
+
           <el-input
             ref="oldpass"
             v-model="oldPassWord"
@@ -258,18 +268,20 @@
             show-password
           />
 
-        </div>
-
-        <el-button
-          type="primary"
-          class="ebutton"
-          @click="passSub"
-        >确定修改</el-button>
+          <el-button
+            type="primary"
+            class="ebutton"
+            @click="passSub"
+          >确定修改</el-button>
+        </form>
       </div>
     </div>
 
     <!-- 微信 -->
-    <div v-if="userInfo" class="myprofile-c">
+    <div
+      v-if="userInfo"
+      class="myprofile-c"
+    >
       <div class="myprofile-top">
         <span class="sig">{{ $t('profile.wechat') }}</span>
         <span
@@ -942,8 +954,8 @@ export default {
     margin-top: 15px;
     width: 460px;
     @media screen and (max-width: 1005px) {
-        width:390px;
-      }
+      width: 390px;
+    }
     // font-family: Microsoft YaHei;
     color: #000000;
     .pmobile {

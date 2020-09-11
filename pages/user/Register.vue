@@ -63,7 +63,7 @@
             <span
               v-if="register"
               @click="jump2Login"
-            >已有账号，立即<nuxt-link to="/user/login">{{ $t('user.login') }}</nuxt-link> </span>
+            >已有帐号，立即<nuxt-link to="/user/login">{{ $t('user.login') }}</nuxt-link> </span>
           </div>
         </div>
         <el-button
@@ -407,7 +407,7 @@ export default {
             res.data.errors &&
             res.data.errors[0].code === 'register_validate'
           ) {
-            this.$message.error('账号审核中，请等管理员审核通过')
+            this.$message.error('帐号审核中，请等管理员审核通过')
             this.$router.push(`/user/warning?username=${this.userName}`)
           }
         })
@@ -496,7 +496,7 @@ export default {
               res.data.errors &&
               res.data.errors[0].code === 'register_validate'
             ) {
-              this.$message.error('账号审核中，请等管理员审核通过')
+              this.$message.error('帐号审核中，请等管理员审核通过')
               this.$router.push(`/user/warning?username=${this.phoneNumber}`)
             }
           })
