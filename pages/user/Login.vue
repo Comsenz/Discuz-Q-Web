@@ -128,7 +128,6 @@
 
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
-// import forums from '@/mixin/forums'
 import handleError from '@/mixin/handleError'
 import { SITE_PAY } from '@/common/const'
 
@@ -138,28 +137,16 @@ let QuickLogin = null
 export default {
   name: 'Login',
   mixins: [handleError, tcaptchs],
-  async asyncData({ params, store }) {
-    const _params = {
-      include: 'users',
-      'filter[tag]': 'agreement'
-    }
-
-    const data = await store.dispatch('jv/get', [`forum`, { _params }])
-    console.log('asyncData =>', data)
-    return { forums: data }
-  },
   data() {
     return {
       userName: '',
       passWord: '',
       phoneNumber: '',
-      forums: '',
       checked: true,
       content: this.$t('modify.sendVerifyCode'),
       canClick: false,
       activeName: '0', // 默认激活tab
       verifyCode: '',
-      canClickNum: false,
       info: '', // 微信二维码数据
       scene_str: '',
       loginStatus: false, // 登录状态
@@ -167,21 +154,19 @@ export default {
       validate: false, // 开启注册审核
       site_mode: '', // 站点模式
       isPaid: false, // 是否付费
-      qcloud_sms: false, // 默认不开启短信功能
       code: '', // 注册邀请码
-      token: '', // token,
       loading: false,
-      canReg: false,
-      url: ''
-
+      canReg: false
     }
   },
-  mounted() {
-    const { url, validate, register, token, code } = this.$route.query
-    console.log('query', this.$route.query)
-    if (url) {
-      this.url = url
+  computed: {
+    forums() {
+      return this.$store.state.site.info.attributes || {}
     }
+
+  },
+  mounted() {
+    const { validate, register, code } = this.$route.query
     if (validate) {
       this.validate = JSON.parse(validate)
     }
@@ -191,21 +176,15 @@ export default {
     if (code !== 'undefined') {
       this.code = code
     }
-    if (token) {
-      this.token = token
-    }
 
     console.log('----this.forums-----', this.forums)
     if (this.forums && this.forums.set_site && this.forums.set_site.site_mode) {
       this.site_mode = this.forums.set_site.site_mode
     }
-    if (this.forums && this.forums.qcloud) {
-      this.qcloud_sms = this.forums.qcloud.qcloud_sms
-    }
     if (this.forums && this.forums.set_reg && this.forums.set_reg.register_close) {
       this.canReg = true
     }
-    // this.QRcode()
+    this.QRcode()
     this.changeactive()
   },
   destroyed() {
@@ -240,31 +219,19 @@ export default {
     },
     // tab激活
     changeactive() {
-      if (this.activeName === '2') {
-        this.QRcode()
-      }
+      // if (this.activeName === '2') {
+      //   this.QRcode()
+      // }
       this.activeName = this.forums ? this.forums.set_reg.register_type.toString() : ''
-      this.canClickNum = this.activeName !== '1'
-      console.log(this.activeName)
     },
 
     logind() {
       const userId = this.$store.getters['session/get']('userId')
       if (!userId) return
       console.log('hhhhhhhhhh')
-      // this.$store.dispatch('jv/get', [
-      //   'forum',
-      //   {
-      //     params: {
-      //       include: 'users',
-      //     },
-      //   },
-      // ]);
-
       const params = {
         include: 'groups,wechat'
       }
-
       this.$store.dispatch('jv/get', [`users/${userId}`, { params }]).then(val => {
         this.user = val
         if (this.user && this.user.paid) {
@@ -401,9 +368,6 @@ export default {
           params.data.attributes.captcha_ticket = this.ticket
           params.data.attributes.captcha_rand_str = this.randstr
         }
-        if (this.token && this.token !== '') {
-          params.data.attributes.token = this.token
-        }
         if (this.code && this.code !== 'undefined') {
           params.data.attributes.inviteCode = this.code
         }
@@ -495,7 +459,7 @@ export default {
       })
     },
     toRegister() {
-      this.$router.push(`/user/register?url=${this.url}&code=${this.code}`)
+      this.$router.push(`/user/register?code=${this.code}`)
     },
     iscanReg() {
       return [this.canReg ? '' : 'noreg']
