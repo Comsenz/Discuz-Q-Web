@@ -1,4 +1,4 @@
-ssh ubuntu@42.194.163.139
+# ssh ubuntu@42.194.163.139
 
 # 服务器上执行 rm -rf Discuz-Q-Web
 
