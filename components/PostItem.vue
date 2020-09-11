@@ -14,7 +14,7 @@
           <div @click="toDetail">
             <div v-if="item.type === 1" class="title">{{ item.title }}</div>
             <div class="content">
-              <div v-html="item.firstPost.contentHtml" />
+              <div v-html="formatTopicHTML(item.firstPost.contentHtml)" />
             </div>
           </div>
           <div v-if="item.firstPost.images && item.firstPost.images.length > 0" class="images" @click.self="toDetail">
@@ -74,6 +74,7 @@
   </div>
 </template>
 <script>
+import s9e from '@/utils/s9e'
 import timerDiff from '@/mixin/timerDiff'
 import handleError from '@/mixin/handleError'
 export default {
@@ -148,6 +149,9 @@ export default {
         return false
       }
       return true
+    },
+    formatTopicHTML(html) {
+      return s9e.parse(html)
     }
   }
 }
@@ -215,6 +219,9 @@ export default {
 
       ::v-deep img {
         height: 22px;
+      }
+      ::v-deep a {
+        color: $color-blue-base;
       }
       @media screen and ( max-width: 1005px ) {
         font-size:14px;

@@ -104,6 +104,7 @@ export default {
         .dispatch('session/logout')
         .then(() => {
           this.$router.push('/')
+          window.location.reload()
         })
     },
     // 轮询获取用户信息，用于判断是否有新消息

@@ -8,7 +8,7 @@
       >
       <div class="site-info">
         <div class="avatar">
-          <avatar :user="{ username: forums.set_site && forums.set_site.site_author.username, avatarUrl: forums.set_site && forums.set_site.site_author.avatar}" :size="40" :round="true" />
+          <avatar v-if="forums.set_site && forums.set_site.site_author" :user="{ id:forums.set_site.site_author.id, username: forums.set_site.site_author.username, avatarUrl: forums.set_site.site_author.avatar}" :size="40" :round="true" />
           <div class="right">
             <div class="label">{{ $t('site.circlemaster') }}</div>
             <div class="value name text-hidden">{{ forums.set_site && forums.set_site.site_author.username }}</div>
