@@ -36,31 +36,43 @@
           @click="registerurl"
         >{{ $t('user.register') }}</el-button>
       </div>
-      <div v-else-if="userInfo" class="h-button">
-        <Avatar
+      <div v-else-if="JSON.stringify(userInfo) !== '{}'" class="h-button">
+        <!-- <Avatar
           :user="userInfo"
           :size="35"
           :round="true"
           class="avatar"
           :is-real="userInfo.isReal"
-        />
-        <el-button
+        /> -->
+        <!-- <div v-if="userInfo.username" class="h-button4 marleft" @click="jumptoperson">
+          {{ userInfo.username }}
+        </div>
+        <div class="h-button4 notice-btn" @click="jumptoNews">
+          <div class="flex">
+            {{ $t('home.tabsNews') }}
+            <span
+              v-if="userInfo.unreadNotifications && userInfo.unreadNotifications > 0"
+              class="unread-notice"
+            >{{ userInfo.unreadNotifications > 99 ? '99+' : userInfo.unreadNotifications }}</span>
+          </div>
+        </div> -->
+        <!-- <el-button
           v-if="userInfo.username"
           type="primary"
           size="small"
           class="h-button4 marleft"
           @click="jumptoperson"
-        >{{ userInfo.username }}</el-button>
+        >{{ userInfo.username }}</el-button> -->
 
-        <el-button type="primary" size="small" class="h-button4 notice-btn" @click="jumptoNews">
-          <div class="flex">
+        <!-- <el-button type="primary" size="small" class="h-button4 notice-btn" @click="jumptoNews">
+          <span class="flex">
             {{ $t('home.tabsNews') }}
             <span
               v-if="userInfo.unreadNotifications > 0"
               class="unread-notice"
             >{{ userInfo.unreadNotifications > 99 ? '99+' : userInfo.unreadNotifications }}</span>
-          </div>
-        </el-button>
+          </span>
+        </el-button> -->
 
         <el-button
           type="primary"
@@ -93,32 +105,34 @@ export default {
     return {
       inputVal: '',
       isLogin: this.$store.getters['session/get']('isLogin'),
-      activeIndex: '1',
       userId: this.$store.getters['session/get']('userId'),
       code: '', // 邀请码
-      canReg: '',
-      forums: '',
+      canReg: false,
+      forums: {},
       timer: null // 定时器
     }
   },
   computed: {
     userInfo() {
-      return this.$store.state.user.info.attributes || {}
+      return process.client ? this.$store.state.user.info.attributes || {} : {}
     }
   },
   mounted() {
-    this.userinfo()
+    console.log('userinfo', this.userInfo)
     const { code } = this.$route.query
     if (code !== 'undefined') {
       this.code = code
     }
+    console.log('userinfo1', this.userInfo)
     this.forumh()
     if (process.client && this.$route.query.q) {
       this.inputVal = this.$route.query.q
     }
+    console.log('userinfo2', this.userInfo)
     if (process.client) {
       this.reloadUserInfo()
     }
+    console.log('userinfo3', this.userInfo)
   },
   destroyed() {
     if (process.client) {
@@ -128,20 +142,20 @@ export default {
   },
   methods: {
     forumh() {
-      console.log('userinfo', this.userInfo)
-      this.$store.dispatch('site/getSiteInfo').then((res) => {
-        this.forums = res.attributes
-        if (
-          this.forums &&
-          this.forums.set_reg &&
-          this.forums.set_reg.register_close
-        ) {
-          console.log('register c', this.forums.set_reg.register_close)
-          this.canReg = false
-        } else {
-          this.canReg = true
-        }
-      })
+      // console.log('userinfo', this.userInfo)
+      // this.$store.dispatch('site/getSiteInfo').then((res) => {
+      //   this.forums = res.attributes
+      //   if (
+      //     this.forums &&
+      //     this.forums.set_reg &&
+      //     this.forums.set_reg.register_close
+      //   ) {
+      //     console.log('register c', this.forums.set_reg.register_close)
+      //     this.canReg = false
+      //   } else {
+      //     this.canReg = true
+      //   }
+      // })
     },
     ExitLogin() {
       this.$store
