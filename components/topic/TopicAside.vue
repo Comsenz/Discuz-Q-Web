@@ -43,7 +43,8 @@ export default {
   computed: {
     canFollow() {
       if (this.author.id) {
-        return this.$store.getters['session/get']('userId') !== this.author.id.toString()
+        const userId = this.$store.getters['session/get']('userId')
+        return userId !== '0' && userId !== this.author.id.toString()
       }
       return false
     }

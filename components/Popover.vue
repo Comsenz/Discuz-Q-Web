@@ -3,8 +3,10 @@
     <el-popover
       placement="bottom"
       min-width="150"
-      trigger="click"
+      :value="visible"
+      trigger="manual"
       popper-class="popover"
+      @hide="$emit('hidePop')"
     >
       <slot name="pop" />
       <template slot="reference">
@@ -17,9 +19,10 @@
 <script>
 export default {
   name: 'Popover',
-  data() {
-    return {
-      visible: false
+  props: {
+    visible: {
+      type: Boolean,
+      default: false
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="payLoading" element-loading-background="rgba(0, 0, 0, 0)" class="page-post">
+  <div v-loading.fullscreen="defaultLoading" element-loading-background="rgba(0, 0, 0, 0)" class="page-post">
     <main v-loading="articleLoading">
       <div class="container-post">
         <div v-if="thread.isApproved === 0" class="checking">{{ $t('topic.examineTip') }}</div>
@@ -94,7 +94,7 @@ export default {
       showCheckoutCounter: false,
       showPasswordInput: false,
       showWxPay: false,
-      payLoading: false,
+      defaultLoading: false,
       articleLoading: false,
       passwordError: false
     }
@@ -146,7 +146,7 @@ export default {
           item.text = item.isStatus ? this.$t('topic.cancelSticky') : this.$t('topic.sticky')
         }
       })
-      this.thread.isEessence = data.isEssence
+      this.thread.isEssence = data.isEssence
       this.managementList = this.managementList.filter(item => item.canOpera)
     },
     initActions(data, firstPost) {
@@ -178,16 +178,16 @@ export default {
       if (payWay === 'walletPay') {
         this.payment.payment_type = 20
         this.showPasswordInput = true
-        this.createOrder(hideAvatar, this.rewardOrPay === 'reward' ? rewardAmount : this.thread.price).finally(() => { this.payLoading = false })
+        this.createOrder(hideAvatar, this.rewardOrPay === 'reward' ? rewardAmount : this.thread.price).finally(() => { this.defaultLoading = false })
       } else if (payWay === 'wxPay') {
         this.payment.payment_type = 10
         if (!this.forums.paycenter.wxpay_close) return this.$message.warning(this.$t('pay.wxPayClose'))
-        this.createOrder(hideAvatar, this.rewardOrPay === 'reward' ? rewardAmount : this.thread.price).then(() => this.payOrder()).finally(() => { this.payLoading = false })
+        this.createOrder(hideAvatar, this.rewardOrPay === 'reward' ? rewardAmount : this.thread.price).then(() => this.payOrder()).finally(() => { this.defaultLoading = false })
       }
     },
     createOrder(hideAvatar, amount = 0) {
-      if (this.payLoading) return
-      this.payLoading = true
+      if (this.defaultLoading) return
+      this.defaultLoading = true
       const params = {
         _jv: { type: `/orders` },
         type: this.rewardOrPay === 'reward' ? '2' : '3',
@@ -243,13 +243,15 @@ export default {
       return this.$store.dispatch('jv/get', params).then(data => { this.payment.status = data.status }, e => this.handleError(e))
     },
     postCommand(item) {
+      if (this.defaultLoading) return
+      this.defaultLoading = true
       const params = item.command === 'isLiked' ? { _jv: { type: `posts`, id: this.postId }} : { _jv: { type: `threads`, id: this.threadId }}
       params[item.command] = !item.isStatus
       return this.$store.dispatch('jv/patch', params).then(data => {
         this.initManagementList(data)
         item.command === 'isLiked' ? this.initActions(null, data) : this.initActions(data)
         if (item.command === 'isDeleted') return this.afterDeleted()
-      }, e => this.handleError(e))
+      }, e => this.handleError(e)).finally(() => { this.defaultLoading = false })
     },
     afterDeleted() {
       this.$message({ typeInformation: 'success', message: this.$t('topic.deleteSuccessAndJumpToBack') })

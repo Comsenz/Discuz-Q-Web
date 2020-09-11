@@ -58,16 +58,15 @@
         <div :class="['actions', editorStyle]">
           <div class="block">
             <template v-for="(action, index) in actions">
-              <popover v-if="action.show && action.icon !== 'call'" :key="index" class="svg">
-                <template v-slot:pop>
-                  <emoji-list v-if="action.icon === 'emoji'" @selectEmoji="selectActions" />
-                  <topic-list v-else @selectedTopic="selectActions" />
-                </template>
-                <template v-slot:activeNode>
-                  <svg-icon :type="action.icon" style="font-size: 20px" @click="onActions(action.toggle)" />
-                </template>
+              <popover v-if="action.show && action.icon === 'emoji'" :key="index" :visible="showEmoji" class="svg" @hidePop="hideActions">
+                <template v-slot:pop> <emoji-list @selectEmoji="selectActions" /> </template>
+                <template v-slot:activeNode><svg-icon :type="action.icon" style="font-size: 20px" @click="onActions(action.toggle)" /></template>
               </popover>
-              <svg-icon v-else-if="action.show" :key="index" :type="action.icon" class="svg" style="font-size: 20px" @click="onActions(action.toggle)" />
+              <popover v-if="action.show && action.icon === 'topic'" :key="index" :visible="showTopic" class="svg" @hidePop="hideActions">
+                <template v-slot:pop> <topic-list @selectedTopic="selectActions" /> </template>
+                <template v-slot:activeNode> <svg-icon :type="action.icon" style="font-size: 20px" @click="onActions(action.toggle)" /> </template>
+              </popover>
+              <svg-icon v-else-if="action.show && action.icon === 'call'" :key="index" :type="action.icon" class="svg" style="font-size: 20px" @click="onActions(action.toggle)" />
             </template>
           </div>
           <div class="block">
@@ -246,7 +245,8 @@ export default {
       })
     },
     onActions(toggle) {
-      this[toggle] = !this[toggle]
+      this.hideActions()
+      this.$nextTick(() => { this[toggle] = !this[toggle] })
     },
     addResource(toggle) {
       this[toggle] = true
@@ -255,6 +255,9 @@ export default {
       this.getSelection()
       const _text = this.post.text.slice(0, this.selectionStart) + code + this.post.text.slice(this.selectionStart, this.post.text.length)
       this.onPostContentChange('text', _text)
+      this.hideActions()
+    },
+    hideActions() {
       this.showEmoji = false
       this.showTopic = false
       this.showCaller = false

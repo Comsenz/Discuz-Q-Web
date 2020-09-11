@@ -12,7 +12,11 @@
       </div>
     </div>
     <div class="buttons">
-      <button :class="{disabled: !canFollow}" :disabled="!canFollow" @click="followed ? $emit('unFollow') : $emit('follow')">{{ followed ? $t('home.followed') : $t('home.follow') }}</button>
+      <button
+        :class="{disabled: !canFollow}"
+        :disabled="!canFollow"
+        @click="followed ? $emit('unFollow') : $emit('follow')"
+      >{{ followed ? $t('home.followed') : $t('home.follow') }}</button>
       <button @click="chatting = true">{{ $t('topic.sendMessage') }}</button>
     </div>
     <chat-box v-if="chatting" :dialog="dialog || {}" @close="chatting = false" />
