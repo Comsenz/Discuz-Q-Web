@@ -295,11 +295,28 @@ export default {
       }
       .top-title{
         color: #000;
-        flex: 0 0 60%;
+        flex: 1;
+        max-width: 60%;
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 1;
         overflow: hidden;
+        ::v-deep p {
+          font-size: 16px;
+        }
+
+        ::v-deep img {
+          height: 22px;
+        }
+        @media screen and ( max-width: 1005px ) {
+          font-size:14px;
+          ::v-deep p {
+            font-size: 14px;
+          }
+          ::v-deep img {
+            height: 20px;
+          }
+        }
       }
       &:hover{
         .top-title{

@@ -250,7 +250,7 @@ export default {
       height: 36px;
       float: left;
       @media screen and (max-width: 1005px) {
-        width: 200px;
+        width: 180px;
         height: 30px;
       }
       .el-input__inner {
@@ -309,6 +309,7 @@ export default {
         margin-left: 30px;
         @media screen and (max-width: 1005px) {
           font-size: 14px;
+          margin-left: 15px;
         }
       }
       .marleft {
