@@ -16,7 +16,7 @@
         <div class="text">{{ $t('post.paymentAmount') }}:</div>
         <label>
           <span>{{ $t('post.yuanItem') }}</span>
-          <input :value="payment.price" maxlength="7" type="number" @input="onPriceInput">
+          <input :value="payment.price" maxlength="7" type="number" step="0.01" @input="onPriceInput">
         </label>
       </div>
     </div>
@@ -67,7 +67,7 @@ export default {
     onPriceInput(e) {
       if (e.target.value.length >= 7) e.target.value = e.target.value.substr(0, 7)
       if (e.target.value === '') e.target.value = 0
-      this.$emit('paymentChange', { key: 'price', value: parseInt(e.target.value) })
+      this.$emit('paymentChange', { key: 'price', value: parseFloat(e.target.value) })
     }
   }
 }
