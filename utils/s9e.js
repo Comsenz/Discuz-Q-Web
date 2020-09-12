@@ -6,8 +6,8 @@ const tags = {
         const regexp = /<span\s*id="topic"\s*value="(?<value>\w+)"\s*>(?<string>[^<]+)<\/span>/igum;
         return text.replace(regexp, match => {
             return match.replace(regexp, (content, value, text) => {
-                const href = `/topic/content?id=${value}`;
-                return `<a href="${href}" class="content-topic">${text}</a> `;
+                // const href = `/topic/content?id=${value}`;
+                return `<a href="javascript:;" class="content-topic">${text}</a> `;
             });
         });
     },

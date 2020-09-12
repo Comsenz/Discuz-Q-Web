@@ -139,7 +139,6 @@
 </template>
 
 <script>
-// import forums from '@/mixin/forums'
 import handleError from '@/mixin/handleError'
 import { status } from '@/library/jsonapi-vuex/index'
 import { SITE_PAY } from '@/common/const'
@@ -151,17 +150,6 @@ export default {
   mixins: [
     handleError, tcaptchs
   ],
-  async asyncData({ params, store }) {
-    const _params = {
-      _jv: {
-        type: 'forum'
-      }
-    }
-
-    const data = await store.dispatch('jv/get', _params)
-    // console.log('asyncData =>', data)
-    return { forums: data }
-  },
   data() {
     return {
       userName: '',
@@ -170,11 +158,8 @@ export default {
       phoneNumber: '',
       verifyCode: '',
       activeName: '0', // 默认激活tab
-      canClickNum: false,
       info: '', // 微信二维码数据
-      forums: '',
       Reason: '', // 注册原因
-      url: '', // 上一个页面的路径
       validate: false, // 默认不开启注册审核
       code: '', // 注册邀请码
       register_captcha: false, // 默认不开启注册验证码
@@ -192,12 +177,15 @@ export default {
 
     }
   },
-  mounted() {
-    const { url, validate, register, token, code } = this.$route.query
-    console.log('query', this.$route.query)
-    if (url) {
-      this.url = url
+  computed: {
+    forums() {
+      return this.$store.state.site.info.attributes || {}
     }
+  },
+  mounted() {
+    const { validate, register, code } = this.$route.query
+    console.log('query', this.$route.query)
+
     if (validate) {
       this.validate = JSON.parse(validate)
     }
@@ -207,9 +195,6 @@ export default {
     if (code !== 'undefined') {
       this.code = code
     }
-    if (token) {
-      this.token = token
-    }
     console.log('----this.forums-----', this.forums)
     if (this.forums && this.forums.set_reg && this.forums.set_reg.register_captcha) {
       this.register_captcha = this.forums.set_reg.register_captcha
@@ -218,13 +203,11 @@ export default {
     if (this.forums && this.forums.set_site && this.forums.set_site.site_mode) {
       this.site_mode = this.forums.set_site.site_mode
     }
-    if (this.forums && this.forums.qcloud) {
-      this.qcloud_sms = this.forums.qcloud.qcloud_sms
-    }
+
     if (this.forums && this.forums.set_reg) {
       this.validate = this.forums.set_reg.register_validate
     }
-    // this.QRcode()
+    this.QRcode()
     this.changeactive()
   },
   destroyed() {
@@ -251,19 +234,9 @@ export default {
       const userId = this.$store.getters['session/get']('userId')
       if (!userId) return
       console.log('hhhhhhhhhh')
-      // this.$store.dispatch('jv/get', [
-      //   'forum',
-      //   {
-      //     params: {
-      //       include: 'users',
-      //     },
-      //   },
-      // ]);
-
       const params = {
         include: 'groups,wechat'
       }
-
       this.$store.dispatch('jv/get', [`users/${userId}`, { params }]).then(val => {
         this.user = val
         if (this.user && this.user.paid) {
@@ -280,12 +253,10 @@ export default {
     },
     // tab激活
     changeactive() {
-      if (this.activeName === '2') {
-        this.QRcode()
-      }
+      // if (this.activeName === '2') {
+      //   this.QRcode()
+      // }
       this.activeName = this.forums ? this.forums.set_reg.register_type.toString() : ''
-      this.canClickNum = this.activeName !== '1'
-      console.log(this.canClickNum)
     },
     changeinput() {
       setTimeout(() => {
@@ -355,9 +326,6 @@ export default {
     registerClick() {
       this.loading = true
       const params = {
-        // _jv: { type: '/register' },
-        // username: this.userName,
-        // password: this.passWord
         data: {
           attributes: {
             username: this.userName,
@@ -463,9 +431,6 @@ export default {
           params.data.attributes.captcha_ticket = this.ticket
           params.data.attributes.captcha_rand_str = this.randstr
         }
-        if (this.token && this.token !== '') {
-          params.data.attributes.token = this.token
-        }
         if (this.code && this.code !== 'undefined') {
           params.data.attributes.inviteCode = this.code
         }
@@ -548,7 +513,7 @@ export default {
     jump2Login() {
       console.log('跳转到登录页面')
       this.$router.push(
-        `/user/login?url=${this.url}&validate=${this.validate}`
+        `/user/login?&validate=${this.validate}`
       )
     }
 
