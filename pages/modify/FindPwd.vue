@@ -68,17 +68,10 @@ export default {
       newPassword: '',
       newPasswordRepeat: '',
       username: '',
-      url: '', // 上一个页面的路径
       validate: false, // 默认不开启注册审核
       code: '', // 注册邀请码
-      register_captcha: false, // 默认不开启注册验证码
       site_mode: '', // 站点模式
-      isPaid: false, // 是否付费
-      captcha: null, // 腾讯云验证码实例
-      captcha_ticket: '', // 腾讯云验证码返回票据
-      captcha_rand_str: '', // 腾讯云验证码返回随机字符串
-      ticket: '',
-      randstr: ''
+      isPaid: false // 是否付费''
     }
   },
   computed: {
@@ -87,11 +80,8 @@ export default {
     }
   },
   mounted() {
-    const { url, validate, register, token, code } = this.$route.query
+    const { validate, register, code } = this.$route.query
     console.log('query', this.$route.query)
-    if (url) {
-      this.url = url
-    }
     if (validate) {
       this.validate = JSON.parse(validate)
     }
@@ -101,19 +91,10 @@ export default {
     if (code !== 'undefined') {
       this.code = code
     }
-    if (token) {
-      this.token = token
-    }
     console.log('----this.forums-----', this.forums)
-    if (this.forums && this.forums.set_reg && this.forums.set_reg.register_captcha) {
-      this.register_captcha = this.forums.set_reg.register_captcha
-      console.log(this.register_captcha)
-    }
+
     if (this.forums && this.forums.set_site && this.forums.set_site.site_mode) {
       this.site_mode = this.forums.set_site.site_mode
-    }
-    if (this.forums && this.forums.qcloud) {
-      this.qcloud_sms = this.forums.qcloud.qcloud_sms
     }
     if (this.forums && this.forums.set_reg) {
       this.validate = this.forums.set_reg.register_validate
@@ -171,10 +152,6 @@ export default {
           password: this.newPassword,
           type: 'reset_pwd'
         }
-        if (this.register_captcha) {
-          params.captcha_ticket = this.ticket
-          params.captcha_rand_str = this.randstr
-        }
         status.run(() => this.$store.dispatch('jv/post', params))
           .then(res => {
             if (process.client) window.localStorage.setItem('username', res.username)
@@ -194,7 +171,7 @@ export default {
   .disabled {
     background-color: #EDEDED;
     border-color: #ddd;
-    color: #57a3f3;
+    // color: #57a3f3;
     cursor: not-allowed; // 鼠标变化
   }
 
@@ -227,7 +204,7 @@ export default {
       margin-bottom: 20px;
 
       > button {
-        color: $color-blue-base;
+        color: #606266;
         width: 90px;
         border-left: 1px solid #dcdfe6;
       }

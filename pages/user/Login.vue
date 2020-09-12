@@ -37,7 +37,7 @@
           <div class="logorreg">
             <span v-if="canReg">尚无帐号，立即
               <span
-                style="color: #1878f3;cursor:pointer; margin-left:-3px;"
+                class="agreement_text"
                 @click="toRegister"
               > {{ $t('user.register') }}</span></span>
             <nuxt-link
@@ -71,7 +71,7 @@
           class="count-b"
           :class="{disabled: !canClick}"
           size="middle"
-          @click="phoneRegister"
+          @click="sendVerifyCode"
         >{{ content }}</el-button>
 
         <span class="title3">{{ $t('user.verification') }}</span>
@@ -129,14 +129,13 @@
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
 import handleError from '@/mixin/handleError'
+import tencentCaptcha from '@/mixin/tencentCaptcha'
 import { SITE_PAY } from '@/common/const'
-
-const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
 
 let QuickLogin = null
 export default {
   name: 'Login',
-  mixins: [handleError, tcaptchs],
+  mixins: [handleError, tencentCaptcha],
   data() {
     return {
       userName: '',
@@ -201,7 +200,6 @@ export default {
         if (interval < 0) {
           window.clearInterval(clock)
           this.content = this.$t('modify.sendVerifyCode')
-          // this.totalTime = 60
           this.canClick = true
         }
       }, 1000)
@@ -245,35 +243,6 @@ export default {
           this.$router.push('/site/info')
         }
       })
-    },
-    // 手机号
-    phoneRegister() {
-      if (this.phoneNumber === '') {
-        this.$message.error('手机号不能为空')
-      } else if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha) {
-        this.toTCaptcha()
-      } else {
-        this.sendVerifyCode()
-      }
-    },
-    // 验证码
-    toTCaptcha() {
-      console.log('---------验证码-------')
-      if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha_app_id) {
-        // eslint-disable-next-line no-undef
-        this.captcha = new TencentCaptcha(this.forums.qcloud.qcloud_captcha_app_id, res => {
-          console.log('h5验证码', res)
-          if (res.ret === 0) {
-            this.ticket = res.ticket
-            this.randstr = res.randstr
-            // if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
-            // }
-            this.sendVerifyCode()
-          }
-        })
-        // 显示验证码
-        this.captcha.show()
-      }
     },
     // 用户名登录
     UserLogin() {
@@ -330,17 +299,14 @@ export default {
           })
       }
     },
-    sendVerifyCode() {
+    async sendVerifyCode() {
       // this.loading = true
-      const params = {
+      let params = {
         _jv: { type: 'sms/send' },
         mobile: this.phoneNumber,
         type: 'login'
       }
-      if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha_app_id) {
-        params.captcha_rand_str = this.randstr
-        params.captcha_ticket = this.ticket
-      }
+      params = await this.checkCaptcha(params)
       status.run(() => this.$store.dispatch('jv/post', params))
         .then(res => {
           if (res.interval) this.countDown(res.interval)
@@ -364,10 +330,6 @@ export default {
             }
           }
         }
-        if (this.register_captcha) {
-          params.data.attributes.captcha_ticket = this.ticket
-          params.data.attributes.captcha_rand_str = this.randstr
-        }
         if (this.code && this.code !== 'undefined') {
           params.data.attributes.inviteCode = this.code
         }
@@ -376,11 +338,8 @@ export default {
           .then(res => {
             this.loading = false
             console.log('手机号验证成功', res)
-            console.log('登录成功', res)
             if (res && res.data && res.data.data && res.data.data.id) {
               this.logind()
-              this.userName = ''
-              this.passWord = ''
               this.$message.success(this.$t('user.loginSuccess'))
             }
             if (
@@ -569,9 +528,6 @@ export default {
     margin-left: 70px;
     margin-top: 5px;
     font-size: 14px;
-    a {
-      color: #1878f3;
-    }
     .findpass {
       // float: right;
       margin-left: 105px;
@@ -589,6 +545,8 @@ export default {
     }
     .agreement_text {
       color: #1878f3;
+      cursor:pointer;
+      margin-left:-3px;
     }
   }
   .r-button {

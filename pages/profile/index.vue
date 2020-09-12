@@ -74,7 +74,10 @@
       </div>
     </div>
     <!-- 个人主页头部2 -->
-    <div v-if="userInfo && forums" class="profile-h">
+    <div
+      v-if="userInfo && forums"
+      class="profile-h"
+    >
       <Avatar
         :user="userInfo"
         :size="100"
@@ -99,6 +102,7 @@
           plain
           size="small"
           class="h-button2"
+          :disabled="currentLoginId === '0'"
           @click="userInfo.follow == 0 ? addFollow(userInfo) : deleteFollow(userInfo)"
         > {{
           userInfo.follow == 0
@@ -193,6 +197,11 @@ export default {
   computed: {
     forums() {
       return this.$store.state.site.info.attributes || {}
+    }
+  },
+  watch: {
+    '$route'(to, from) {
+      this.$router.go(0)
     }
   },
   created() {
@@ -335,7 +344,7 @@ export default {
       }
     }
     .profile-btn {
-      flex: 1;
+      // flex: 1;
       display: flex;
       align-items: flex-end;
       // justify-content: space-between;

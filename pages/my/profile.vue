@@ -10,7 +10,7 @@
     >
       <div class="myprofile-top mtop">
         <Avatar
-          :user="userInfo"
+          :user="{ id: userInfo.id, username: userInfo.username, avatarUrl: userInfo.avatarUrl}"
           :size="50"
           :round="true"
           class="avatar"
@@ -276,6 +276,43 @@
         </form>
       </div>
     </div>
+    <!-- 用户名 -->
+    <div
+      v-if="userInfo"
+      class="myprofile-c"
+    >
+      <div class="myprofile-top">
+        <span class="sig">{{ $t('profile.username') }}</span>
+        <span
+          class="setavatar"
+          @click="usernameModify"
+        >{{ (!isNameModify ? $t('profile.modify') : '取消修改') }}</span>
+      </div>
+      <div
+        v-show="!isNameModify"
+        class="myprofile-btom2"
+      >
+        {{ userInfo && userInfo.username ? userInfo.username:'' }}
+      </div>
+      <div
+        v-show="isNameModify"
+        class="myprofile-btom"
+      >
+        <form>
+          <el-input
+            ref="username"
+            v-model="newName"
+            :placeholder="$t('modify.numbermodifitions')"
+            class="passbtom"
+          />
+          <el-button
+            type="primary"
+            class="ebutton"
+            @click="nameSub"
+          >确定修改</el-button>
+        </form>
+      </div>
+    </div>
 
     <!-- 微信 -->
     <div
@@ -376,8 +413,6 @@ export default {
       canClick: false,
       canClick2: false,
       captcha: null, // 腾讯云验证码实例
-      captcha_ticket: '', // 腾讯云验证码返回票据
-      captcha_rand_str: '', // 腾讯云验证码返回随机字符串
       ticket: '',
       randstr: '',
       newVerifyCode: '', // 新手机验证码
@@ -391,11 +426,13 @@ export default {
       renewPassword: '', // 重复新密码
       realName: '', // 真实姓名
       idNumber: '', // 身份证
+      newName: '',
       isSignModify: false,
       isMobileModify: false,
       isPassModify: false,
       isWechatModify: false,
       isRealModify: false,
+      isNameModify: false,
       loading: true,
       rebind: false, // 是否修改手机号
       isShowAvatar: false // 是否设置头像
@@ -452,8 +489,6 @@ export default {
       }, 1000)
     },
     userinfo() {
-      this.userId = this.$store.getters['session/get']('userId')
-
       const params = {
         include: 'groups,wechat'
       }
@@ -721,19 +756,11 @@ export default {
           if (res) {
             this.isMobileModify = !this.isMobileModify
             this.$message.success(this.$t('modify.phontitle'))
-            const param = {
-              _jv: {
-                type: 'forum'
-              }
-            }
+            const param = { _jv: { type: 'forum' }}
             _this.$store.dispatch('jv/get', param).then(() => {
-              // console.log(1, 'froums');
             })
             const promsget = {
-              _jv: {
-                type: 'users',
-                id: this.userId
-              }
+              _jv: { type: 'users', id: this.userId }
               // include: 'groups',
             }
             _this.$store.dispatch('jv/get', promsget).then(() => { })
@@ -773,7 +800,6 @@ export default {
       postphon
         .then(res => {
           if (res) {
-            console.log('passsuccess', res)
             this.$message.success(this.$t('modify.titlepassword'))
             this.isPassModify = !this.isPassModify
           }
@@ -781,7 +807,6 @@ export default {
     },
     // 微信
     wechatModify() {
-      console.log('hhhh')
       this.isWechatModify = !this.isWechatModify
     },
     // 实名认证
@@ -817,29 +842,60 @@ export default {
           if (res) {
             console.log('实名成功信息', res)
             const param = {
-              _jv: {
-                type: 'forum'
-              }
+              _jv: { type: 'forum' }
             }
             _this.$store.dispatch('jv/get', param).then((res) => {
-              // console.log(1, 'froums');
               console.log('实名后获取站点数据', res)
             })
             const promsget = {
-              _jv: {
-                type: 'users',
-                id: this.userId
-              }
-              // include: 'groups',
+              _jv: { type: 'users', id: this.userId }
             }
             _this.$store.dispatch('jv/get', promsget).then((res) => {
               console.log('实名后获取用户个人信息', res)
             })
-            this.$message({
-              title: this.$t('modify.nameauthensucc'),
-              type: 'success',
-              duration: 2000
-            })
+            this.$message.success(
+              this.$t('modify.nameauthensucc')
+            )
+          }
+        }, e => {
+          const { response: { data: { errors }}} = e
+          if (errors[0].statusCode === 422 && errors[0].detail) {
+            this.$message.error(errors[0].detail[0])
+          } else if (errors[0].detail) {
+            this.$message.error(errors[0].detail)
+          }
+        })
+    },
+    // 用户名修改
+    usernameModify() {
+      this.isNameModify = !this.isNameModify
+      this.$nextTick(() => {
+        this.$refs.username.focus()
+      })
+    },
+    // 用户名提交
+    nameSub() {
+      if (this.newName) {
+        this.changename()
+      } else {
+        this.$message.error(this.$t('modify.emptyname'))
+      }
+    },
+    changename() {
+      const params = {
+        _jv: {
+          type: 'users',
+          id: this.userId
+        },
+        username: this.newName
+      }
+      const patchname = status.run(() => this.$store.dispatch('jv/patch', params))
+      patchname
+        .then(res => {
+          if (res) {
+            this.isNameModify = !this.isNameModify
+            this.$message.success(this.$t('modify.modifysucc'))
+            this.userInfo()
           }
         }, e => this.handleError(e))
     },

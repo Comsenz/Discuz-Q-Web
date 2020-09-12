@@ -35,9 +35,11 @@
       v-for="(Item, index) in followerList"
       :key="index"
       class="user-item-container"
-      @click.stop="toUser(Item.fromUser.id)"
     >
-      <div class="flex user-item">
+      <div
+        class="flex user-item"
+        @click.stop="toUser(Item.fromUser.id)"
+      >
         <avatar
           :user="Item.fromUser"
           :size="45"
