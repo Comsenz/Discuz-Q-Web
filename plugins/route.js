@@ -28,6 +28,7 @@ export default ({ app }) => {
 
       // 网站付费拦截
       if (freePath.includes(to.path)) return next()
+      if (Object.keys(store.state.site.info).length === 0) return next()
       const { attributes: { set_site: site_info }} = store.state.site.info
       const { attributes: user_info } = store.state.user.info
       if (site_info.site_mode && site_info.site_mode === 'pay') {

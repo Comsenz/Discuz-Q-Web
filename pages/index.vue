@@ -117,6 +117,9 @@ export default {
     }
   },
   mounted() {
+    this.threadsStickyData = []
+    this.threadsData = []
+    this.categoryData = []
     this.getCategoryList()
     this.getThreadsSticky()
     this.getThreadsList()
@@ -163,6 +166,7 @@ export default {
       //   !params[item] && delete params[item]
       // })
       this.$store.dispatch('jv/get', ['threads', { params }]).then(data => {
+        console.log('index data', data)
         this.hasMore = data.length === this.pageSize
         if (this.pageNum === 1) {
           this.threadsData = data

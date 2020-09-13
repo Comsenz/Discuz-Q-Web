@@ -198,7 +198,6 @@ export default {
     console.log('----this.forums-----', this.forums)
     if (this.forums && this.forums.set_reg && this.forums.set_reg.register_captcha) {
       this.register_captcha = this.forums.set_reg.register_captcha
-      console.log(this.register_captcha)
     }
     if (this.forums && this.forums.set_site && this.forums.set_site.site_mode) {
       this.site_mode = this.forums.set_site.site_mode
