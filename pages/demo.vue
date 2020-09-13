@@ -11,11 +11,12 @@
     <div>
       <svg-icon style="font-size: 100px;" type="alipay" />
     </div>
-    <div>{{ info }}</div>
 
     <p>store commit</p>
     <el-button type="primary" @click="storeCommit">store commit</el-button>
-    <div>{{ $store.state.demo.counter }}</div>
+    <div style="margin-top: 100px">
+      <Upload accept="image/*" :file-list="imageList" action="/attachments" />
+    </div>
   </div>
 </template>
 
@@ -37,7 +38,8 @@ export default {
   },
   data() {
     return {
-      info: ''
+      info: '',
+      imageList: []
     }
   },
   mounted() {
