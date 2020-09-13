@@ -5,7 +5,7 @@
       <span>{{ $t('chat.chatWithYou') }}</span>
       <svg-icon class="icon-close" type="close" style="font-size: 16px" @click="$emit('close')" />
     </div>
-    <div id="xxx" ref="chatContent" class="chat-content">
+    <div ref="chatContent" class="chat-content">
       <div v-if="loadMoreMessage" class="load-tip">{{ noMore ? $t('chat.noMore') : $t('chat.loadRecord') }}</div>
       <div v-for="(item, index) in recordList" :key="index" class="record">
         <div v-if="item.user_id === parseInt(userId)" class="record-item mine">

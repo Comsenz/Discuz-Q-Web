@@ -9,7 +9,7 @@
         :alt="video.file_name"
         @click.stop="openVideo"
       >
-      <svg-icon type="video-play" class="icon-play" style="font-size: 50px" @click="showVideoPop = true" />
+      <svg-icon type="video-play" class="icon-play" style="font-size: 50px" @click="openVideo" />
     </div>
     <div v-if="article.images && article.images.length > 0" class="images" @click="unpaid ? openVideo() : ''">
       <el-image

@@ -119,13 +119,13 @@ export default {
   methods: {
     getThread() {
       return this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include: threadInclude }}]).then(data => {
-        if (data.isDeleted) return this.$router.push('/404')
+        if (data.isDeleted) return this.$router.push('/error')
         this.articleLoading = false
         this.thread = data
         this.article = data.firstPost
         this.postId = this.article._jv.id
         this.initData()
-      }, e => this.handleError(e))
+      }, e => this.handleError(e, 'thread'))
     },
     initData() {
       this.initManagementList(this.thread)

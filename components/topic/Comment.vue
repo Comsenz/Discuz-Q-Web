@@ -1,6 +1,6 @@
 <template>
   <div>
-    <comment-header v-if="postCount > 0" :comment-count="commentList.length" :is-positive-sort.sync="isPositiveSort" />
+    <comment-header v-if="postCount > 0" :comment-count="postCount" :is-positive-sort.sync="isPositiveSort" />
     <div v-else class="without-comment">{{ $t('topic.noComment') }}</div>
     <editor
       editor-style="comment"
