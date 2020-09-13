@@ -159,6 +159,8 @@ export default {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
     width: 620px;
     height: 600px;
     border-radius: 3px;
@@ -188,7 +190,7 @@ export default {
     > .chat-content {
       background: $background-color-grey;
       padding: 0 30px 30px 30px;
-      height: 430px;
+      flex: 1;
       overflow: auto;
       overscroll-behavior: contain;
       > .load-tip {

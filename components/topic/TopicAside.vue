@@ -1,6 +1,6 @@
 <template>
   <div class="global">
-    <aside-header :author="author" :billboard="billboard" :followed="followed" :can-follow="canFollow" @follow="follow" @unFollow="unFollow" />
+    <aside-header :author="author" :billboard="billboard" :followed="followed" :can-opera="canOpera" @follow="follow" @unFollow="unFollow" />
     <div v-loading="threeEssenceThread.length === 0" class="recommend block">
       <div class="title">{{ $t('topic.recommend') }}</div>
       <div v-for="(item, index) in threeEssenceThread" :key="index" class="container-post">
@@ -41,7 +41,7 @@ export default {
     }
   },
   computed: {
-    canFollow() {
+    canOpera() {
       if (this.author.id) {
         const userId = this.$store.getters['session/get']('userId')
         return userId !== '0' && userId !== this.author.id.toString()

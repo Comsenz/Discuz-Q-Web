@@ -4,6 +4,9 @@ module.exports = {
   computed: {
     forums() {
       return this.$store.state.site.info.attributes || {}
+    },
+    user() {
+      return this.$store.state.user.info.attributes || {}
     }
   },
   methods: {

@@ -135,6 +135,7 @@ export default {
     > .content-html {
       margin-top: 22px;
       font-size: 16px;
+      word-break: break-all;
 
       &.hide-cover {
         position: relative;

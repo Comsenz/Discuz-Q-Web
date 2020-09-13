@@ -11,13 +11,11 @@
         <div class="count">{{ item.count }}</div>
       </div>
     </div>
-    <div class="buttons">
-      <button
-        :class="{disabled: !canFollow}"
-        :disabled="!canFollow"
-        @click="followed ? $emit('unFollow') : $emit('follow')"
-      >{{ followed ? $t('home.followed') : $t('home.follow') }}</button>
-      <button v-permission="openChatBox">{{ $t('topic.sendMessage') }}</button>
+    <div v-if="canOpera" class="buttons">
+      <button @click="followed ? $emit('unFollow') : $emit('follow')">
+        {{ followed ? $t('home.followed') : $t('home.follow') }}
+      </button>
+      <button @click="openChatBox">{{ $t('topic.sendMessage') }}</button>
     </div>
     <chat-box v-if="chatting" :dialog="dialog || {}" @close="chatting = false" />
   </div>
@@ -43,7 +41,7 @@ export default {
       type: Boolean,
       default: false
     },
-    canFollow: {
+    canOpera: {
       type: Boolean,
       default: false
     }
@@ -66,7 +64,6 @@ export default {
     getAuthorInfo() {
       return this.$store.dispatch('jv/get', [`users/${this.author._jv.id}`, { params: { include }}]).then(res => {
         if (res.dialog) this.dialog.id = res.dialog._jv.id
-        console.log('dialog -> ', this.dialog)
         this.dialog.name = this.author.username
       }, e => this.handleError(e))
     },
@@ -135,10 +132,6 @@ export default {
         line-height: 35px;
         border-radius: 3px;
         text-align: center;
-
-        &.disabled {
-          cursor: not-allowed;
-        }
 
         &:nth-child(1) {
           color: white;

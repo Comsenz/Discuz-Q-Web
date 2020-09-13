@@ -61,7 +61,6 @@ export default {
   },
   computed: {
     type() {
-      // TODO 非 0 1 2 3  去 404
       return this.$route.params.type
     },
     threadId() {
@@ -75,6 +74,8 @@ export default {
     }
   },
   mounted() {
+    // TODO 404
+    if (['0', '1', '2', '3'].indexOf(this.type) < 0) return this.$router.push('/error')
     this.getCategoryList()
     this.getThread()
   },
@@ -165,7 +166,14 @@ export default {
       }
       this.publishThreadResource(params, this.post)
       params = this.publishPostResource(params, this.post)
-      params = await this.checkCaptcha(params)
+      if (this.forums.other.create_thread_with_captcha) {
+        try {
+          params = await this.checkCaptcha(params)
+        } catch (e) {
+          this.onPublish = false
+          return
+        }
+      }
       return this.$store.dispatch('jv/post', params).then(data => {
         this.$router.push(`/topic/${data._jv.id}`)
       }, e => this.handleError(e)).finally(() => {
@@ -203,7 +211,14 @@ export default {
       threadParams.price = this.payment.isPaid ? this.payment.price : 0
       threadParams.free_words = this.payment.isPaid ? this.payment.freeWords : 0
       threadParams = this.publishThreadResource(threadParams, this.post)
-      threadParams = await this.checkCaptcha(threadParams)
+      if (this.forums.other.create_thread_with_captcha) {
+        try {
+          threadParams = await this.checkCaptcha(threadParams)
+        } catch (e) {
+          this.onPublish = false
+          return
+        }
+      }
       return this.$store.dispatch('jv/patch', [threadParams, { url: `/threads/${this.threadId}` }])
     }
   }

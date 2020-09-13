@@ -137,7 +137,8 @@ export default {
     },
     initManagementList(data) {
       this.managementList.forEach(item => {
-        item.canOpera = data[item.name]
+        // canEdit canHide 取值于 thread.firstPost, canEssence canSticky 取值于 thread
+        item.canOpera = data.firstPost[item.name] !== undefined ? data.firstPost[item.name] : data[item.name]
         if (item.name === 'canEssence') {
           item.isStatus = data.isEssence
           item.text = item.isStatus ? this.$t('topic.cancelEssence') : this.$t('topic.essence')
