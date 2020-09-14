@@ -13,7 +13,7 @@
       <el-progress
         v-show="videoList[0].videoPercent < 1"
         :percentage="videoList[0].videoPercent * 100"
-        color="red"
+        color="#25A9F6"
         :show-text="false"
         class="progress"
       />
@@ -21,10 +21,11 @@
     <el-upload
       v-show="!videoList[0]"
       ref="upload"
-      action=""
       list-type="picture-card"
       class="image-upload"
       accept="video/*"
+      action=""
+      :auto-upload="false"
       :limit="1"
       :disabled="videoList.length > 0"
       :on-change="addVideo"
@@ -68,6 +69,12 @@ export default {
       }, () => console.log('取消删除'))
     },
     addVideo(file) {
+      if (this.onUploadVideo) return
+      if (file.raw.size > 10485760) {
+        this.$message.error(this.$t('profile.filesizecannotexceed') + '10 MB')
+        this.$refs.upload.clearFiles()
+        return
+      }
       this.$emit('update:onUploadVideo', true)
       const _videoList = [...this.videoList]
       _videoList.push({ name: file.name, url: file.url, videoPercent: 0 })

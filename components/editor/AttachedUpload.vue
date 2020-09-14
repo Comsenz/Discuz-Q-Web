@@ -11,6 +11,7 @@
       :limit="3"
       :disabled="attachedList.length >= 3"
       class="resources-upload"
+      :before-upload="checkSize"
       :on-progress="() => $emit('update:onUploadAttached', true)"
       :on-success="handleSuccess"
       :before-remove="handleRemoveConfirm"
@@ -50,9 +51,22 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      overSize: false
+    }
+  },
   methods: {
-    // TODO 类型和大小强验证
+    checkSize(file) {
+      const result = file.size < 10485760
+      if (!result) {
+        this.overSize = true
+        this.$message.error(this.$t('profile.filesizecannotexceed') + '10 MB')
+      } else this.overSize = false
+      return result
+    },
     handleRemoveConfirm() {
+      if (this.overSize) return
       return this.$confirm(this.$t('topic.confirmDelete'), this.$t('discuzq.msgBox.title'), {
         confirmButtonText: this.$t('discuzq.msgBox.confirm'),
         cancelButtonText: this.$t('discuzq.msgBox.cancel'),
@@ -60,6 +74,7 @@ export default {
       })
     },
     handleAttachedRemove(file) {
+      if (this.overSize) return
       const id = file.id
       const _attachedList = [...this.attachedList]
       const deleteAttached = _attachedList.filter(item => item.id === id)[0]

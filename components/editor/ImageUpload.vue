@@ -12,6 +12,7 @@
       :disabled="imageList.length > 9"
       list-type="picture-card"
       class="resources-upload"
+      :before-upload="checkSize"
       :on-progress="() => $emit('update:onUploadImage', true)"
       :on-success="handleSuccess"
       :on-preview="handlePictureCardPreview"
@@ -55,11 +56,21 @@ export default {
   data() {
     return {
       dialogImageUrl: '',
-      dialogVisible: false
+      dialogVisible: false,
+      overSize: false
     }
   },
   methods: {
+    checkSize(file) {
+      const result = file.size < 10485760
+      if (!result) {
+        this.overSize = true
+        this.$message.error(this.$t('profile.filesizecannotexceed') + '10 MB')
+      } else this.overSize = false
+      return result
+    },
     handleRemoveConfirm() {
+      if (this.overSize) return
       return this.$confirm(this.$t('topic.confirmDelete'), this.$t('discuzq.msgBox.title'), {
         confirmButtonText: this.$t('discuzq.msgBox.confirm'),
         cancelButtonText: this.$t('discuzq.msgBox.cancel'),
@@ -67,6 +78,7 @@ export default {
       })
     },
     handlePictureRemove(file) {
+      if (this.overSize) return
       const id = file.id
       const _imageList = [...this.imageList]
       const deleteImage = _imageList.filter(item => item.id === id)[0]

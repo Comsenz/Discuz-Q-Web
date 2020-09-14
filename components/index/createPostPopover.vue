@@ -21,9 +21,7 @@
   </el-popover>
 </template>
 <script>
-import forums from '@/mixin/forums'
 export default {
-  mixins: [forums],
   data() {
     return {
       userId: this.$store.getters['session/get']('userId'), // 获取当前登陆用户的ID
@@ -41,6 +39,9 @@ export default {
     },
     userInfo() {
       return this.$store.getters['jv/get'](`/users/${this.userId}`)
+    },
+    forums() {
+      return this.$store.state.site.info.attributes || {}
     }
   },
   methods: {

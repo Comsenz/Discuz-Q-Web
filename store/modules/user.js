@@ -10,7 +10,6 @@ const state = () => {
 
 const mutations = {
   SET_USER_INFO(state, info = {}) {
-    console.log('stroe set user info => ', info)
     state.info = info
   }
 }
