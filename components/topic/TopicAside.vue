@@ -1,6 +1,14 @@
 <template>
   <div class="global">
-    <aside-header :author="author" :billboard="billboard" :followed="followed" :can-opera="canOpera" @follow="follow" @unFollow="unFollow" />
+    <aside-header
+      :author="author"
+      :billboard="billboard"
+      :follow-status="followStatus"
+      :follow-loading="followLoading"
+      :can-opera="canOpera"
+      @follow="follow"
+      @unFollow="unFollow"
+    />
     <div v-loading="threeEssenceThread.length === 0" class="recommend block">
       <div class="title">{{ $t('topic.recommend') }}</div>
       <div v-for="(item, index) in threeEssenceThread" :key="index" class="container-post">
@@ -31,7 +39,8 @@ export default {
     return {
       threeEssenceThread: [],
       EssenceThread: [],
-      followed: false,
+      followStatus: 0,
+      followLoading: false,
       billboard: [
         { key: 'threadCount', count: '', text: this.$t('home.thread') },
         { key: 'likedCount', count: '', text: this.$t('topic.getLike') },
@@ -44,7 +53,7 @@ export default {
     canOpera() {
       if (this.author.id) {
         const userId = this.$store.getters['session/get']('userId')
-        return userId !== '0' && userId !== this.author.id.toString()
+        return userId > 0 && userId !== this.author.id.toString()
       }
       return false
     }
@@ -52,7 +61,7 @@ export default {
   watch: {
     author: {
       handler(val) {
-        this.followed = (val.follow === 1)
+        this.followStatus = val.follow
         this.billboard.forEach(item => {
           item.count = val[item.key]
         })
@@ -84,18 +93,21 @@ export default {
       return Math.floor(Math.random() * length)
     },
     follow() {
-      if (!this.canFollow) return
+      if (this.followLoading) return
+      this.followLoading = true
       const params = { _jv: { type: `follow` }, 'to_user_id': this.author.id.toString() }
-      return this.$store.dispatch('jv/post', params).then(() => {
-        this.followed = true
+      return this.$store.dispatch('jv/post', params).then(res => {
+        this.followLoading = false
+        this.followStatus = res.is_mutual === 0 ? 1 : 2
       }, e => this.handleError(e))
     },
     unFollow() {
-      return this.$store.dispatch('jv/delete', [`follow/${this.author.id}/1`, {
-        params: {}
-      }]).then(() => {
-        this.followed = false
-      }, e => this.handleError(e))
+      if (this.followLoading) return
+      this.followLoading = true
+      this.$store.dispatch('jv/delete', `follow/${this.author.id}/1`).then(() => {
+        this.followLoading = false
+        this.followStatus = 0
+      })
     }
   }
 }

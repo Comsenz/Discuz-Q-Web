@@ -82,7 +82,7 @@ export default {
     },
     onClick(command, usersIndex) {
       const userId = this.$store.state.user.info.id
-      if (!userId || userId === '0') return this.$message.error(this.$t('user.pleaseLogin'))
+      if (!userId) return this.$message.error(this.$t('user.pleaseLogin'))
       return this.$emit('payOrReward', command[usersIndex].title)
     }
   }

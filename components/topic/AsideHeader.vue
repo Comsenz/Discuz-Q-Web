@@ -12,10 +12,10 @@
       </div>
     </div>
     <div v-if="canOpera" class="buttons">
-      <button @click="followed ? $emit('unFollow') : $emit('follow')">
-        {{ followed ? $t('home.followed') : $t('home.follow') }}
-      </button>
-      <button @click="openChatBox">{{ $t('topic.sendMessage') }}</button>
+      <el-button :loading="followLoading" @click="followStatus === 0 ? $emit('follow') : $emit('unFollow')">
+        {{ followStatus === 0 ? '+ ' + $t('profile.following') : followStatus === 1 ? $t('profile.followed') : $t('profile.mutualfollow') }}
+      </el-button>
+      <el-button @click="openChatBox">{{ $t('topic.sendMessage') }}</el-button>
     </div>
     <chat-box v-if="chatting" :dialog="dialog || {}" @close="chatting = false" />
   </div>
@@ -25,23 +25,29 @@
 const include = 'groups,dialog'
 import timerDiff from '@/mixin/timerDiff'
 import handleError from '@/mixin/handleError'
+
 export default {
   name: 'AsideHeader',
   mixins: [handleError, timerDiff],
   props: {
     author: {
       type: Object,
-      default: () => {}
+      default: () => {
+      }
     },
     billboard: {
       type: Array,
       default: () => []
     },
-    followed: {
+    followStatus: {
+      type: Number,
+      default: 0
+    },
+    canOpera: {
       type: Boolean,
       default: false
     },
-    canOpera: {
+    followLoading: {
       type: Boolean,
       default: false
     }
@@ -94,6 +100,7 @@ export default {
     }
 
     > .signature {
+      word-break: break-all;
       margin-top: 10px;
       color: $font-color-grey;
     }
@@ -126,12 +133,11 @@ export default {
       display: flex;
       justify-content: space-between;
 
-      > button {
+      ::v-deep.el-button {
         width: 120px;
-        height: 35px;
-        line-height: 35px;
-        border-radius: 3px;
-        text-align: center;
+      }
+
+      > button {
 
         &:nth-child(1) {
           color: white;
@@ -144,8 +150,8 @@ export default {
         }
       }
 
-      @media screen and ( max-width: 1005px ) {
-        button {
+      @media screen and (max-width: 1005px) {
+        ::v-deep.el-button {
           width: 85px;
         }
       }

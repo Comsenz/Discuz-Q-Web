@@ -120,6 +120,7 @@ export default {
     getThread() {
       return this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include: threadInclude }}]).then(data => {
         if (data.isDeleted) return this.$router.push('/error')
+        console.log('thread => ', this.thread)
         this.articleLoading = false
         this.thread = data
         this.article = data.firstPost
@@ -249,7 +250,7 @@ export default {
       const params = item.command === 'isLiked' ? { _jv: { type: `posts`, id: this.postId }} : { _jv: { type: `threads`, id: this.threadId }}
       params[item.command] = !item.isStatus
       return this.$store.dispatch('jv/patch', params).then(data => {
-        this.initManagementList(data)
+        data.firstPost && this.initManagementList(data)
         item.command === 'isLiked' ? this.initActions(null, data) : this.initActions(data)
         if (item.command === 'isDeleted') return this.afterDeleted()
       }, e => this.handleError(e)).finally(() => { this.defaultLoading = false })
