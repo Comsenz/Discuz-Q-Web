@@ -58,7 +58,7 @@
 
         <div class="agreement">
           <!-- <el-checkbox v-model="checked" /> -->
-          <reg-agreement />
+          <reg-agreement @check="check" />
           <div class="logorreg">
             <span
               v-if="register"
@@ -101,7 +101,7 @@
         />
         <div class="agreement">
           <!-- <el-checkbox v-model="checked" /> -->
-          <reg-agreement />
+          <reg-agreement @check="check" />
         </div>
         <el-button
           type="primary"
@@ -170,7 +170,7 @@ export default {
       captcha_rand_str: '', // 腾讯云验证码返回随机字符串
       ticket: '',
       randstr: '',
-      checked: true,
+      ischeck: true,
       content: this.$t('modify.sendVerifyCode'),
       canClick: false,
       loading: false
@@ -213,6 +213,9 @@ export default {
     clearInterval(QuickLogin)
   },
   methods: {
+    check(value) {
+      this.ischeck = value
+    },
     countDown(interval) {
       if (!this.canClick) return
       this.canClick = false
@@ -275,7 +278,7 @@ export default {
         this.$message.error('密码不能为空')
       } else if (this.passWord !== this.repeatPassWord) {
         this.$message.error('二次密码输入不一致')
-      } else if (!this.checked) {
+      } else if (!this.ischeck) {
         this.$message.error('请同意协议')
       } else if (this.forums && this.forums.set_reg && this.forums.set_reg.register_captcha) {
         if (this.validate && this.Reason === '') {
@@ -291,7 +294,7 @@ export default {
     phoneRegister() {
       if (this.phoneNumber === '') {
         this.$message.error('手机号不能为空')
-      } else if (!this.checked) {
+      } else if (!this.ischeck) {
         this.$message.error('请同意协议')
       } else if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha) {
         this.toTCaptcha()
@@ -520,6 +523,9 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
+::v-deep input::-ms-reveal {
+  display: none;
+}
 .register {
   display: flex;
   width: 400px;

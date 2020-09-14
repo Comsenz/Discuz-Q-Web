@@ -353,7 +353,7 @@ export default {
   .el-tabs__header .el-tabs__item {
     border: none;
     color: #b5b5b5;
-    padding: 0 52px 0 0px;
+    padding: 0 52px 0 2px;
     font-size: 16px;
   }
   .el-tabs__content {

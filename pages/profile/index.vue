@@ -120,6 +120,11 @@
           @click="chat"
         >{{ $t('profile.privateMessage') }}</el-button>
       </div>
+      <chat-box
+        v-if="chatting"
+        :dialog="dialog || {}"
+        @close="chatting = false"
+      />
     </div>
     <div class="profile-c">
       <div class="profile-cc">
@@ -164,7 +169,7 @@
         </el-tabs>
       </div>
       <div style="width:300px; margin-top:15px;">
-        <advertising />
+        <advertisingp :user-id="userId" />
         <recommend-user style="background: white;margin-top: 16px;" />
         <copyright :forums="forums" />
       </div>
@@ -189,7 +194,8 @@ export default {
       can_create_dialog: false, // 创建私信权利
       headFixed: false,
       loading: false,
-      dialogId: 0,
+      dialog: { id: '', name: '' },
+      chatting: false,
       offsetTop: 0
 
     }
@@ -262,7 +268,8 @@ export default {
               this.$message.error('用户不存在')
             } else {
               this.loading = false
-              this.dialogId = res.dialog ? res.dialog._jv.id : 0
+              this.dialog.id = res.dialog ? res.dialog._jv.id : 0
+              this.dialog.name = res.username
               this.userInfo = res
               this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
             }
@@ -311,7 +318,7 @@ export default {
     },
     // 私信
     chat() {
-      console.log('私信')
+      this.chatting = true
     }
   }
 }
@@ -341,13 +348,107 @@ export default {
       .info-content {
         color: #333333;
         margin-top: 10px;
+        width: 700px;
+        overflow: hidden;
+        /* height: 80px; */
+        overflow-wrap: break-word;
+        /* line-break: anywhere; */
+        text-overflow: ellipsis;
       }
+    }
+  }
+  .profile-btn {
+    // flex: 1;
+    display: flex;
+    align-items: flex-end;
+    // justify-content: space-between;
+    .h-button1 {
+      width: 70px;
+      height: 35px;
+      color: #1878f3;
+      background: #ffffff;
+      border-color: #1878f3;
+      font-size: 14px;
+      border-radius: 0px;
+      margin-left: 5px;
+      padding: 9px 0px;
+    }
+    .h-button2 {
+      width: 70px;
+      height: 35px;
+      color: #ffff;
+      background: #1878f3;
+      border-color: #1878f3;
+      font-size: 14px;
+      border-radius: 0px;
+      padding: 9px 0px;
+    }
+  }
+}
+.profile-c {
+  display: flex;
+  .register-select {
+    border: none;
+    background: #ffffff;
+    box-shadow: none;
+    ::v-deep.el-tabs__header {
+      padding: 20px;
+    }
+  }
+  .profile-cc {
+    width: 700px;
+    margin: 15px 15px 0 0;
+  }
+}
+.isFixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 65px;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.03);
+  z-index: 999;
+  .headcon {
+    margin: 0 auto;
+    padding: 15px 0;
+    width: 1005px;
+    height: 65px;
+    display: flex;
+    justify-content: space-between;
+    @media screen and (max-width: 1005px) {
+      width: 100%;
+      min-width: 768px;
+      padding: 15px 14px;
+      height: 50px;
+    }
+    .hinfo {
+      display: flex;
+    }
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+      // flex: 1;
+      margin-left: 10px;
+      .info-name {
+        font-size: 16px;
+        font-weight: bold;
+        margin-right: 10px;
+        color: #000000;
+      }
+      .info-actor {
+        font-size: 12px;
+        color: #aaaaaa;
+      }
+    }
+    .register-select {
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      // flex: 3;
     }
     .profile-btn {
       // flex: 1;
-      display: flex;
-      align-items: flex-end;
-      // justify-content: space-between;
       .h-button1 {
         width: 70px;
         height: 35px;
@@ -356,7 +457,7 @@ export default {
         border-color: #1878f3;
         font-size: 14px;
         border-radius: 0px;
-        margin-left: 5px;
+        margin-left: 0px;
         padding: 9px 0px;
       }
       .h-button2 {
@@ -370,102 +471,15 @@ export default {
         padding: 9px 0px;
       }
     }
-  }
-  .profile-c {
-    display: flex;
-    .register-select {
-      border: none;
-      background: #ffffff;
-      box-shadow: none;
-      ::v-deep.el-tabs__header {
-        padding: 20px;
-      }
+    ::v-deep .el-tabs__content {
+      display: none;
     }
-    .profile-cc {
-      width: 700px;
-      margin: 15px 15px 0 0;
-    }
-  }
-  .isFixed {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 65px;
-    background: rgba(255, 255, 255, 1);
-    box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.03);
-    z-index: 999;
-    .headcon {
-      margin: 0 auto;
-      padding: 15px 0;
-      width: 1005px;
-      height: 65px;
-      display: flex;
-      justify-content: space-between;
-      @media screen and (max-width: 1005px) {
-        width: 100%;
-        min-width: 768px;
-        padding: 15px 14px;
-        height: 50px;
-      }
-      .hinfo {
-        display: flex;
-      }
-      .profile-info {
-        display: flex;
-        flex-direction: column;
-        // flex: 1;
-        margin-left: 10px;
-        .info-name {
-          font-size: 16px;
-          font-weight: bold;
-          margin-right: 10px;
-          color: #000000;
-        }
-        .info-actor {
-          font-size: 12px;
-          color: #aaaaaa;
-        }
-      }
-      .register-select {
-        border: none;
-        background: transparent;
-        box-shadow: none;
-        // flex: 3;
-      }
-      .profile-btn {
-        // flex: 1;
-        .h-button1 {
-          width: 70px;
-          height: 35px;
-          color: #1878f3;
-          background: #ffffff;
-          border-color: #1878f3;
-          font-size: 14px;
-          border-radius: 0px;
-          margin-left: 0px;
-          padding: 9px 0px;
-        }
-        .h-button2 {
-          width: 70px;
-          height: 35px;
-          color: #ffff;
-          background: #1878f3;
-          border-color: #1878f3;
-          font-size: 14px;
-          border-radius: 0px;
-          padding: 9px 0px;
-        }
-      }
-      ::v-deep .el-tabs__content {
-        display: none;
-      }
-      ::v-deep .el-tabs__header {
-        border-bottom: none;
-      }
+    ::v-deep .el-tabs__header {
+      border-bottom: none;
     }
   }
 }
+
 ::v-deep.el-tabs {
   .el-tabs__header {
     background: transparent;

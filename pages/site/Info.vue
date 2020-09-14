@@ -91,7 +91,11 @@
       v-if="qrcodeShow"
       class="qrco-overlay"
     /> -->
-    <topic-wx-pay v-if="qrcodeShow" :qr-code="codeUrl" @close="qrcodeShow = false" />
+    <topic-wx-pay
+      v-if="qrcodeShow"
+      :qr-code="codeUrl"
+      @close="qrcodeShow = false"
+    />
     <!-- <el-dialog
       :visible.sync="qrcodeShow"
       width="320px"
@@ -116,7 +120,8 @@ export default {
       qrcodeShow: false,
       payStatus: 0, // 订单支付状态
       orderSn: '', // 订单编号
-      codeUrl: '' // 二维码支付url，base64
+      codeUrl: '', // 二维码支付url，base64
+      userId: this.$store.getters['session/get']('userId')
     }
   },
   computed: {
@@ -124,7 +129,21 @@ export default {
       return this.$store.state.site.info.attributes || {}
     }
   },
+  mounted() {
+    this.userinfo()
+  },
   methods: {
+    userinfo() {
+      const params = {
+        include: 'groups,wechat'
+      }
+      this.$store.dispatch('jv/get', [`users/${this.userId}`, { params }]).then(res => {
+        if (res.paid) {
+          console.log('是否已付费', res)
+          this.$router.push('/')
+        }
+      })
+    },
     tologin() {
       this.$router.push('/user/login')
     },

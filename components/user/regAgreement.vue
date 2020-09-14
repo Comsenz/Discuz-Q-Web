@@ -3,7 +3,10 @@
     v-if="(forums.agreement && forums.agreement.register) || (forums.agreement && forums.agreement.privacy)"
     class="reg-agreement"
   >
-    <el-checkbox v-model="checked" />
+    <el-checkbox
+      v-model="checked"
+      @change="rcheck"
+    />
     <span class="agree">{{ $t('permission.user.agreement') }}</span>
     <span
       v-if="forums.agreement && forums.agreement.register"
@@ -66,6 +69,9 @@ export default {
         this.popDetail = this.forums.agreement.privacy_content
         this.showagree = true
       }
+    },
+    rcheck() {
+      this.$emit('check', this.checked)
     }
   }
 }

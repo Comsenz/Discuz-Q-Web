@@ -32,7 +32,7 @@
           <span class="real">已实名认证</span>
         </span>
         <span
-          v-else
+          v-else-if="userInfo && !userInfo.isReal && forums &&forums.qcloud && forums.qcloud.qcloud_faceid"
           class="iden"
         >
           <svg-icon
@@ -81,6 +81,44 @@
         </div>
       </div>
     </div>
+    <!-- 用户名 -->
+    <div
+      v-if="userInfo"
+      class="myprofile-c"
+    >
+      <div class="myprofile-top">
+        <span class="sig">{{ $t('profile.username') }}</span>
+        <span
+          class="setavatar"
+          @click="usernameModify"
+        >{{ (!isNameModify ? $t('profile.modify') : '取消修改') }}</span>
+      </div>
+      <div
+        v-show="!isNameModify"
+        class="myprofile-btom2"
+      >
+        {{ userInfo && userInfo.username ? userInfo.username:'' }}
+      </div>
+      <div
+        v-show="isNameModify"
+        class="myprofile-btom"
+      >
+        <form>
+          <el-input
+            ref="username"
+            v-model="newName"
+            :placeholder="$t('modify.numbermodifitions')"
+            class="passbtom"
+          />
+          <el-button
+            type="primary"
+            class="ebutton"
+            @click="nameSub"
+          >确定修改</el-button>
+        </form>
+      </div>
+    </div>
+
     <!-- 签名 -->
     <div
       v-if="userInfo"
@@ -276,43 +314,6 @@
         </form>
       </div>
     </div>
-    <!-- 用户名 -->
-    <div
-      v-if="userInfo"
-      class="myprofile-c"
-    >
-      <div class="myprofile-top">
-        <span class="sig">{{ $t('profile.username') }}</span>
-        <span
-          class="setavatar"
-          @click="usernameModify"
-        >{{ (!isNameModify ? $t('profile.modify') : '取消修改') }}</span>
-      </div>
-      <div
-        v-show="!isNameModify"
-        class="myprofile-btom2"
-      >
-        {{ userInfo && userInfo.username ? userInfo.username:'' }}
-      </div>
-      <div
-        v-show="isNameModify"
-        class="myprofile-btom"
-      >
-        <form>
-          <el-input
-            ref="username"
-            v-model="newName"
-            :placeholder="$t('modify.numbermodifitions')"
-            class="passbtom"
-          />
-          <el-button
-            type="primary"
-            class="ebutton"
-            @click="nameSub"
-          >确定修改</el-button>
-        </form>
-      </div>
-    </div>
 
     <!-- 微信 -->
     <div
@@ -448,8 +449,7 @@ export default {
       }
     },
     forums() {
-      const forums = this.$store.state.site.info.attributes
-      return forums
+      return this.$store.state.site.info.attributes || {}
     }
   },
   mounted() {
@@ -489,6 +489,9 @@ export default {
       }, 1000)
     },
     userinfo() {
+      if (this.userId === '0') {
+        return
+      }
       const params = {
         include: 'groups,wechat'
       }
@@ -535,7 +538,7 @@ export default {
         if (res) {
           this.isSignModify = !this.isSignModify
           this.$message.success(this.$t('modify.modificationsucc'))
-          this.$router.go(0)
+          this.userinfo()
         }
       }, e => {
         this.handleError(e)
@@ -756,7 +759,8 @@ export default {
           if (res) {
             this.isMobileModify = !this.isMobileModify
             this.$message.success(this.$t('modify.phontitle'))
-            const param = { _jv: { type: 'forum' }}
+            // eslint-disable-next-line object-curly-spacing
+            const param = { _jv: { type: 'forum' } }
             _this.$store.dispatch('jv/get', param).then(() => {
             })
             const promsget = {
@@ -858,7 +862,8 @@ export default {
             )
           }
         }, e => {
-          const { response: { data: { errors }}} = e
+          // eslint-disable-next-line object-curly-spacing
+          const { response: { data: { errors } } } = e
           if (errors[0].statusCode === 422 && errors[0].detail) {
             this.$message.error(errors[0].detail[0])
           } else if (errors[0].detail) {
@@ -916,7 +921,9 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
-//@import url(); 引入公共css类
+::v-deep input::-ms-reveal {
+  display: none;
+}
 .myprofile {
   padding-left: 30px;
   @media screen and (max-width: 1005px) {
@@ -1009,6 +1016,8 @@ export default {
     padding-bottom: 20px;
     margin-top: 15px;
     width: 460px;
+    overflow: hidden;
+    overflow-wrap: break-word;
     @media screen and (max-width: 1005px) {
       width: 390px;
     }

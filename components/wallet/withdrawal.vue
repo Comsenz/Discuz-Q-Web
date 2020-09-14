@@ -291,10 +291,29 @@ export default {
             this.$emit('close')
             this.$router.go(0)
           }
-        }, e => this.handleError(e))
+        }, e => {
+          console.log('提现错误', e)
+          // eslint-disable-next-line object-curly-spacing
+          const { response: { data: { errors } } } = e
+          if (errors[0]) {
+            if (errors[0].status === 422) {
+              this.$message.error(errors[0].detail[0])
+              this.canAmount = ''
+              this.contint = ''
+              this.procedures = 0
+              this.$emit('close')
+            } else if (errors[0].status === 500) {
+              this.$message.error(errors[0].detail)
+              this.canAmount = ''
+              this.contint = ''
+              this.procedures = 0
+              this.$emit('close')
+            }
+          }
+        })
     },
     tomy() {
-      this.$router.replace('/my/profile')
+      this.$router.push('/my/profile')
     }
   }
 }

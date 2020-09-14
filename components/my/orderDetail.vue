@@ -23,7 +23,8 @@
         />
       </el-select>
       <span class="margleft">
-        {{ $t('profile.total') }}{{ total4 }}{{ $t('profile.records') }},{{ $t('profile.amountinvolved') }}￥{{ sumMoney4 }}
+        {{ $t('profile.total') }}{{ total4 }}{{ $t('profile.records') }}
+        <!-- ,{{ $t('profile.amountinvolved') }}￥{{ sumMoney4 }} -->
       </span>
     </div>
     <!-- 订单明细表格 -->
