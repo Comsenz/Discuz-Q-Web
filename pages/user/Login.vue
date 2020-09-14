@@ -83,7 +83,7 @@
         />
         <div class="agreement">
           <!-- <el-checkbox v-model="checked" /> -->
-          <reg-agreement />
+          <reg-agreement @check="check" />
         </div>
         <el-button
           type="primary"
@@ -155,7 +155,8 @@ export default {
       isPaid: false, // 是否付费
       code: '', // 注册邀请码
       loading: false,
-      canReg: false
+      canReg: false,
+      ischeck: true
     }
   },
   computed: {
@@ -190,6 +191,9 @@ export default {
     clearInterval(QuickLogin)
   },
   methods: {
+    check(value) {
+      this.ischeck = value
+    },
     countDown(interval) {
       if (!this.canClick) return
       this.canClick = false
@@ -231,9 +235,11 @@ export default {
         include: 'groups,wechat'
       }
       this.$store.dispatch('jv/get', [`users/${userId}`, { params }]).then(val => {
-        if (val && val.paid) {
-          this.isPaid = val.paid
+        this.user = val
+        if (this.user && this.user.paid) {
+          this.isPaid = this.user.paid
         }
+        console.log('----this.user-----', this.user)
         if (this.site_mode !== SITE_PAY || this.isPaid) {
           this.$router.push('/')
         }
@@ -426,7 +432,9 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
-//@import url(); 引入公共css类
+::v-deep input::-ms-reveal {
+  display: none;
+}
 ::v-deep.disable {
   pointer-events: none;
 }
@@ -543,8 +551,8 @@ export default {
     }
     .agreement_text {
       color: #1878f3;
-      cursor:pointer;
-      margin-left:-3px;
+      cursor: pointer;
+      margin-left: -3px;
     }
   }
   .r-button {
