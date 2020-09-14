@@ -202,8 +202,9 @@ export default {
         height: 30px;
       }
       .el-input__inner {
-        border-radius: 0px;
+        border-radius: 2px;
         color: #000;
+        border-color: #EDEDED;
         @media screen and (max-width: 1005px) {
           height: 30px;
           line-height: 30px;
@@ -221,7 +222,7 @@ export default {
       height: 35px;
       border-color: #1878f3;
       font-size: 14px;
-      border-radius: 0px;
+      border-radius: 2px;
       &.h-button1 {
         background: #ffffff;
         color: #1878f3;

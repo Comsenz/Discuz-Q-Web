@@ -284,8 +284,8 @@ export default {
     @include background();
     .list-top-item{
       border-bottom: 1px solid #EFEFEF;
-      line-height: 1;
-      padding: 10px 20px;
+      line-height: 19px;
+      padding: 10.5px 22px;
       display: flex;
       align-items: center;
       .top-label{

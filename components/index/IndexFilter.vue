@@ -104,7 +104,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px;
+  padding: 20px 20px 10px;
 }
 .index-filter{
   display: flex;
@@ -112,14 +112,15 @@ export default {
   line-height: 1;
   .filter-btn{
     color:#8590A6;
-    padding:8px 14px;
-    margin-right: 5px;
+    padding:10.5px 14px;
+    margin-right: 15px;
     line-height: 1;
     cursor: pointer;
     &.active, &:hover{
       color:#1878F3;
       background: #E5F2FF;
       transition: all 0.2s ease-in-out;
+      border-radius: 2px;
     }
     @media screen and ( max-width: 1005px ) {
       margin-right: 0;

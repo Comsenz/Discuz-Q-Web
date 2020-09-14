@@ -26,8 +26,8 @@ export default ({ app }) => {
         }
       }
       // 获取用户信息
-      const userId = localStorage.getItem('user_id')
-      if (!store.state.user.info.id && userId > 0) {
+      const userId = localStorage.getItem('user_id') || ''
+      if (!store.state.user.info.id && userId) {
         try {
           await store.dispatch('user/getUserInfo', userId)
           store.commit('session/SET_USER_ID', userId)
@@ -44,7 +44,7 @@ export default ({ app }) => {
       const { attributes: { set_site: site_info }} = store.state.site.info
       const { attributes: user_info } = store.state.user.info
       if (site_info.site_mode && site_info.site_mode === 'pay') {
-        if (userId === '0' || user_info && !user_info.paid) return next({ path: '/site/info' })
+        if (!userId || (user_info && !user_info.paid)) return next({ path: '/site/info' })
       }
       return next()
     }

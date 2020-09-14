@@ -169,9 +169,9 @@ export default {
   // }
   .essence{
     position: absolute;
-    top:0;
+    top:-2px;
     right: 20px;
-    font-size: 20px;
+    font-size: 22px;
   }
   .main-cont{
     flex: 1;
@@ -309,7 +309,7 @@ export default {
           margin-right: 3px;
         }
         .like{
-          padding: 7px 15px;
+          padding: 10.5px 15px;
           line-height: 1;
           border-radius:2px;
           // transition: all 0.1s ease-in;
@@ -329,7 +329,7 @@ export default {
         border: 1px solid $color-blue-base;
         border-radius: 2px;
         font-size: 14px;
-        padding: 8px 20px;
+        padding: 9.5px 20px;
         line-height: 1;
         outline: none;
         cursor: pointer;

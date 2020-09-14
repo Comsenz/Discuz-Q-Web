@@ -98,6 +98,7 @@ export default {
   background-color: #1878F3 !important;
   border-color: #1878F3 !important;
   padding: 10px 20px !important;
+  border-radius: 2px;
   &:hover{
     opacity: 0.8;
   }
