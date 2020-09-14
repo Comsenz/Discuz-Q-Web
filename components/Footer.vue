@@ -1,6 +1,6 @@
 <template>
   <div class="footer">
-    <span> Powered By &nbsp;  <span class="bold">Discuz!Q</span> &nbsp;    © 2014-{{ year }} &nbsp; 分享&nbsp;  / 交流 &nbsp; /&nbsp;  共融 </span>
+    <span> Powered By &nbsp;  <span class="bold">{{ forums.set_site && forums.set_site.site_name || 'Discuz!Q' }}</span> &nbsp;    © 2014-{{ year }} &nbsp; 分享&nbsp;  / 交流 &nbsp; /&nbsp;  共融 </span>
   </div>
 </template>
 <script>

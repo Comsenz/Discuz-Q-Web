@@ -295,22 +295,26 @@ export default {
       .top-title{
         color: #000;
         flex: 1;
-        max-width: 60%;
+        max-width: 425px;
+        overflow: hidden;
+        // text-overflow:ellipsis;
+        // white-space: nowrap;
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 1;
-        overflow: hidden;
+        font-size: 16px !important;
+        max-height: 19px;
         ::v-deep p {
-          font-size: 16px;
+          font-size: 16px !important;
         }
 
         ::v-deep img {
           height: 22px;
         }
         @media screen and ( max-width: 1005px ) {
-          font-size:14px;
+          font-size:14px !important;
           ::v-deep p {
-            font-size: 14px;
+            font-size: 14px !important;
           }
           ::v-deep img {
             height: 20px;

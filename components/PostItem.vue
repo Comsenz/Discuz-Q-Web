@@ -210,11 +210,12 @@ export default {
     .content{
       @include text-hidden(4);
       line-height: 24px;
-      font-size: 16px;
+      font-size: 16px !important;
       color: #000;
       flex: 0 0 60%;
+      max-height: 96px;
       ::v-deep p {
-        font-size: 16px;
+        font-size: 16px !important;
       }
 
       ::v-deep img {
@@ -224,9 +225,9 @@ export default {
         color: $color-blue-base;
       }
       @media screen and ( max-width: 1005px ) {
-        font-size:14px;
+        font-size:14px !important;
         ::v-deep p {
-          font-size: 14px;
+          font-size: 14px !important;
         }
         ::v-deep img {
           height: 20px;

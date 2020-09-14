@@ -2,7 +2,7 @@
   <div class="copyright">
     <div class="info">
       <span>Powered By</span>
-      <span class="site">Discuz!Q</span>
+      <span class="site">{{ forums.set_site && forums.set_site.site_name || 'Discuz!Q' }}</span>
       <span class="block">© 2014-{{ forums.set_site && forums.set_site.site_expire ? '20' + forums.set_site.site_expire : year }}</span>
     </div>
     <div>分享 / 交流 / 共融</div>
@@ -52,6 +52,7 @@ export default {
       width: 100%;
       display: inline-flex;
       justify-content: space-between;
+      flex-wrap: wrap;
       @media screen and ( max-width: 1005px ) {
         display: block;
      }

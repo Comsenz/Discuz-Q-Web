@@ -62,7 +62,7 @@
       </el-table-column>
       <el-table-column fixed="right" :label="$t('manage.operate')" width="80">
         <template slot-scope="scope">
-          <span v-if="forums && forums.other && !forums.other.can_edit_user_group" class="disable">{{ $t('manage.modifyRole') }}</span>
+          <span v-if="forums && forums.other && !forums.other.can_edit_user_group && userInfo && userInfo.canEdit" class="disable">{{ $t('manage.modifyRole') }}</span>
           <el-dropdown v-else class="handle-dropdown" placement="bottom" trigger="click" @command="handleCommand">
             <span class="el-dropdown-link">
               {{ $t('manage.modifyRole') }}
