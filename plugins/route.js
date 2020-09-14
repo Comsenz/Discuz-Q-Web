@@ -15,10 +15,11 @@ export default ({ app }) => {
         }
       }
       // 获取用户信息
-      const userId = store.getters['session/get']('userId')
+      const userId = localStorage.getItem('user_id')
       if (!store.state.user.info.id && userId > 0) {
         try {
           await store.dispatch('user/getUserInfo', userId)
+          store.commit('session/SET_USER_ID', userId)
         } catch (error) {
           // 清除用户信息
           store.commit('user/SET_USER_INFO', {})

@@ -155,7 +155,8 @@ export default {
       isPaid: false, // 是否付费
       code: '', // 注册邀请码
       loading: false,
-      canReg: false
+      canReg: false,
+      user: {}
     }
   },
   computed: {
