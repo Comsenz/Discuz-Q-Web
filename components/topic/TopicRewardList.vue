@@ -30,6 +30,10 @@
 export default {
   name: 'TopicRewardList',
   props: {
+    author: {
+      type: Object,
+      default: () => {}
+    },
     userLists: {
       type: Array,
       default: () => []
@@ -83,6 +87,7 @@ export default {
     onClick(command, usersIndex) {
       const userId = this.$store.state.user.info.id
       if (!userId) return this.$message.error(this.$t('user.pleaseLogin'))
+      if (parseInt(userId) === parseInt(this.author.id)) return this.$message.error(this.$t('topic.iCantRewardMyself'))
       return this.$emit('payOrReward', command[usersIndex].title)
     }
   }

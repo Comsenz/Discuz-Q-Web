@@ -189,6 +189,7 @@ export default {
       margin-left: 60px;
 
       > .content-html {
+        word-break: break-all;
         margin-top: 10px;
 
         ::v-deep p {

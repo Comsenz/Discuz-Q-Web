@@ -20,6 +20,7 @@
         />
         <topic-reward-list
           v-if="forums && forums.paycenter && forums.paycenter.wxpay_close"
+          :author="thread.user || {}"
           :paid-information="paidInformation"
           :thread-type="thread.type || 0"
           :user-lists="[thread.paidUsers || [], thread.rewardedUsers || [], article.likedUsers || []]"

@@ -142,6 +142,7 @@ export default {
         }
 
         > .content-html {
+          word-break: break-all;
           margin-top: 10px;
           margin-bottom: 10px;
 
