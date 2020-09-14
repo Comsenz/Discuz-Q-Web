@@ -6,12 +6,23 @@ export default ({ app }) => {
   const { store, router } = app
   router.beforeEach(async(to, from, next) => {
     if (process.client) {
+      // 登录页不判断站点关闭
+      if (from.path === '/site/close' && to.path === '/user/login') return next()
       // 获取站点信息
       if (!store.state.site.info.id) {
         try {
           await store.dispatch('site/getSiteInfo')
-        } catch (error) {
-          console.log(error)
+        } catch (e) {
+          const { response: { data: { errors }}} = e
+          // 站点关闭跳转
+          if (errors[0].code === 'site_closed') {
+            console.log(errors[0].code)
+            await store
+              .dispatch('forum/setError', { code: errors[0].code, detail: errors[0].detail[0] })
+            if (to.path === '/site/close') return next()
+            next({ path: '/site/close' })
+            return
+          }
         }
       }
       // 获取用户信息

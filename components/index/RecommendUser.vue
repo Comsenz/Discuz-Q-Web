@@ -1,5 +1,5 @@
 <template>
-  <div v-if="userList.length > 0" v-loading="loading" class="recommend-user-container">
+  <div v-if="forums && forums.other && forums.other.can_view_user_list" v-loading="loading" class="recommend-user-container">
     <div class="recommend-user-title">{{ $t('home.recommentUser') }}</div>
     <div class="recommend-user-list">
       <user-item v-for="(item, index) in userList" :key="index" :item="item" show="simple" />
@@ -44,8 +44,15 @@ export default {
       pageCount: 0 // 总页码
     }
   },
+  computed: {
+    forums() {
+      return this.$store.state.site.info.attributes || {}
+    }
+  },
   mounted() {
-    this.getUserPageSize()
+    if (this.forums && this.forums.other && this.forums.other.can_view_user_list) {
+      this.getUserPageSize()
+    }
   },
   methods: {
     // 获取用户有多少页

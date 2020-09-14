@@ -34,9 +34,6 @@ export default {
     }
   },
   computed: {
-    isLogin() {
-      return this.$store.getters['session/get']('isLogin')
-    },
     userInfo() {
       return this.$store.getters['jv/get'](`/users/${this.userId}`)
     },

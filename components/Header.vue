@@ -14,18 +14,19 @@
           size="medium"
           :placeholder="$t('search.search')"
           class="h-search"
+          :disabled="siteClose"
           @keyup.enter.native="onClickSearch"
         >
           <i slot="suffix" class="el-icon-search el-input__icon" @click="onClickSearch" />
         </el-input>
       </div>
       <!-- 未登录 -->
-      <div v-if="!userId">
+      <div v-if="!userId || siteClose">
         <el-button size="small" class="h-button h-button1" @click="login">{{ $t('user.login') }}</el-button>
-        <el-button :disabled="forums && forums.set_reg && !forums.set_reg.register_close" size="small" class="h-button h-button2" @click="register">{{ $t('user.register') }}</el-button>
+        <el-button :disabled="(forums && forums.set_reg && !forums.set_reg.register_close) || siteClose" size="small" class="h-button h-button2" @click="register">{{ $t('user.register') }}</el-button>
       </div>
       <!-- 已登录 -->
-      <div v-if="userId && JSON.stringify(userInfo) !== '{}'" class="flex">
+      <div v-if="userId && JSON.stringify(userInfo) !== '{}' && !siteClose" class="flex">
         <avatar
           :user="{ id: userInfo.id, username: userInfo.username, avatarUrl: userInfo.avatarUrl}"
           :size="35"
@@ -65,6 +66,7 @@ export default {
       inputVal: '',
       code: '', // 邀请码
       canReg: false,
+      siteClose: false,
       userInfoTimer: null // 定时器
     }
   },
@@ -79,6 +81,15 @@ export default {
       return process.client ? this.$store.state.user.info.attributes || {} : {}
     }
   },
+  watch: {
+    $route(to, from) {
+      if (to.path === 'site/close') {
+        this.siteClose = true
+      } else {
+        this.siteClose = false
+      }
+    }
+  },
   mounted() {
     const { code } = this.$route.query
     if (code !== 'undefined') {
@@ -87,8 +98,11 @@ export default {
     if (process.client && this.$route.query.q) {
       this.inputVal = this.$route.query.q
     }
-    if (process.client) {
-      this.reloadUserInfo()
+    // if (process.client && this.$route.path !== '/site/close') {
+    //   this.reloadUserInfo()
+    // }
+    if (this.$route.path === '/site/close') {
+      this.siteClose = true
     }
   },
   destroyed() {
@@ -103,8 +117,9 @@ export default {
       this.$store
         .dispatch('session/logout')
         .then(() => {
-          this.$router.push('/')
-          window.location.reload()
+          // this.$router.push('/')
+          // window.location.reload()
+          location.href = `/`
         })
     },
     // 轮询获取用户信息，用于判断是否有新消息

@@ -3,7 +3,7 @@
     <div v-if="item.isEssence" class="essence">
       <svg-icon type="index-essence" />
     </div>
-    <Avatar :user="item.user" class="avatar" />
+    <avatar v-if="item.user" :user="{ id: item.user.id, username: item.user.username, avatarUrl: item.user.avatarUrl}" class="avatar" />
     <div class="main-cont">
       <div class="top-flex">
         <nuxt-link v-if="item.user" :to="`/profile?userId=${item.user.id}`" class="user-name">{{ item.user.username }}</nuxt-link>

@@ -155,8 +155,7 @@ export default {
       isPaid: false, // 是否付费
       code: '', // 注册邀请码
       loading: false,
-      canReg: false,
-      user: {}
+      canReg: false
     }
   },
   computed: {
@@ -232,11 +231,9 @@ export default {
         include: 'groups,wechat'
       }
       this.$store.dispatch('jv/get', [`users/${userId}`, { params }]).then(val => {
-        this.user = val
-        if (this.user && this.user.paid) {
-          this.isPaid = this.user.paid
+        if (val && val.paid) {
+          this.isPaid = val.paid
         }
-        console.log('----this.user-----', this.user)
         if (this.site_mode !== SITE_PAY || this.isPaid) {
           this.$router.push('/')
         }

@@ -2,7 +2,7 @@
   <div class="close-info">
     <div class="title">抱歉，论坛暂时关闭</div>
     <div class="text">管理员关闭了论坛，请稍后访问。</div>
-    <div class="time">关闭理由</div>
+    <div class="time">{{ close_tips }}</div>
   </div>
 </template>
 
@@ -11,15 +11,29 @@ export default {
   // layout: 'error_layout',
   data() {
     return {
-
+      close_tips: ''
     }
   },
   computed: {
 
   },
   mounted() {
+    this.getSiteInfo()
   },
   methods: {
+    async getSiteInfo() {
+      const error = this.$store.state.forum.error
+      console.log('error', error)
+      this.close_tips = error ? error.detail : ''
+      // try {
+      //   await this.$store.dispatch('site/getSiteInfo')
+      // } catch (e) {
+      //   const { response: { data: { errors }}} = e
+      //   if (errors[0].code === 'site_closed') {
+      //     this.close_tips = errors[0].detail[0]
+      //   }
+      // }
+    }
   }
 }
 </script>
