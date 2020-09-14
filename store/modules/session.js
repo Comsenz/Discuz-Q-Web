@@ -144,8 +144,7 @@ const getters = {
     return data => {
       switch (data) {
         case 'userId':
-          // return state.userId
-          return process.client ? localStorage.getItem('user_id') : 0
+          return state.userId
         case 'isWxLogin':
           return state.wxLogin
         case 'isLogin':
