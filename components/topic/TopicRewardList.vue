@@ -27,8 +27,10 @@
 </template>
 
 <script>
+import isLogin from '@/mixin/isLogin'
 export default {
   name: 'TopicRewardList',
+  mixins: [isLogin],
   props: {
     author: {
       type: Object,
@@ -85,8 +87,8 @@ export default {
       obj.value < length ? obj.value += 24 : obj.value = 24
     },
     onClick(command, usersIndex) {
+      if (!this.isLogin()) return
       const userId = this.$store.state.user.info.id
-      if (!userId) return this.$message.error(this.$t('user.pleaseLogin'))
       if (parseInt(userId) === parseInt(this.author.id)) return this.$message.error(this.$t('topic.iCantRewardMyself'))
       return this.$emit('payOrReward', command[usersIndex].title)
     }

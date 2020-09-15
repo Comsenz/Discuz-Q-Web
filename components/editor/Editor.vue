@@ -10,7 +10,7 @@
       >
     </label>
     <editor-payment
-      v-if="typeInformation && typeInformation.showPayment"
+      v-if="typeInformation && typeInformation.showPayment && canCreateThreadPaid"
       :payment="payment || {}"
       :type="typeInformation && typeInformation.type"
       @paymentChange="e => onPaymentChange(e.key, e.value)"
@@ -178,6 +178,10 @@ export default {
     },
     textarea() {
       return process.client ? document.querySelector(`.${this.selector} #textarea`) : ''
+    },
+    canCreateThreadPaid() {
+      const forums = this.$store.state.site.info.attributes
+      return forums ? forums.other.can_create_thread_paid : false
     }
   },
   watch: {

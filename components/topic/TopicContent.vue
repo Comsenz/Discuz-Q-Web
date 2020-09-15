@@ -43,10 +43,12 @@
 
 <script>
 import s9e from '@/utils/s9e'
+import isLogin from '@/mixin/isLogin'
 const extensionList = ['7Z', 'AI', 'APK', 'CAD', 'CDR', 'DOC', 'EPS', 'EXE', 'IPA', 'MP3', 'MP4', 'PDF', 'PPT', 'PSD', 'RAR', 'TXT', 'XLS', 'XLSX', 'ZIP']
 
 export default {
   name: 'TopicContent',
+  mixins: [isLogin],
   props: {
     article: {
       type: Object,
@@ -108,6 +110,7 @@ export default {
       if (contentHtml) contentHtml.classList.remove('hide-cover')
     },
     openVideo() {
+      if (!this.isLogin()) return
       if (this.unpaid) return this.$emit('payForVideo')
       this.showVideoPop = true
     },
