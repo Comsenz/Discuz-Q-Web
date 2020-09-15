@@ -8,6 +8,7 @@
     <div>分享 / 交流 / 共融</div>
     <div class="id">
       <div>{{ forums.set_site ? forums.set_site.site_record : '' }}</div>
+      <div>{{ forums.set_site ? forums.set_site.site_record_code : '' }}</div>
       <span>{{ $t('home.theme') }}: {{ forums.other ? forums.other.count_users : '' }}</span>
       <span>{{ $t('home.invitation') }}: {{ forums.other ? forums.other.count_threads : '' }}</span>
     </div>
@@ -63,9 +64,9 @@ export default {
 
     > .id {
       border-top: 1px solid $border-color-base;
-      margin-top: 15px;
+      margin-top: 17px;
       padding-top: 15px;
-
+      line-height: 15px;
       > span {
         &:last-child {
           margin-left: 20px;

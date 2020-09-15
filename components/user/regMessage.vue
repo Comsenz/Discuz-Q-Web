@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Cover />
+    <!-- <Cover /> -->
     <div class="checkout-counter">
       <div class="container-title">
         <div class="title">{{ title }}</div>
@@ -42,7 +42,7 @@ export default {
     border-radius: 3px;
     min-height: calc(100vh - 65px - 80px - 15px);
     overflow: auto;
-    background: #f4f5f6;
+    background: white;
     /* margin: 15px auto 0; */
     /* padding: 0px 15px; */
     font-size: 16px;

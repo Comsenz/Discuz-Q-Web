@@ -13,64 +13,67 @@
     >
       <!-- 用户名注册 -->
       <el-tab-pane
-        :label="$t('user.userregister') "
+        label="用户名注册"
         name="0"
       >
-        <div>
-          <span class="title">{{ $t('profile.username') }}</span>
-          <el-input
-            v-model="userName"
-            :placeholder="$t('user.username')"
-            class="reg-input"
-          />
-        </div>
-        <div>
-          <span class="title2">输入密码</span>
-          <el-input
-            v-model="passWord"
-            :placeholder="$t('user.password')"
-            type="password"
-            class="reg-input"
-            show-password
-            @keyup.enter.native="register"
-          />
-        </div>
-        <div>
-          <span class="title2">重复密码</span>
-          <el-input
-            v-model="repeatPassWord"
-            :placeholder="$t('user.password')"
-            type="password"
-            class="reg-input"
-            show-password
-            @keyup.enter.native="register"
-          />
-        </div>
-        <div v-if="validate">
-          <span class="title2">注册原因</span>
-          <el-input
-            v-model="Reason"
-            :placeholder="$t('user.reason')"
-            class="reg-input"
-            @keyup.enter.native="register"
-          />
-        </div>
-
-        <div class="agreement">
-          <!-- <el-checkbox v-model="checked" /> -->
-          <reg-agreement @check="check" />
-          <div class="logorreg">
-            <span
-              v-if="register"
-              @click="jump2Login"
-            >已有帐号，立即<nuxt-link to="/user/login">{{ $t('user.login') }}</nuxt-link> </span>
+        <form>
+          <div>
+            <span class="title">{{ $t('profile.username') }}</span>
+            <el-input
+              v-model="userName"
+              :placeholder="$t('user.username')"
+              class="reg-input"
+            />
           </div>
-        </div>
-        <el-button
-          type="primary"
-          class="r-button"
-          @click="register"
-        >{{ $t('user.register') }}</el-button>
+          <div>
+            <span class="title2">输入密码</span>
+            <el-input
+              v-model="passWord"
+              :placeholder="$t('user.password')"
+              type="password"
+              class="reg-input"
+              show-password
+              @keyup.enter.native="register"
+            />
+          </div>
+          <div>
+            <span class="title2">重复密码</span>
+            <el-input
+              v-model="repeatPassWord"
+              :placeholder="$t('user.password')"
+              type="password"
+              class="reg-input"
+              show-password
+              @keyup.enter.native="register"
+            />
+          </div>
+          <div v-if="validate">
+            <span class="title2">注册原因</span>
+            <el-input
+              v-model="Reason"
+              :placeholder="$t('user.reason')"
+              class="reg-input"
+              @keyup.enter.native="register"
+            />
+          </div>
+
+          <div class="agreement">
+            <!-- <el-checkbox v-model="checked" /> -->
+            <reg-agreement @check="check" />
+            <div class="logorreg">
+              <span
+                v-if="register"
+                @click="jump2Login"
+              >已有帐号，立即<nuxt-link to="/user/login">{{ $t('user.login') }}</nuxt-link> </span>
+            </div>
+          </div>
+          <el-button
+            type="primary"
+            class="r-button"
+            @click="register"
+          >{{ $t('user.register') }}</el-button>
+        </form>
+
       </el-tab-pane>
       <!-- 手机号注册 -->
       <el-tab-pane
@@ -89,6 +92,7 @@
         <el-button
           class="count-b"
           :class="{disabled: !canClick}"
+          :disabled="!canClick"
           @click="phoneRegister"
         >{{ content }}</el-button>
 
@@ -166,8 +170,6 @@ export default {
       site_mode: '', // 站点模式
       isPaid: false, // 是否付费
       captcha: null, // 腾讯云验证码实例
-      captcha_ticket: '', // 腾讯云验证码返回票据
-      captcha_rand_str: '', // 腾讯云验证码返回随机字符串
       ticket: '',
       randstr: '',
       ischeck: true,
@@ -184,8 +186,6 @@ export default {
   },
   mounted() {
     const { validate, register, code } = this.$route.query
-    console.log('query', this.$route.query)
-
     if (validate) {
       this.validate = JSON.parse(validate)
     }
@@ -294,8 +294,6 @@ export default {
     phoneRegister() {
       if (this.phoneNumber === '') {
         this.$message.error('手机号不能为空')
-      } else if (!this.ischeck) {
-        this.$message.error('请同意协议')
       } else if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha) {
         this.toTCaptcha()
       } else {
@@ -411,6 +409,9 @@ export default {
       } else if (this.verifyCode === '') {
         this.$message.error('验证码不能为空')
         this.loading = false
+      } else if (!this.ischeck) {
+        this.$message.error('请同意协议')
+        this.loading = false
       } else {
         const params = {
           data: {
@@ -500,12 +501,12 @@ export default {
     getLoginStatus(scene_str) {
       const params = {
         _jv: {
-          type: `oauth/wechat/web/user/serach`
+          type: `oauth/wechat/web/user/search`
         },
         scene_str: scene_str
       }
       console.log(params)
-      this.$store.dispatch('jv/get', `/oauth/wechat/web/user/serach?scene_str=${scene_str}`).then(data => {
+      this.$store.dispatch('jv/get', `/oauth/wechat/web/user/search?scene_str=${scene_str}`).then(data => {
         console.log('user data => ', data)
         if (data.id) {
           this.loginStatus = true

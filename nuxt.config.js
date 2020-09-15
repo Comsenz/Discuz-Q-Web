@@ -121,7 +121,11 @@ export default {
             'styleLibraryName': 'theme-chalk'
           }
         ]
-      ]
+      ],
+      presets({ isServer }) {
+        const targets = isServer ? { node: '10' } : { ie: '11' }
+        return [[require.resolve('@nuxt/babel-preset-app'), { targets }]]
+      }
     },
     // svg处理
     extend(config, context) {

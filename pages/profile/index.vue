@@ -138,13 +138,13 @@
             :label="$t('profile.topic')+ ` (${userInfo.threadCount || 0})`"
             name="1"
           >
-            <topic :user-id="userId" />
+            <topic v-if="activeName === '1'" :user-id="userId" />
           </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.likes')+ ` (${userInfo.likedCount || 0})`"
             name="2"
           >
-            <like :user-id="userId" />
+            <like v-if="activeName === '2'" :user-id="userId" />
           </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.following')+ ` (${userInfo.followCount || 0})`"
@@ -169,7 +169,7 @@
         </el-tabs>
       </div>
       <div style="width:300px; margin-top:15px;">
-        <advertisingp :user-id="userId" />
+        <advertising />
         <recommend-user style="background: white;margin-top: 16px;" />
         <copyright :forums="forums" />
       </div>

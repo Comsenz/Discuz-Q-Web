@@ -107,7 +107,7 @@ export default {
       height: 0;
     }
     .el-tabs__nav-wrap{
-      border-bottom: 1px solid #E4E4E4;
+      border-bottom: 1px solid $border-color-base;
       padding-bottom:5px;
       padding-left: 30px;
     }
