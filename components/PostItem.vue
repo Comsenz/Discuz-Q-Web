@@ -35,7 +35,7 @@
             </el-image>
           </div>
           <div v-if="item.firstPost.images && item.firstPost.images.length > 3" class="image-count" @click="toDetail">{{ $t('home.total') }} {{ item.firstPost.images.length }} {{ $t('home.seeAllImage') }}</div>
-          <div v-if="item.type === 2 && item.threadVideo" class="video-main">
+          <div v-if="item.type === 2 && item.threadVideo" class="video-main" @click.stop="openVideo">
             <el-image
               v-if="item.threadVideo.cover_url"
               class="video-img-cover"
@@ -43,10 +43,9 @@
               :alt="item.threadVideo.file_name"
               fit="cover"
               lazy
-              @click="openVideo"
             />
-            <div v-else class="no-cover" @click="openVideo">{{ $t('home.noPoster') }}</div>
-            <svg-icon type="video-play" class="video-play" @click="openVideo" />
+            <div v-else class="no-cover">{{ $t('home.noPoster') }}</div>
+            <svg-icon type="video-play" class="video-play" />
           </div>
           <video-pop v-if="showVideoPop" :cover-url="item.threadVideo.cover_url" :url="item.threadVideo.media_url" @remove="showVideoPop = false" />
         </div>
@@ -162,11 +161,11 @@ export default {
 .post-container{
   position: relative;
   display: flex;
-  padding:20px;
+  padding:20.5px 20px 22.5px;
   border-bottom: 1px solid $border-color-base;
-  // &:hover{
-  //   background: #E5F2FF;
-  // }
+  &:hover{
+    background: rgba(229, 242, 255, .3);
+  }
   .essence{
     position: absolute;
     top:-2px;

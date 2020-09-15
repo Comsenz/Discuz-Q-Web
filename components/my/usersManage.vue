@@ -62,7 +62,7 @@
       </el-table-column>
       <el-table-column fixed="right" :label="$t('manage.operate')" width="80">
         <template slot-scope="scope">
-          <span v-if="forums && forums.other && !forums.other.can_edit_user_group && userInfo && userInfo.canEdit" class="disable">{{ $t('manage.modifyRole') }}</span>
+          <span v-if="forums && forums.other && !forums.other.can_edit_user_group && userInfo && !userInfo.canEdit" class="disable">{{ $t('manage.modifyRole') }}</span>
           <el-dropdown v-else class="handle-dropdown" placement="bottom" trigger="click" @command="handleCommand">
             <span class="el-dropdown-link">
               {{ $t('manage.modifyRole') }}
@@ -225,6 +225,9 @@ export default {
     },
     // 编辑用户身份
     modifyUserGroup(groupId, userId) {
+      if (this.forums && this.forums.other && !this.forums.other.can_edit_user_group) {
+        return this.$message.error(this.$t('core.permission_denied'))
+      }
       const data = []
       if (userId && groupId) {
         data.push({
@@ -274,6 +277,10 @@ export default {
     },
     // 修改用户状态
     modifyUserStatus(status, userId) {
+      console.log('this.userInfo.canEdit', this.userInfo.canEdit)
+      if (this.userInfo && !this.userInfo.canEdit) {
+        return this.$message.error(this.$t('core.permission_denied'))
+      }
       const params = {
         data: {
           attributes: {

@@ -62,10 +62,10 @@ export default {
         70: 'font-size: 28px;line-height: 70px;border-radius: 12px',
         60: 'font-size: 26px;line-height: 60px;border-radius: 10px',
         50: 'font-size: 24px;line-height: 50px;border-radius: 8px',
-        45: 'font-size: 22px;line-height: 45px;border-radius: 8px',
-        40: 'font-size: 20px;line-height: 40px;border-radius: 8px',
-        30: 'font-size: 18px;line-height: 30px;border-radius: 6px',
-        35: 'font-size: 18px;line-height: 30px;border-radius: 6px'
+        45: 'font-size: 22px;line-height: 45px;border-radius: 6px',
+        40: 'font-size: 20px;line-height: 40px;border-radius: 5px',
+        30: 'font-size: 18px;line-height: 30px;border-radius: 4px',
+        35: 'font-size: 18px;line-height: 30px;border-radius: 4px'
       }
     }
   },

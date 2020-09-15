@@ -367,7 +367,7 @@ export default {
     }
     .background-color{
       @include background();
-       margin-bottom: 16px;
+       margin-bottom: 3px;
     }
     .category{
       margin-bottom: 0;

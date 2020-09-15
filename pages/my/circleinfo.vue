@@ -35,7 +35,7 @@
         <div v-if="forums && forums.set_site" v-loading="loading" class="content base-font-size">
           <template v-if="isModify">
             <el-input v-model="inputInfo" type="textarea" :rows="5" />
-            <el-button type="primary" @click="confirmModify">{{ $t('profile.confirmModify') }}</el-button>
+            <el-button type="primary" class="confirm-btn" @click="confirmModify">{{ $t('profile.confirmModify') }}</el-button>
           </template>
           <template v-else>{{ forums.set_site.site_introduction }}</template>
         </div>
@@ -194,6 +194,14 @@ export default {
 .title{
   color:#8c8c8c;
 }
+// 重置element
+.el-button--primary {
+  background-color: #1878F3 !important;
+  border-color: #1878F3 !important;
+  &:hover{
+    opacity: 0.8;
+  }
+}
 .base-font-size{
   font-size: 16px;
   @media screen and ( max-width: 1005px ) {
@@ -226,7 +234,7 @@ export default {
 .site-detail{
   margin-top:30px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #E4E4E4;
+  border-bottom: 1px solid $border-color-base;
   .header{
     display: flex;
     justify-content: space-between;
@@ -246,10 +254,13 @@ export default {
       margin-top: 16px;
     }
   }
+  .confirm-btn{
+    width: 300px;
+  }
 }
 .circlemode{
   margin-top: 20px;
-  border-bottom: 1px solid #E4E4E4;
+  border-bottom: 1px solid $border-color-base;
   padding-bottom: 20px;
   .content{
     margin-top: 12px;
