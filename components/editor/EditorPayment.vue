@@ -2,7 +2,12 @@
   <div class="global">
     <div class="block">
       <div class="text">{{ $t('post.isPay') }}:</div>
-      <el-select :value="payment.isPaid" placeholder="请选择" @change="value => $emit('paymentChange', { key: 'isPaid', value })">
+      <el-select
+        size="medium"
+        :value="payment.isPaid"
+        placeholder="请选择"
+        @change="value => $emit('paymentChange', { key: 'isPaid', value })"
+      >
         <el-option
           v-for="item in options"
           :key="item.value"
@@ -14,19 +19,31 @@
     <div class="block">
       <div v-show="payment.isPaid">
         <div class="text">{{ $t('post.paymentAmount') }}:</div>
-        <label>
-          <span>{{ $t('post.yuanItem') }}</span>
-          <input :value="payment.price" maxlength="7" type="number" step="0.01" @input="onPriceInput">
-        </label>
+        <el-input
+          v-model="price"
+          size="medium"
+          placeholder="0"
+          maxlength="7"
+          @change="$emit('paymentChange', { key: 'price', value: parseFloat(price) })"
+          @input="onPriceInput"
+        >
+          <span slot="prefix" class="prefix">￥</span>
+        </el-input>
       </div>
     </div>
     <div class="block">
       <div v-show="payment.isPaid && type === 1">
         <div class="text">{{ $t('post.freeWordCount') }}:</div>
-        <label>
-          <span>{{ $t('post.wordItem') }}</span>
-          <input :value="payment.freeWords" max="10000" type="number" @input="onFreeWordInput">
-        </label>
+        <el-input
+          v-model="freeWords"
+          size="medium"
+          placeholder="0"
+          maxlength="5"
+          @change="$emit('paymentChange', { key: 'freeWords', value: parseInt(freeWords) })"
+          @input="onFreeWordInput"
+        >
+          <span slot="prefix" class="prefix">字</span>
+        </el-input>
       </div>
     </div>
   </div>
@@ -47,6 +64,8 @@ export default {
   },
   data() {
     return {
+      freeWords: this.payment.freeWords || '',
+      price: this.payment.price || '',
       options: [
         {
           value: false,
@@ -59,15 +78,17 @@ export default {
     }
   },
   methods: {
-    onFreeWordInput(e) {
-      if (e.target.value.length >= 5) e.target.value = e.target.value.substr(0, 5)
-      if (e.target.value === '') e.target.value = 0
-      this.$emit('paymentChange', { key: 'freeWords', value: parseInt(e.target.value) })
+    onFreeWordInput(value) {
+      this.freeWords = value.replace(/[^\d]/g, '')
     },
-    onPriceInput(e) {
-      if (e.target.value.length >= 7) e.target.value = e.target.value.substr(0, 7)
-      if (e.target.value === '') e.target.value = 0
-      this.$emit('paymentChange', { key: 'price', value: parseFloat(e.target.value) })
+    onPriceInput(value) {
+      this.price = value.replace(/[^\d.]/g, '')
+        .replace(/^\./g, '')
+        .replace(/\.{2,}/g, '.')
+        .replace('.', '$#$')
+        .replace(/\./g, '')
+        .replace('$#$', '.') // 只能输入两个小数
+        .replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3')
     }
   }
 }
@@ -94,51 +115,30 @@ export default {
         margin-left: 0;
       }
 
+      .prefix {
+        line-height: 38px;
+        font-size: 17px;
+        color: $font-color-grey
+      }
+
       .text {
         color: $font-color;
         margin-bottom: 10px;
       }
+    }
+  }
 
-      label {
-        display: flex;
-        width: 100%;
-        border: 1px solid $border-color-base;
-        border-radius: 4px;
-
-        > span {
-          display: block;
-          width: 30px;
-          background: #F5F6F7;
-          line-height: $height;
-          height: $height;
-          text-align: center;
-        }
-
-        > input {
-          flex: 1;
-          display: block;
-          width: 100%;
-          line-height: $height;
-          height: $height;
-          border: none;
-          padding: 0 5px;
-          color: $font-color;
-          background: #F5F6F7;
-        }
-      }
+  ::v-deep.el-input {
+    background: #F5F6F7;
+    > input {
+      background: #F5F6F7;
     }
   }
 
   ::v-deep.el-select {
-    height: $height;
     > .el-input {
-      height: $height;
       > input {
         background: #F5F6F7;
-        height: $height;
-      }
-      > span {
-        top: 4px;
       }
     }
   }
