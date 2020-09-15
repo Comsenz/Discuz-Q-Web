@@ -233,7 +233,8 @@ export default {
     emojiListener() {
       document.addEventListener('click', e => {
         let pass = true
-        e.path.forEach(item => {
+        const path = e.path || (e.composedPath && e.composedPath())
+        path.forEach(item => {
           if (item.classList) {
             if (item.classList.contains('emoji-list') || item.classList.contains('topic-list') || item.classList.contains('actions')) pass = false
           }

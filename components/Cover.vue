@@ -17,7 +17,8 @@ export default {
   },
   destroyed() {
     if (process.client) {
-      document.querySelector('#cover').remove()
+      const child = document.querySelector('#cover')
+      child.parentNode.removeChild(child)
     }
   },
   render() {

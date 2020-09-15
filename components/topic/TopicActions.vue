@@ -78,6 +78,7 @@ export default {
     justify-content: space-between;
 
     .action {
+      background: #ffffff;
       cursor: pointer;
       flex: 1;
       display: flex;

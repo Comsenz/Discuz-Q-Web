@@ -3,19 +3,14 @@
     <Cover />
     <video
       controls
-      :poster="coverUrl || ''"
+      controlslist="nodownload"
+      disablePictureInPicture
       preload="auto"
-      bindpause="handlepause"
-      playsinline
-      webkit-playsinline
-      x5-playsinline
-      show-fullscreen-btn="true"
-      show-play-btn="true"
+      :src="url"
+      :poster="coverUrl || ''"
+      :playsinline="true"
       auto-pause-if-open-native="true"
       auto-pause-if-navigate="true"
-      enable-play-gesture="false"
-      object-fit="cover"
-      :src="url"
     />
   </div>
 </template>
@@ -39,7 +34,8 @@ export default {
   methods: {
     removeVideoPop(e) {
       let pass = true
-      e.path.forEach(item => {
+      const path = e.path || (e.composedPath && e.composedPath())
+      path.forEach(item => {
         if (item.id === 'video-pop') pass = false
         if (item.classList && item.classList.contains('svg-icon-video-play')) pass = false
       })
