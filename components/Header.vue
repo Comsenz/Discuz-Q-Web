@@ -139,7 +139,7 @@ export default {
     },
     register() {
       this.$router.push(
-        `/user/register?url='/'&validate=${this.forums && this.forums.set_reg && this.forums.set_reg.register_validate}&code=${this.code}`
+        `/user/register?validate=${this.forums && this.forums.set_reg && this.forums.set_reg.register_validate}&code=${this.code}`
       )
     },
     login() {

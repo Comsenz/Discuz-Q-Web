@@ -89,6 +89,7 @@
       <div class="myprofile-top">
         <span class="sig">{{ $t('profile.username') }}</span>
         <span
+          v-show="userInfo && userInfo.canEditUsername"
           class="setavatar"
           @click="usernameModify"
         >{{ (!isNameModify ? $t('profile.modify') : '取消修改') }}</span>
@@ -898,10 +899,11 @@ export default {
       patchname
         .then(res => {
           if (res) {
+            console.log('修改用户名', res)
             this.isNameModify = !this.isNameModify
             this.$message.success(this.$t('modify.modifysucc'))
-            this.userInfo()
           }
+          this.userinfo()
         }, e => this.handleError(e))
     },
     toTopic() {

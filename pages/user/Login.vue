@@ -15,42 +15,44 @@
         :label="$t('user.userlogin')"
         name="0"
       >
-        <span class="title">用户名</span>
-        <el-input
-          v-model="userName"
-          :placeholder="$t('user.username')"
-          class="reg-input"
-        />
-        <span class="title2">{{ $t('user.pwd') }}</span>
-        <el-input
-          v-model="passWord"
-          :placeholder="$t('user.password')"
-          type="password"
-          class="reg-input"
-          show-password
-          @keyup.enter.native="UserLogin"
-        />
-        <div class="agreement">
-          <el-checkbox v-model="checked">
-            <span class="agree">{{ $t('user.status') }} </span>
-          </el-checkbox>
-          <div class="logorreg">
-            <span v-if="canReg">尚无帐号，立即
-              <span
-                class="agreement_text"
-                @click="toRegister"
-              > {{ $t('user.register') }}</span></span>
-            <nuxt-link
-              to="/modify/findpwd"
-              :class="['findpass',iscanReg()]"
-            >{{ $t('modify.findpawdtitle') }}</nuxt-link>
+        <form>
+          <span class="title">用户名</span>
+          <el-input
+            v-model="userName"
+            :placeholder="$t('user.username')"
+            class="reg-input"
+          />
+          <span class="title2">{{ $t('user.pwd') }}</span>
+          <el-input
+            v-model="passWord"
+            :placeholder="$t('user.password')"
+            type="password"
+            class="reg-input"
+            show-password
+            @keyup.enter.native="UserLogin"
+          />
+          <div class="agreement">
+            <el-checkbox v-model="checked">
+              <span class="agree">{{ $t('user.status') }} </span>
+            </el-checkbox>
+            <div class="logorreg">
+              <span v-if="canReg">尚无帐号，立即
+                <span
+                  class="agreement_text"
+                  @click="toRegister"
+                > {{ $t('user.register') }}</span></span>
+              <nuxt-link
+                to="/modify/findpwd"
+                :class="['findpass',iscanReg()]"
+              >{{ $t('modify.findpawdtitle') }}</nuxt-link>
+            </div>
           </div>
-        </div>
-        <el-button
-          type="primary"
-          class="r-button"
-          @click="UserLogin"
-        >{{ $t('user.login') }}</el-button>
+          <el-button
+            type="primary"
+            class="r-button"
+            @click="UserLogin"
+          >{{ $t('user.login') }}</el-button>
+        </form>
       </el-tab-pane>
       <!-- 手机号登录 -->
       <el-tab-pane
@@ -400,12 +402,12 @@ export default {
     getLoginStatus(scene_str) {
       const params = {
         _jv: {
-          type: `oauth/wechat/web/user/serach`
+          type: `oauth/wechat/web/user/search`
         },
         scene_str: scene_str
       }
       console.log(params)
-      this.$store.dispatch('jv/get', `/oauth/wechat/web/user/serach?scene_str=${scene_str}`).then(data => {
+      this.$store.dispatch('jv/get', `/oauth/wechat/web/user/search?scene_str=${scene_str}`).then(data => {
         console.log('user data => ', data)
         if (data.id) {
           this.loginStatus = true

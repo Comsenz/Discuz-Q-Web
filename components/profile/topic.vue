@@ -60,7 +60,7 @@ export default {
         include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
-        'filter[isApproved]': 1,
+        'filter[isApproved]': 2,
         'filter[userId]': this.userId
       }
       status
