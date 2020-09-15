@@ -23,6 +23,7 @@ function callback(binding, vnode) {
       // 后期再处理
       if (process.client) {
         Message.error('请登录后再操作')
+        location.href = '/user/login'
       } else {
         console.log('请登录后再操作')
       }

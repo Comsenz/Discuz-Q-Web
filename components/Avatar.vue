@@ -8,6 +8,7 @@
     <img
       v-if="avatarUrl && !errorUrl"
       :src="user.avatarUrl"
+      class="img"
       :class="[sizeClass, roundClass]"
       :alt="user.username"
       @error="error"
@@ -161,5 +162,8 @@ export default {
   // z-index: 8;
   width: 11px;
   height: 13px;
+}
+.img{
+  object-fit: cover;
 }
 </style>
