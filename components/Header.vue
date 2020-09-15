@@ -260,8 +260,9 @@ export default {
         font-size: 12px;
         color: #fff;
         background: #ff0000;
-        padding: 1px 6px;
+        padding: 0px 6px;
         border-radius: 6px;
+        margin-left: 2px;
       }
     }
     .avatar {
