@@ -90,7 +90,7 @@ export default {
     &.last-child{
       border-bottom: none;
     }
-    &.active{
+    &:hover,&.active{
       color: $color-blue-base;
     }
     &.loading{

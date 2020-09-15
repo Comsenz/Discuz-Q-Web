@@ -48,9 +48,10 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import '@/assets/css/variable/color.scss';
 .user-item-container{
   padding:20px;
-  border-bottom:1px solid #E4E4E4;
+  border-bottom:1px solid $border-color-base;
   display: flex;
   &.simple{
     padding:10px 0;

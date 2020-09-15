@@ -33,7 +33,7 @@
         <advertising />
       </div>
       <div class="recommend-user background-color">
-        <recommend-user />
+        <recommend-user :list="recommendUserData" />
       </div>
       <copyright :forums="forums" />
     </aside>
@@ -63,12 +63,16 @@ export default {
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no'
     }
-
+    const userParams = {
+      include: 'groups',
+      'limit': 4
+    }
     try {
       const resData = {}
       const threadsStickyData = await store.dispatch('jv/get', ['threads', { threadsStickyParams }])
       const threadsData = await store.dispatch('jv/get', ['threads', { threadsParams }])
       const categoryData = await store.dispatch('jv/get', ['categories', {}])
+      const recommendUser = await store.dispatch('jv/get', ['users/recommended', { userParams }])
       // 处理一下data
       if (Array.isArray(threadsStickyData)) {
         resData.threadsStickyData = threadsStickyData.slice(0, 5)
@@ -86,6 +90,11 @@ export default {
       } else if (categoryData && categoryData._jv && categoryData._jv.json) {
         resData.categoryData = categoryData._jv.json.data || []
       }
+      if (Array.isArray(recommendUser)) {
+        resData.recommendUserData = recommendUser
+      } else if (recommendUser && recommendUser._jv && recommendUser._jv.json) {
+        resData.recommendUserData = recommendUser._jv.json.data || []
+      }
       callback(null, resData)
     } catch (error) {
       console.log('ssr err')
@@ -99,6 +108,7 @@ export default {
       threadsStickyData: [], // 置顶主题列表
       threadsData: [], // 主题列表
       categoryData: [], // 分类列表
+      recommendUserData: [], // 推荐用户列表
       pageNum: 1, // 当前页码
       pageSize: 10, // 每页多少条数据
       categoryId: 0, // 分类id 0全部
