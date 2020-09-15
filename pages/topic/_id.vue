@@ -107,6 +107,9 @@ export default {
     userId() {
       return this.$store.getters['session/get']('userId')
     },
+    currentUser() {
+      return this.$store.state.user.info.attributes || {}
+    },
     rewardOrPay() {
       return parseFloat(this.paidInformation.price) > 0 ? 'pay' : 'reward'
     },
@@ -139,8 +142,7 @@ export default {
     },
     initManagementList(data) {
       this.managementList.forEach(item => {
-        // canEdit canHide 取值于 thread.firstPost, canEssence canSticky 取值于 thread
-        item.canOpera = data.firstPost[item.name] !== undefined ? data.firstPost[item.name] : data[item.name]
+        item.canOpera = data[item.name]
         if (item.name === 'canEssence') {
           item.isStatus = data.isEssence
           item.text = item.isStatus ? this.$t('topic.cancelEssence') : this.$t('topic.essence')
@@ -252,9 +254,15 @@ export default {
       params[item.command] = !item.isStatus
       return this.$store.dispatch('jv/patch', params).then(data => {
         data.firstPost && this.initManagementList(data)
-        item.command === 'isLiked' ? this.initActions(null, data) : this.initActions(data)
+        data.firstPost && this.initActions(data)
+        if (item.command === 'isLiked') return this.setLikeUser(!item.isStatus, data)
         if (item.command === 'isDeleted') return this.afterDeleted()
       }, e => this.handleError(e)).finally(() => { this.defaultLoading = false })
+    },
+    setLikeUser(status, data) {
+      this.initActions(null, data)
+      status ? this.article.likedUsers.unshift(this.currentUser)
+        : this.article.likedUsers.forEach((item, index, array) => { item.id === this.currentUser.id && array.splice(index, 1) })
     },
     afterDeleted() {
       this.$message({ typeInformation: 'success', message: this.$t('topic.deleteSuccessAndJumpToBack') })
