@@ -86,7 +86,6 @@
           :placeholder="$t('user.phoneNumber')"
           class="phone-input"
           maxlength="11"
-          @input="changeinput"
         />
 
         <el-button
@@ -124,7 +123,7 @@
             <div class="qrcode">
               <img :src="info.img">
             </div>
-            <span>请用微信扫一扫扫码上方二维码</span>
+            <span class="qrtext">请用微信扫一扫扫码上方二维码</span>
           </div>
           <!-- <div class="quick-container">
             <div class="quick-title">
@@ -174,7 +173,7 @@ export default {
       randstr: '',
       ischeck: true,
       content: this.$t('modify.sendVerifyCode'),
-      canClick: false,
+      canClick: true,
       loading: false
 
     }
@@ -548,9 +547,11 @@ export default {
       width: 66px;
       text-align: center;
       display: inline-block;
+      color:#606266;
     }
     .title2 {
       margin-right: 10px;
+      color:#606266;
     }
     .title:first-child {
       margin-right: 0px;
@@ -568,6 +569,9 @@ export default {
       .quick-container {
         flex: 1;
         text-align: center;
+        .qrtext{
+          margin-top:5px;
+        }
         span {
           display: inline-block;
           width: 111px;
@@ -637,18 +641,20 @@ export default {
   .phone-input {
     width: 209px;
     margin-bottom: 20px;
+    border-right: 0px;
   }
   .count-b {
     width: 90px;
     height: 40px;
     // padding: 15.5px 10px;
+    color:#000000;
     padding: 0;
     margin-left: -4px;
   }
   .disabled {
     background-color: #ededed;
     border-color: #ddd;
-    // color: #57a3f3;
+    color: #000000;
     cursor: not-allowed; // 鼠标变化
   }
 }
@@ -677,11 +683,11 @@ export default {
     margin-bottom: 0px;
   }
   .el-input__inner {
-    border-radius: 0px;
+    border-radius: 2px;
     // border-right: none;
   }
   .el-button {
-    border-radius: 0px;
+    border-radius: 2px;
   }
   .el-input__inner:focus {
     border-color: #dcdfe6;
