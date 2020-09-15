@@ -5,22 +5,21 @@
     <div class="retrieve-inputs">
       <label>
         <input
+          v-model="phoneNumber"
           maxlength="11"
           type="text"
           :placeholder="$t('modify.placeEnterRegisteredPhone')"
-          @input="onInput"
         >
         <button
           v-if="!canCountDown"
-          :disabled="isVerifyDisabled"
-          :class="{disabled: isVerifyDisabled}"
           @click="sendVerifyCode"
         >
           {{ $t('modify.sendVerifyCode') }}
         </button>
         <button
           v-else
-          disabled
+          :disabled="canCountDown"
+          :class="{disabled: canCountDown}"
         >{{ countDownSecond + $t('modify.retransmission') }}</button>
       </label>
       <el-input
@@ -169,9 +168,9 @@ export default {
   margin: 60px auto;
   width: 300px;
   .disabled {
-    background-color: #EDEDED;
+    background-color: #ededed;
     border-color: #ddd;
-    // color: #57a3f3;
+    color: #000000;
     cursor: not-allowed; // 鼠标变化
   }
 
@@ -204,7 +203,7 @@ export default {
       margin-bottom: 20px;
 
       > button {
-        color: #606266;
+        color: #000000;
         width: 90px;
         border-left: 1px solid #dcdfe6;
       }
@@ -213,7 +212,7 @@ export default {
         flex: 1;
         border: none;
         padding: 0 16px;
-        color: #c0c4cc;
+        color: #606266;
       }
     }
   }
@@ -228,7 +227,7 @@ export default {
     font-size: 14px;
   }
   ::v-deep.el-button {
-    border-radius: 0px;
+    border-radius: 2px;
   }
   ::v-deep.el-input__inner:focus {
     border-color: #dcdfe6;
@@ -237,7 +236,7 @@ export default {
     border-color: #dcdfe6;
   }
   ::v-deep.el-input__inner {
-    border-radius: 0px;
+    border-radius: 2px;
     // border-right: none;
   }
 }
