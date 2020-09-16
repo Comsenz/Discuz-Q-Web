@@ -32,10 +32,10 @@
       v-loading="loading"
       :data="dataList2"
     >
-      <el-table-column
+      <!-- <el-table-column
         type="selection"
         width="40"
-      />
+      /> -->
       <el-table-column
         prop="id"
         label="ID"
@@ -110,7 +110,7 @@ export default {
       // 钱包明细状态选择文本
       options2: [{
         value: '',
-        label: this.$t('profile.all')
+        label: this.$t('profile.all') + this.$t('profile.type')
       }, {
         value: '10',
         label: this.$t('profile.withdrawalfreeze')

@@ -92,7 +92,7 @@
       >查看更多</div>
       <div
         v-else
-        class="no-more"
+        :class="followerList.length === 0 ? 'no-more2':'no-more'"
       >
         <svg-icon
           v-if="followerList.length === 0"
@@ -337,5 +337,12 @@ export default {
   cursor: pointer;
   margin: 20px;
   border-radius: 2px;
+}
+.no-more2 {
+  text-align: center;
+  padding: 20px 0;
+  color: #8590a6;
+  font-size: 14px;
+  min-height: 810px;
 }
 </style>

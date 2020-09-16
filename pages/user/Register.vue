@@ -641,7 +641,9 @@ export default {
   .phone-input {
     width: 209px;
     margin-bottom: 20px;
-    border-right: 0px;
+    ::v-deep.el-input__inner {
+      border-right: none;
+    }
   }
   .count-b {
     width: 90px;

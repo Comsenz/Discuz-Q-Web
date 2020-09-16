@@ -27,7 +27,7 @@
         <div class="margbtm">{{ $t('pay.payPassword') }}</div>
         <div
           v-if="hasPassword"
-          style="cursor: pointer;"
+          class="changepas"
           @click="changePassword"
         >
           <svg-icon
@@ -317,6 +317,10 @@ export default {
     .mywallet-r {
       margin-right: 30px;
       text-align: right;
+      .changepas{
+        cursor:pointer;
+        color:#8590A6;
+      }
     }
   }
   .register-select {

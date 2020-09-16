@@ -48,6 +48,12 @@
           </div>
           <video-pop v-if="showVideoPop" :cover-url="item.threadVideo.cover_url" :url="item.threadVideo.media_url" @remove="showVideoPop = false" />
         </div>
+        <nuxt-link v-if="item.location" :to="`/location?longitude=${item.longitude}&latitude=${item.latitude}`" class="location">
+          <span class="flex">
+            <svg-icon type="location" class="icon" />
+            {{ item.location }}
+          </span>
+        </nuxt-link>
         <div class="bottom-handle">
           <div class="left">
             <div v-permission:handleLike="''" class="btn like" :class="{'liked': item.firstPost.isLiked}">
@@ -75,13 +81,6 @@
 import s9e from '@/utils/s9e'
 import timerDiff from '@/mixin/timerDiff'
 import handleError from '@/mixin/handleError'
-import Vue from 'vue'
-import Viewer from 'v-viewer'
-import 'viewerjs/dist/viewer.css'
-Vue.use(Viewer)
-Viewer.setDefaults({
-  Options: { 'inline': true, 'button': true, 'navbar': true, 'title': true, 'toolbar': true, 'tooltip': true, 'movable': true, 'zoomable': true, 'rotatable': true, 'scalable': true, 'transition': true, 'fullscreen': true, 'keyboard': true, 'url': 'data-source' }
-})
 export default {
   mixins: [timerDiff, handleError],
   props: {
@@ -295,7 +294,23 @@ export default {
         transform: translate(-50%,-50%);
       }
     }
-
+    .location{
+      display: inline-block;
+      background: #F7F7F7;
+      border-radius: 13px;
+      font-size:12px;
+      color: #777777;
+      padding:4px 10px;
+      line-height: 16px;
+      margin-top:10px;
+      .flex{
+        display: flex;
+        align-items: center;
+      }
+      .icon{
+        margin-right: 4px;
+      }
+    }
     .bottom-handle{
       display: flex;
       align-items: center;

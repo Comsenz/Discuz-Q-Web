@@ -42,7 +42,8 @@ export default {
   css: [
     'element-ui/lib/theme-chalk/index.css',
     '@/assets/css/reset.scss',
-    'vditor/src/assets/scss/index.scss'
+    'vditor/src/assets/scss/index.scss',
+    'viewerjs/dist/viewer.css'
   ],
   /*
   ** Plugins to load before mounting the App
@@ -53,7 +54,8 @@ export default {
     '@/plugins/svg-icon',
     '@/directive/permission',
     '@/plugins/route',
-    { src: '@/plugins/cropper', ssr: false }
+    { src: '@/plugins/cropper', ssr: false },
+    { src: '@/plugins/viewer', ssr: false }
   ],
   /*
   ** Auto import components

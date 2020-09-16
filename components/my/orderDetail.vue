@@ -32,10 +32,10 @@
       v-loading="loading"
       :data="dataList4"
     >
-      <el-table-column
+      <!-- <el-table-column
         type="selection"
         width="40"
-      />
+      /> -->
       <el-table-column
         prop="_jv.id"
         label="ID"
@@ -109,7 +109,7 @@ export default {
       userId: this.$store.getters['session/get']('userId'), // 获取当前登陆用户的ID
       options4: [{
         value: '',
-        label: this.$t('profile.all')
+        label: this.$t('profile.all') + this.$t('profile.type')
       }, {
         value: '0',
         label: this.$t('profile.tobepaid')

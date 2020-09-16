@@ -60,7 +60,7 @@
             class="phone"
             style="margin-left:20px;"
           >
-            验证码将发送到 <span style="font-weight:bold;color:#00000; ">{{ usertestphon }}</span> 的手机短信
+            验证码将发送到 <span style="font-weight:bold;color:#000000; ">{{ usertestphon }}</span> 的手机短信
           </span>
           <span
             v-else
@@ -386,6 +386,7 @@ export default {
           border: 1px solid #dcdfe6;
           display: flex;
           margin-bottom: 10px;
+          border-radius: 2px;
 
           > span {
             text-align: center;

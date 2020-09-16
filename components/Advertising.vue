@@ -16,17 +16,18 @@ export default {
     }
   },
   mounted() {
+    let path = process.env.mobileDomain
     if (/\/topic\/[1-9]\d/igm.test(this.$route.path)) {
       // 主题详情
-      const path = process.env.mobileDomain + '/pages/topic/index?id=' + this.$route.params.id
-      this.createQrcode(path)
+      path = path + `/pages/topic/index?id=${this.$route.params.id}`
     } else if (this.$route.path === '/profile') {
       // 个人主页
-      const path = process.env.mobileDomain + '/pages/profile/index?userId=' + this.$route.query.userId
-      this.createQrcode(path)
-    } else {
-      this.createQrcode(process.env.mobileDomain)
+      path = path + `/pages/profile/index?userId=${this.$route.query.userId}`
+    } else if (this.$route.path === '/location') {
+      // 位置详情页
+      path = path + `/pages/topic/position?longitude=${this.$route.query.longitude}&latitude=${this.$route.query.latitude}`
     }
+    this.createQrcode(path)
   },
   destroyed() {
     this.qrcode = null

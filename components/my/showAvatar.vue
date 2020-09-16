@@ -1,7 +1,7 @@
 <template>
   <div class="showAvatar">
     <el-dialog
-      title="提示"
+      title="头像"
       :visible.sync="dialogVisible"
       width="620px"
       :before-close="handleClose"
@@ -26,8 +26,8 @@
             <el-button>选择头像</el-button>
 
           </el-upload>
-          <p>支持上传 jpg/png 文件
-            且不超过 500kb</p>
+          <p class="uptext">支持上传 <span>jpg/png </span> 文件
+            且不超过 <span>500kb</span></p>
         </div>
         <!-- 裁剪框 -->
         <div
@@ -94,9 +94,11 @@
 
       <div class="preview2">
         <div class="square">
-          150像素预览
+          <span class="squarep">150像素预览</span>
         </div>
-        <div class="circle">100像素预览</div>
+        <div class="circle">
+          <span class="squarep">100像素预览</span>
+        </div>
         <div class="pre-button">
           <el-button
             type="primary"
@@ -264,6 +266,12 @@ export default {
     display: inline-block;
     text-align: center;
     vertical-align: bottom;
+    .uptext {
+      width: 150px;
+      span {
+        font-weight: bold;
+      }
+    }
   }
   .imgCrop-content {
     /* margin: 0 20px; */
@@ -291,20 +299,33 @@ export default {
   .square {
     width: 150px;
     height: 150px;
-    line-height: 150px;
+    /* line-height: 150px; */
     color: #d9d9d9;
     border: 1px dashed #d9d9d9;
-    display: inline-block;
+    /* display: inline-block; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .squarep {
+      width: 46px;
+      display: inline-block;
+    }
   }
   .circle {
     width: 100px;
     height: 100px;
-    line-height: 100px;
+    // line-height: 100px;
     border-radius: 50%;
     color: #d9d9d9;
     border: 1px dashed #d9d9d9;
-    display: inline-block;
+    // display: inline-block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-top: 20px;
+    .squarep {
+      width: 46px;
+    }
   }
   .pre-button {
     display: inline-block;
