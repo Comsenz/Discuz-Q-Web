@@ -108,7 +108,7 @@ export default {
     },
     handleError() {
       this.$emit('update:onUploadImage', false)
-      this.$message.error('文件上传失败')
+      this.$message.error(this.$t('post.imageUploadFail'))
     },
     handleExceed(val) {
       const elUpload = document.querySelector('.el-upload')

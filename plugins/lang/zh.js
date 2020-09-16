@@ -259,6 +259,10 @@ export default {
     pleaseWaitForTheVideoUploadToComplete: '请等待视频上传完成',
     pleaseWaitForTheImageUploadToComplete: '请等待图片上传完成',
     pleaseWaitForTheAttachedUploadToComplete: '请等待附件上传完成',
+    imageUploadFail: '图片上传失败',
+    attachmentUploadFail: '附件传失败',
+    videoUploadFail: '视频上传失败',
+    attachmentUpload: '附件上传',
     failedToObtainSignature: '获取签名失败',
     fromWeChatApplet: '来自微信小程序',
     pleaseEnterAPostTitle: '请输入帖子标题'

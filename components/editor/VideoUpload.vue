@@ -29,7 +29,7 @@
       :limit="1"
       :disabled="videoList.length > 0"
       :on-change="addVideo"
-      :on-error="() => $message.error('文件上传失败')"
+      :on-error="handleError"
     >
       <i class="el-icon-plus" />
     </el-upload>
@@ -109,6 +109,10 @@ export default {
         .finally(() => {
           this.$emit('update:onUploadVideo', false)
         })
+    },
+    handleError() {
+      this.$emit('update:onUploadVideo', false)
+      this.$message.error(this.$t('post.videoUploadFail'))
     }
   }
 }

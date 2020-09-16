@@ -18,7 +18,7 @@
       :before-remove="handleRemoveConfirm"
       :on-remove="handleAttachedRemove"
     >
-      <el-button size="small" type="primary">附件上传</el-button>
+      <el-button size="small" type="primary">{{ $t('post.attachmentUpload') }}</el-button>
     </el-upload>
   </div>
 </template>
@@ -91,7 +91,7 @@ export default {
     },
     handleError() {
       this.$emit('update:onUploadAttached', false)
-      this.$message.error('文件上传失败')
+      this.$message.error(this.$t('post.attachmentUploadFail'))
     }
   }
 }
