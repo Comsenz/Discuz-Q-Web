@@ -298,9 +298,9 @@ export default {
     @include background();
     .hide{
       position: relative;
-      z-index: -1;
+      opacity: 0;
       &.show{
-        z-index: 1;
+        opacity: 1;
       }
     }
     .list-top-item{

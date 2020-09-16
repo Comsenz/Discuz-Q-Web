@@ -539,6 +539,15 @@ export default {
     checkMore: '查看剩余{surplus}条',
     toDetail: '前往'
   },
+  invite: {
+    invite: '推广邀请',
+    invitedUser: '受邀朋友',
+    incomeDetail: '收益明细',
+    inviteSuccessCount: '成功邀请（人）',
+    allIncome: '累计收益',
+    inviteCount: '共邀请{count}人',
+    inviteUserName: '邀请人'
+  },
   // 海报分享页
   share: {
     generating: '拼命生成中...',
