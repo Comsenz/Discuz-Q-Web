@@ -13,7 +13,7 @@
       </el-select>
       <div class="content">
         <template v-if="!loading">
-          <template v-if="searchText">{{ $t('manage.searchResult', { searchText, total }) }}</template>
+          <template v-if="searchText">{{ $t('manage.find') }}<span class="text-bold">"{{ searchText }}"</span>{{ $t('manage.searchResult', { total }) }}</template>
           <template v-else>{{ $t('manage.userTotal', { total }) }}</template>
         </template>
       </div>
@@ -313,6 +313,9 @@ export default {
   .content {
     flex: 1;
     margin-left: 10px;
+    .text-bold{
+      font-weight:bold
+    }
   }
   .el-select {
     width: 140px;
