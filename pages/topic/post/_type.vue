@@ -100,10 +100,12 @@ export default {
         this.payment.isPaid = parseFloat(data.price) > 0
 
         if (data.firstPost.images.length > 0) {
+          console.log(data.firstPost.images)
           this.editResourceShow.showUploadImg = true
           this.initThreadResource(this.post.imageList, data.firstPost.images)
         }
         if (data.firstPost.attachments.length > 0) {
+          console.log(data.firstPost.attachments)
           this.editResourceShow.showUploadAttached = true
           this.initThreadResource(this.post.attachedList, data.firstPost.attachments)
         }
@@ -119,7 +121,7 @@ export default {
         const attached = {
           name: key === 'videoList' ? item.file_name : item.attachment,
           url: key === 'videoList' ? item.media_url : item.thumbUrl,
-          id: item.file_id
+          id: key === 'videoList' ? item.file_id : item._jv.id
         }
         target.push(attached)
       })

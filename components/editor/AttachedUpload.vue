@@ -9,7 +9,7 @@
       :file-list="attachedList"
       :accept="typeLimit"
       :limit="3"
-      :disabled="attachedList.length >= 3"
+      :disabled="attachedList.length > 3"
       class="resources-upload"
       :before-upload="checkSize"
       :on-progress="() => $emit('update:onUploadAttached', true)"

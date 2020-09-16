@@ -57,6 +57,17 @@ export default {
       overSize: false
     }
   },
+  watch: {
+    imageList: {
+      handler(val) {
+        this.handleExceed(val)
+      },
+      deep: true
+    }
+  },
+  mounted() {
+    this.handleExceed(this.imageList)
+  },
   methods: {
     checkSize(file) {
       const result = file.size < 10485760
@@ -98,6 +109,14 @@ export default {
     handleError() {
       this.$emit('update:onUploadImage', false)
       this.$message.error('文件上传失败')
+    },
+    handleExceed(val) {
+      const elUpload = document.querySelector('.el-upload')
+      if (val.length >= 9) {
+        elUpload.style.display = 'none'
+      } else {
+        elUpload.style.display = 'inline-flex'
+      }
     }
   }
 }

@@ -370,7 +370,7 @@ export default {
     .tip {
       position: absolute;
       bottom: 12px;
-      right: 80px;
+      right: 90px;
       color: #D0D4DC;
     }
 
