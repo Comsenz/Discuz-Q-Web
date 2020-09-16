@@ -9,14 +9,14 @@
       </div>
       <div class="container-detail">
         <div class="content-html" v-html="formatHtml(reply.contentHtml)" />
-        <div v-if="reply.images && reply.images.length > 0" class="images">
+        <div v-if="reply.images && reply.images.length > 0" v-viewer="{url: 'data-source'}" class="images">
           <el-image
             v-for="(image, imageIndex) in reply.images"
             :key="imageIndex"
             style="width: 100px; height: 100px;border-radius: 5px; margin-right: 10px"
             :src="image.thumbUrl"
             :alt="image.filename"
-            :preview-src-list="[...reply.images.map(item => item.thumbUrl)]"
+            :data-source="image.url"
             fit="contain"
           />
         </div>

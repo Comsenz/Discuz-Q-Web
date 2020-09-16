@@ -11,14 +11,14 @@
       >
       <svg-icon type="video-play" class="icon-play" style="font-size: 50px" @click="openVideo" />
     </div>
-    <div v-if="article.images && article.images.length > 0" class="images" @click="unpaid ? openVideo() : ''">
+    <div v-if="article.images && article.images.length > 0" v-viewer="{url: 'data-source'}" class="images" @click="unpaid ? openVideo() : ''">
       <el-image
         v-for="(image, index) in article.images"
         :key="index"
         class="image"
+        :data-source="image.url"
         :src="image.thumbUrl"
         :alt="image.filename"
-        :preview-src-list="unpaid ? [] : [...article.images.map(item => item.thumbUrl)]"
         fit="cover"
       >
         <div slot="placeholder" class="image-slot">
@@ -181,6 +181,7 @@ export default {
     }
 
     > .images {
+      cursor: pointer;
       margin-top: 30px;
       width: 660px;
       > .image {

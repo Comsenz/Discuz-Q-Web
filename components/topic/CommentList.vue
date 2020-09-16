@@ -9,14 +9,14 @@
       </div>
       <div class="container-detail">
         <div class="content-html" @click="showAll($event, comment)" v-html="formatSummary(comment)" />
-        <div v-if="comment.images && comment.images.length > 0" class="images">
+        <div v-if="comment.images && comment.images.length > 0" v-viewer="{url: 'data-source'}" class="images">
           <el-image
             v-for="(image, imageIndex) in comment.images"
             :key="imageIndex"
             style="width: 100px; height: 100px;border-radius: 5px; margin-right: 10px"
             :src="image.thumbUrl"
             :alt="image.filename"
-            :preview-src-list="[...comment.images.map(item => item.thumbUrl)]"
+            :data-source="image.url"
             fit="contain"
           />
         </div>
