@@ -179,6 +179,7 @@ export default {
     },
     paying({ payWay, hideAvatar, rewardAmount }) {
       this.payment.rewardAmount = rewardAmount
+      if (!rewardAmount || parseFloat(rewardAmount) === 0) return this.$message.error(this.$t('pay.AmountCannotBeLessThan0'))
       this.showCheckoutCounter = false
       if (payWay === 'walletPay') {
         this.payment.payment_type = 20
