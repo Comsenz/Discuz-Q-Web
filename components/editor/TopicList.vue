@@ -124,8 +124,9 @@ export default {
       ul {
         display: flex;
         flex-direction: column;
+        overflow: hidden;
         > li {
-          display: inline-flex;
+          display: flex;
           justify-content: space-between;
           height: 50px;
           width: 100%;
@@ -135,9 +136,11 @@ export default {
           font-size: 14px;
           cursor: pointer;
           > span {
+            white-space: nowrap;
             line-height: 50px;
-            &:last-child {
-              margin-left: 20px;
+            &:first-child {
+              flex: 0 1 auto;
+              margin-right: 20px;
             }
           }
           &:hover {

@@ -34,7 +34,6 @@ export default {
     border-radius: 3px;
     width: 820px;
     max-height: 100vh;
-    overflow: auto;
     background: #ffffff;
     font-size: 16px;
     display: flex;
