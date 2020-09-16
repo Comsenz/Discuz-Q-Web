@@ -255,15 +255,16 @@ export default {
                 right: 70px;
               }
               > .message-box {
-                background: #d1e0ff;
+                background: #EFF4FF;
+                border: 1px solid #D6E9FB;
                 text-align: left;
                 &::before {
-                  background: #d1e0ff;
+                  background: #EFF4FF;
                   left: auto;
                   right: -6px;
                   border: none;
-                  border-right: 1px solid $border-color-base;
-                  border-top: 1px solid $border-color-base;
+                  border-right: 1px solid #D6E9FB;
+                  border-top: 1px solid #D6E9FB;
                 }
               }
             }

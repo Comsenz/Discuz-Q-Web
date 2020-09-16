@@ -52,8 +52,8 @@
             @attachedChange="e => onPostContentChange(e.key, e.value)"
           />
         </div>
-        <span v-if="typeInformation && typeInformation.textLimit && post.text " class="tip">
-          {{ typeInformation.textLimit>=post.text.length ? $t('post.note', { num: typeInformation.textLimit - post.text.length }) : $t('post.exceed', { num: post.text.length - typeInformation.textLimit }) }}
+        <span v-if="typeInformation && typeInformation.textLimit" class="tip">
+          {{ typeInformation.textLimit>=(post.text.length || 0) ? $t('post.note', { num: typeInformation.textLimit - (post.text.length || 0) }) : $t('post.exceed', { num: (post.text.length || 0 ) - typeInformation.textLimit }) }}
         </span>
         <div :class="['actions', editorStyle]">
           <div class="block">
@@ -369,8 +369,8 @@ export default {
 
     .tip {
       position: absolute;
-      bottom: 50px;
-      right: 10px;
+      bottom: 12px;
+      right: 80px;
       color: #D0D4DC;
     }
 

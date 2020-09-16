@@ -14,6 +14,7 @@
       :before-upload="checkSize"
       :on-progress="() => $emit('update:onUploadAttached', true)"
       :on-success="handleSuccess"
+      :on-error="handleError"
       :before-remove="handleRemoveConfirm"
       :on-remove="handleAttachedRemove"
     >
@@ -23,11 +24,9 @@
 </template>
 
 <script>
-import handleError from '@/mixin/handleError'
 
 export default {
   name: 'PictureUpload',
-  mixins: [handleError],
   props: {
     attachedList: {
       type: Array,
@@ -92,6 +91,7 @@ export default {
     },
     handleError() {
       this.$emit('update:onUploadAttached', false)
+      this.$message.error('文件上传失败')
     }
   }
 }

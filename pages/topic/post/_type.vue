@@ -74,7 +74,6 @@ export default {
     }
   },
   mounted() {
-    // TODO 404
     if (['0', '1', '2', '3'].indexOf(this.type) < 0) return this.$router.push('/error')
     this.getCategoryList()
     this.getThread()
@@ -108,10 +107,10 @@ export default {
           this.editResourceShow.showUploadAttached = true
           this.initThreadResource(this.post.attachedList, data.firstPost.attachments)
         }
-        if (data.threadVideo && data.threadVideo.length > 0) {
+        if (data.threadVideo && Object.keys(data.threadVideo).length > 0) {
           this.editResourceShow.showUploadVideo = true
-          this.initThreadResource(this.post.videoList, data.videoList, 'videoList')
-          this.videoList[0].videoPercent = 1
+          this.initThreadResource(this.post.videoList, [data.threadVideo], 'videoList')
+          this.post.videoList[0].videoPercent = 1
         }
       }, e => this.handleError(e))
     },
@@ -120,7 +119,7 @@ export default {
         const attached = {
           name: key === 'videoList' ? item.file_name : item.attachment,
           url: key === 'videoList' ? item.media_url : item.thumbUrl,
-          id: item._jv.id
+          id: item.file_id
         }
         target.push(attached)
       })

@@ -29,11 +29,8 @@
 </template>
 
 <script>
-import handleError from '@/mixin/handleError'
-
 export default {
   name: 'ImageUpload',
-  mixins: [handleError],
   props: {
     imageList: {
       type: Array,
