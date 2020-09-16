@@ -28,7 +28,7 @@
         </el-dropdown-menu>
       </el-dropdown>
       <div v-if="thread.isEssence" class="essence">
-        <svg-icon style="font-size: 50px;" type="essence" />
+        <svg-icon style="font-size: 51px;" type="essence" />
       </div>
     </div>
   </div>
@@ -94,6 +94,8 @@ export default {
         height: 20px;
 
         > .management {
+          margin-top: 5px;
+          font-size: 16px;
           line-height: 16px;
           cursor: pointer;
           color: $font-color-grey;
@@ -112,7 +114,7 @@ export default {
         }
       }
       > .essence {
-        transform: translateY(-20px);
+        transform: translate(10px, -20px);
       }
     }
   }
