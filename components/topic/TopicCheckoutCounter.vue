@@ -22,7 +22,7 @@
         <div class="body reward">
           <label>
             <span>￥</span>
-            <input v-model="rewardAmount" :placeholder="$t('pay.inputRewardAmount')" type="text">
+            <input :placeholder="$t('pay.inputRewardAmount')" :value="rewardAmount" maxlength="7" type="text" @input="formatAmount">
           </label>
           <div class="default-amounts">
             <button
@@ -102,6 +102,7 @@
 </template>
 
 <script>
+import formatAmount from '@/utils/formatAmount'
 export default {
   name: 'TopicCheckoutCounter',
   props: {
@@ -150,6 +151,12 @@ export default {
       } else {
         return parseFloat(this.amount) < parseFloat(this.userWallet.walletBalance)
       }
+    }
+  },
+  methods: {
+    formatAmount(e) {
+      e.target.value = formatAmount(e.target.value)
+      this.rewardAmount = e.target.value
     }
   }
 }

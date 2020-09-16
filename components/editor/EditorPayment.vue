@@ -50,6 +50,7 @@
 </template>
 
 <script>
+import formatAmount from '@/utils/formatAmount'
 export default {
   name: 'EditorPayment',
   props: {
@@ -82,13 +83,7 @@ export default {
       this.freeWords = value.replace(/[^\d]/g, '')
     },
     onPriceInput(value) {
-      this.price = value.replace(/[^\d.]/g, '')
-        .replace(/^\./g, '')
-        .replace(/\.{2,}/g, '.')
-        .replace('.', '$#$')
-        .replace(/\./g, '')
-        .replace('$#$', '.') // 只能输入两个小数
-        .replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3')
+      this.price = formatAmount(value)
     }
   }
 }
