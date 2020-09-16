@@ -99,7 +99,7 @@ export default {
   color: #6D6D6D;
   font-size: 14px;
   text-align: center;
-  padding:12px;
+  padding:5px 12px 15px;
   .copy{
     width: 100%;
     border-bottom: 1px solid #EDEDED;

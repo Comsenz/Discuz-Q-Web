@@ -46,7 +46,7 @@
         </el-tabs>
         <div
           v-if="userId !== currentLoginId"
-          class="profile-btn"
+          class="profile-btn2"
         >
           <!-- follow 关注状态 0：未关注 1：已关注 2：互相关注 -->
           <el-button
@@ -84,8 +84,16 @@
         class="avatar"
       />
       <div class="profile-info">
-        <span class="info-name">{{ userInfo.username || '' }}</span>
-        <span class="info-actor">{{ userInfo.groupsName }}</span>
+        <span class="info-name">
+          {{ userInfo.username || '' }}
+        </span>
+        <span class="info-actor">
+          <svg-icon
+            v-if="userInfo && userInfo.isReal"
+            type="auth"
+            class="auth-icon"
+          />{{ userInfo.groupsName }}
+        </span>
         <p
           v-if="userInfo.signature"
           class="info-content"
@@ -138,13 +146,19 @@
             :label="$t('profile.topic')+ ` (${userInfo.threadCount || 0})`"
             name="1"
           >
-            <topic v-if="activeName === '1'" :user-id="userId" />
+            <topic
+              v-if="activeName === '1'"
+              :user-id="userId"
+            />
           </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.likes')+ ` (${userInfo.likedCount || 0})`"
             name="2"
           >
-            <like v-if="activeName === '2'" :user-id="userId" />
+            <like
+              v-if="activeName === '2'"
+              :user-id="userId"
+            />
           </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.following')+ ` (${userInfo.followCount || 0})`"
@@ -168,9 +182,9 @@
           </el-tab-pane>
         </el-tabs>
       </div>
-      <div style="width:300px; margin-top:15px;">
+      <div class="profileside">
         <advertising />
-        <recommend-user style="background: white;margin-top: 16px;" />
+        <recommend-user class="recomusr" />
         <copyright :forums="forums" />
       </div>
     </div>
@@ -331,6 +345,7 @@ export default {
     display: flex;
     padding: 20px;
     background: rgba(255, 255, 255, 1);
+    border-radius: 5px;
     .profile-info {
       flex: 4;
       margin-left: 20px;
@@ -339,11 +354,21 @@ export default {
       .info-name {
         font-size: 18px;
         font-weight: bold;
-        margin-right: 10px;
+        margin-right: 5px;
         color: #000000;
+        line-height: 24px;
+        display: inline-block;
       }
       .info-actor {
         color: #aaaaaa;
+        line-height: 19px;
+        display: inline-block;
+        .auth-icon {
+          width: 11px;
+          height: 13px;
+          margin-right: 9px;
+          vertical-align: text-top;
+        }
       }
       .info-content {
         color: #333333;
@@ -354,6 +379,15 @@ export default {
         overflow-wrap: break-word;
         /* line-break: anywhere; */
         text-overflow: ellipsis;
+        @media screen and (max-width: 1005px) {
+          width: 600px;
+        }
+        @media screen and (max-width: 930px) {
+          width: 510px;
+        }
+        @media screen and (max-width: 830px) {
+          width: 430px;
+        }
       }
     }
   }
@@ -387,10 +421,20 @@ export default {
 }
 .profile-c {
   display: flex;
+  .profileside {
+    width: 300px;
+    margin-top: 15px;
+    .recomusr {
+      background: white;
+      margin-top: 16px;
+      border-radius: 5px;
+    }
+  }
   .register-select {
     border: none;
     background: #ffffff;
     box-shadow: none;
+    border-radius: 5px;
     ::v-deep.el-tabs__header {
       padding: 20px;
     }
@@ -447,7 +491,7 @@ export default {
       box-shadow: none;
       // flex: 3;
     }
-    .profile-btn {
+    .profile-btn2 {
       // flex: 1;
       .h-button1 {
         width: 70px;

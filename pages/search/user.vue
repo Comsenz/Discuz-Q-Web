@@ -36,12 +36,11 @@
 </template>
 
 <script>
-import forums from '@/mixin/forums'
 import handleError from '@/mixin/handleError'
 export default {
   layout: 'custom_layout',
   name: 'Index',
-  mixins: [forums, handleError],
+  mixins: [handleError],
   // 异步数据用法
   async asyncData({ params, store }, callback) {
     try {
@@ -72,8 +71,8 @@ export default {
     }
   },
   computed: {
-    userId() {
-      return this.$store.getters['session/get']('userId')
+    forums() {
+      return this.$store.state.site.info.attributes || {}
     }
   },
   watch: {

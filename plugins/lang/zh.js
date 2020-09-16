@@ -508,8 +508,7 @@ export default {
     modifyRole: '配置身份',
     pleaseInputUserName: '请输入成员名称',
     userTotal: '共有{total} 人',
-    find: '找到',
-    searchResult: '搜索结果 {total}条',
+    searchResult: '找到 "{searchText}" 搜索结果 {total}条',
     selectUser: '请先选择成员',
     set: '设为',
     userName: '成员名称',
@@ -617,7 +616,7 @@ export default {
     withdrawal: '提现提交成功',
     enterold: '请输入旧密码',
     enterNew: '请输入新密码',
-    enterNewRepeat: '请重复输入新密码',
+    enterNewRepeat: '请再次输入新支付密码',
     oldpassword: '旧密码不能为空',
     newpassword: '新密码不能为空',
     confrimpasword: '确认密码不能为空',
@@ -850,8 +849,7 @@ export default {
     codeforbid2: '您当前已登录了帐号，无法使用邀请码进行注册，请退出后重试。',
     price: '费用',
     role: '角色',
-    to: '至',
-    permission: '权限'
+    to: '至'
   },
   // 搜索
   search: {

@@ -1,7 +1,10 @@
 <template>
-  <div class="showAvatar">
+  <div
+    v-loading="loading"
+    class="showAvatar"
+  >
     <el-dialog
-      title="提示"
+      title="头像"
       :visible.sync="dialogVisible"
       width="620px"
       :before-close="handleClose"
@@ -13,7 +16,7 @@
         >
           <el-upload
             ref="photoFile"
-            :action="`${host}api/users/${userId}/avatar`"
+            :action="`${host}/api/users/${userId}/avatar`"
             :headers="header"
             accept="image/*"
             :data="{ type: 1,order:1}"
@@ -26,8 +29,8 @@
             <el-button>选择头像</el-button>
 
           </el-upload>
-          <p>支持上传 jpg/png 文件
-            且不超过 500kb</p>
+          <p class="uptext">支持上传 <span>jpg/png </span> 文件
+            且不超过 <span>500kb</span></p>
         </div>
         <!-- 裁剪框 -->
         <div
@@ -94,9 +97,11 @@
 
       <div class="preview2">
         <div class="square">
-          150像素预览
+          <span class="squarep">150像素预览</span>
         </div>
-        <div class="circle">100像素预览</div>
+        <div class="circle">
+          <span class="squarep">100像素预览</span>
+        </div>
         <div class="pre-button">
           <el-button
             type="primary"
@@ -124,7 +129,7 @@ export default {
   },
   data() {
     return {
-      host: 'https://dq.comsenz-service.com/',
+      host: process.env.mobileDomain,
       header: '',
       dialogVisible: true,
       cropImageFormVisible: false,
@@ -136,7 +141,7 @@ export default {
         outputType: 'png', // 裁剪生成图片的格式 默认jpg
         canMove: true, // 上传图片是否可以移动
         fixedBox: true, // 固定截图框大小 不允许改变
-        original: false, // 上传图片按照原始比例渲染
+        original: true, // 上传图片按照原始比例渲染
         canMoveBox: true, // 截图框能否拖动
         autoCrop: true, // 是否默认生成截图框
         // 只有自动截图开启 宽度高度才生效
@@ -149,7 +154,8 @@ export default {
       show: true,
       fixed: true,
       fixedNumber: [1, 1],
-      downImg: '' // 裁剪后的照片
+      downImg: '', // 裁剪后的照片
+      loading: false
 
     }
   },
@@ -218,6 +224,7 @@ export default {
         this.downImg = data
         this.$refs.photoFile.submit()
         console.log('裁剪完的图片', this.downImg)
+        this.loading = true
       })
     },
     // submit 之后会触发此方法
@@ -244,12 +251,16 @@ export default {
       }).then((res) => {
         console.log('图片上传', res)
         if (res) {
+          this.loading = false
           this.$message.success('图片上传成功')
           this.dialogVisible = false
           this.$emit('change', this.dialogVisible)
-          this.$router.go(0)
+          // this.$router.go(0)
         }
-      }, e => this.handleError(e))
+      }, e => {
+        this.loading = false
+        this.handleError(e)
+      })
     }
   }
 }
@@ -264,6 +275,12 @@ export default {
     display: inline-block;
     text-align: center;
     vertical-align: bottom;
+    .uptext {
+      width: 150px;
+      span {
+        font-weight: bold;
+      }
+    }
   }
   .imgCrop-content {
     /* margin: 0 20px; */
@@ -291,20 +308,33 @@ export default {
   .square {
     width: 150px;
     height: 150px;
-    line-height: 150px;
+    /* line-height: 150px; */
     color: #d9d9d9;
     border: 1px dashed #d9d9d9;
-    display: inline-block;
+    /* display: inline-block; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .squarep {
+      width: 46px;
+      display: inline-block;
+    }
   }
   .circle {
     width: 100px;
     height: 100px;
-    line-height: 100px;
+    // line-height: 100px;
     border-radius: 50%;
     color: #d9d9d9;
     border: 1px dashed #d9d9d9;
-    display: inline-block;
+    // display: inline-block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-top: 20px;
+    .squarep {
+      width: 46px;
+    }
   }
   .pre-button {
     display: inline-block;

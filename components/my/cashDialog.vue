@@ -112,7 +112,7 @@ export default {
       // 提现过滤选择器的文字内容
       options: [{
         value: '',
-        label: this.$t('profile.all')
+        label: this.$t('profile.all') + this.$t('profile.type')
       }, {
         value: '1',
         label: this.$t('profile.tobereviewed')

@@ -238,6 +238,8 @@ export default {
       const params = {
         include: 'groups,wechat'
       }
+      // 登录成功重新获取一下站点信息
+      this.$store.dispatch('site/getSiteInfo')
       this.$store.dispatch('jv/get', [`users/${userId}`, { params }]).then(val => {
         this.user = val
         if (this.user && this.user.paid) {
@@ -641,7 +643,9 @@ export default {
   .phone-input {
     width: 209px;
     margin-bottom: 20px;
-    border-right: 0px;
+    ::v-deep.el-input__inner {
+      border-right: none;
+    }
   }
   .count-b {
     width: 90px;

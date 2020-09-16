@@ -10,7 +10,7 @@
     >
       <div class="myprofile-top mtop">
         <Avatar
-          :user="{ id: userInfo.id, username: userInfo.username, avatarUrl: userInfo.avatarUrl}"
+          :user="{ id: userInfo.id, username: userInfo.username, avatarUrl: avataruserInfo.avatarUrl}"
           :size="50"
           :round="true"
           class="avatar"
@@ -84,7 +84,7 @@
     <!-- 用户名 -->
     <div
       v-if="userInfo"
-      class="myprofile-c"
+      :class="isNameModify ? 'myprofile-c bgcolor': 'myprofile-c'"
     >
       <div class="myprofile-top">
         <span class="sig">{{ $t('profile.username') }}</span>
@@ -123,7 +123,7 @@
     <!-- 签名 -->
     <div
       v-if="userInfo"
-      class="myprofile-c"
+      :class="isSignModify ? 'myprofile-c bgcolor': 'myprofile-c'"
     >
       <div class="myprofile-top">
         <span class="sig">{{ $t('modify.signaturetitle') }}</span>
@@ -134,21 +134,23 @@
       </div>
       <div
         v-show="!isSignModify"
-        class="myprofile-btom"
+        class="myprofile-btom-sign"
       >
         {{ userInfo.signature ? userInfo.signature : '暂无签名' }}
       </div>
-      <div v-show="isSignModify">
+      <div
+        v-show="isSignModify"
+        class="text"
+      >
         <textarea
           ref="sign"
           v-model="inputVal"
           type="text"
           placeholder="请输入签名内容"
-          class="myprofile-btom textarea"
+          class="textarea"
           @input="fun"
         />
-        {{ $t('modify.canalsoinput') }}
-        {{ num - wordnumber }}{{ $t('modify.wordnumber') }}
+        <div class="cannum">{{ $t('modify.canalsoinput')+ `${num-wordnumber}` + $t('modify.wordnumber') }}</div>
         <el-button
           type="primary"
           class="sigbutton"
@@ -160,6 +162,7 @@
     <div
       v-if="userInfo"
       class="myprofile-c"
+      :class="isMobileModify ? 'myprofile-c bgcolor': 'myprofile-c'"
     >
       <div class="myprofile-top">
         <span class="sig">{{ $t('profile.mobile') }}</span>
@@ -172,7 +175,9 @@
         v-show="!isMobileModify"
         class="myprofile-btom2"
       >
-        {{ userInfo.mobile ? userInfo.mobile : $t('modify.setphontitle') }}
+        <div :class="userInfo.mobile ? 'pmobile' : ''">
+          {{ userInfo.mobile ? userInfo.mobile : $t('modify.setphontitle') }}
+        </div>
       </div>
       <!-- 修改手机号 -->
       <div
@@ -186,7 +191,7 @@
           <el-input
             ref="oldphone"
             v-model="oldVerifyCode"
-            placeholder="请输入旧手机验证码"
+            placeholder="请输入已绑定手机验证码"
             class="phone-input"
           />
 
@@ -198,7 +203,7 @@
 
           <el-input
             v-model="newphon"
-            :placeholder="$t('modify.setphontitle')"
+            placeholder="输入新手机号码"
             class="passbtom"
             @input="changeinput"
           />
@@ -220,7 +225,7 @@
           type="primary"
           class="ebutton"
           @click="mobileComfirm"
-        >确定修改</el-button>
+        >提交修改</el-button>
       </div>
       <!-- 新用户绑定手机号 -->
       <div
@@ -233,10 +238,14 @@
             v-model="newphon"
             maxlength="11"
             placeholder="请输入绑定的手机号"
-            class="phone-input"
+            class="passbtom"
             @input="changeinput"
           />
-
+          <el-input
+            v-model="setnum"
+            placeholder="请输入手机验证码"
+            class="phone-input"
+          />
           <el-button
             class="count-b"
             :class="{disabled: !canClick}"
@@ -244,25 +253,19 @@
             size="middle"
             @click="sendsms"
           >{{ content }}</el-button>
-
-          <el-input
-            v-model="setnum"
-            placeholder="请输入手机验证码"
-            class="passbtom"
-          />
         </div>
 
         <el-button
           type="primary"
           class="ebutton"
           @click="dingphon"
-        >确定修改</el-button>
+        >提交修改</el-button>
       </div>
     </div>
     <!-- 密码 -->
     <div
       v-if="userInfo"
-      class="myprofile-c"
+      :class="isPassModify ? 'myprofile-c bgcolor': 'myprofile-c'"
     >
       <div class="myprofile-top">
         <span class="sig">{{ $t('profile.password') }}</span>
@@ -319,7 +322,7 @@
     <!-- 微信 -->
     <div
       v-if="userInfo"
-      class="myprofile-c"
+      :class="isWechatModify ? 'myprofile-c bgcolor': 'myprofile-c'"
     >
       <div class="myprofile-top">
         <span class="sig">{{ $t('profile.wechat') }}</span>
@@ -340,7 +343,7 @@
     <!-- qcloud_faceid是否开启实名认证 -->
     <div
       v-if="userInfo && !userInfo.realname && forums &&forums.qcloud && forums.qcloud.qcloud_faceid"
-      class="myprofile-c"
+      :class="isRealModify ? 'myprofile-c bgcolor': 'myprofile-c'"
       style="border-bottom:0px;"
     >
       <div class="myprofile-top">
@@ -412,7 +415,7 @@ export default {
       signcontent: '',
       content: this.$t('modify.sendVerifyCode'),
       content2: this.$t('modify.sendVerifyCode'),
-      canClick: false,
+      canClick: true,
       canClick2: false,
       captcha: null, // 腾讯云验证码实例
       ticket: '',
@@ -451,6 +454,9 @@ export default {
     },
     forums() {
       return this.$store.state.site.info.attributes || {}
+    },
+    avataruserInfo() {
+      return this.$store.state.user.info.attributes || {}
     }
   },
   mounted() {
@@ -512,6 +518,7 @@ export default {
     },
     changeShow(val) {
       this.isShowAvatar = val
+      this.$store.dispatch('user/getUserInfo', this.userId)
     },
     // 获取输入字数长度
     fun(e) {
@@ -551,7 +558,7 @@ export default {
         this.newphon = this.newphon.replace(/[^\d]/g, '')
       }, 30)
       if (this.newphon.length < 11) {
-        this.canClick = false
+        this.canClick = true
         this.canClick2 = false
       } else if (this.newphon.length === 11) {
         this.canClick = true
@@ -832,7 +839,6 @@ export default {
       }
     },
     authentication() {
-      const _this = this
       const params = {
         _jv: {
           type: 'users/real'
@@ -844,24 +850,10 @@ export default {
       patchname
         .then(res => {
           this.isRealModify = !this.isRealModify
-          if (res) {
-            console.log('实名成功信息', res)
-            const param = {
-              _jv: { type: 'forum' }
-            }
-            _this.$store.dispatch('jv/get', param).then((res) => {
-              console.log('实名后获取站点数据', res)
-            })
-            const promsget = {
-              _jv: { type: 'users', id: this.userId }
-            }
-            _this.$store.dispatch('jv/get', promsget).then((res) => {
-              console.log('实名后获取用户个人信息', res)
-            })
-            this.$message.success(
-              this.$t('modify.nameauthensucc')
-            )
-          }
+          this.userinfo()
+          this.$message.success(
+            this.$t('modify.nameauthensucc')
+          )
         }, e => {
           // eslint-disable-next-line object-curly-spacing
           const { response: { data: { errors } } } = e
@@ -927,9 +919,12 @@ export default {
   display: none;
 }
 .myprofile {
-  padding-left: 30px;
-  @media screen and (max-width: 1005px) {
-    padding-left: 0 15px;
+  // padding-left: 30px;
+  // @media screen and (max-width: 1005px) {
+  //   padding-left: 0 15px;
+  // }
+  .bgcolor {
+    background: #fafbfc;
   }
 }
 .myprofile-c {
@@ -937,6 +932,22 @@ export default {
   flex-direction: column;
   border-bottom: 1px solid #e4e4e4;
   padding-bottom: 20px;
+  @media screen and (max-width: 1005px) {
+    padding-left: 15px;
+  }
+  padding-left: 30px;
+  .pmobile {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #000000;
+  }
+  .text {
+    margin-right: 100px;
+    .cannum {
+      text-align: right;
+    }
+  }
   .sigbutton {
     display: block;
     margin-left: 15px;
@@ -972,9 +983,9 @@ export default {
       }
     }
     .iden {
-      margin-left: 10px;
+      margin-left: 5px;
       .nreal {
-        margin-left: 2px;
+        margin-left: 12px;
         color: #fa5151;
       }
       .real {
@@ -1008,6 +1019,7 @@ export default {
       cursor: pointer;
       .num {
         font-size: 18px;
+        color: #8590a6;
       }
     }
   }
@@ -1025,11 +1037,15 @@ export default {
     }
     // font-family: Microsoft YaHei;
     color: #000000;
-    .pmobile {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
+  }
+  .myprofile-btom-sign {
+    margin-left: 17px;
+    font-size: 16px;
+    margin-right: 55px;
+    padding-bottom: 20px;
+    margin-top: 15px;
+    color: #000000;
+    overflow-wrap: break-word;
   }
   .myprofile-btom2 {
     margin-left: 17px;
@@ -1055,6 +1071,7 @@ export default {
     margin-top: 13px;
     font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
       "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+    width: 100%;
   }
   .phone-input {
     width: 209px;
@@ -1071,6 +1088,7 @@ export default {
     margin-left: -4px;
     color: #606162;
     // font-size: 10px;
+    vertical-align: top;
   }
   .disabled {
     background-color: #ededed;
@@ -1084,10 +1102,10 @@ export default {
   }
 }
 ::v-deep .el-input__inner {
-  border-radius: 0px;
+  border-radius: 2px;
 }
 ::v-deep .el-button {
-  border-radius: 0px;
+  border-radius: 2px;
 }
 ::v-deep .el-input__inner:focus {
   border-color: #dcdfe6;

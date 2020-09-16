@@ -9,7 +9,7 @@
     </el-tabs>
     <div class="notice-list">
       <template v-if="activeName === 'chat'">
-        <chat-item v-for="(item, index) in dialog.list" :key="index" :user-id="userInfo.id" :item="item" />
+        <chat-item v-for="(item, index) in dialog.list" :key="index" :user-id="userInfo.id" :item="item" @show-chat-box="showChatBox" />
         <loading v-if="dialog.loading" />
         <template v-else>
           <div v-if="dialog.hasMore" class="load-more" @click="loadMoreDialog">{{ $t('notice.checkMore',{surplus}) }}</div>
@@ -30,6 +30,8 @@
         </template>
       </template>
     </div>
+    <!-- 聊天框 -->
+    <chat-box v-if="chatting" :dialog="dialogData || {}" @close="closeChatBox" />
   </div>
 </template>
 
@@ -73,7 +75,9 @@ export default {
         list: [],
         hasMore: false,
         loading: false
-      }
+      },
+      chatting: false,
+      dialogData: { id: '', name: '' }
     }
   },
   computed: {
@@ -173,6 +177,23 @@ export default {
         this.dialog.list = []
         this.getDialogList()
       }
+    },
+    // 显示聊天框
+    showChatBox(item) {
+      if (!item) return
+      this.dialogData.id = item._jv ? item._jv.id : ''
+      if (this.userId !== item.sender_user_id) {
+        this.dialogData.name = item.sender ? item.sender.username : ''
+      } else {
+        this.dialogData.name = item.recipient ? item.recipient.username : ''
+      }
+      this.chatting = true
+    },
+    // 关闭聊天框
+    closeChatBox() {
+      this.chatting = false
+      this.dialog.pageNum = 1
+      this.getDialogList()
     }
   }
 }
