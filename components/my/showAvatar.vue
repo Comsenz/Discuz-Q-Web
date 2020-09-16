@@ -1,5 +1,8 @@
 <template>
-  <div class="showAvatar">
+  <div
+    v-loading="loading"
+    class="showAvatar"
+  >
     <el-dialog
       title="头像"
       :visible.sync="dialogVisible"
@@ -13,7 +16,7 @@
         >
           <el-upload
             ref="photoFile"
-            :action="`${host}api/users/${userId}/avatar`"
+            :action="`${host}/api/users/${userId}/avatar`"
             :headers="header"
             accept="image/*"
             :data="{ type: 1,order:1}"
@@ -126,7 +129,7 @@ export default {
   },
   data() {
     return {
-      host: 'https://dq.comsenz-service.com/',
+      host: process.env.mobileDomain,
       header: '',
       dialogVisible: true,
       cropImageFormVisible: false,
@@ -138,7 +141,7 @@ export default {
         outputType: 'png', // 裁剪生成图片的格式 默认jpg
         canMove: true, // 上传图片是否可以移动
         fixedBox: true, // 固定截图框大小 不允许改变
-        original: false, // 上传图片按照原始比例渲染
+        original: true, // 上传图片按照原始比例渲染
         canMoveBox: true, // 截图框能否拖动
         autoCrop: true, // 是否默认生成截图框
         // 只有自动截图开启 宽度高度才生效
@@ -151,7 +154,8 @@ export default {
       show: true,
       fixed: true,
       fixedNumber: [1, 1],
-      downImg: '' // 裁剪后的照片
+      downImg: '', // 裁剪后的照片
+      loading: false
 
     }
   },
@@ -220,6 +224,7 @@ export default {
         this.downImg = data
         this.$refs.photoFile.submit()
         console.log('裁剪完的图片', this.downImg)
+        this.loading = true
       })
     },
     // submit 之后会触发此方法
@@ -246,12 +251,16 @@ export default {
       }).then((res) => {
         console.log('图片上传', res)
         if (res) {
+          this.loading = false
           this.$message.success('图片上传成功')
           this.dialogVisible = false
           this.$emit('change', this.dialogVisible)
-          this.$router.go(0)
+          // this.$router.go(0)
         }
-      }, e => this.handleError(e))
+      }, e => {
+        this.loading = false
+        this.handleError(e)
+      })
     }
   }
 }

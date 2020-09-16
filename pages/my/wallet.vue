@@ -91,7 +91,7 @@
     >
       <!-- 提现记录 -->
       <el-tab-pane :label="$t('profile.withdrawalslist')">
-        <cash-dialog />
+        <cash-dialog ref="cash" />
       </el-tab-pane>
       <!-- 冻结金额 -->
       <el-tab-pane :label="$t('profile.freezeamount')">
@@ -108,7 +108,7 @@
     </el-tabs>
     <withdrawal
       v-if="isWithdraw"
-      @close="isWithdraw = false"
+      @close="updateWithdraw"
     />
   </div>
 
@@ -145,6 +145,11 @@ export default {
     this.getInfo()
   },
   methods: {
+    // 提现成功后的数据更新
+    updateWithdraw() {
+      this.isWithdraw = false
+      this.$refs.cash.getList()
+    },
     // 提现
     showWithdraw() {
       this.isWithdraw = true
@@ -276,7 +281,7 @@ export default {
 <style lang='scss' scoped>
 .mywallet {
   padding-left: 30px;
-  @media screen and ( max-width: 1005px ) {
+  @media screen and (max-width: 1005px) {
     padding-left: 0 15px;
   }
   .mywallet-top {
@@ -317,9 +322,9 @@ export default {
     .mywallet-r {
       margin-right: 30px;
       text-align: right;
-      .changepas{
-        cursor:pointer;
-        color:#8590A6;
+      .changepas {
+        cursor: pointer;
+        color: #8590a6;
       }
     }
   }
@@ -389,5 +394,4 @@ export default {
     border-color: #dcdfe6;
   }
 }
-
 </style>

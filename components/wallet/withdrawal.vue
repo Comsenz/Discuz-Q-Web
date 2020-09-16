@@ -289,7 +289,7 @@ export default {
             // this.$store.dispatch('user/getUserInfo', this.userId)
             this.$message.success(this.$t('modify.withdrawal'))
             this.$emit('close')
-            this.$router.go(0)
+            // this.$router.go(0)
           }
         }, e => {
           console.log('提现错误', e)

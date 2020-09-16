@@ -10,7 +10,7 @@
     >
       <div class="myprofile-top mtop">
         <Avatar
-          :user="{ id: userInfo.id, username: userInfo.username, avatarUrl: userInfo.avatarUrl}"
+          :user="{ id: userInfo.id, username: userInfo.username, avatarUrl: avataruserInfo.avatarUrl}"
           :size="50"
           :round="true"
           class="avatar"
@@ -454,6 +454,9 @@ export default {
     },
     forums() {
       return this.$store.state.site.info.attributes || {}
+    },
+    avataruserInfo() {
+      return this.$store.state.user.info.attributes || {}
     }
   },
   mounted() {
@@ -515,6 +518,7 @@ export default {
     },
     changeShow(val) {
       this.isShowAvatar = val
+      this.$store.dispatch('user/getUserInfo', this.userId)
     },
     // 获取输入字数长度
     fun(e) {
