@@ -1,28 +1,30 @@
 <template>
   <div v-loading="index_loading" class="container">
     <main class="cont-left">
-      <index-filter @onChangeFilter="onChangeFilter" @onChangeType="onChangeType" @onChangeSort="onChangeSort" />
-      <div v-if="threadsStickyData.length > 0" class="list-top">
-        <div v-for="(item, index) in threadsStickyData" :key="index" class="list-top-item">
-          <div class="top-label">{{ $t('home.sticky') }}</div>
-          <nuxt-link :to="`/topic/${item._jv && item._jv.id}`" class="top-title">
-            <template v-if="item.type === 1">
-              {{ item.title }}
-            </template>
-            <div v-else v-html="formatRichText(item.firstPost && item.firstPost.summary)" />
-          </nuxt-link>
+      <div class="hide" :class="{show: !index_loading}">
+        <index-filter @onChangeFilter="onChangeFilter" @onChangeType="onChangeType" @onChangeSort="onChangeSort" />
+        <div v-if="threadsStickyData.length > 0" class="list-top">
+          <div v-for="(item, index) in threadsStickyData" :key="index" class="list-top-item">
+            <div class="top-label">{{ $t('home.sticky') }}</div>
+            <nuxt-link :to="`/topic/${item._jv && item._jv.id}`" class="top-title">
+              <template v-if="item.type === 1">
+                {{ item.title }}
+              </template>
+              <div v-else v-html="formatRichText(item.firstPost && item.firstPost.summary)" />
+            </nuxt-link>
+          </div>
         </div>
-      </div>
-      <div v-if="newThreadsCount > 0" class="new-post">
-        <div class="new-post-cont">有 {{ newThreadsCount }} 条新发布的内容 <span class="refresh" @click="reloadThreadsList">点击刷新</span></div>
-      </div>
-      <div class="post-list">
-        <post-item v-for="(item, index) in threadsData" :key="index" :item="item" />
-        <loading v-if="loading" />
-        <template v-else>
-          <div v-if="hasMore" class="load-more" @click="loadMore">{{ $t('topic.showMore') }}</div>
-          <div v-else class="no-more"><svg-icon v-if="threadsData.length === 0" type="empty" class="empty-icon" />{{ threadsData.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noData') }}</div>
-        </template>
+        <div v-if="newThreadsCount > 0" class="new-post">
+          <div class="new-post-cont">有 {{ newThreadsCount }} 条新发布的内容 <span class="refresh" @click="reloadThreadsList">点击刷新</span></div>
+        </div>
+        <div class="post-list">
+          <post-item v-for="(item, index) in threadsData" :key="index" :item="item" />
+          <loading v-if="loading" />
+          <template v-else>
+            <div v-if="hasMore" class="load-more" @click="loadMore">{{ $t('topic.showMore') }}</div>
+            <div v-else class="no-more"><svg-icon v-if="threadsData.length === 0" type="empty" class="empty-icon" />{{ threadsData.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noData') }}</div>
+          </template>
+        </div>
       </div>
     </main>
     <aside class="cont-right">
@@ -42,12 +44,11 @@
 
 <script>
 import s9e from '@/utils/s9e'
-import forums from '@/mixin/forums'
 import handleError from '@/mixin/handleError'
 export default {
   layout: 'custom_layout',
   name: 'Index',
-  mixins: [forums, handleError],
+  mixins: [handleError],
   // 异步数据用法
   async asyncData({ params, store, query }, callback) {
     const threadsStickyParams = {
@@ -124,6 +125,9 @@ export default {
   computed: {
     userId() {
       return this.$store.getters['session/get']('userId')
+    },
+    forums() {
+      return this.$store.state.site.info.attributes || {}
     }
   },
   mounted() {
@@ -292,6 +296,13 @@ export default {
   .cont-left{
     flex:auto;
     @include background();
+    .hide{
+      position: relative;
+      z-index: -1;
+      &.show{
+        z-index: 1;
+      }
+    }
     .list-top-item{
       border-bottom: 1px solid #EFEFEF;
       line-height: 19px;
