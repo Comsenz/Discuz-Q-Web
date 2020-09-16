@@ -235,6 +235,9 @@ export default {
       const params = {
         include: 'groups,wechat'
       }
+      // 登录成功重新获取一下站点信息
+      this.$store.dispatch('site/getSiteInfo')
+
       this.$store.dispatch('jv/get', [`users/${userId}`, { params }]).then(val => {
         this.user = val
         if (this.user && this.user.paid) {

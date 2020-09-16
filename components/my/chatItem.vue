@@ -14,11 +14,10 @@
         <template v-if=" +item.recipient_user_id !== +userId">
           <nuxt-link v-if="item.recipient && item.recipient.username" :to="`/profile?userId=${item.recipient.id}`" class="user-name">{{ item.recipient.username }}</nuxt-link><span class="text">{{ $t('notice.chat') }}</span>
         </template>
-        <div class="time">{{ timerDiff(item.created_at) + $t('topic.before') }}</div>
+        <div class="time">{{ timerDiff(item.updated_at) + $t('topic.before') }}</div>
       </div>
       <div class="post-content" @click="showChatBox" v-html="item.dialogMessage && item.dialogMessage.summary" />
     </div>
-    <chat-box v-if="chatting" :dialog="dialog || {}" @close="closeChatBox" />
   </div>
 </template>
 <script>
@@ -37,23 +36,12 @@ export default {
   },
   data() {
     return {
-      chatting: false,
-      dialog: { id: '', name: '' }
+
     }
   },
   methods: {
     showChatBox() {
-      this.dialog.id = this.item._jv ? this.item._jv.id : ''
-      if (this.userId !== this.item.sender_user_id) {
-        this.dialog.name = this.item.sender ? this.item.sender.username : ''
-      } else {
-        this.dialog.name = this.item.recipient ? this.item.recipient.username : ''
-      }
-      this.chatting = true
-    },
-    closeChatBox() {
-      this.chatting = false
-      this.$emit('reload')
+      this.$emit('show-chat-box', this.item)
     }
   }
 }
