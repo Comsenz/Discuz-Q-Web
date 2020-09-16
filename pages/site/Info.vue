@@ -1,15 +1,18 @@
 <template>
-  <div class="info">
+  <div
+    v-if="forums && forums.users"
+    class="info"
+  >
     <!-- 有偿加入 -->
     <h2 class="info-title">{{ $t('manage.payJoin') }}</h2>
     <!-- 付费信息部分 -->
     <div class="payinfo">
       <p class="payinfo-title">{{ $t('manage.payInfoTitle') }}</p>
       <p>
-        <span class="color">{{ $t('post.paymentAmount') }}</span><span class="paymoney">{{ '¥' + ((forums.set_site && forums.set_site.site_price) || 0) }}元</span>
+        <span class="color">{{ $t('post.paymentAmount') }}</span><span class="paymoney">{{ '¥' + site_price }}元</span>
       </p>
       <p>
-        <span class="date color">{{ $t('site.periodvalidity') }}</span><span class="workdate">{{ forums.set_site && forums.set_site.site_expire
+        <span class="date color">{{ $t('site.periodvalidity') }}</span><span class="workdate">自加入起{{ forums.set_site && forums.set_site.site_expire
           ? (forums.set_site && forums.set_site.site_expire) + $t('site.day')
           : $t('site.permanent') }}</span>
       </p>
@@ -32,7 +35,7 @@
             :round="true"
             class="avatar"
           />
-        </span><span class="workdate">{{ forums.set_site && forums.set_site.site_author.username }}</span>
+        </span><span class="workdate3">{{ forums.set_site && forums.set_site.site_author.username }}</span>
       </p>
       <p>
         <span class="date color">{{ $t('home.theme') }}</span>
@@ -121,7 +124,8 @@ export default {
       payStatus: 0, // 订单支付状态
       orderSn: '', // 订单编号
       codeUrl: '', // 二维码支付url，base64
-      userId: this.$store.getters['session/get']('userId')
+      userId: this.$store.getters['session/get']('userId'),
+      site_price: 0
     }
   },
   computed: {
@@ -131,6 +135,7 @@ export default {
   },
   mounted() {
     this.userinfo()
+    this.site_price = this.forums && this.forums.set_site && this.forums.set_site.site_price ? (1 * this.forums.set_site.site_price).toFixed(2) : 0
   },
   methods: {
     userinfo() {
@@ -282,6 +287,7 @@ export default {
   .date {
     width: 56px;
     text-align: right;
+    vertical-align: text-bottom;
   }
   span {
     display: inline-block;
@@ -301,11 +307,17 @@ export default {
     font-size: 16px;
     font-family: Microsoft YaHei;
   }
+  .workdate3 {
+    text-align: center;
+    font-size: 16px;
+    font-family: Microsoft YaHei;
+    line-height: 30px;
+  }
   .workdate2 {
     // position: absolute;
     width: 326px;
     word-break: break-all;
-    font-family: Microsoft YaHei;
+    // font-family: Microsoft YaHei;
     color: #6d6d6d;
     font-size: 14px;
     margin-left: 75px;

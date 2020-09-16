@@ -14,7 +14,7 @@
         size="small"
         class="h-button1"
         @click="home"
-      >{{ $t('core.back_home') }}</el-button>
+      >返回首页</el-button>
     </div>
   </div>
 </template>
@@ -50,7 +50,7 @@ export default {
     font-size: 26px;
   }
   .payinfo {
-    border-bottom: 1px solid #efefef;
+    // border-bottom: 1px solid #efefef;
     margin-top: 34px;
     color: #000000;
     padding-bottom: 30px;
@@ -70,7 +70,7 @@ export default {
       background: #ffffff;
       border-color: #1878f3;
       font-size: 14px;
-      border-radius: 0px;
+      border-radius: 2px;
       // padding: 0px;
     }
   }
