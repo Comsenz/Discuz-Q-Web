@@ -146,7 +146,7 @@ export default {
     const { code } = this.$route.query
     this.inviteCode = code
     this.getInviteInfo(this.inviteCode)
-    console.log('路由参数', this.$route.query)
+    console.log('路由参数', this.inviteCode)
   },
   methods: {
     handleClose(done) {
@@ -163,7 +163,6 @@ export default {
             console.log('邀请信息', res)
             this.inviteData = res
             this.check2()
-            res._jv.json.included.splice(0, 2)
             const permission = res.group.permission.slice(0, 3)
             this.permission = permission
           }).catch(e => {
@@ -174,6 +173,16 @@ export default {
     },
     // 验证码验证
     check() {
+      // 区分普通邀请和管理员邀请
+      if (this.inviteCode && this.inviteCode.length !== 32) {
+        if (!this.inviteData.id) {
+          this.codeTips = this.$t('site.codenotfound')
+          this.dialogVisible = true
+        } else {
+          this.submit()
+        }
+        return
+      }
       // 处理邀请码状态 status 0 失效  1 未使用  2 已使用 3 已过期
       const statusVal =
         this.inviteData.status || this.inviteData.status === 0 ? this.inviteData.status : 'error'
@@ -212,6 +221,19 @@ export default {
     },
     // 进入站点时邀请码的验证
     check2() {
+      // 区分普通邀请和管理员邀请
+      if (this.inviteCode && this.inviteCode.length !== 32) {
+        if (!this.inviteData.id) {
+          this.codeTitle = this.$t('site.codenotfound2')
+          this.codeTips = this.$t('site.codenotfound')
+        } else {
+          this.codeTitle = this.$t('manage.payJoin')
+          this.codeTips = this.$t('manage.inviteInfoTitle')
+          this.normal = true
+          // this.submit()
+        }
+        return
+      }
       const statusVal =
         this.inviteData.status || this.inviteData.status === 0 ? this.inviteData.status : 'error'
       console.log(this.inviteData.status)
@@ -260,13 +282,7 @@ export default {
         this.handleLogin('/', this.inviteCode)
       } else {
         // 已经登陆的情况
-        console.log(this.forums.set_reg.register_type)
-        if (this.forums.set_reg.register_type === 2) {
-          // 无感模式
-          this.$router.push('/')
-        } else {
-          this.$message.error(this.$t('site.codeforbid'))
-        }
+        this.$router.push('/')
       }
     }
   }
