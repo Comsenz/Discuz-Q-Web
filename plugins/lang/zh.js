@@ -711,7 +711,7 @@ export default {
       edit: '编辑用户状态',
       agreement: '注册登录表示您同意',
       agreementRegister: '注册协议',
-      agreementPrivacy: '隐私政策 '
+      agreementPrivacy: '隐私政策'
     },
     userFollow: {
       create: '关注用户'

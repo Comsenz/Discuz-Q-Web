@@ -475,11 +475,11 @@ export default {
       console.log('倒计时2')
       this.canClick = false
       this.content = interval + this.$t('modify.retransmission')
-      const clock = window.setInterval(() => {
+      const clock = setInterval(() => {
         interval--
         this.content = interval + this.$t('modify.retransmission')
         if (interval < 0) {
-          window.clearInterval(clock)
+          clearInterval(clock)
           this.content = this.$t('modify.sendVerifyCode')
           // this.totalTime = 60
           this.canClick = true
@@ -987,6 +987,7 @@ export default {
       }
       .usrid {
         color: #8590a6;
+        font-size:14px;
       }
     }
     .iden {
@@ -1014,7 +1015,7 @@ export default {
     display: flex;
     margin-top: 14px;
     .marglef {
-      margin-left: 77px !important;
+      margin-left: 65px !important;
     }
     .myprofile-title {
       display: flex;
@@ -1100,7 +1101,7 @@ export default {
   .disabled {
     background-color: #ededed;
     border-color: #ddd;
-    color: #606162;
+    color: #b5b5b5;
     cursor: not-allowed; // 鼠标变化
   }
   .passbtom {
@@ -1120,6 +1121,7 @@ export default {
   .inputerr {
     ::v-deep .el-input__inner {
       border: 1px solid #fa5151;
+      color: #fa5151;
     }
   }
 }
