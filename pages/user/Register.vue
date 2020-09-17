@@ -176,7 +176,8 @@ export default {
       content: this.$t('modify.sendVerifyCode'),
       canClick: true,
       loading: false,
-      passerror: false
+      passerror: false,
+      loginStatus: false
 
     }
   },
