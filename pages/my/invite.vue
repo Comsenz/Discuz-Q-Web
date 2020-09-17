@@ -57,7 +57,7 @@
       <header class="header flex">
         <div class="item">
           <div class="label">{{ $t('invite.inviteSuccessCount') }}</div>
-          <div class="value">{{ total }}</div>
+          <div class="value">{{ inviteTotal }}</div>
         </div>
         <div class="item">
           <div class="label">{{ $t('invite.allIncome') }}</div>
