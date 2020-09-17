@@ -34,6 +34,7 @@ export default {
       menuList: [{ index: '/my/profile', classname: 'padd', content: 'profile.myprofile' },
         { index: '/my/wallet', classname: 'padd', content: 'profile.mywallet' },
         { index: '/my/favorite', classname: 'padd', content: 'profile.myfavorite' },
+        { index: '/my/myshield', classname: 'padd', content: 'profile.myshield' },
         { index: '/my/notice', classname: 'padd', content: 'profile.notice' },
         { index: '/my/circleinfo', classname: 'padd divided', content: 'manage.circleinfo' }]
 
@@ -95,10 +96,11 @@ export default {
         case '/my/profile': return 0
         case '/my/wallet': return 1
         case '/my/favorite': return 2
-        case '/my/notice': return 3
-        case '/my/circleinfo': return 4
-        case '/my/sitemanagement': return 5
-        case '/my/invite': return 6
+        case '/my/myshield': return 3
+        case '/my/notice': return 4
+        case '/my/circleinfo': return 5
+        case '/my/sitemanagement': return 6
+        case '/my/invite': return 7
         default: return 0
       }
     }
