@@ -146,19 +146,13 @@
             :label="$t('profile.topic')+ ` (${userInfo.threadCount || 0})`"
             name="1"
           >
-            <topic
-              v-if="activeName === '1'"
-              :user-id="userId"
-            />
+            <topic :user-id="userId" />
           </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.likes')+ ` (${userInfo.likedCount || 0})`"
             name="2"
           >
-            <like
-              v-if="activeName === '2'"
-              :user-id="userId"
-            />
+            <like :user-id="userId" />
           </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.following')+ ` (${userInfo.followCount || 0})`"

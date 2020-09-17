@@ -34,6 +34,7 @@ export default {
       menuList: [{ index: '/my/profile', classname: 'padd', content: 'profile.myprofile' },
         { index: '/my/wallet', classname: 'padd', content: 'profile.mywallet' },
         { index: '/my/favorite', classname: 'padd', content: 'profile.myfavorite' },
+        { index: '/my/myshield', classname: 'padd', content: 'profile.myshield' },
         { index: '/my/notice', classname: 'padd', content: 'profile.notice' },
         { index: '/my/circleinfo', classname: 'padd divided', content: 'manage.circleinfo' }]
 
@@ -70,6 +71,14 @@ export default {
           this.$router.push({ path: '/my/profile' })
         }
       }
+      // 有推广邀请的权限才显示
+      if (_other.can_invite_user_scale) {
+        this.menuList.push({ index: '/my/invite', classname: 'padd', content: 'invite.invite' })
+      } else {
+        if (this.$route.path === '/my/invite') {
+          this.$router.push({ path: '/my/profile' })
+        }
+      }
     },
     setCurrentRoute() {
       console.log('routtttt', this.$route)
@@ -87,9 +96,11 @@ export default {
         case '/my/profile': return 0
         case '/my/wallet': return 1
         case '/my/favorite': return 2
-        case '/my/notice': return 3
-        case '/my/circleinfo': return 4
-        case '/my/sitemanagement': return 5
+        case '/my/myshield': return 3
+        case '/my/notice': return 4
+        case '/my/circleinfo': return 5
+        case '/my/sitemanagement': return 6
+        case '/my/invite': return 7
         default: return 0
       }
     }
@@ -97,7 +108,7 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
-//@import url(); 引入公共css类
+@import '@/assets/css/variable/color.scss';
 .show {
   visibility: initial;
 }
@@ -123,14 +134,15 @@ export default {
     }
   }
   .divided{
-    border-top:1px solid #EFEFEF;
+    border-top:1px solid $border-color-base;
     margin-top:15px;
+    padding-top:32px !important;
   }
   .arrow {
     position: absolute;
-    top:50%;
+    // top:50%;
     right: 20px;
-    transform: translateY(-50%);
+    // transform: translateY(-50%);
     color: #6D6D6D;
     @media screen and ( max-width: 1005px ) {
       right: 10px;
@@ -140,8 +152,10 @@ export default {
     }
   }
   ::v-deep.el-menu-item {
-    height: 46px;
-    line-height: 46px;
+    height: auto;
+    line-height: 1;
+    padding-top:17px;
+    padding-bottom: 17px;
   }
   ::v-deep.el-menu-item.is-active {
     color: black;
@@ -154,6 +168,8 @@ export default {
   }
 }
 .menu-title{
+  display: flex;
+  align-items: center;
   .unread-notice{
     font-size:12px;
     color: #fff;

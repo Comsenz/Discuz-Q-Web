@@ -191,7 +191,6 @@ export default {
           this.handleError(err)
           console.log('error', err)
         })
-      console.log('password', password)
     },
     // 新密码
     checkpass(num) {
@@ -207,7 +206,6 @@ export default {
     // 重复输入新密码
     checkpass2(sum) {
       if (sum.length >= 6) {
-        console.log('重复新密码', sum)
         this.validateVerify(sum)
       }
     },
@@ -216,7 +214,7 @@ export default {
     setPass(password) {
       if (password.length >= 6) {
         this.inputpas = password
-        console.log('hhhh')
+
         this.setPasswordInput = false
         this.repPasswordInput = true
       }
@@ -224,7 +222,6 @@ export default {
     // 重复初始化密码
     setPass2(password) {
       if (password.length >= 6) {
-        console.log('重复密码', password)
         this.validateVerify(password)
       }
     },
@@ -249,7 +246,8 @@ export default {
             this.repPasswordInput = false
             this.showNewverify2 = false
             this.$message.success(this.$t('modify.paymentsucceed'))
-            this.$router.go(0)
+            // this.$router.go(0)
+            this.getInfo()
           }
         })
         .catch(err => {

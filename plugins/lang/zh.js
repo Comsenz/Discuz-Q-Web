@@ -74,7 +74,7 @@ export default {
       modifySuccess: '修改成功',
       operateSuccess: '操作成功',
       createSuccess: '创建成功',
-      copySuccess: '链接复制成功'
+      copySuccess: '链接已复制到剪贴板'
     },
     // 上传
     upload: {
@@ -546,11 +546,17 @@ export default {
   invite: {
     invite: '推广邀请',
     invitedUser: '受邀朋友',
+    income: '收益',
     incomeDetail: '收益明细',
     inviteSuccessCount: '成功邀请（人）',
     allIncome: '累计收益',
-    inviteCount: '共邀请{count}人',
-    inviteUserName: '邀请人'
+    inviteTotal: '共邀请{total}人',
+    inviteUserName: '邀请人',
+    createdAt: '注册时间',
+    incomeAt: '收益时间',
+    viewDetail: '查看详细',
+    incomeTotal: '当前列表涉及金额 ￥{totalMoney}',
+    searchPlaceholder: '请输入要搜索的用户名'
   },
   // 海报分享页
   share: {
@@ -745,6 +751,7 @@ export default {
     myprofile: '我的资料',
     mywallet: '我的钱包',
     myfavorite: '我的收藏',
+    myshield: '我的屏蔽',
     circleinfo: '站点信息',
     search: '搜索',
     privateMessage: '私信',
@@ -767,6 +774,8 @@ export default {
     certification: '实名认证',
     tocertification: '去认证',
     signature: '签名',
+    unboundsucceed: '解除屏蔽成功',
+    addshield: '添加屏蔽用户',
     availableamount: '可用余额',
     freezeamount: '冻结金额',
     withdrawalslist: '提现记录',

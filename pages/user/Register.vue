@@ -36,16 +36,17 @@
               @keyup.enter.native="register"
             />
           </div>
-          <div>
+          <div class="rep">
             <span class="title2">重复密码</span>
             <el-input
               v-model="repeatPassWord"
               :placeholder="$t('user.password')"
               type="password"
-              class="reg-input"
+              :class="passerror ? 'reg-input inputerr':'reg-input'"
               show-password
               @keyup.enter.native="register"
             />
+            <div v-if="passerror" class="passerror">两次输入的密码不一致,请重新输入</div>
           </div>
           <div v-if="validate">
             <span class="title2">注册原因</span>
@@ -174,7 +175,9 @@ export default {
       ischeck: true,
       content: this.$t('modify.sendVerifyCode'),
       canClick: true,
-      loading: false
+      loading: false,
+      passerror: false,
+      loginStatus: false
 
     }
   },
@@ -278,7 +281,8 @@ export default {
       } else if (this.passWord === '') {
         this.$message.error('密码不能为空')
       } else if (this.passWord !== this.repeatPassWord) {
-        this.$message.error('二次密码输入不一致')
+        this.$message.error('两次输入的密码不一致,请重新输入')
+        this.passerror = true
       } else if (!this.ischeck) {
         this.$message.error('请同意协议')
       } else if (this.forums && this.forums.set_reg && this.forums.set_reg.register_captcha) {
@@ -545,15 +549,24 @@ export default {
     border: none;
     background: transparent;
     box-shadow: none;
+    .rep {
+      position: relative;
+      .passerror {
+        position: absolute;
+        bottom: 0px;
+        left: 85px;
+        color:#FA5151;
+      }
+    }
     .title {
       width: 66px;
       text-align: center;
       display: inline-block;
-      color:#606266;
+      color: #606266;
     }
     .title2 {
       margin-right: 10px;
-      color:#606266;
+      color: #606266;
     }
     .title:first-child {
       margin-right: 0px;
@@ -561,6 +574,11 @@ export default {
     .reg-input {
       width: 300px;
       margin-bottom: 20px;
+    }
+    .inputerr{
+      ::v-deep .el-input__inner{
+        border: 1px solid #FA5151;
+      }
     }
     .quick {
       display: flex;
@@ -571,8 +589,8 @@ export default {
       .quick-container {
         flex: 1;
         text-align: center;
-        .qrtext{
-          margin-top:5px;
+        .qrtext {
+          margin-top: 5px;
         }
         span {
           display: inline-block;
@@ -651,7 +669,7 @@ export default {
     width: 90px;
     height: 40px;
     // padding: 15.5px 10px;
-    color:#000000;
+    color: #000000;
     padding: 0;
     margin-left: -4px;
   }

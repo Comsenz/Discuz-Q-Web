@@ -284,9 +284,7 @@
         v-show="isPassModify"
         class="myprofile-btom"
       >
-
         <form>
-
           <el-input
             ref="oldpass"
             v-model="oldPassWord"
@@ -302,13 +300,19 @@
             type="password"
             show-password
           />
-          <el-input
-            v-model="renewPassword"
-            :placeholder="$t('modify.enterNewRepeat')"
-            class="passbtom"
-            type="password"
-            show-password
-          />
+          <div class="rep">
+            <el-input
+              v-model="renewPassword"
+              :placeholder="$t('modify.enterNewRepeat')"
+              :class="passerror ? 'passbtom inputerr':'passbtom'"
+              type="password"
+              show-password
+            />
+            <div
+              v-if="passerror"
+              class="passerror"
+            >两次输入的密码不一致,请重新输入</div>
+          </div>
 
           <el-button
             type="primary"
@@ -440,7 +444,9 @@ export default {
       isNameModify: false,
       loading: true,
       rebind: false, // 是否修改手机号
-      isShowAvatar: false // 是否设置头像
+      isShowAvatar: false, // 是否设置头像
+      passerror: false
+
     }
   },
   computed: {
@@ -788,14 +794,15 @@ export default {
     },
     // 密码为空校验
     passSub() {
-      if (this.oldPassWord && this.newPassWord && this.renewPassword) {
+      if (this.oldPassWord && this.newPassWord && this.renewPassword && this.newPassword === this.renewPassword) {
         this.passwordComfirm()
       } else if (!this.oldPassWord) {
         this.$message.error(this.$t('modify.oldpassword'))
       } else if (!this.newPassWord) {
         this.$message.error(this.$t('modify.newpassword'))
-      } else if (!this.renewPassword) {
-        this.$message.error(this.$t('modify.confrimpasword'))
+      } else if (this.newPassword !== this.renewPassword) {
+        this.$message.error(this.$t('modify.masstext'))
+        this.passerror = true
       }
     },
     passwordComfirm() {
@@ -902,13 +909,13 @@ export default {
       this.$router.push(`/profile?userId=${this.userId}&current=1`)
     },
     toFollowing() {
-      this.$router.push(`/profile?userId=${this.userId}&current=2`)
-    },
-    toFollowers() {
       this.$router.push(`/profile?userId=${this.userId}&current=3`)
     },
-    toLikes() {
+    toFollowers() {
       this.$router.push(`/profile?userId=${this.userId}&current=4`)
+    },
+    toLikes() {
+      this.$router.push(`/profile?userId=${this.userId}&current=2`)
     }
 
   }
@@ -1099,6 +1106,21 @@ export default {
   .passbtom {
     width: 300px;
     margin-bottom: 10px;
+  }
+  .rep {
+    position: relative;
+    .passerror {
+      position: absolute;
+      bottom: -10px;
+      left: 18px;
+      font-size: 14px;
+      color: #fa5151;
+    }
+  }
+  .inputerr {
+    ::v-deep .el-input__inner {
+      border: 1px solid #fa5151;
+    }
   }
 }
 ::v-deep .el-input__inner {

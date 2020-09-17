@@ -57,6 +57,7 @@ export default {
       this.loading = true
       const params = {
         'filter[isDeleted]': 'no',
+        sort: '-createdAt',
         include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,

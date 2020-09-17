@@ -7,7 +7,7 @@
     <div class="main-cont">
       <div class="top-flex">
         <nuxt-link v-if="item.user" :to="`/profile?userId=${item.user.id}`" class="user-name">{{ item.user.username }}</nuxt-link>
-        <div v-if="item.createdAt" class="time">{{ $t('topic.publishAt') }} {{ timerDiff(item.createdAt) }}{{ $t('topic.before') }}</div>
+        <div v-if="item.createdAt" class="time">{{ $t('topic.publishAt') }} {{ item.createdAt | formatDate }}</div>
       </div>
       <template v-if="item.firstPost">
         <div class="first-post" @click.self="toDetail">
@@ -79,10 +79,15 @@
 </template>
 <script>
 import s9e from '@/utils/s9e'
-import timerDiff from '@/mixin/timerDiff'
+import { time2MinuteOrHour } from '@/utils/time'
 import handleError from '@/mixin/handleError'
 export default {
-  mixins: [timerDiff, handleError],
+  filters: {
+    formatDate(date) {
+      return time2MinuteOrHour(date)
+    }
+  },
+  mixins: [handleError],
   props: {
     item: {
       type: Object,

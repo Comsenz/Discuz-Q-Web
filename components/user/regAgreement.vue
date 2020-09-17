@@ -27,6 +27,7 @@
       @close="showagree = false"
     >
       <div class="content">{{ popDetail }}</div>
+      <div class="moreheight">.</div>
     </reg-message>
   </div>
 </template>
@@ -88,6 +89,10 @@ export default {
     margin-left: -7px;
     color: #409eff;
     cursor: pointer;
+  }
+  .moreheight {
+    position: absolute;
+    bottom: -2650px;
   }
   .content {
     height: 500px;

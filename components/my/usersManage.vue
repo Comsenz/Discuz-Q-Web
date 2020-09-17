@@ -97,11 +97,11 @@
 </template>
 <script>
 import handleError from '@/mixin/handleError'
-import { formatDate, dateDay } from '@/utils/time'
+import { time2MinuteOrHour, dateDay } from '@/utils/time'
 export default {
   filters: {
     formatDate(date) {
-      return formatDate(date, 'yyyy-MM-dd hh:mm')
+      return time2MinuteOrHour(date)
     },
     formatDateDay(date) {
       return dateDay(date)

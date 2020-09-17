@@ -1,7 +1,7 @@
 <template>
   <a
     v-if="user"
-    style="display: block"
+    class="avatar-a"
     :href="preventJump ? 'javascript:void(0)' : ('/profile?userId=' + user.id)"
     :class="[sizeClass]"
   >
@@ -147,7 +147,10 @@ export default {
 .round {
   border-radius: 50% !important;
 }
-
+.avatar-a{
+  display:block;
+  position: relative;
+}
 .avatar {
   color: #fff;
   display: flex;
