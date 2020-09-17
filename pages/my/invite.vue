@@ -11,13 +11,14 @@
           </div>
           <div class="total-money">
             <div class="label">{{ $t('invite.allIncome') }}</div>
-            <div class="value">{{ $t('post.yuanItem') + totalMoney }}</div>
+            <div class="value">{{ $t('post.yuanItem') + detailTotalMoney }}</div>
           </div>
         </div>
       </header>
       <main>
         <div class="main">
-          <el-table v-loading="loading" :data="inviteList" :default-sort="{prop: 'created_at', order: 'descending'}" @sort-change="sortChange">
+          <div class="invite-total">{{ $t('invite.inviteTotal', { total }) }}</div>
+          <el-table v-loading="loading" :data="incomeDetailList" :default-sort="{prop: 'created_at', order: 'descending'}" @sort-change="sortChange">
             <el-table-column :label="$t('invite.inviteUserName')">
               <template slot-scope="scope">
                 <div v-if="scope.row.user" class="flex">
@@ -87,13 +88,16 @@ export default {
     return {
       loading: false,
       activeName: 'invited',
-      total: 0,
+      inviteTotal: 0,
       totalMoney: 0,
       isShowDetail: false,
       detail: {}, // 用户详细收益
-      incomeDetail: [],
       pageNum: 1,
-      pageSize: 10
+      pageSize: 10,
+      total: 0,
+      detailUserId: '',
+      detailTotalMoney: 0,
+      incomeDetailList: [] // 收益详情列表
     }
   },
   computed: {
@@ -115,7 +119,7 @@ export default {
       this.$store.dispatch('jv/get', ['invite/users', { params }]).then((res) => {
         console.log('res', res)
         if (res && res._jv) {
-          this.total = res._jv.json.meta.total
+          this.inviteTotal = res._jv.json.meta.total
           this.inviteList = res
         }
       })
@@ -139,6 +143,34 @@ export default {
       console.log('id', item)
       this.detail = item
       this.isShowDetail = true
+      this.detailUserId = item.user_id
+      this.getIncomeDetailList()
+    },
+    // 获取用户详情收益
+    getIncomeDetailList() {
+      this.loading = true
+      const params = {
+        include: ['sourceUser'],
+        'filter[user]': this.userId,
+        'filter[change_type]': [33, 62, 34],
+        'page[number]': this.pageNum,
+        'page[limit]': this.pageSize,
+        'sort': this.sort,
+        'filter[source_user_id]': this.detailUserId
+      }
+      this.$store.dispatch('jv/get', ['wallet/log', { params }]).then(res => {
+        if (res._jv) {
+          this.detailTotalMoney = res._jv.json.meta.sumChangeAvailableAmount
+          this.total = res._jv.json.meta.total
+          delete res._jv
+        }
+        this.incomeDetailList = res
+        console.log('incomeDetailList,', res)
+      }, e => {
+        this.handleError(e)
+      }).finally(() => {
+        this.loading = false
+      })
     },
     // 排序
     sortChange(val) {
@@ -264,8 +296,14 @@ export default {
     @media screen and ( max-width: 1005px ) {
       padding: 0 15px;
     }
+    .invite-total{
+      color: #777777;
+      @media screen and ( max-width: 1005px ) {
+        padding: 0 15px;
+      }
+    }
     .el-table{
-      margin-top: 10px;
+      margin-top: 15px;
       ::v-deep thead th {
         color: #303133;
         background-color: #fafafa;

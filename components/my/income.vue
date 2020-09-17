@@ -17,9 +17,11 @@
       <el-table ref="multipleTable" v-loading="loading" :data="incomeList" :default-sort="{prop: 'created_at', order: 'descending'}" @sort-change="sortChange">
         <el-table-column :label="$t('invite.inviteUserName')">
           <template slot-scope="scope">
-            {{ scope.row.sourceUser && scope.row.sourceUser.username
-              ? scope.row.sourceUser.username
-              : i18n.t('core.userDeleted') }}
+            <div v-if="scope.row.sourceUser && scope.row.sourceUser.username" class="flex">
+              <avatar :user="{ id: scope.row.sourceUser.id, username: scope.row.sourceUser.username, avatarUrl: scope.row.sourceUser.avatarUrl}" :size="30" :round="true" />
+              <nuxt-link :to="`/profile?userId=${scope.row.sourceUser.id}`" class="user-name">{{ scope.row.sourceUser.username }}</nuxt-link>
+            </div>
+            <template v-else>{{ $t('core.userDeleted') }}</template>
           </template>
         </el-table-column>
         <el-table-column prop="created_at" :label="$t('invite.incomeAt')" sortable="custom">
