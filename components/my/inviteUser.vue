@@ -74,13 +74,8 @@
 </template>
 <script>
 import handleError from '@/mixin/handleError'
-import { formatDate, timestamp2day } from '@/utils/time'
+import { timestamp2day } from '@/utils/time'
 export default {
-  filters: {
-    formatDate(date) {
-      return formatDate(date, 'yyyy-MM-dd hh:mm')
-    }
-  },
   mixins: [handleError],
   props: {
     groupMap: {
