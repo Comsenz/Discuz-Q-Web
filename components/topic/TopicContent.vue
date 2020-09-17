@@ -28,11 +28,15 @@
     </div>
     <div v-if="(article.attachments || []).length > 0" class="container-attachment">
       <h3 class="name">{{ $t('topic.attachment') }}</h3>
-      <div class="attachments">
-        <div v-for="(item, index) in article.attachments" :key="index" class="attachment-item" @click="downloadAttachment(item.url)">
-          <svg-icon :type="extensionValidate(item.extension)" style="font-size: 18px" />
-          <span>{{ item.fileName }}</span>
-        </div>
+      <div>
+        <template v-for="(file, index) in audioList">
+          <audio-player :key="index" :file="file" />
+        </template>
+      </div>
+      <div>
+        <template v-for="(file, index) in attachmentList">
+          <attachment-list :key="index" :file="file" />
+        </template>
       </div>
     </div>
     <div v-if="unpaid && threadType === 1" class="hide-content-tip">{{ $t('pay.contentHide') }}</div>
@@ -44,7 +48,6 @@
 <script>
 import s9e from '@/utils/s9e'
 import isLogin from '@/mixin/isLogin'
-const extensionList = ['7Z', 'AI', 'APK', 'CAD', 'CDR', 'DOC', 'EPS', 'EXE', 'IPA', 'MP3', 'MP4', 'PDF', 'PPT', 'PSD', 'RAR', 'TXT', 'XLS', 'XLSX', 'ZIP']
 
 export default {
   name: 'TopicContent',
@@ -85,6 +88,12 @@ export default {
     unpaid() {
       if (process.client && this.paidInformation.paid) this.removeTextHideCover()
       return !(this.paidInformation.paid || parseFloat(this.paidInformation.price) === 0)
+    },
+    audioList() {
+      return this.article.attachments.filter(item => item.extension === 'mp3')
+    },
+    attachmentList() {
+      return this.article.attachments.filter(item => item.extension !== 'mp3')
     }
   },
   watch: {
@@ -113,15 +122,8 @@ export default {
       if (!this.isLogin()) return
       if (this.unpaid) return this.$emit('payForVideo')
       this.showVideoPop = true
-    },
-    extensionValidate(extension) {
-      return extensionList.indexOf(extension.toUpperCase()) > 0 ? extension.toUpperCase() : 'UNKNOWN'
-    },
-    downloadAttachment(url) {
-      if (process.client) window.open(url, '_self')
     }
   }
-
 }
 </script>
 
@@ -217,36 +219,16 @@ export default {
       }
     }
 
+    > .container-audio {
+
+    }
+
     > .container-attachment {
       margin-top: 30px;
       > .name {
         color: #6D6D6D;
         font-weight: bold;
         font-size: 16px;
-      }
-      > .attachments {
-        .attachment-item {
-          cursor: pointer;
-          margin-top: 10px;
-          width: 100%;
-          height: 40px;
-          border-radius: 5px;
-          border: 1px solid $border-color-base;
-          padding: 0 10px;
-          display: flex;
-          align-items: center;
-          &:hover {
-            border: 1px solid $color-blue-base;
-          }
-          > span {
-            font-size: 16px;
-            width: 400px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-left: 10px;
-            white-space: nowrap;
-          }
-        }
       }
     }
 
