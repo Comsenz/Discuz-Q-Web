@@ -30,7 +30,7 @@
       <h3 class="name">{{ $t('topic.attachment') }}</h3>
       <div>
         <template v-for="(file, index) in audioList">
-          <audio-player :key="index" :file="file" />
+          <audio-player :key="index" :file="file" :current-audio="currentAudio" @play="play" @pause="pause" @seek="seek" @seeking="seeking" />
         </template>
       </div>
       <div>
@@ -42,6 +42,7 @@
     <div v-if="unpaid && threadType === 1" class="hide-content-tip">{{ $t('pay.contentHide') }}</div>
     <nuxt-link v-if="category.name" :to="{path: '/', query: { categoryId: category._jv.id } }" class="tag">{{ category.name }}</nuxt-link>
     <video-pop v-if="showVideoPop" :cover-url="video.cover_url" :url="video.media_url" @remove="showVideoPop = false" />
+    <audio id="audio-player" :src="currentAudio.url" style="display: none" />
   </article>
 </template>
 
@@ -81,7 +82,16 @@ export default {
   },
   data() {
     return {
-      showVideoPop: false
+      showVideoPop: false,
+      currentAudio: {
+        id: '',
+        url: '',
+        currentTime: '',
+        duration: '',
+        audio: '',
+        seeking: false,
+        isPlay: false
+      }
     }
   },
   computed: {
@@ -104,6 +114,9 @@ export default {
       deep: true
     }
   },
+  mounted() {
+    this.currentAudio.audio = document.getElementById('audio-player')
+  },
   methods: {
     formatTopicHTML(html) {
       return s9e.parse(html)
@@ -122,6 +135,51 @@ export default {
       if (!this.isLogin()) return
       if (this.unpaid) return this.$emit('payForVideo')
       this.showVideoPop = true
+    },
+    play(file) {
+      console.log('play')
+      if (this.currentAudio.id !== file._jv.id) {
+        this.resetAudio(this.currentAudio.audio)
+        this.currentAudio.url = file.url
+        this.currentAudio.id = file._jv.id
+        this.currentAudio.audio.src = this.currentAudio.url
+        this.currentAudio.audio.load()
+      }
+      window.setTimeout(() => {
+        this.currentAudio.audio.play()
+        this.currentAudio.isPlay = true
+        this.currentAudio.audio.addEventListener('timeupdate', this.onProgressing)
+        this.currentAudio.audio.addEventListener('ended', this.onEnded)
+      }, 0)
+    },
+    onProgressing() {
+      if (this.currentAudio.seeking) return
+      this.currentAudio.duration = this.currentAudio.audio.duration
+      this.currentAudio.currentTime = this.currentAudio.audio.currentTime
+    },
+    onEnded() {
+      this.resetAudio(this.currentAudio.audio)
+    },
+    resetAudio(audio) {
+      audio.removeEventListener('timeupdate', this.onProgressing)
+      audio.removeEventListener('ended', this.onEnded)
+      this.currentAudio.isPlay = false
+      this.currentAudio.duration = ''
+      this.currentAudio.currentTime = ''
+    },
+    pause() {
+      console.log('pause')
+      this.currentAudio.isPlay = false
+      this.currentAudio.audio.pause()
+    },
+    seek(time) {
+      this.currentAudio.seeking = false
+      this.currentAudio.currentTime = time
+      this.currentAudio.audio.currentTime = time
+    },
+    seeking(time) {
+      this.currentAudio.seeking = true
+      this.currentAudio.currentTime = time
     }
   }
 }
