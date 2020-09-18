@@ -100,6 +100,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import '@/assets/css/variable/color.scss';
 .index-top-conttainer{
   display: flex;
   align-items: center;
@@ -112,15 +113,18 @@ export default {
   line-height: 1;
   .filter-btn{
     color:#8590A6;
-    padding:10.5px 14px;
+    padding:10.5px 16px;
     margin-right: 15px;
     line-height: 1;
     cursor: pointer;
-    &.active, &:hover{
-      color:#1878F3;
+    &.active{
+      color: $color-blue-base;
       background: #E5F2FF;
       transition: all 0.2s ease-in-out;
       border-radius: 2px;
+    }
+    &:hover{
+      color: $color-blue-base;
     }
     @media screen and ( max-width: 1005px ) {
       margin-right: 0;
@@ -138,8 +142,8 @@ export default {
 }
 .el-dropdown-link{
   outline: none;
-  &.active{
-    color:#1878F3;
+  &.active, &:hover{
+    color: $color-blue-base;
   }
 }
 
@@ -157,7 +161,7 @@ export default {
   }
   .el-dropdown-menu__item:not(.is-disabled):hover,.el-dropdown-menu__item:not(.is-disabled).active {
     background-color: transparent;
-    color: #1878F3;
+    color:  $color-blue-base;
   }
 }
 </style>

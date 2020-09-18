@@ -71,7 +71,7 @@ export default {
           this.hasMore = res.length === this.pageSize
           this.data = [...this.data, ...res]
           if (res._jv) {
-            this.hasMore = this.data.length < res._jv.json.meta.total
+            this.hasMore = this.data.length < res._jv.json.meta.threadCount
           }
         })
     },
@@ -90,17 +90,6 @@ export default {
   width: 20px;
   height: 18px;
   margin-right: 10px;
-}
-.load-more {
-  color: $color-blue-base;
-  border: 1px solid $color-blue-base;
-  font-size: 16px;
-  text-align: center;
-  padding: 12px 0;
-  line-height: 1;
-  cursor: pointer;
-  margin: 20px;
-  border-radius: 2px;
 }
 .no-more2 {
   text-align: center;

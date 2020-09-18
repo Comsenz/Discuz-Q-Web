@@ -3,7 +3,7 @@
     <span> Powered By &nbsp;  <span class="bold">{{ forums.set_site && forums.set_site.site_name || 'Discuz!Q' }}</span> &nbsp;    © 2014-{{ year }} &nbsp;&nbsp;分享&nbsp;&nbsp;/&nbsp;&nbsp;交流 &nbsp;&nbsp;/&nbsp;&nbsp;共融 </span>
     <div>
       <span class="site-record">{{ forums.set_site ? forums.set_site.site_record : '' }}</span>
-      <span>{{ forums.set_site ? forums.set_site.site_record_code : '' }}</span>
+      <a href="https://beian.miit.gov.cn/" target="_blank">{{ forums.set_site ? forums.set_site.site_record_code : '' }}</a>
     </div>
   </div>
 </template>
@@ -37,6 +37,9 @@ export default {
   }
   .site-record{
     margin-right: 20px;
+  }
+  a:hover{
+    color: #00479B;
   }
 }
 </style>

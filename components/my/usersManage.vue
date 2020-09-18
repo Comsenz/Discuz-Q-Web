@@ -51,13 +51,13 @@
           <span v-else class="red">{{ $t('manage.disable') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="圈龄">
+      <el-table-column :label="$t('manage.circleAge')">
         <template slot-scope="scope">
           {{ scope.row.createdAt | formatDateDay }}
         </template>
       </el-table-column>
       <!-- <el-table-column label="加入方式" /> -->
-      <el-table-column label="最后发言时间" width="140">
+      <el-table-column :label="$t('manage.lastUpdateAt')" width="140">
         <template slot-scope="scope">{{ scope.row.updatedAt | formatDate }}</template>
       </el-table-column>
       <el-table-column fixed="right" :label="$t('manage.operate')" width="80">
@@ -265,9 +265,11 @@ export default {
       ]
       this.loading = true
       this.$store.dispatch('jv/patch', params).then(res => {
-        console.log('res', res)
         if (res) {
-          this.$message.success('修改成功')
+          if (res._jv && res._jv.json && res._jv.json.data && res._jv.json.data.length > 0 && res._jv.json.data[0].attributes && res._jv.json.data[0].attributes.error === 'Permission Denied') {
+            return this.$message.error(this.$t('manage.modifyFail'))
+          }
+          this.$message.success(this.$t('discuzq.msgBox.modifySuccess'))
           this.getUserList()
         }
       }, e => {
@@ -292,7 +294,7 @@ export default {
       this.loading = true
       this.$store.dispatch('jv/patch', [{ _jv: { type: `users/${userId}` }}, { data: params }]).then(res => {
         if (res) {
-          this.$message.success('修改成功')
+          this.$message.success(this.$t('discuzq.msgBox.modifySuccess'))
           this.getUserList()
         }
       }, e => {

@@ -2,7 +2,7 @@
   <div class="invite-container">
     <template v-if="isShowDetail">
       <header v-if="detail && detail.user" class="detail-header">
-        <div class="title">受邀朋友收益</div>
+        <div class="title">{{ $t('invite.userDetail' ) }}</div>
         <div class="user">
           <avatar :user="{ id: detail.user.id, username: detail.user.username, avatarUrl: detail.user.avatarUrl}" :size="50" />
           <div class="user-info">
