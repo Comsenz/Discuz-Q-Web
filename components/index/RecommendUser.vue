@@ -6,7 +6,8 @@
       <div v-if="userList.length === 0" class="no-more">{{ $t('discuzq.list.noData') }}</div>
     </div>
     <div class="refresh" @click="refresh">
-      <i class="el-icon-refresh icon" />{{ $t('home.refresh') }}
+      <svg-icon type="refresh" class="icon" />
+      {{ $t('home.refresh') }}
     </div>
   </div>
 </template>
@@ -79,6 +80,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import '@/assets/css/variable/color.scss';
 .recommend-user-container{
   padding: 20px;
   @media screen and ( max-width: 1005px ) {
@@ -97,6 +99,9 @@ export default {
     color: #8590A6;
     cursor: pointer;
     display: inline-block;
+    &:hover{
+      color:$color-blue-base;
+    }
     .icon{
       margin-right: 6px;
     }

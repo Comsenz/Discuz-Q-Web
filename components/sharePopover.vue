@@ -91,7 +91,7 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
-
+@import '@/assets/css/variable/color.scss';
 .share-cont{
   display: flex;
   flex-direction: column;
@@ -105,6 +105,9 @@ export default {
     border-bottom: 1px solid #EDEDED;
     padding: 10px 0;
     cursor: pointer;
+    &:hover{
+      color: $color-blue-deep;
+    }
     .copy-icon{
       margin-right: 6px;
     }

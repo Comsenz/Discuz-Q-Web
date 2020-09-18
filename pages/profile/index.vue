@@ -103,6 +103,26 @@
         v-if="userId != currentLoginId"
         class="profile-btn"
       >
+        <div
+          v-if="!isShield"
+          class="shield"
+          @click="handleShield"
+        >
+          <svg-icon
+            type="canshield"
+            class="canshield-icon"
+          />屏蔽Ta
+        </div>
+        <div
+          v-else
+          class="shield"
+          @click="unbundlingUser"
+        >
+          <svg-icon
+            type="unshield"
+            class="unshield-icon"
+          />解除屏蔽
+        </div>
         <!-- follow 关注状态 0：未关注 1：已关注 2：互相关注 -->
         <el-button
           v-if="userInfo"
@@ -204,7 +224,10 @@ export default {
       loading: false,
       dialog: { id: '', name: '' },
       chatting: false,
-      offsetTop: 0
+      offsetTop: 0,
+      isShield: false,
+      unbundlingArry: [], // 解绑用户组
+      unbundUserData: [] // 已屏蔽用户组
 
     }
   },
@@ -228,6 +251,7 @@ export default {
   },
   mounted() {
     window.addEventListener('scroll', this.handleScroll)
+    this.getShieldData()
     // this.$nextTick(() => {
     //   this.offsetTop = document.querySelector('.profile-h').offsetTop
     // })
@@ -327,7 +351,49 @@ export default {
     // 私信
     chat() {
       this.chatting = true
+    },
+    // 当前登录用户已屏蔽用户
+    // 获取黑名单数据
+    getShieldData() {
+      this.loading = true
+      this.$store.dispatch('jv/get', `users/${this.currentLoginId}/deny`).then(res => {
+        if (res._jv) {
+          delete res._jv
+        }
+        this.unbundUserData = []
+        this.unbundUserData.push(Number(this.currentLoginId))
+        res.forEach((v, i) => {
+          this.unbundUserData.push(res[i].id)
+        })
+        const data = res.filter(item => {
+          return item.id.toString() === this.userId
+        })
+        this.isShield = data.length > 0
+        console.log('当前查看用户是否已经被屏蔽', data)
+        console.log('和名单数据', res)
+      }, e => this.handleError(e)).finally(() => { this.loading = false })
+    },
+    // 屏蔽用户
+    handleShield() {
+      const params = {
+        _jv: {
+          type: `users/${this.userId}/deny`
+        }
+      }
+      this.$store.dispatch('jv/post', params).then(() => {
+        console.log('屏蔽')
+        this.getShieldData()
+      })
+    },
+    // 解绑用户
+    unbundlingUser() {
+      this.$store.dispatch('jv/delete', `users/${this.userId}/deny`).then(() => {
+        console.log('解除屏蔽')
+        this.$t('profile.unboundsucceed')
+        this.getShieldData()
+      })
     }
+
   }
 }
 </script>
@@ -386,10 +452,28 @@ export default {
     }
   }
   .profile-btn {
-    // flex: 1;
     display: flex;
     align-items: flex-end;
-    // justify-content: space-between;
+    position: relative;
+    .shield {
+      position: absolute;
+      right: 1px;
+      top: 24px;
+      color: #b5b5b5;
+      cursor: pointer;
+    }
+    .canshield-icon {
+      width: 14px;
+      height: 7px;
+      margin-bottom: 2px;
+      margin-right: 6px;
+    }
+    .unshield-icon {
+      width: 14px;
+      height: 11px;
+      margin-bottom: 1px;
+      margin-right: 6px;
+    }
     .h-button1 {
       width: 70px;
       height: 35px;

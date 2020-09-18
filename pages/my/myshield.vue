@@ -333,6 +333,7 @@ export default {
         this.pageNum = 1
         this.getUserList('')
         this.getShieldData()
+        this.getShieldList()
         this.isSearch = false
       })
     },
@@ -410,17 +411,6 @@ export default {
       .svg-icon-delete {
         margin-right: 6px;
       }
-    }
-    .load-more {
-      color: $color-blue-base;
-      border: 1px solid $color-blue-base;
-      font-size: 16px;
-      text-align: center;
-      padding: 12px 0;
-      line-height: 1;
-      cursor: pointer;
-      margin: 20px;
-      border-radius: 2px;
     }
   }
 }

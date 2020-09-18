@@ -18,7 +18,7 @@
         <div class="value">75</div>
       </div> -->
       <div v-if="forums && forums.other && forums.other.can_create_invite" class="item item-invite">
-        <div class="label">邀请成员</div>
+        <div class="label">{{ $t('manage.inviteMembers') }}</div>
         <el-dropdown class="handle-dropdown" placement="bottom" trigger="click" disabled @command="handleCommand">
           <el-button type="text" size="medium" class="create-url">{{ $t('manage.generateInvitationUrl') }}</el-button>
           <el-dropdown-menu slot="dropdown">
@@ -29,8 +29,8 @@
     </header>
     <main>
       <el-tabs v-model="activeName">
-        <el-tab-pane v-if="forums && forums.other && forums.other.can_view_user_list" label="成员管理" name="manage"><users-manage /></el-tab-pane>
-        <el-tab-pane v-if="forums && forums.other && forums.other.can_create_invite" label="邀请成员" name="invite"><invite-user v-if="activeName === 'invite'" :group-map="groupMap" /></el-tab-pane>
+        <el-tab-pane v-if="forums && forums.other && forums.other.can_view_user_list" :label="$t('manage.manageMembers')" name="manage"><users-manage /></el-tab-pane>
+        <el-tab-pane v-if="forums && forums.other && forums.other.can_create_invite" :label="$t('manage.inviteMembers')" name="invite"><invite-user v-if="activeName === 'invite'" :group-map="groupMap" /></el-tab-pane>
       </el-tabs>
     </main>
   </div>

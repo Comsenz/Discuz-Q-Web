@@ -17,6 +17,7 @@
               <div v-html="formatTopicHTML(item.firstPost.contentHtml)" />
             </div>
           </div>
+          <!-- 图片 -->
           <div v-if="item.firstPost.images && item.firstPost.images.length > 0" v-viewer="{url: 'data-source'}" class="images" @click.self="toDetail">
             <el-image
               v-for="(image, index) in item.firstPost.images.slice(0, 3)"
@@ -34,6 +35,7 @@
             </el-image>
           </div>
           <div v-if="item.firstPost.images && item.firstPost.images.length > 3" class="image-count" @click="toDetail">{{ $t('home.total') }} {{ item.firstPost.images.length }} {{ $t('home.seeAllImage') }}</div>
+          <!-- 视频 -->
           <div v-if="item.type === 2 && item.threadVideo" class="video-main" @click.stop="openVideo">
             <el-image
               v-if="item.threadVideo.cover_url"
@@ -47,20 +49,28 @@
             <svg-icon type="video-play" class="video-play" />
           </div>
           <video-pop v-if="showVideoPop" :cover-url="item.threadVideo.cover_url" :url="item.threadVideo.media_url" @remove="showVideoPop = false" />
+          <!-- 附件 -->
+          <div v-if="item.firstPost.attachments && item.firstPost.attachments.length > 0" class="attachment" @click="toDetail">
+            <svg-icon :type="extensionValidate(item.firstPost.attachments[0].extension)" />
+            <div class="name">{{ item.firstPost.attachments[0].fileName }}</div>
+            <div v-if="item.firstPost.attachments.length > 1" class="total">{{ $t('home.etc') + item.firstPost.attachments.length + $t('home.attachmentTotal') }}</div>
+          </div>
         </div>
+        <!-- 位置 -->
         <nuxt-link v-if="item.location" :to="`/location?longitude=${item.longitude}&latitude=${item.latitude}`" class="location">
           <span class="flex">
             <svg-icon type="location" class="icon" />
             {{ item.location }}
           </span>
         </nuxt-link>
+        <!-- 操作 -->
         <div class="bottom-handle">
           <div class="left">
             <div v-permission:handleLike="''" class="btn like" :class="{'liked': item.firstPost.isLiked}">
               <svg-icon v-permission:handleLike="''" type="like" class="icon" />
               {{ item.firstPost.isLiked ? $t('topic.liked') : $t('topic.like') }} {{ item.firstPost.likeCount > 0 ? item.firstPost.likeCount : '' }}</div>
             <div class="btn comment" @click="toDetail">
-              <svg-icon type="comment" class="icon" />
+              <svg-icon type="post-comment" class="icon" />
               {{ $t('topic.comment') }} {{ item.postCount - 1 > 0 ? item.postCount - 1 : '' }}</div>
             <share-popover v-if="item._jv && item._jv.id && showShare" :threads-id="item._jv.id">
               <div class="btn share">
@@ -81,6 +91,7 @@
 import s9e from '@/utils/s9e'
 import { time2MinuteOrHour } from '@/utils/time'
 import handleError from '@/mixin/handleError'
+const extensionList = ['7Z', 'AI', 'APK', 'CAD', 'CDR', 'DOC', 'DOCX', 'EPS', 'EXE', 'IPA', 'MP3', 'MP4', 'PDF', 'PPT', 'PSD', 'RAR', 'TXT', 'XLS', 'XLSX', 'ZIP']
 export default {
   filters: {
     formatDate(date) {
@@ -162,6 +173,9 @@ export default {
     },
     formatTopicHTML(html) {
       return s9e.parse(html)
+    },
+    extensionValidate(extension) {
+      return extensionList.indexOf(extension.toUpperCase()) > 0 ? extension.toUpperCase() : 'UNKNOWN'
     }
   }
 }
@@ -299,6 +313,23 @@ export default {
         transform: translate(-50%,-50%);
       }
     }
+    .attachment{
+      display: flex;
+      align-items: center;
+      font-size:16px;
+      margin-top: 10px;
+      @media screen and ( max-width: 1005px ) {
+        font-size:14px;
+      }
+      .name{
+        max-width:200px;
+        margin-left: 5px;
+      }
+      .total{
+        color: #000000;
+        margin-left: 16.5px;
+      }
+    }
     .location{
       display: inline-block;
       background: #F7F7F7;
@@ -308,6 +339,11 @@ export default {
       padding:4px 10px;
       line-height: 16px;
       margin-top:10px;
+      transition: all 0.1s ease-in-out;
+      &:hover{
+        background-color: #E5F2FF;
+        color: #8590A6;
+      }
       .flex{
         display: flex;
         align-items: center;
@@ -331,21 +367,25 @@ export default {
           color: $font-color-grey;
           margin-right:36px;
           cursor: pointer;
+          &:hover{
+            color:$color-blue-base;
+          }
         }
         .icon{
           margin-right: 3px;
         }
         .like{
-          padding: 10.5px 15px;
+          padding: 10px 15px;
           line-height: 1;
           border-radius:2px;
+          border:1px solid transparent;
           // transition: all 0.1s ease-in;
           &.liked{
-            color:#D0D4DC;
-          }
-          &:hover{
-            background: #E5F2FF;
             color:$color-blue-base;
+            background: #E5F2FF;
+            &:hover{
+              border-color: #D4E6FC;
+            }
           }
         }
       }
@@ -360,6 +400,11 @@ export default {
         line-height: 1;
         outline: none;
         cursor: pointer;
+        transition: all 0.1s ease-in-out;
+        &:hover{
+          background: #E5F2FF;
+          border-color: #D4E6FC;
+        }
       }
     }
   }

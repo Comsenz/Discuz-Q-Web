@@ -66,13 +66,13 @@ export default {
       status
         .run(() => this.$store.dispatch('jv/get', ['threads/likes', { params }]))
         .then(res => {
-          if (res._jv) {
-            delete res._jv
-          }
           console.log('点赞数据', res)
           this.loading = false
           this.hasMore = res.length === this.pageSize
           this.data = [...this.data, ...res]
+          if (res._jv) {
+            this.hasMore = this.data.length < res._jv.json.meta.threadCount
+          }
         })
     },
     loadMore() {
@@ -90,17 +90,6 @@ export default {
   width: 20px;
   height: 18px;
   margin-right: 10px;
-}
-.load-more {
-  color: $color-blue-base;
-  border: 1px solid $color-blue-base;
-  font-size: 16px;
-  text-align: center;
-  padding: 12px 0;
-  line-height: 1;
-  cursor: pointer;
-  margin: 20px;
-  border-radius: 2px;
 }
 .no-more2 {
   text-align: center;

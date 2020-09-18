@@ -93,14 +93,17 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import '@/assets/css/variable/color.scss';
 // 重置element
 .el-button--primary {
-  background-color: #1878F3 !important;
-  border-color: #1878F3 !important;
+  background-color:$color-blue-base !important;
+  border-color:$color-blue-base !important;
   padding: 10px 20px !important;
   border-radius: 2px;
   &:hover{
     opacity: 0.8;
+    background-color: $color-blue-deep !important;
+    border-color:$color-blue-deep !important;
   }
 }
 .type-container{
@@ -115,7 +118,7 @@ export default {
     outline: none;
     &:hover{
       background-color: #E5F2FF;
-      color: #1878F3;
+      color:$color-blue-base;
     }
     &:before{
       content:'';

@@ -161,15 +161,15 @@ export default {
         .run(() => this.$store.dispatch('jv/get', ['follow', { params }]))
         .then(res => {
           console.log('当前用户粉丝列表', res)
-          if (res._jv) {
-            delete res._jv
-          }
           this.loading = false
           this.hasMore = res.length === this.pageSize
           if (type === 'change') {
             this.followerList = res
           } else {
             this.followerList = [...this.followerList, ...res]
+          }
+          if (res._jv) {
+            this.hasMore = this.followerList.length < res._jv.json.meta.total
           }
         })
     },
@@ -326,17 +326,6 @@ export default {
   width: 20px;
   height: 18px;
   margin-right: 10px;
-}
-.load-more {
-  color: $color-blue-base;
-  border: 1px solid $color-blue-base;
-  font-size: 16px;
-  text-align: center;
-  padding: 12px 0;
-  line-height: 1;
-  cursor: pointer;
-  margin: 20px;
-  border-radius: 2px;
 }
 .no-more2 {
   text-align: center;

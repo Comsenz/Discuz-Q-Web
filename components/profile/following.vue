@@ -162,15 +162,15 @@ export default {
         .run(() => this.$store.dispatch('jv/get', ['follow', { params }]))
         .then(res => {
           console.log('用户关注列表', res)
-          if (res._jv) {
-            delete res._jv
-          }
           this.loading = false
           this.hasMore = res.length === this.pageSize
           if (type === 'change') {
             this.followingList = res
           } else {
             this.followingList = [...this.followingList, ...res]
+          }
+          if (res._jv) {
+            this.hasMore = this.followingList.length < res._jv.json.meta.total
           }
           console.log('用户关注列表2', this.followingList)
         })
