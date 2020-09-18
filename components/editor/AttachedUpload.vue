@@ -24,9 +24,10 @@
 </template>
 
 <script>
-
+import handleAttachmentError from '@/mixin/handleAttachmentError.js'
 export default {
   name: 'PictureUpload',
+  mixins: [handleAttachmentError],
   props: {
     attachedList: {
       type: Array,
@@ -117,9 +118,7 @@ export default {
     },
     handleError(e) {
       this.$emit('update:onUploadAttached', false)
-      if (e && e.message && JSON.parse(e.message).errors[0] && JSON.parse(e.message).errors[0].detail[0]) {
-        this.$message.error(JSON.parse(e.message).errors[0].detail[0])
-      } else this.$message.error(this.$t('post.attachmentUploadFail'))
+      this.handleAttachmentError(e)
     },
     handleExceed(fileList) {
       // el-upload--text 是附件上传组件的特定样式, 和 图片上传 区分

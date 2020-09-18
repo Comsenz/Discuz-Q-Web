@@ -29,8 +29,10 @@
 </template>
 
 <script>
+import handleAttachmentError from '@/mixin/handleAttachmentError.js'
 export default {
   name: 'ImageUpload',
+  mixins: [handleAttachmentError],
   props: {
     imageList: {
       type: Array,
@@ -126,9 +128,7 @@ export default {
     },
     handleError(e) {
       this.$emit('update:onUploadImage', false)
-      if (e && e.message && JSON.parse(e.message).errors[0] && JSON.parse(e.message).errors[0].detail[0]) {
-        this.$message.error(JSON.parse(e.message).errors[0].detail[0])
-      } else this.$message.error(this.$t('post.imageUploadFail'))
+      this.handleAttachmentError(e)
     },
     handleExceed(fileList) {
       // el-upload--picture-card 是图片上传框的特定样式, 和 附件上传 区分

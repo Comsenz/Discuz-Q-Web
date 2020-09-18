@@ -237,6 +237,7 @@ export default {
       }
       .content-html {
         font-size: 16px;
+        word-break: break-all;
         ::v-deep p {
           font-size: 14px;
         }
