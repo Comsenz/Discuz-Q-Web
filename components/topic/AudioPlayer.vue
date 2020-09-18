@@ -56,9 +56,6 @@ export default {
       return this.currentAudio.currentTime && this.currentAudio.duration
     }
   },
-  mounted() {
-    console.log(this.file, 'file')
-  },
   methods: {
     formatDuration(duration) {
       const minutes = Math.floor(duration / 60)

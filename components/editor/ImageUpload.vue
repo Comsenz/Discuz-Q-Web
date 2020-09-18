@@ -6,7 +6,7 @@
       :data="{ type: 1 }"
       name="file"
       with-credentials
-      accept="image/*"
+      :accept="attachedTypeLimit"
       :file-list="imageList"
       :limit="9"
       :disabled="imageList.length > 9"
@@ -29,8 +29,10 @@
 </template>
 
 <script>
+import handleAttachmentError from '@/mixin/handleAttachmentError.js'
 export default {
   name: 'ImageUpload',
+  mixins: [handleAttachmentError],
   props: {
     imageList: {
       type: Array,
@@ -57,6 +59,24 @@ export default {
       overSize: false
     }
   },
+  computed: {
+    forums() {
+      return this.$store.state.site.info.attributes || {}
+    },
+    attachedTypeLimit() {
+      if (this.forums.set_attach) {
+        const limitText = this.forums.set_attach.support_img_ext
+        return limitText.split(',').map(item => '.' + item).join(',')
+      }
+      return ''
+    },
+    attachedSizeLimit() {
+      if (this.forums.set_attach) {
+        return this.forums.set_attach.support_max_size * 1024 * 1024
+      }
+      return 10485760
+    }
+  },
   watch: {
     imageList: {
       handler(val) {
@@ -70,10 +90,10 @@ export default {
   },
   methods: {
     checkSize(file) {
-      const result = file.size < 10485760
+      const result = file.size < this.attachedSizeLimit
       if (!result) {
         this.overSize = true
-        this.$message.error(this.$t('profile.filesizecannotexceed') + '10 MB')
+        this.$message.error(this.$t('profile.filesizecannotexceed') + ` ${this.forums.set_attach.support_max_size} MB`)
       } else this.overSize = false
       return result
     },
@@ -106,17 +126,14 @@ export default {
       this.$emit('imageChange', { key: 'imageList', value: _imageList })
       this.$emit('update:onUploadImage', false)
     },
-    handleError() {
+    handleError(e) {
       this.$emit('update:onUploadImage', false)
-      this.$message.error(this.$t('post.imageUploadFail'))
+      this.handleAttachmentError(e)
     },
-    handleExceed(val) {
-      const elUpload = document.querySelector('.el-upload')
-      if (val.length >= 9) {
-        elUpload.style.display = 'none'
-      } else {
-        elUpload.style.display = 'inline-flex'
-      }
+    handleExceed(fileList) {
+      // el-upload--picture-card 是图片上传框的特定样式, 和 附件上传 区分
+      const elUpload = document.querySelector('.el-upload.el-upload--picture-card')
+      elUpload.style.display = fileList.length >= 9 ? 'none' : 'inline-flex'
     }
   }
 }

@@ -57,16 +57,13 @@
               <span class="text">{{ $t('topic.reply') }}</span>
               <span class="text">{{ comment.user ? comment.user.username : '' }}   </span>
               <span class="timer">{{ formatDate(reply.updatedAt) }}</span>
-              <span v-if="reply.canHide" class="delete-reply" @click="$emit('deleteComment', reply._jv.id)">{{ $t('topic.delete') }}</span>
+              <span v-if="reply.canHide" class="delete-reply" @click.stop="$emit('deleteComment', reply._jv.id)">{{ $t('topic.delete') }}</span>
             </div>
           </div>
           <div class="content-html" @click="showAll($event, replyIndex, replyList)" v-html="formatSummary(reply)" />
         </div>
         <div v-if="comment.replyCount > 3">
-          <div
-            v-if="comment.replyCount !== (replyList[index] || []).length"
-            class="show-all-reply"
-          >
+          <div v-if="comment.replyCount !== (replyList[index] || []).length" class="show-all-reply">
             {{ $t('topic.showOther') }} {{ comment.replyCount - 3 }} {{ $t('topic.item') + $t('topic.reply') }}
           </div>
         </div>
@@ -296,6 +293,7 @@ export default {
           padding-bottom: 20px;
           margin-left: 40px;
           border-bottom: 1px solid $border-color-base;
+          word-break: break-all;
 
           ::v-deep p {
             font-size: 16px;

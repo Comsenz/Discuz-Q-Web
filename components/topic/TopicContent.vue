@@ -16,7 +16,7 @@
         v-for="(image, index) in article.images"
         :key="index"
         class="image"
-        :data-source="image.url"
+        :data-source="unpaid ? '' : image.url"
         :src="image.thumbUrl"
         :alt="image.filename"
         fit="cover"
@@ -172,7 +172,6 @@ export default {
       this.currentAudio.currentTime = ''
     },
     pause() {
-      console.log('pause')
       this.currentAudio.isPlay = false
       this.currentAudio.audio.pause()
     },
@@ -238,6 +237,7 @@ export default {
       }
       .content-html {
         font-size: 16px;
+        word-break: break-all;
         ::v-deep p {
           font-size: 14px;
         }
