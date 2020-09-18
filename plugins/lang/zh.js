@@ -461,7 +461,9 @@ export default {
     sortUpdatedAt: '按评论时间',
     noPoster: '暂无封面',
     total: '共',
-    seeAllImage: '张图片，进入查看全部..'
+    seeAllImage: '张图片，进入查看全部..',
+    hasNewContent: '有 {newThreadsCount}条新发布的内容',
+    clickRefresh: '点击刷新'
   },
   // 站点管理页面
   manage: {
@@ -518,7 +520,10 @@ export default {
     urlType: '链接类型',
     batchOperate: '批量操作',
     operate: '操作',
-    confirmDelete: '确认设为无效?'
+    confirmDelete: '确认设为无效?',
+    modifyFail: '修改失败，无权限设为管理员',
+    circleAge: '圈龄',
+    lastUpdateAt: '最后发言时间'
   },
   // 消息页面
   notice: {
@@ -556,6 +561,7 @@ export default {
     createdAt: '注册时间',
     incomeAt: '收益时间',
     viewDetail: '查看详细',
+    userDetail: '受邀朋友收益',
     incomeTotal: '当前列表涉及金额 ￥{totalMoney}',
     searchPlaceholder: '请输入要搜索的用户名'
   },

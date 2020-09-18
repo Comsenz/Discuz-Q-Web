@@ -15,7 +15,7 @@
           </div>
         </div>
         <div v-if="newThreadsCount > 0" class="new-post">
-          <div class="new-post-cont">有 {{ newThreadsCount }} 条新发布的内容 <span class="refresh" @click="reloadThreadsList">点击刷新</span></div>
+          <div class="new-post-cont">{{ $t('home.hasNewContent', { newThreadsCount }) }} <span class="refresh" @click="reloadThreadsList">{{ $t('home.clickRefresh') }}</span></div>
         </div>
         <div class="post-list">
           <post-item v-for="(item, index) in threadsData" :key="index" :item="item" />
