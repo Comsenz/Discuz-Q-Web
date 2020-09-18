@@ -225,7 +225,7 @@ export default {
       const days = new Date(dateArr[0], dateArr[1], 0).getDate()
       // change_type 10提现冻结，11提现成功，12提现解冻，30注册收入，31打赏收入，32人工收入，50人工支出
       const params = {
-        include: ['user', 'order.user', 'order.thread', 'order.thread.firstPost'],
+        include: 'user,order.user,order.thread,order.thread.firstPost',
         'filter[user]': this.userId,
         'page[number]': this.pageNum2,
         'page[limit]': this.pageSize2,

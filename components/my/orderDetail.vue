@@ -194,7 +194,7 @@ export default {
       const days = new Date(dateArr[0], dateArr[1], 0).getDate()
       // status 0 待付款，1 已付款 ，2取消订单，3支付失败，4 订单已过期
       const params = {
-        include: ['user', 'thread', 'thread.firstPost'],
+        include: 'user,thread,thread.firstPost',
         'filter[user]': this.userId,
         'page[number]': this.pageNum4,
         'page[limit]': this.pageSize4,
