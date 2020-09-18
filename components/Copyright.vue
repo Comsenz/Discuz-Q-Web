@@ -8,7 +8,9 @@
     <div>分享 / 交流 / 共融</div>
     <div class="id">
       <div>{{ forums.set_site ? forums.set_site.site_record : '' }}</div>
-      <div>{{ forums.set_site ? forums.set_site.site_record_code : '' }}</div>
+      <div class="site-record-code">
+        <a href="https://beian.miit.gov.cn/" target="_blank">{{ forums.set_site ? forums.set_site.site_record_code : '' }}</a>
+      </div>
       <span>{{ $t('home.theme') }}: {{ forums.other ? forums.other.count_users : '' }}</span>
       <span>{{ $t('home.invitation') }}: {{ forums.other ? forums.other.count_threads : '' }}</span>
     </div>
@@ -71,6 +73,11 @@ export default {
         &:last-child {
           margin-left: 20px;
         }
+      }
+    }
+    .site-record-code{
+      a:hover{
+        color: $color-blue-deep;
       }
     }
   }

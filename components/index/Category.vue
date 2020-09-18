@@ -1,5 +1,5 @@
 <template>
-  <div class="category-container">
+  <div v-if="list.length > 0" class="category-container">
     <div v-for="(item, index) in list" :key="index" class="category-item" :class="{'active': selectId === (item._jv && item._jv.id), 'loading': postLoading}" @click="onChange(item._jv && item._jv.id)">
       <i v-if="selectId === (item._jv && item._jv.id)" class="el-icon-arrow-left arrow-icon" />
       <div class="flex">

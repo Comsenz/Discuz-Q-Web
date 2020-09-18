@@ -154,6 +154,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import '@/assets/css/variable/color.scss';
 .header {
   height: 65px;
   background: rgba(255, 255, 255, 1);
@@ -220,16 +221,26 @@ export default {
     .h-button {
       width: 60px;
       height: 35px;
-      border-color: #1878f3;
+      border-color: $color-blue-base;
       font-size: 14px;
       border-radius: 2px;
       &.h-button1 {
         background: #ffffff;
-        color: #1878f3;
+        color: $color-blue-base;
+        transition: all 0.2s ease-in-out;
+        &:hover{
+          background: #E5F2FF;
+          border:1px solid #D4E6FC;
+        }
       }
       &.h-button2 {
         color: #fff;
-        background: #1878f3;
+        background: $color-blue-base;
+        color: #fff;
+        &:hover{
+          background:  $color-blue-deep;
+          border-color: $color-blue-deep;
+        }
       }
     }
     .menu-item {
@@ -242,7 +253,7 @@ export default {
         margin-left: 15px;
       }
       &:hover{
-        color: black;
+        color: $color-blue-base;
       }
     }
     .user-name {

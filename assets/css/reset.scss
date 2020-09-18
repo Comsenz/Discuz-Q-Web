@@ -24,7 +24,6 @@ a {
   color: inherit;
   text-decoration: none;
 }
-
 a:hover {
   cursor: pointer;
 }
@@ -157,6 +156,40 @@ table {
   .empty-icon{
     margin-right: 10px;
     font-size: 16px;
+  }
+}
+.load-more{
+  color:  #1878F3;
+  border:1px solid #1878F3;
+  font-size: 16px;
+  text-align: center;
+  padding:12px 0;
+  line-height: 1;
+  cursor: pointer;
+  margin: 20px;
+  border-radius:2px;
+  transition: all 0.2s ease-in-out;
+  &:hover{
+    background: #E5F2FF;
+    border:1px solid #D4E6FC;
+  }
+}
+
+.btn-primary-plain{
+  color:  #1878F3;
+  border:1px solid #1878F3;
+  transition: all 0.2s ease-in-out;
+  &:hover{
+    background: #E5F2FF;
+    border:1px solid #D4E6FC;
+  }
+}
+.btn-primary{
+  background: #1878F3;
+  color: #fff;
+  transition: all 0.2s ease-in-out;
+  &:hover{
+    background: #00479B
   }
 }
 /*# sourceMappingURL=main.css.map */

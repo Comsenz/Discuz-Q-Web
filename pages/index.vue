@@ -14,8 +14,8 @@
             </nuxt-link>
           </div>
         </div>
-        <div v-if="newThreadsCount > 0" class="new-post">
-          <div class="new-post-cont">{{ $t('home.hasNewContent', { newThreadsCount }) }} <span class="refresh" @click="reloadThreadsList">{{ $t('home.clickRefresh') }}</span></div>
+        <div v-if="total > 0" class="new-post">
+          <div class="new-post-cont">{{ $t('home.hasNewContent', { total }) }} <span class="refresh" @click="reloadThreadsList">{{ $t('home.clickRefresh') }}</span></div>
         </div>
         <div class="post-list">
           <post-item v-for="(item, index) in threadsData" :key="index" :item="item" />
@@ -119,7 +119,7 @@ export default {
       fromUserId: '', // 关注人id
       hasMore: false,
       timer: null, // 轮询获取新主题 定时器
-      newThreadsCount: 0 // 新这主题数，通过轮询获取
+      total: 0 // 新的主题数，通过轮询获取
     }
   },
   computed: {
@@ -233,14 +233,14 @@ export default {
         'page[limit]': 1
       }
       this.$store.dispatch('jv/get', ['threads', { params }]).then(data => {
-        this.newThreadsCount = data._jv.json.meta.threadCount - count
-        console.log('新主题数', this.newThreadsCount)
+        this.total = data._jv.json.meta.threadCount - count
+        console.log('新主题数', this.total)
       })
     },
     // 重新加载列表
     reloadThreadsList() {
       this.pageNum = 1
-      this.newThreadsCount = 0
+      this.total = 0
       this.threadsData = []
       this.getThreadsList()
     },
@@ -351,7 +351,7 @@ export default {
       }
       &:hover{
         .top-title{
-          color: #FF0000;
+          color:$color-blue-base;
         }
       }
     }
@@ -370,19 +370,6 @@ export default {
         }
       }
 
-    }
-    .post-list{
-      .load-more{
-        color: $color-blue-base;
-        border:1px solid $color-blue-base;
-        font-size: 16px;
-        text-align: center;
-        padding:12px 0;
-        line-height: 1;
-        cursor: pointer;
-        margin: 20px;
-        border-radius:2px;
-      }
     }
   }
   .cont-right{

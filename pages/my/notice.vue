@@ -247,17 +247,6 @@ export default {
         cursor: pointer;
       }
     }
-    .load-more{
-      color: $color-blue-base;
-      border:1px solid $color-blue-base;
-      font-size: 16px;
-      text-align: center;
-      padding:12px 0;
-      line-height: 1;
-      cursor: pointer;
-      margin: 20px;
-      border-radius:2px;
-    }
   }
 }
 </style>

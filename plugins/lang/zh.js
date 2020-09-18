@@ -462,8 +462,10 @@ export default {
     noPoster: '暂无封面',
     total: '共',
     seeAllImage: '张图片，进入查看全部..',
-    hasNewContent: '有 {newThreadsCount}条新发布的内容',
-    clickRefresh: '点击刷新'
+    hasNewContent: '有 {total}条新发布的内容',
+    clickRefresh: '点击刷新',
+    etc: '等',
+    attachmentTotal: '个附件'
   },
   // 站点管理页面
   manage: {
