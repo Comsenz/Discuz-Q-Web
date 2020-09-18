@@ -27,7 +27,7 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column prop="created_at" :label="$t('invite.createdAt')" sortable="custom">
+            <el-table-column prop="created_at" :label="$t('invite.incomeAt')" sortable="custom">
               <template slot-scope="scope">
                 {{ scope.row.created_at | formatDate }}
               </template>
@@ -129,9 +129,9 @@ export default {
     // 获取累计收益
     getIncomeList() {
       const params = {
-        include: ['sourceUser'],
+        include: 'sourceUser',
         'filter[user]': this.userId,
-        'filter[change_type]': [33, 62, 34],
+        'filter[change_type]': '33, 62, 34',
         'page[number]': 1,
         'page[limit]': 10
       }
@@ -152,9 +152,9 @@ export default {
     getIncomeDetailList() {
       this.loading = true
       const params = {
-        include: ['sourceUser'],
+        include: 'sourceUser',
         'filter[user]': this.userId,
-        'filter[change_type]': [33, 62, 34],
+        'filter[change_type]': '33, 62, 34',
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         'sort': this.sort,
