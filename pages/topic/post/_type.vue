@@ -119,7 +119,7 @@ export default {
     initThreadResource(target, resource, key = '') {
       resource.forEach(item => {
         const attached = {
-          name: key === 'videoList' ? item.file_name : item.attachment,
+          name: key === 'videoList' ? item.file_name : item.fileName,
           url: key === 'videoList' ? item.media_url : item.thumbUrl,
           id: key === 'videoList' ? item.file_id : item._jv.id
         }

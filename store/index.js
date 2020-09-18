@@ -19,8 +19,8 @@ export const modules = {
     {
       preserveJson: true,
       mergeRecords: true,
-      followRelationshipsData: true,
-      clearOnUpdate: true
+      followRelationshipsData: true
+      // clearOnUpdate: true
     }
   ),
   session,

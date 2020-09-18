@@ -100,10 +100,11 @@ export default {
       return !(this.paidInformation.paid || parseFloat(this.paidInformation.price) === 0)
     },
     audioList() {
-      return this.article.attachments.filter(item => item.extension === 'mp3')
+      // MP3/M4A/WAV/AAC
+      return this.article.attachments.filter(item => this.isAudio(item))
     },
     attachmentList() {
-      return this.article.attachments.filter(item => item.extension !== 'mp3')
+      return this.article.attachments.filter(item => !this.isAudio(item))
     }
   },
   watch: {
@@ -118,6 +119,10 @@ export default {
     this.currentAudio.audio = document.getElementById('audio-player')
   },
   methods: {
+    isAudio(item) {
+      const audio = ['MP3', 'M4A', 'WAV', 'AAC']
+      return audio.indexOf(item.extension.toUpperCase()) >= 0
+    },
     formatTopicHTML(html) {
       return s9e.parse(html)
     },
@@ -137,7 +142,6 @@ export default {
       this.showVideoPop = true
     },
     play(file) {
-      console.log('play')
       if (this.currentAudio.id !== file._jv.id) {
         this.resetAudio(this.currentAudio.audio)
         this.currentAudio.url = file.url
