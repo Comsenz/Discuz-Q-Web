@@ -67,12 +67,12 @@ export default {
       status
         .run(() => this.$store.dispatch('jv/get', ['threads', { params }]))
         .then(res => {
-          if (res._jv) {
-            delete res._jv
-          }
           this.loading = false
           this.hasMore = res.length === this.pageSize
           this.data = [...this.data, ...res]
+          if (res._jv) {
+            this.hasMore = this.data.length < res._jv.json.meta.total
+          }
           console.log('当前主题数据', this.data)
         })
     },

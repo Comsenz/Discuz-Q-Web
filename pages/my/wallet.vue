@@ -267,9 +267,9 @@ export default {
       status
         .run(() => this.$store.dispatch('jv/get', `wallet/user/${this.userId}`))
         .then(res => {
+          console.log('钱包信息', res)
           this.dataInfo = res
           this.hasPassword = res.user.canWalletPay
-          console.log('钱包信息', this.dataInfo)
         }, e => this.handleError(e))
     }
   }

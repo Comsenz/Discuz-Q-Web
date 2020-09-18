@@ -161,15 +161,15 @@ export default {
         .run(() => this.$store.dispatch('jv/get', ['follow', { params }]))
         .then(res => {
           console.log('当前用户粉丝列表', res)
-          if (res._jv) {
-            delete res._jv
-          }
           this.loading = false
           this.hasMore = res.length === this.pageSize
           if (type === 'change') {
             this.followerList = res
           } else {
             this.followerList = [...this.followerList, ...res]
+          }
+          if (res._jv) {
+            this.hasMore = this.followerList.length < res._jv.json.meta.total
           }
         })
     },

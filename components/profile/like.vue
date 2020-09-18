@@ -66,13 +66,13 @@ export default {
       status
         .run(() => this.$store.dispatch('jv/get', ['threads/likes', { params }]))
         .then(res => {
-          if (res._jv) {
-            delete res._jv
-          }
           console.log('点赞数据', res)
           this.loading = false
           this.hasMore = res.length === this.pageSize
           this.data = [...this.data, ...res]
+          if (res._jv) {
+            this.hasMore = this.data.length < res._jv.json.meta.total
+          }
         })
     },
     loadMore() {

@@ -333,6 +333,7 @@ export default {
         this.pageNum = 1
         this.getUserList('')
         this.getShieldData()
+        this.getShieldList()
         this.isSearch = false
       })
     },

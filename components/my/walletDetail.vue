@@ -272,7 +272,10 @@ export default {
     },
     // 钱包处理文字
     handleHandle(res) {
+      console.log('文字1', res)
+
       const results = JSON.parse(JSON.stringify(res))
+      console.log('文字', results)
       results.forEach((item, index) => {
         let desc = this.handleTitle(item)
         // 截取42个字
