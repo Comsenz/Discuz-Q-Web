@@ -858,6 +858,7 @@ export default {
         .then(res => {
           this.isRealModify = !this.isRealModify
           this.userinfo()
+          this.$store.dispatch('user/getUserInfo', this.userId)
           this.$message.success(
             this.$t('modify.nameauthensucc')
           )
@@ -987,7 +988,7 @@ export default {
       }
       .usrid {
         color: #8590a6;
-        font-size:14px;
+        font-size: 14px;
       }
     }
     .iden {

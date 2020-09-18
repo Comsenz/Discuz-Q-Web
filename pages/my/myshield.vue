@@ -1,107 +1,167 @@
 <template>
   <div class="shield-container">
-    <el-tabs v-model="activeName">
-      <el-tab-pane
-        :label="isSearch ? $t('profile.addshield'): $t('profile.myshield')"
-        name="all"
-      />
-    </el-tabs>
-    <div
-      v-if="isSearch"
-      class="shieldtop"
-    >
-      <div class="shieldnum">
-        找到"{{ inputVal }}"搜索结果3条
-      </div>
-      <el-input
-        v-model="inputVal"
-        autocomplete="off"
-        size="small"
-        placeholder="请输入要搜索的用户名"
-        class="shieldsearch"
-        @keyup.enter.native="onClickSearch"
-      >
-        <i
-          slot="suffix"
-          class="el-icon-search el-input__icon"
-          @click="onClickSearch"
+    <div v-if="shieldList.length >= 0">
+      <el-tabs v-model="activeName">
+        <el-tab-pane
+          :label="isSearch ? $t('profile.addshield'): $t('profile.myshield')"
+          name="all"
         />
-      </el-input>
-    </div>
-    <div
-      v-else
-      class="shieldtop"
-    >
-      <div class="shieldnum">
-        共屏蔽{{ shieldTotal }}人
-      </div>
-      <el-button
-        type="primary"
-        size="small"
-        class="shieldbtn"
-        @click="addShield"
-      >添加屏蔽用户</el-button>
-    </div>
-    <div
-      v-if="!isSearch"
-      class="shieldtable"
-    >
-      <!-- 黑名单列表表格 -->
-      <el-table
-        v-loading="loading"
-        :data="shieldList"
-        style="width:100%"
+      </el-tabs>
+      <div
+        v-if="isSearch"
+        class="shieldtop"
       >
-        <el-table-column
-          prop="cash_status"
-          label="成员名称"
-          min-width="100"
+        <div :class="userList.length === 0 ? 'shieldnum hide':'shieldnum'">
+          找到<span class="searchusr">"{{ inputVal }}"</span>搜索结果{{ searchTotal }}条
+        </div>
+        <el-input
+          v-model="inputVal"
+          autocomplete="off"
+          size="small"
+          placeholder="请输入要搜索的用户名"
+          class="shieldsearch"
+          @keyup.enter.native="onClickSearch"
         >
-          <template slot-scope="scope">
-            <div class="flex">
-              <avatar
-                :user="{ id: scope.row.id, username: scope.row.username, avatarUrl: scope.row.avatarUrl}"
-                :size="30"
-                :round="true"
-              />
-              <nuxt-link
-                :to="`/profile?userId=${scope.row.id}`"
-                class="user-name"
-              >{{ scope.row.username }}</nuxt-link>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
+          <i
+            slot="suffix"
+            class="el-icon-search el-input__icon"
+            @click="onClickSearch"
+          />
+        </el-input>
+      </div>
+      <div
+        v-else
+        class="shieldtop"
+      >
+        <div class="shieldnum">
+          共屏蔽{{ shieldTotal }}人
+        </div>
+        <el-button
+          type="primary"
+          size="small"
+          class="shieldbtn"
+          @click="addShield"
+        >添加屏蔽用户</el-button>
+      </div>
+      <div
+        v-if="!isSearch"
+        class="shieldtable"
+      >
+        <!-- 黑名单列表表格 -->
+        <el-table
+          v-loading="loading"
+          :data="shieldList"
+          style="width:100%"
+        >
+          <el-table-column
+            label="成员名称"
+            min-width="100"
+          >
+            <template slot-scope="scope">
+              <div class="flex">
+                <avatar
+                  :user="{ id: scope.row.id, username: scope.row.username, avatarUrl: scope.row.avatarUrl}"
+                  :size="30"
+                  :round="true"
+                />
+                <nuxt-link
+                  :to="`/profile?userId=${scope.row.id}`"
+                  class="user-name"
+                >{{ scope.row.username }}</nuxt-link>
+              </div>
+            </template>
+          </el-table-column>
+          <!-- <el-table-column
           label="身份"
           width="140"
-          prop="created_at"
-        />
-        <el-table-column
-          label="操作"
-          width="97"
-          prop="id"
-        >
-          <template slot-scope="scope">
-            <el-button
-              type="text"
-              @click="changeshield(scope.row.id)"
-            >解除屏蔽</el-button>
-          </template>
-        </el-table-column>
+        /> -->
+          <el-table-column
+            label="操作"
+            width="97"
+          >
+            <template slot-scope="scope">
+              <el-button
+                type="text"
+                @click="changeshield(scope.row.id)"
+              >解除屏蔽</el-button>
+            </template>
+          </el-table-column>
 
-      </el-table>
-      <!-- 分页器 -->
-      <el-pagination
-        background
-        :current-page="pageNum"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="shieldTotal"
-        style="margin-top:15px;"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
+        </el-table>
+        <!-- 分页器 -->
+        <el-pagination
+          background
+          :current-page="pageNum"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="shieldTotal"
+          style="margin-top:15px;"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </div>
+      <!-- 搜索结果表格 -->
+      <div
+        v-else
+        class="shieldtable"
+      >
+        <el-table
+          v-loading="loading"
+          :data="userList"
+          style="width:100%"
+        >
+          <el-table-column
+            label="成员名称"
+            min-width="100"
+          >
+            <template slot-scope="scope">
+              <div class="flex">
+                <avatar
+                  :user="{ id: scope.row.id, username: scope.row.username, avatarUrl: scope.row.avatarUrl}"
+                  :size="30"
+                  :round="true"
+                />
+                <nuxt-link
+                  :to="`/profile?userId=${scope.row.id}`"
+                  class="user-name"
+                >{{ scope.row.username }}</nuxt-link>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="身份"
+            width="140"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.groupName }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作"
+            width="97"
+          >
+            <template slot-scope="scope">
+              <el-button
+                type="text"
+                @click="shieldUser(scope.row.id)"
+              >屏蔽Ta</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!-- 分页器 -->
+        <el-pagination
+          background
+          :current-page="pageNum"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="searchTotal"
+          style="margin-top:15px;"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </div>
     </div>
   </div>
 
@@ -126,7 +186,8 @@ export default {
       isSearch: false,
       inputVal: '',
       time: null,
-      userList: []
+      userList: [],
+      searchTotal: 0
     }
   },
   computed: {
@@ -211,16 +272,12 @@ export default {
     onClickSearch(e) {
       this.inputVal = e.target.value
       this.unbundlingArry = []
-      if (this.time) clearTimeout(this.time)
-      this.time = setTimeout(() => {
-        this.userList = []
-        this.pageNum = 1
-        this.getUserList(e.target.value)
-      }, 250)
+      this.userList = []
+      this.pageNum = 1
+      this.getUserList(e.target.value)
     },
     // 搜索用户列表
-    getUserList(key, type) {
-      this.loadingType = 'loading'
+    getUserList(key) {
       const params = {
         include: 'groups',
         sort: 'createdAt',
@@ -233,19 +290,57 @@ export default {
           delete res._jv
         }
         console.log('用户搜索', res)
-        this.isSearch = false
         res.forEach((v, i) => {
           res[i].groupName = v.groups[0] ? v.groups[0].name : ''
         })
-        this.uloadingType = res.length === this.uPageSize ? 'more' : 'nomore'
         // 过滤搜索用户中已屏蔽的用户和当前登录用户
         const data = res.filter(item => this.unbundUserData.indexOf(item.id) === -1)
-        if (type && type === 'clear') {
-          this.userList = data
-        } else {
-          this.userList = [...this.userList, ...data]
-        }
+        this.userList = data
+        this.searchTotal = this.userList.length
       })
+    },
+    // 屏蔽用户
+    shieldUser(uid) {
+      this.uid = uid
+      this.$confirm('是否屏蔽该用户?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.handleShield()
+        console.log(uid)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消屏蔽'
+        })
+      })
+    },
+    handleShield() {
+      const params = {
+        _jv: {
+          type: `users/${this.uid}/deny`
+        }
+      }
+      this.$store.dispatch('jv/post', params).then(() => {
+        if (this.unbundlingID(this.uid)) {
+          this.unbundlingArry.splice(
+            this.unbundlingArry.findIndex(item => item === this.uid),
+            1
+          )
+        }
+        this.inputVal = ''
+        this.pageNum = 1
+        this.getUserList('')
+        this.getShieldData()
+        this.isSearch = false
+      })
+    },
+    // 判断是否已解绑某个用户
+    unbundlingID(uid) {
+      if (this.unbundlingArry && this.unbundlingArry.includes(uid)) {
+        return true
+      }
     }
   }
 }
@@ -284,8 +379,15 @@ export default {
     .shieldsearch {
       width: 225px;
     }
+    .hide {
+      visibility: hidden;
+    }
     .shieldnum {
       color: #777777;
+      .searchusr {
+        color: #000000;
+        font-weight: bold;
+      }
     }
     .shieldbtn {
       color: #fff;
