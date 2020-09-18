@@ -212,13 +212,15 @@ export default {
       this.$emit(`update:payment`, _payment)
     },
     autoHeight() {
-      setTimeout(() => {
-        this.textarea.style.height = 'auto'
-        this.textarea.style.height = this.textarea.scrollHeight + 'px'
-      }, 500)
       this.textarea.onkeyup = function() {
+        // textarea 自动高度，通过 scrollHeight 赋值给 height
+        // 当行数减少是 scrollHeight 只增不减，所以需要先把 height = auto
+        // 但是会引起页面滚动条往上滚动，因为 textarea 高度瞬间减少了
+        // 所以需要记录 oldScroll 重置滚动条
+        const oldScroll = document.scrollingElement.scrollTop
         this.style.height = 'auto'
         this.style.height = this.scrollHeight + 'px'
+        document.scrollingElement.scrollTop = oldScroll
       }
     },
     getSelection() {
@@ -299,10 +301,10 @@ export default {
         position: relative;
         resize: none;
         line-height: 16px;
-        padding: 15px;
+        padding: 15px 15px 20px;
         overflow: hidden;
         overscroll-behavior: contain;
-        transition: all 200ms linear;
+        transition: all 100ms linear;
         &.post { min-height: 200px; }
         &.comment { min-height: 120px; }
         &.reply { min-height: 80px; }
@@ -360,8 +362,8 @@ export default {
 
     .tip {
       position: absolute;
-      bottom: 12px;
-      right: 90px;
+      bottom: 50px;
+      right: 10px;
       color: #D0D4DC;
     }
 

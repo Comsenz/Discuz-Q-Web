@@ -71,6 +71,9 @@ export default {
     },
     forums() {
       return this.$store.state.site.info.attributes || {}
+    },
+    textarea() {
+      return process.client ? document.querySelector(`#textarea`) : ''
     }
   },
   mounted() {
@@ -98,6 +101,8 @@ export default {
         this.payment.price = parseFloat(data.price)
         this.payment.freeWords = parseInt(data.freeWords)
         this.payment.isPaid = parseFloat(data.price) > 0
+        // TODO 重置textarea 待优化
+        this.$nextTick(() => { this.textarea.style.height = this.textarea.scrollHeight + 'px' })
 
         if (data.firstPost.images.length > 0) {
           console.log(data.firstPost.images)
