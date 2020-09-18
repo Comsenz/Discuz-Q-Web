@@ -175,6 +175,7 @@ export default {
       border-bottom: 1px solid #EFEFEF;
       .result-count{
         font-size: 16px;
+        margin-right: 20px;
         .keyword{
           color: #FA5151
         }

@@ -81,9 +81,8 @@ export default {
   }
   .category-item{
     position: relative;
-    padding: 16px 0;
+    padding: 13.5px 0;
     border-bottom: 1px solid #F5F5F5;
-    line-height: 1;
     font-size: 16px;
     color: #6D6D6D;
     cursor: pointer;

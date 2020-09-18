@@ -9,6 +9,7 @@
     </header>
     <div class="container">
       <main class="cont-left">
+        <div class="thread-count">{{ $t('home.threadCount',{total}) }}</div>
         <div class="post-list">
           <post-item v-for="(item, index) in threadsData" :key="index" :item="item" />
           <loading v-if="loading" />
@@ -77,6 +78,7 @@ export default {
       loading: false,
       index_loading: true,
       threadsData: [], // 主题列表
+      total: 0,
       recommendUserData: [], // 推荐用户列表
       pageNum: 1, // 当前页码
       pageSize: 10, // 每页多少条数据
@@ -120,6 +122,7 @@ export default {
       }
       this.$store.dispatch('jv/get', ['threads', { params }]).then(res => {
         this.hasMore = res.length === this.pageSize
+        this.total = res._jv.json.meta.threadCount
         if (this.pageNum === 1) {
           this.threadsData = res
           if (!this.address && res.length > 0) {
@@ -192,6 +195,14 @@ export default {
   .cont-left{
     flex:auto;
     @include background();
+    .thread-count{
+      font-size: 18px;
+      padding: 20px 15px 16.5px;
+      border-bottom: 1px solid $border-color-base;
+      @media screen and ( max-width: 1005px ) {
+        font-size: 16px;
+      }
+    }
   }
   .cont-right{
     margin-left:15px;

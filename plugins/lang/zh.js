@@ -465,7 +465,8 @@ export default {
     hasNewContent: '有 {total}条新发布的内容',
     clickRefresh: '点击刷新',
     etc: '等',
-    attachmentTotal: '个附件'
+    attachmentTotal: '个附件',
+    threadCount: '附近共有 {total} 条内容'
   },
   // 站点管理页面
   manage: {
