@@ -171,7 +171,7 @@ export default {
     attachedTypeLimit() {
       const forums = this.$store.state.site.info.attributes || {}
       if (forums.set_attach) {
-        const limitText = forums.set_attach.support_file_ext + forums.set_attach.support_img_ext
+        const limitText = forums.set_attach.support_file_ext + ',' + forums.set_attach.support_img_ext
         return limitText.split(',').map(item => '.' + item).join(',')
       }
       return ''

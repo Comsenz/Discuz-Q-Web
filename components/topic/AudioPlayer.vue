@@ -14,7 +14,7 @@
         </span>
         <span v-else class="duration-audio">--:--</span>
       </div>
-      <div v-if="currentFile && playing" id="progress" class="progress">
+      <div v-if="currentFile && playing" id="progress" ref="progress" class="progress">
         <div :style="{ width: convertToPercentage() + '%' }" class="progress-item" />
         <div
           id="control-ball"
@@ -63,8 +63,8 @@ export default {
     formatDuration(duration) {
       const minutes = Math.floor(duration / 60)
       const seconds_int = duration - minutes * 60
-      const seconds_str = seconds_int.toString()
-      const seconds = seconds_str.substr(0, 2)
+      let seconds = seconds_int.toString().substr(0, 2)
+      if (seconds[1] === '.') seconds = '0' + seconds[0]
       return minutes + ':' + seconds
     },
     formatCurrentTime(currentTime) {
@@ -78,22 +78,18 @@ export default {
       return (this.currentAudio.currentTime / this.currentAudio.duration) * 100
     },
     onmousedown() {
-      console.log('down')
       window.document.addEventListener('mousemove', this.dragging)
       window.document.addEventListener('mouseup', this.onMouseUp)
     },
     dragging(e) {
-      const progress = document.getElementById('progress')
-      const ball = document.getElementById('control-ball')
-      this.delta = e.clientX - progress.getBoundingClientRect().x
+      this.delta = e.clientX - this.$refs.progress.getBoundingClientRect().x
       if (this.delta < 0) this.delta = 0
       if (this.delta > 290) this.delta = 290
-      ball.style.left = this.delta + 'px'
+      // ball.style.left = this.delta + 'px'
       const time = (this.delta / 290) * this.currentAudio.duration
       this.$emit('seeking', time)
     },
     onMouseUp() {
-      console.log('up')
       const time = (this.delta / 290) * this.currentAudio.duration
       this.$emit('seek', time)
       window.document.removeEventListener('mousemove', this.dragging)
@@ -160,6 +156,10 @@ export default {
           -moz-user-select:none; /*火狐*/
           -webkit-user-select:none; /*webkit浏览器*/
           -ms-user-select:none; /*IE10*/
+          max-width: 235px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
           user-select:none;
           line-height: 20px;
           color: #000000;
