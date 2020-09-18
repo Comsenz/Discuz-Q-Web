@@ -192,9 +192,9 @@ export default {
         return `<font color="09BB07">-￥${row.amount}</font>`
       }
       if (row > 0) {
-        return `<font color="09BB07">+￥${row}</font>`
+        return `<font color="#FA5151">+￥${row}</font>`
       } else {
-        return `<font style="color:#FA5151">-￥${row.substr(1)}</font>`
+        return `<font style="color:#09BB07">-￥${row.substr(1)}</font>`
       }
     },
     // 时间格式化

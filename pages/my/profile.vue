@@ -134,7 +134,7 @@
       </div>
       <div
         v-show="!isSignModify"
-        class="myprofile-btom-sign"
+        :class="userInfo.signature !=='' ?'myprofile-btom-sign':'myprofile-btom-sign signcolor'"
       >
         {{ userInfo.signature ? userInfo.signature : '暂无签名' }}
       </div>
@@ -398,7 +398,7 @@
         <span class="sig">{{ $t('modify.realnametitle') }}</span>
       </div>
       <div class="myprofile-btom2">
-        {{ userInfo && userInfo.realname ?userInfo.realname:'' }}
+        {{ userInfo && userInfo.realname ?userInfo.realname +` (${userInfo.identity})`:'' }}
       </div>
     </div>
   </div>
@@ -904,6 +904,7 @@ export default {
             this.$message.success(this.$t('modify.modifysucc'))
           }
           this.userinfo()
+          this.$store.dispatch('user/getUserInfo', this.userId)
         }, e => this.handleError(e))
     },
     toTopic() {
@@ -1055,6 +1056,9 @@ export default {
     margin-top: 15px;
     color: #000000;
     overflow-wrap: break-word;
+  }
+  .signcolor {
+    color: #8590a6;
   }
   .myprofile-btom2 {
     margin-left: 17px;
