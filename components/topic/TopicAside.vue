@@ -31,8 +31,7 @@ export default {
   props: {
     author: {
       type: Object,
-      default: () => {
-      }
+      default: () => {}
     }
   },
   data() {
@@ -61,12 +60,14 @@ export default {
   watch: {
     author: {
       handler(val) {
+        if (Object.keys(val).length === 0) return
         this.followStatus = val.follow
         this.billboard.forEach(item => {
           item.count = val[item.key]
         })
       },
-      deep: true
+      deep: true,
+      immediate: true
     }
   },
   mounted() {

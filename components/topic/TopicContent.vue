@@ -16,7 +16,7 @@
         v-for="(image, index) in article.images"
         :key="index"
         class="image"
-        :data-source="image.url"
+        :data-source="unpaid ? '' : image.url"
         :src="image.thumbUrl"
         :alt="image.filename"
         fit="cover"
