@@ -170,7 +170,7 @@ export default {
   .disabled {
     background-color: #ededed;
     border-color: #ddd;
-    color: #000000;
+    color: #b5b5b5;
     cursor: not-allowed; // 鼠标变化
   }
 

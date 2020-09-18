@@ -12,9 +12,15 @@
         :class="item.classname"
         @click="currentInfo(index)"
       >
-        <span slot="title" class="menu-title">
+        <span
+          slot="title"
+          class="menu-title"
+        >
           {{ $t(item.content) }}
-          <span v-if="item.index === '/my/notice' && userInfo.unreadNotifications > 0" class="unread-notice">{{ userInfo.unreadNotifications > 99 ? '99+' : userInfo.unreadNotifications }}</span>
+          <span
+            v-if="item.index === '/my/notice' && userInfo.unreadNotifications > 0"
+            class="unread-notice"
+          >{{ userInfo.unreadNotifications > 99 ? '99+' : userInfo.unreadNotifications }}</span>
         </span>
         <span :class="['arrow',isActive(index)]"><i class="el-icon-arrow-right icon" /></span>
       </el-menu-item>
@@ -31,13 +37,13 @@ export default {
   data() {
     return {
       currentNumber: 0,
-      menuList: [{ index: '/my/profile', classname: 'padd', content: 'profile.myprofile' },
+      menuList: [
+        { index: '/my/profile', classname: 'padd', content: 'profile.myprofile' },
         { index: '/my/wallet', classname: 'padd', content: 'profile.mywallet' },
         { index: '/my/favorite', classname: 'padd', content: 'profile.myfavorite' },
         { index: '/my/myshield', classname: 'padd', content: 'profile.myshield' },
         { index: '/my/notice', classname: 'padd', content: 'profile.notice' },
         { index: '/my/circleinfo', classname: 'padd divided', content: 'manage.circleinfo' }]
-
     }
   },
   computed: {
@@ -108,7 +114,7 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
-@import '@/assets/css/variable/color.scss';
+@import "@/assets/css/variable/color.scss";
 .show {
   visibility: initial;
 }
@@ -122,39 +128,40 @@ export default {
   justify-content: flex-start;
   margin: 0;
   min-height: 0px;
-  .el-menu{
+  .el-menu {
     padding-top: 20px;
   }
   .padd {
     padding-left: 30px !important;
     padding: 0 65px;
+    color:#6d6d6d;
     position: relative;
-    @media screen and ( max-width: 1005px ) {
+    @media screen and (max-width: 1005px) {
       padding: 0 40px;
     }
   }
-  .divided{
-    border-top:1px solid $border-color-base;
-    margin-top:15px;
-    padding-top:32px !important;
+  .divided {
+    border-top: 1px solid $border-color-base;
+    margin-top: 15px;
+    padding-top: 32px !important;
   }
   .arrow {
     position: absolute;
     // top:50%;
     right: 20px;
     // transform: translateY(-50%);
-    color: #6D6D6D;
-    @media screen and ( max-width: 1005px ) {
+    color: #6d6d6d;
+    @media screen and (max-width: 1005px) {
       right: 10px;
     }
-    .icon{
-      font-size:12px;
+    .icon {
+      font-size: 12px;
     }
   }
   ::v-deep.el-menu-item {
     height: auto;
     line-height: 1;
-    padding-top:17px;
+    padding-top: 17px;
     padding-bottom: 17px;
   }
   ::v-deep.el-menu-item.is-active {
@@ -167,26 +174,27 @@ export default {
     background: white;
   }
 }
-.menu-title{
+.menu-title {
   display: flex;
   align-items: center;
-  .unread-notice{
-    font-size:12px;
+  font-size: 16px;
+  .unread-notice {
+    font-size: 12px;
     color: #fff;
-    background: #FF0000;
-    padding:0px 6px;
+    background: #ff0000;
+    padding: 0px 6px;
     margin-left: 2px;
-    border-radius:6px;
+    border-radius: 6px;
   }
 }
-.my-main{
-  margin-top:40px;
-  width:100%;
-  min-height:800px;
+.my-main {
+  margin-top: 40px;
+  width: 100%;
+  min-height: 800px;
   flex: 1;
   overflow-x: auto;
-  @media screen and ( max-width: 1005px ) {
-    margin-top:20px;
+  @media screen and (max-width: 1005px) {
+    margin-top: 20px;
   }
 }
 </style>

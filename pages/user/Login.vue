@@ -131,7 +131,6 @@
 import { status } from '@/library/jsonapi-vuex/index'
 import handleError from '@/mixin/handleError'
 import tencentCaptcha from '@/mixin/tencentCaptcha'
-import { SITE_PAY } from '@/common/const'
 
 let QuickLogin = null
 export default {
@@ -199,11 +198,11 @@ export default {
       if (!this.canClick) return
       this.canClick = false
       this.content = interval + this.$t('modify.retransmission')
-      const clock = window.setInterval(() => {
+      const clock = setInterval(() => {
         interval--
         this.content = interval + this.$t('modify.retransmission')
         if (interval < 0) {
-          window.clearInterval(clock)
+          clearInterval(clock)
           this.content = this.$t('modify.sendVerifyCode')
           this.canClick = true
         }
@@ -244,10 +243,10 @@ export default {
           this.isPaid = this.user.paid
         }
         console.log('----this.user-----', this.user)
-        if (this.site_mode !== SITE_PAY || this.isPaid) {
+        if (this.site_mode !== 'pay' || this.isPaid) {
           this.$router.push('/')
         }
-        if (this.site_mode === SITE_PAY && !this.isPaid) {
+        if (this.site_mode === 'pay' && !this.isPaid) {
           this.$router.push('/site/info')
         }
       })
@@ -463,18 +462,18 @@ export default {
       width: 66px;
       text-align: center;
       display: inline-block;
-      color:#606266;
+      color: #606266;
     }
     .title2 {
       margin-right: 10px;
       // margin-right: 15px;
       // margin-left: 15px;
-      color:#606266;
+      color: #606266;
     }
     .title3 {
       margin-left: 12px;
       margin-right: 12px;
-      color:#606266;
+      color: #606266;
     }
     .title:first-child {
       margin-right: 0px;
@@ -492,7 +491,7 @@ export default {
       .quick-container {
         flex: 1;
         text-align: center;
-        .qrtext{
+        .qrtext {
           margin-top: 5px;
         }
         span {
@@ -592,7 +591,7 @@ export default {
   .disabled {
     background-color: #ededed;
     border-color: #ddd;
-    color: #000000;
+    color: #b5b5b5;
     cursor: not-allowed; // 鼠标变化
   }
 }

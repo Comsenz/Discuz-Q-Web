@@ -145,7 +145,6 @@
 <script>
 import handleError from '@/mixin/handleError'
 import { status } from '@/library/jsonapi-vuex/index'
-import { SITE_PAY } from '@/common/const'
 
 const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
 let QuickLogin = null
@@ -249,10 +248,10 @@ export default {
           this.isPaid = this.user.paid
         }
         console.log('----this.user-----', this.user)
-        if (this.site_mode !== SITE_PAY || this.isPaid) {
+        if (this.site_mode !== 'pay' || this.isPaid) {
           this.$router.push('/')
         }
-        if (this.site_mode === SITE_PAY && !this.isPaid) {
+        if (this.site_mode === 'pay' && !this.isPaid) {
           this.$router.push('/site/info')
         }
       })
@@ -578,6 +577,7 @@ export default {
     .inputerr{
       ::v-deep .el-input__inner{
         border: 1px solid #FA5151;
+        color: #fa5151;
       }
     }
     .quick {
@@ -676,7 +676,7 @@ export default {
   .disabled {
     background-color: #ededed;
     border-color: #ddd;
-    color: #000000;
+    color: #b5b5b5;
     cursor: not-allowed; // 鼠标变化
   }
 }

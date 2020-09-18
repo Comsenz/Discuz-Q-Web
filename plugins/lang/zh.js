@@ -508,7 +508,8 @@ export default {
     modifyRole: '配置身份',
     pleaseInputUserName: '请输入成员名称',
     userTotal: '共有{total} 人',
-    searchResult: '找到 "{searchText}" 搜索结果 {total}条',
+    find: '找到',
+    searchResult: ' 搜索结果 {total}条',
     selectUser: '请先选择成员',
     set: '设为',
     userName: '成员名称',
@@ -711,7 +712,7 @@ export default {
       edit: '编辑用户状态',
       agreement: '注册登录表示您同意',
       agreementRegister: '注册协议',
-      agreementPrivacy: '隐私政策 '
+      agreementPrivacy: '隐私政策'
     },
     userFollow: {
       create: '关注用户'
@@ -867,7 +868,8 @@ export default {
     codeforbid2: '您当前已登录了帐号，无法使用邀请码进行注册，请退出后重试。',
     price: '费用',
     role: '角色',
-    to: '至'
+    to: '至',
+    permission: '权限'
   },
   // 搜索
   search: {
