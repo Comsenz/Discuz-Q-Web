@@ -20,7 +20,7 @@
       @click="open('privacy')"
     >{{ `《${this.$t('permission.user.agreementPrivacy')}》` }}
     </span>
-    <reg-message
+    <!-- <reg-message
       v-if="showagree"
       :title="popTitle"
       :content="popDetail"
@@ -28,7 +28,7 @@
     >
       <div class="content">{{ popDetail }}</div>
       <div class="moreheight">.</div>
-    </reg-message>
+    </reg-message> -->
   </div>
 </template>
 
@@ -49,7 +49,6 @@ export default {
   },
   methods: {
     getAttachMent() {
-      // 用户组等改变会改变私信权限
       const params = {
         include: 'users',
         'filter[tag]': 'agreement'
@@ -60,16 +59,7 @@ export default {
       })
     },
     open(type) {
-      console.log(type)
-      if (type === 'register') {
-        this.popTitle = this.$t('permission.user.agreementRegister')
-        this.popDetail = this.forums.agreement.register_content
-        this.showagree = true
-      } else {
-        this.popTitle = this.$t('permission.user.agreementPrivacy')
-        this.popDetail = this.forums.agreement.privacy_content
-        this.showagree = true
-      }
+      this.$router.push(`/user/agreement?type=${type}`)
     },
     rcheck() {
       this.$emit('check', this.checked)
