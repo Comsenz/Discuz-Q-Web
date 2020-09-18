@@ -79,7 +79,7 @@ export default {
       threadsData: [], // 主题列表
       recommendUserData: [], // 推荐用户列表
       pageNum: 1, // 当前页码
-      pageSize: 2, // 每页多少条数据
+      pageSize: 10, // 每页多少条数据
       hasMore: false,
       longitude: '', // 经度
       latitude: '', // 纬度
@@ -130,6 +130,9 @@ export default {
           }
         } else {
           this.threadsData = [...this.threadsData, ...res]
+        }
+        if (res._jv) {
+          this.hasMore = this.threadsData.length < res._jv.json.meta.threadCount
         }
       }, e => {
         this.handleError(e)

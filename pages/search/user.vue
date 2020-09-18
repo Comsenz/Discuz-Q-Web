@@ -93,7 +93,11 @@ export default {
     getCategoryList() {
       this.$store.dispatch('jv/get', ['categories', {}]).then(res => {
         const resData = [...res] || []
-        this.categoryData = [{ _jv: { id: 0 }, name: this.$t('topic.whole') }, ...resData]
+        let thread_count = 0 // 计算全部帖子数
+        resData.forEach(item => {
+          thread_count += item.thread_count
+        })
+        this.categoryData = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), thread_count: thread_count }, ...resData]
       }, e => {
         this.handleError(e)
       })
@@ -119,6 +123,9 @@ export default {
           this.userList = res
         } else {
           this.userList = [...this.userList, ...res]
+        }
+        if (res._jv) {
+          this.hasMore = this.userList.length < res._jv.json.meta.total
         }
       }, e => {
         this.handleError(e)

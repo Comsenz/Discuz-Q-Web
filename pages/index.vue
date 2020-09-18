@@ -187,6 +187,9 @@ export default {
         } else {
           this.threadsData = [...this.threadsData, ...data]
         }
+        if (data._jv) {
+          this.hasMore = this.threadsData.length < data._jv.json.meta.threadCount
+        }
         clearInterval(this.timer)
         this.timer = setInterval(() => {
           this.autoLoadThreads(data._jv.json.meta.threadCount)
@@ -208,7 +211,11 @@ export default {
     getCategoryList() {
       this.$store.dispatch('jv/get', ['categories', {}]).then(res => {
         const resData = [...res] || []
-        this.categoryData = [{ _jv: { id: 0 }, name: this.$t('topic.whole') }, ...resData]
+        let thread_count = 0 // 计算全部帖子数
+        resData.forEach(item => {
+          thread_count += item.thread_count
+        })
+        this.categoryData = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), thread_count: thread_count }, ...resData]
       }, e => {
         this.handleError(e)
       })

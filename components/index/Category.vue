@@ -73,11 +73,11 @@ export default {
 .category-container{
   padding: 0 20px;
   margin-bottom: 16px;
-  max-height: 490px;
-  overflow-y: auto;
+  // max-height: 490px;
+  // overflow-y: auto;
   @media screen and ( max-width: 1005px ) {
     padding: 0 14px;
-    max-height: 470px;
+    // max-height: 470px;
   }
   .category-item{
     position: relative;

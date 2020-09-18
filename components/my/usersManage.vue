@@ -265,6 +265,7 @@ export default {
       ]
       this.loading = true
       this.$store.dispatch('jv/patch', params).then(res => {
+        console.log('res', res)
         if (res) {
           this.$message.success('修改成功')
           this.getUserList()

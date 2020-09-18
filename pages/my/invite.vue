@@ -21,9 +21,9 @@
           <el-table v-loading="loading" :data="incomeDetailList" :default-sort="{prop: 'created_at', order: 'descending'}" @sort-change="sortChange">
             <el-table-column :label="$t('invite.inviteUserName')">
               <template slot-scope="scope">
-                <div v-if="scope.row.user" class="flex">
-                  <avatar :user="{ id: scope.row.user.id, username: scope.row.user.username, avatarUrl: scope.row.user.avatarUrl}" :size="30" :round="true" />
-                  <nuxt-link :to="`/profile?userId=${scope.row.user.id}`" class="user-name">{{ scope.row.user.username }}</nuxt-link>
+                <div v-if="scope.row.sourceUser" class="flex">
+                  <avatar :user="{ id: scope.row.sourceUser.id, username: scope.row.sourceUser.username, avatarUrl: scope.row.sourceUser.avatarUrl}" :size="30" :round="true" />
+                  <nuxt-link :to="`/profile?userId=${scope.row.sourceUser.id}`" class="user-name">{{ scope.row.sourceUser.username }}</nuxt-link>
                 </div>
               </template>
             </el-table-column>
@@ -33,7 +33,9 @@
               </template>
             </el-table-column>
             <el-table-column :label="$t('invite.income')" width="100">
-              <div class="last-table" />
+              <div slot-scope="scope" class="last-table">
+                {{ $t('post.yuanItem') + scope.row.change_available_amount }}
+              </div>
             </el-table-column>
           </el-table>
         </div>

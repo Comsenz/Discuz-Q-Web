@@ -53,6 +53,9 @@ export default {
         } else {
           this.favoriteList = [...this.favoriteList, ...data]
         }
+        if (data._jv) {
+          this.hasMore = this.favoriteList.length < data._jv.json.meta.threadCount
+        }
         console.log('favoriteList', data)
       }, e => {
         this.handleError(e)

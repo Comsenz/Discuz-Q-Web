@@ -56,7 +56,7 @@
             <div class="role">{{ $t('site.role') }}:{{ forums.user && forums.user.groups && forums.user.groups.length > 0 && forums.user.groups[0].name || '' }}</div>
             <div v-if="userInfo.joinedAt" class="join-time">{{ $t('manage.joinedTime') }}:{{ userInfo.joinedAt.substr(0, 10) }}
               <template v-if="forums && forums.set_site.site_mode === 'pay'">,{{ $t('site.periodvalidity') + $t('site.to') + handleExpiredAt(userInfo.expiredAt) }}
-                <template v-if="userInfo.expiredAt">({{ $t('pay.surplus') + handleDays(userInfo.expiredAt) + $t('site.day') }})</template>
+                <template v-if="userInfo.expiredAt">({{ $t('pay.surplus') + (handleDays('userInfo.expiredAt') > 0 ? handleDays('userInfo.expiredAt') : 0) + $t('site.day') }})</template>
               </template>
             </div>
             <div class="permission-list">
@@ -155,6 +155,8 @@ export default {
             this.permissionList = item.permission
           }
         })
+        console.log('当前用户所属用户组', groupsId)
+        console.log('用户组列表', res)
         console.log('用户权限', this.permissionList)
       })
     },

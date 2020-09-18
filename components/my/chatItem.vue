@@ -14,16 +14,20 @@
         <template v-if=" +item.recipient_user_id !== +userId">
           <nuxt-link v-if="item.recipient && item.recipient.username" :to="`/profile?userId=${item.recipient.id}`" class="user-name">{{ item.recipient.username }}</nuxt-link><span class="text">{{ $t('notice.chat') }}</span>
         </template>
-        <div class="time">{{ timerDiff(item.updated_at) + $t('topic.before') }}</div>
+        <div class="time">{{ (item.dialogMessage ? item.dialogMessage.created_at : item.created_at) | formatDate }}</div>
       </div>
       <div class="post-content" @click="showChatBox" v-html="item.dialogMessage && item.dialogMessage.summary" />
     </div>
   </div>
 </template>
 <script>
-import timerDiff from '@/mixin/timerDiff'
+import { time2MinuteOrHour } from '@/utils/time'
 export default {
-  mixins: [timerDiff],
+  filters: {
+    formatDate(date) {
+      return time2MinuteOrHour(date)
+    }
+  },
   props: {
     userId: {
       type: [String, Number],
@@ -63,7 +67,7 @@ export default {
     right:0;
     width: calc(100% - 30px);
     height: 1px;
-    background: #E4E4E4;
+    background: $border-color-base;
     @media screen and ( max-width: 1005px ) {
       width: calc(100% - 15px);
     }
@@ -110,6 +114,7 @@ export default {
       .time{
         color: #B5B5B5;
         font-size: 14px;
+        margin-top: 3px;
       }
     }
     ::v-deep p {
