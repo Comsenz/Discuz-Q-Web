@@ -128,7 +128,7 @@ export default {
         this.articleLoading = false
         this.thread = data
         this.article = data.firstPost
-        this.postId = this.article.jv && this.article._jv.id
+        this.postId = this.article._jv.id
         this.initData()
       }, e => this.handleError(e, 'thread'))
     },

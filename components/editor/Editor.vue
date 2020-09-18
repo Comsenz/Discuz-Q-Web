@@ -46,7 +46,6 @@
             v-if="showUploadAttached"
             :url="url"
             :header="header"
-            :type-limit="attachedTypeLimit"
             :on-upload-attached.sync="onUploadAttached"
             :attached-list="post && post.attachedList"
             @attachedChange="e => onPostContentChange(e.key, e.value)"
@@ -165,14 +164,6 @@ export default {
       if (process.client) {
         const token = window.localStorage.getItem('access_token')
         return { authorization: `Bearer ${token}` }
-      }
-      return ''
-    },
-    attachedTypeLimit() {
-      const forums = this.$store.state.site.info.attributes || {}
-      if (forums.set_attach) {
-        const limitText = forums.set_attach.support_file_ext + ',' + forums.set_attach.support_img_ext
-        return limitText.split(',').map(item => '.' + item).join(',')
       }
       return ''
     },

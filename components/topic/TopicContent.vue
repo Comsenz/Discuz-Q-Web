@@ -172,7 +172,6 @@ export default {
       this.currentAudio.currentTime = ''
     },
     pause() {
-      console.log('pause')
       this.currentAudio.isPlay = false
       this.currentAudio.audio.pause()
     },

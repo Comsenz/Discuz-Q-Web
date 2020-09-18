@@ -7,7 +7,7 @@
       name="file"
       with-credentials
       :file-list="attachedList"
-      :accept="typeLimit"
+      :accept="attachedTypeLimit"
       :limit="3"
       :disabled="attachedList.length > 3"
       class="resources-upload"
@@ -36,10 +36,6 @@ export default {
       type: Boolean,
       default: false
     },
-    typeLimit: {
-      type: String,
-      default: ''
-    },
     url: {
       type: String,
       default: ''
@@ -55,12 +51,42 @@ export default {
       overSize: false
     }
   },
+  computed: {
+    forums() {
+      return this.$store.state.site.info.attributes || {}
+    },
+    attachedTypeLimit() {
+      if (this.forums.set_attach) {
+        // const limitText = this.forums.set_attach.support_file_ext + ',' + this.forums.set_attach.support_img_ext
+        const limitText = this.forums.set_attach.support_file_ext
+        return limitText.split(',').map(item => '.' + item).join(',')
+      }
+      return ''
+    },
+    attachedSizeLimit() {
+      if (this.forums.set_attach) {
+        return this.forums.set_attach.support_max_size * 1024 * 1024
+      }
+      return 10485760
+    }
+  },
+  watch: {
+    attachedList: {
+      handler(val) {
+        this.handleExceed(val)
+      },
+      deep: true
+    }
+  },
+  mounted() {
+    this.handleExceed(this.attachedList)
+  },
   methods: {
     checkSize(file) {
-      const result = file.size < 10485760
+      const result = file.size < this.attachedSizeLimit
       if (!result) {
         this.overSize = true
-        this.$message.error(this.$t('profile.filesizecannotexceed') + '10 MB')
+        this.$message.error(this.$t('profile.filesizecannotexceed') + ` ${this.forums.set_attach.support_max_size} MB`)
       } else this.overSize = false
       return result
     },
@@ -89,9 +115,16 @@ export default {
       this.$emit('attachedChange', { key: 'attachedList', value: _attachedList })
       this.$emit('update:onUploadAttached', false)
     },
-    handleError() {
+    handleError(e) {
       this.$emit('update:onUploadAttached', false)
-      this.$message.error(this.$t('post.attachmentUploadFail'))
+      if (e && e.message && JSON.parse(e.message).errors[0] && JSON.parse(e.message).errors[0].detail[0]) {
+        this.$message.error(JSON.parse(e.message).errors[0].detail[0])
+      } else this.$message.error(this.$t('post.attachmentUploadFail'))
+    },
+    handleExceed(fileList) {
+      // el-upload--text 是附件上传组件的特定样式, 和 图片上传 区分
+      const elUpload = document.querySelector('.el-upload.el-upload--text')
+      elUpload.style.display = fileList.length >= 3 ? 'none' : 'inline-block'
     }
   }
 }
