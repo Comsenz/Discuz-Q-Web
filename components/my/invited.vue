@@ -23,7 +23,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="created_at" :label="$t('invite.incomeAt')" sortable="custom">
+        <el-table-column prop="created_at" :label="$t('invite.createdAt')" sortable="custom">
           <template slot-scope="scope">
             {{ scope.row.created_at | formatDate }}
           </template>

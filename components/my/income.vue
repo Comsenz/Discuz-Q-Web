@@ -101,9 +101,9 @@ export default {
     getIncomeList() {
       this.loading = true
       const params = {
-        include: ['sourceUser'],
+        include: 'sourceUser',
         'filter[user]': this.userId,
-        'filter[change_type]': [33, 62, 34],
+        'filter[change_type]': '33, 62, 34',
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         'filter[source_username]': this.searchText,
