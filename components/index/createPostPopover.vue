@@ -107,6 +107,7 @@ export default {
   }
 }
 .type-container{
+  padding: 5px 0;
   li{
     position: relative;
     list-style: none;

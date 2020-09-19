@@ -17,7 +17,7 @@
           :disabled="siteClose"
           @keyup.enter.native="onClickSearch"
         >
-          <i slot="suffix" class="el-icon-search el-input__icon" @click="onClickSearch" />
+          <svg-icon slot="suffix" type="search" class="el-input__icon" @click="onClickSearch" />
         </el-input>
       </div>
       <!-- 未登录 -->
@@ -204,11 +204,15 @@ export default {
       .el-input__inner {
         border-radius: 2px;
         color: #000;
-        border-color: #EDEDED;
+        border-color: rgba(237,237,237,0.66);
         @media screen and (max-width: 1005px) {
           height: 30px;
           line-height: 30px;
         }
+      }
+      .el-input__icon {
+        width:14px;
+        margin-right: 8px;
       }
       @media screen and (max-width: 1005px) {
         .el-input__icon {
