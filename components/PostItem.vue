@@ -6,7 +6,9 @@
     <avatar v-if="item.user" :user="{ id: item.user.id, username: item.user.username, avatarUrl: item.user.avatarUrl}" class="avatar" />
     <div class="main-cont">
       <div class="top-flex">
-        <nuxt-link v-if="item.user" :to="`/profile?userId=${item.user.id}`" class="user-name">{{ item.user.username }}</nuxt-link>
+        <nuxt-link v-if="item.user" :to="`/profile?userId=${item.user.id}`" class="user-name">{{ item.user.username }}
+          <span v-if="item.user && item.user.groups && item.user.groups.length > 0 && item.user.groups[0]._jv && +item.user.groups[0]._jv.id === 1" class="admin">({{ item.user.groups[0].name }})</span>
+        </nuxt-link>
         <div v-if="item.createdAt" class="time">{{ $t('topic.publishAt') }} {{ item.createdAt | formatDate }}</div>
       </div>
       <template v-if="item.firstPost">
@@ -79,9 +81,9 @@
               </div>
             </share-popover>
           </div>
-          <slot name="bottom-right">
+          <!-- <slot name="bottom-right">
             <div class="reply-btn" @click="toDetail">{{ $t('topic.reply') }}</div>
-          </slot>
+          </slot> -->
         </div>
       </template>
     </div>
@@ -186,7 +188,7 @@ export default {
 .post-container{
   position: relative;
   display: flex;
-  padding:20.5px 20px 22.5px;
+  padding:20.5px 20px 30px;
   border-bottom: 1px solid $border-color-base;
   &:hover{
     background: rgba(229, 242, 255, .3);
@@ -211,14 +213,20 @@ export default {
     .user-name{
       font-size:16px;
       font-weight: bold;
+      display: flex;
       flex: 0 0 60%;
       @include text-hidden();
       @media screen and ( max-width: 1005px ) {
         font-size:14px;
       }
+      .admin{
+        color: $font-color-grey;
+        font-size: 12px;
+        margin-left: 5px;
+      }
     }
     .time{
-      color: #8590A6;
+      color: $font-color-grey;
       font-size:12px;
     }
     .title{
@@ -238,6 +246,7 @@ export default {
       color: #000;
       flex: 0 0 60%;
       max-height: 96px;
+      padding-bottom: 10px;
       ::v-deep p {
         font-size: 16px !important;
       }
@@ -247,6 +256,9 @@ export default {
       }
       ::v-deep a {
         color: $color-blue-base;
+        &:hover {
+          border-bottom: 1px solid $color-blue-base;
+        }
       }
       @media screen and ( max-width: 1005px ) {
         font-size:14px !important;
@@ -341,7 +353,7 @@ export default {
       transition: all 0.1s ease-in-out;
       &:hover{
         background-color: #E5F2FF;
-        color: #8590A6;
+        color: $font-color-grey;
       }
       .flex{
         display: flex;
@@ -355,16 +367,17 @@ export default {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-top: 20px;
+      margin-top: 26px;
       @media screen and ( max-width: 1005px ) {
         font-size:12px;
       }
       .left{
         display: flex;
         align-items: center;
+        width: 100%;
+        justify-content: space-between;
         .btn{
           color: $font-color-grey;
-          margin-right:36px;
           cursor: pointer;
           &:hover{
             color:$color-blue-base;

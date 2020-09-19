@@ -7,7 +7,7 @@ const tags = {
         return text.replace(regexp, match => {
             return match.replace(regexp, (content, value, text) => {
                 // const href = `/topic/content?id=${value}`;
-                return `<a href="javascript:;" class="content-topic">${text}</a> `;
+                return `<span href="javascript:;" class="content-topic" style="color: #1878F3">${text}</span> `;
             });
         });
     },

@@ -64,7 +64,7 @@ export default {
   name: 'Post',
   layout: 'custom_layout',
   mixins: [handleError],
-  async asyncData({ params, store }) {
+  async asyncData({ app, params, store }) {
     try {
       const threadData = await store.dispatch('jv/get', [`threads/${params.id}`, { params: { include: threadInclude }}])
       return { thread: threadData, article: threadData.firstPost, postId: threadData.firstPost._jv.id }
@@ -272,6 +272,11 @@ export default {
     afterDeleted() {
       this.$message({ typeInformation: 'success', message: this.$t('topic.deleteSuccessAndJumpToBack') })
       setTimeout(() => { this.$router.push('/') }, 1000)
+    }
+  },
+  head() {
+    return {
+      title: this.thread && this.thread.title || this.thread && this.thread.firstPost && this.thread.firstPost.summaryText || '主题详情页'
     }
   }
 }

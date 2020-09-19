@@ -66,6 +66,18 @@
             </div>
           </div>
           <div class="content-html" @click="showAll($event, replyIndex, replyList)" v-html="formatSummary(reply)" />
+          <div v-if="reply.images && reply.images.length > 0" v-viewer="{url: 'data-source'}" class="images" @click.stop="() => {}">
+            <el-image
+              v-for="(image, imageIndex) in reply.images"
+              :key="imageIndex"
+              style="width: 100px; height: 100px;border-radius: 5px; margin-right: 10px; margin-bottom: 10px"
+              :src="image.thumbUrl"
+              :alt="image.filename"
+              :data-source="image.url"
+              fit="contain"
+            />
+          </div>
+          <div class="line" />
         </div>
         <div v-if="comment.replyCount > 3">
           <div v-if="comment.replyCount !== (replyList[index] || []).length" class="show-all-reply">
@@ -194,6 +206,9 @@ export default {
         color: $color-blue-base;
         > .delete {
           cursor: pointer;
+          &:hover {
+            color: $color-blue-deep;
+          }
         }
         > .checking {
           margin-left: 10px;
@@ -220,6 +235,9 @@ export default {
 
         ::v-deep a {
           color: $color-blue-base;
+          &:hover {
+            border-bottom: 1px solid $color-blue-base;
+          }
         }
       }
 
@@ -297,6 +315,9 @@ export default {
               font-size: 16px;
               color: $color-blue-base;
               float: right;
+              &:hover {
+                color: $color-blue-deep;
+              }
             }
 
             > .timer {
@@ -315,9 +336,8 @@ export default {
 
         > .content-html {
           margin-top: 10px;
-          padding-bottom: 20px;
+          margin-bottom: 20px;
           margin-left: 40px;
-          border-bottom: 1px solid $border-color-base;
           word-break: break-all;
 
           ::v-deep p {
@@ -330,7 +350,22 @@ export default {
 
           ::v-deep a {
             color: $color-blue-base;
+            &:hover {
+              border-bottom: 1px solid $color-blue-base;
+            }
           }
+        }
+
+        > .images {
+          max-width: 330px;
+          margin-left: 40px;
+          margin-bottom: 20px;
+        }
+
+        > .line {
+          margin-left: 40px;
+          background: $border-color-base;
+          height: 1px;
         }
       }
       .show-all-reply {

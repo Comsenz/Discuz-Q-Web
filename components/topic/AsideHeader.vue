@@ -12,7 +12,7 @@
       </div>
     </div>
     <div v-if="canOpera" class="buttons">
-      <el-button :loading="followLoading" @click="followStatus === 0 ? $emit('follow') : $emit('unFollow')">
+      <el-button type="primary" :loading="followLoading" @click="followStatus === 0 ? $emit('follow') : $emit('unFollow')">
         {{ followStatus === 0 ? '+ ' + $t('profile.following') : followStatus === 1 ? $t('profile.followed') : $t('profile.mutualfollow') }}
       </el-button>
       <el-button @click="openChatBox">{{ $t('topic.sendMessage') }}</el-button>
@@ -68,6 +68,7 @@ export default {
   },
   methods: {
     getAuthorInfo() {
+      if (!(this.author && this.author._jv && this.author._jv.id)) return
       return this.$store.dispatch('jv/get', [`users/${this.author._jv.id}`, { params: { include }}]).then(res => {
         if (res.dialog) this.dialog.id = res.dialog._jv.id
         this.dialog.name = this.author.username
@@ -142,12 +143,10 @@ export default {
 
         &:nth-child(1) {
           color: white;
-          background: $color-blue-base;
         }
 
         &:nth-child(2) {
           color: $font-color-grey;
-          border: 1px solid $border-color-base;
         }
       }
 

@@ -115,11 +115,11 @@ export default {
   }
   .arrow-icon{
     position: absolute;
-    top:50%;
-    left: -12px;
+    top:55%;
+    left: -13px;
     transform: translateY(-50%);
     color: $color-blue-base;
-    font-size: 8px;
+    font-size: 12px;
   }
 
 }

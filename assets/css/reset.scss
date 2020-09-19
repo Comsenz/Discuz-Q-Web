@@ -189,7 +189,7 @@ table {
   color: #fff;
   transition: all 0.2s ease-in-out;
   &:hover{
-    background: #00479B
+    background: #006CD1;
   }
 }
 //el-select 选中颜色
@@ -199,3 +199,13 @@ table {
 /*# sourceMappingURL=main.css.map */
 
 /*# sourceMappingURL=reset.css.map */
+
+/* el-button 颜色 */
+.el-button.el-button--primary {
+  border: none !important;
+  background: #1878F3 !important;
+  &:hover {
+    border: none !important;
+    background: #006CD1 !important;
+  }
+}

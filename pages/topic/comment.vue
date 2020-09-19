@@ -18,16 +18,12 @@
           <avatar-component :size="40" round :author="thread.user || {}">
             {{ timerDiff(thread.createdAt) + $t('topic.before') }} ..
           </avatar-component>
-          <div v-show="thread && thread.firstPost" class="content-html" v-html="thread.firstPost.summary" />
+          <div v-show="thread && thread.firstPost" class="content-html" v-html="thread && thread.firstPost && thread.firstPost.summary || ''" />
           <nuxt-link :to="`/topic/${thread._jv ? thread._jv.id : ''}`" class="view-more">{{ $t('topic.viewDetail') }}</nuxt-link>
           <svg-icon v-if="thread && thread.isEssence" style="font-size: 50px;" type="essence-comment" class="essence" />
         </div>
         <div id="reply" class="container-reply">
-          <comment-header
-            v-if="replyList.length > 0"
-            :comment-count="replyList.length"
-            :is-positive-sort.sync="isPositiveSort"
-          />
+          <comment-header v-if="replyList.length > 0" :comment-count="replyList.length" :is-positive-sort.sync="isPositiveSort" />
           <div v-else class="without-comment">{{ $t('topic.noComment') }}</div>
           <div v-loading="replyLoading">
             <reply-list :reply-list="replyList || []" @delete="deleteComment" @onLike="onLike" />
@@ -35,7 +31,7 @@
         </div>
       </div>
     </main>
-    <topic-aside :author="thread.user || {}" />
+    <topic-aside :author="thread && thread.user || {}" />
   </div>
 </template>
 
@@ -96,6 +92,7 @@ export default {
   methods: {
     getThread() {
       return this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include: threadInclude }}]).then(response => {
+        console.log(response, '12')
         if (response.isDeleted) return this.$router.push('/404')
         this.thread = response
       }, e => this.handleError(e))
@@ -147,6 +144,11 @@ export default {
       return this.$store.dispatch('jv/patch', params).then(data => {
         this.$set(this.replyList, index, data)
       }, e => this.handleError(e))
+    }
+  },
+  head() {
+    return {
+      title: this.comment ? this.comment.summaryText : '评论详情页'
     }
   }
 }
@@ -207,6 +209,9 @@ export default {
 
             ::v-deep a {
               color: $color-blue-base;
+              &:hover {
+                border-bottom: 1px solid $color-blue-base;
+              }
             }
           }
           > .view-more {
