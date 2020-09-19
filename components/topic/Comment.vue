@@ -29,7 +29,7 @@
 </template>
 
 <script>
-const postInclude = 'user,replyUser,images,thread,user.groups,thread.category,thread.firstPost,lastThreeComments,lastThreeComments.user,lastThreeComments.replyUser,deletedUser,lastDeletedLog'
+const postInclude = 'user,replyUser,images,thread,user.groups,thread.category,thread.firstPost,lastThreeComments,lastThreeComments.user,lastThreeComments.replyUser,deletedUser,lastDeletedLog,lastThreeComments.images'
 import publishResource from '@/mixin/publishResource'
 import postLegalityCheck from '@/mixin/postLegalityCheck'
 import handleError from '@/mixin/handleError'
@@ -80,6 +80,7 @@ export default {
         sort: this.isPositiveSort ? '-createdAt' : 'createdAt',
         include: postInclude
       }}]).then(data => {
+        console.log(data, 'data')
         this.commentList = data
         this.postCount = data.length > 0 ? (data[0].thread.postCount - 1) : 0
       }, e => this.handleError(e)).finally(() => { this.loading = false })

@@ -23,11 +23,7 @@
           <svg-icon v-if="thread && thread.isEssence" style="font-size: 50px;" type="essence-comment" class="essence" />
         </div>
         <div id="reply" class="container-reply">
-          <comment-header
-            v-if="replyList.length > 0"
-            :comment-count="replyList.length"
-            :is-positive-sort.sync="isPositiveSort"
-          />
+          <comment-header v-if="replyList.length > 0" :comment-count="replyList.length" :is-positive-sort.sync="isPositiveSort" />
           <div v-else class="without-comment">{{ $t('topic.noComment') }}</div>
           <div v-loading="replyLoading">
             <reply-list :reply-list="replyList || []" @delete="deleteComment" @onLike="onLike" />
@@ -207,6 +203,9 @@ export default {
 
             ::v-deep a {
               color: $color-blue-base;
+              &:hover {
+                border-bottom: 1px solid $color-blue-base;
+              }
             }
           }
           > .view-more {

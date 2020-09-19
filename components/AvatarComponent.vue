@@ -46,8 +46,9 @@ export default {
         font-size: 16px;
         font-weight: bold;
         > .group {
+          font-weight: normal;
           white-space: nowrap;
-          font-size: 16px;
+          font-size: 12px;
           line-height: 20px;
           color: #AAAAAA;
         }

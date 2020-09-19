@@ -158,6 +158,9 @@ export default {
 
           ::v-deep a {
             color: $color-blue-base;
+            &:hover {
+              border-bottom: 1px solid $color-blue-base;
+            }
           }
         }
 

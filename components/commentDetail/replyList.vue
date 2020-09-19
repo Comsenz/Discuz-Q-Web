@@ -83,6 +83,7 @@ export default {
       margin-left: 60px;
 
       > .content-html {
+        line-height: 24px;
         word-break: break-all;
         margin-top: 10px;
 
@@ -96,6 +97,9 @@ export default {
 
         ::v-deep a {
           color: $color-blue-base;
+          &:hover {
+            border-bottom: 1px solid $color-blue-base;
+          }
         }
       }
 

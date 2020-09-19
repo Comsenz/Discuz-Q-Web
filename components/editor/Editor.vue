@@ -273,6 +273,37 @@ export default {
 <style lang="scss" scoped>
   @import '@/assets/css/variable/color.scss';
 
+  /* editor placeholder */
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    -webkit-border-radius: 100px;
+  }
+
+  ::-webkit-scrollbar-thumb:active {
+    background: rgba(0, 0, 0, 0.4);
+    -webkit-border-radius: 100px;
+  }
+
+  ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    font-size: 16px;
+    color: #8590A6;
+  }
+
+  ::-moz-placeholder { /* Firefox 19+ */
+    font-size: 16px;
+    color: #8590A6;
+  }
+
+  :-ms-input-placeholder { /* IE 10+ */
+    font-size: 16px;
+    color: #8590A6;
+  }
+
+  :-moz-placeholder { /* Firefox 18- */
+    font-size: 16px;
+    color: #8590A6;
+  }
+
   .editor {
     width: 100%;
     margin-top: 20px;
