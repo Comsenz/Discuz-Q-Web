@@ -146,6 +146,11 @@ export default {
       this.userList = []
       this.getUserList()
     }
+  },
+  head() {
+    return {
+      title: this.$t('search.search')
+    }
   }
 }
 </script>

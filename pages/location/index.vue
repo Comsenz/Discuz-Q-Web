@@ -153,7 +153,7 @@ export default {
   },
   head() {
     return {
-      title: '位置信息'
+      title: this.$t('home.location')
     }
   }
 }
