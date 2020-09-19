@@ -87,7 +87,7 @@
         type="primary"
         class="r-button"
         @click="tologin"
-      >{{ $t('site.join') }}{{ $t('site.site') }}</el-button>
+      >{{ $t('site.joinnow') }}</el-button>
 
     </div>
     <!-- <div

@@ -15,10 +15,17 @@
         @visible-change="visibile => isManagementDrop = visibile"
       >
         <div :class="{'management': true, 'on-drop': isManagementDrop}">
-          <svg-icon type="setting" class="icon-setting" style="font-size: 16px" />
+          <svg-icon
+            type="setting"
+            class="icon-setting"
+            style="font-size: 16px"
+          />
           <span> {{ $t('topic.management') }} </span>
         </div>
-        <el-dropdown-menu slot="dropdown" style="padding: 0 10px">
+        <el-dropdown-menu
+          slot="dropdown"
+          style="padding: 0 10px"
+        >
           <el-dropdown-item
             v-for="(item, index) in managementList"
             :key="index"
@@ -28,10 +35,29 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <div v-if="thread.isEssence" class="essence">
-        <svg-icon style="font-size: 51px;" type="essence" />
+      <div
+        class="report"
+        @click="reportClick"
+      >
+        <i class="el-icon-warning-outline warning" />
+        {{ $t('report.reportTitle') }}
+      </div>
+      <div
+        v-if="thread.isEssence"
+        class="essence"
+      >
+        <svg-icon
+          style="font-size: 51px;"
+          type="essence"
+        />
       </div>
     </div>
+    <topic-report
+      v-if="isReport"
+      :thread-id="thread._jv.id"
+      :type="1"
+      @close="isReport = false"
+    />
   </div>
 </template>
 
@@ -44,11 +70,11 @@ export default {
   props: {
     author: {
       type: Object,
-      default: () => {}
+      default: () => { }
     },
     thread: {
       type: Object,
-      default: () => {}
+      default: () => { }
     },
     managementList: {
       type: Array,
@@ -57,7 +83,8 @@ export default {
   },
   data() {
     return {
-      isManagementDrop: false
+      isManagementDrop: false,
+      isReport: false
     }
   },
   methods: {
@@ -72,51 +99,66 @@ export default {
         cancelButtonText: this.$t('discuzq.msgBox.cancel'),
         type: 'warning'
       }).then(() => this.$emit('managementSelected', item))
+    },
+    reportClick() {
+      this.isReport = true
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/css/variable/color.scss';
+@import "@/assets/css/variable/color.scss";
 
-  .el-dropdown-menu__item:hover {
-    background: #ffffff;
-    color: $color-blue-base;
-  }
-  .title {
-    height: 50px;
+.el-dropdown-menu__item:hover {
+  background: #ffffff;
+  color: $color-blue-base;
+}
+.title {
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+
+  > .container-management {
     display: flex;
-    justify-content: space-between;
+    .report {
+      margin-top: 5px;
+      font-size: 16px;
+      line-height: 16px;
+      cursor: pointer;
+      color: #d0d4dc;
+      margin-left: 20px;
+      height: 16px;
+      .warning {
+        height: 16px;
+      }
+    }
+    > .dropdown {
+      height: 20px;
 
-    > .container-management {
-      display: flex;
-      > .dropdown {
-        height: 20px;
+      > .management {
+        margin-top: 5px;
+        font-size: 16px;
+        line-height: 16px;
+        cursor: pointer;
+        color: $font-color-grey;
 
-        > .management {
-          margin-top: 5px;
-          font-size: 16px;
-          line-height: 16px;
-          cursor: pointer;
-          color: $font-color-grey;
+        &:focus {
+          border: none;
+          outline: none;
+        }
 
-          &:focus {
-            border: none;
-            outline: none;
-          }
-
-          &.on-drop {
-            color: $color-blue-base;
-            > .icon-setting {
-              fill: $color-blue-base;
-            }
+        &.on-drop {
+          color: $color-blue-base;
+          > .icon-setting {
+            fill: $color-blue-base;
           }
         }
       }
-      > .essence {
-        transform: translate(10px, -20px);
-      }
+    }
+    > .essence {
+      transform: translate(10px, -20px);
     }
   }
+}
 </style>

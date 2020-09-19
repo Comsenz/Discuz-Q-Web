@@ -35,6 +35,7 @@
             </span>
           </div>
           <div v-if="comment.canHide" class="right" @click="$emit('deleteComment', comment._jv.id)">{{ $t('topic.delete') }}</div>
+          <div class="report" @click="toShield(comment._jv.id)">举报</div>
         </div>
       </div>
       <editor
@@ -69,6 +70,7 @@
         </div>
       </div>
     </div>
+    <topic-report v-if="isShield" :thread-id="threadId" :type="2" :comment-id="commentId" @close="isShield = false" />
   </div>
 </template>
 
@@ -102,7 +104,9 @@ export default {
       replyType: { type: 4, textLimit: 450, showPayment: false, showTitle: false, showImage: true, showVideo: false,
         showAttached: false, showMarkdown: false, showEmoji: true, showTopic: false, showCaller: true },
       showAllReply: false,
-      replyLoading: false
+      replyLoading: false,
+      isShield: false,
+      commentId: ''
     }
   },
   watch: {
@@ -153,6 +157,10 @@ export default {
         this.postLegalityCheck(response, this.$t('topic.replyPublishSuccess'))
         this.$emit('replyPublish')
       }, e => this.handleError(e)).finally(() => { this.onReplyPublish = false })
+    },
+    toShield(commentId) {
+      this.isShield = true
+      this.commentId = commentId
     }
   }
 }
@@ -234,6 +242,10 @@ export default {
         > .right {
           cursor: pointer;
           color: $color-blue-base;
+        }
+        .report{
+          color:#d0d4dc;
+          cursor: pointer;
         }
 
       }

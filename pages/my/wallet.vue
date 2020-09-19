@@ -4,7 +4,20 @@
     <div class="mywallet-top">
       <div class="mywallet-topitem">
         <div class="margbtm">{{ $t('profile.availableamount') }}</div>
-        <div class="amount">{{ `¥ ${dataInfo && dataInfo.available_amount || 0.0}` }}
+        <div
+          v-if="dataInfo.available_amount > 0"
+          class="amount"
+          style="color:#1878F3;"
+        >{{ `¥ ${dataInfo && dataInfo.available_amount || 0.0}` }}
+          <span
+            class="availmount"
+            @click="showWithdraw"
+          >{{ $t('modify.withdratitle') }}</span>
+        </div>
+        <div
+          v-else
+          class="amount"
+        >{{ `¥ ${dataInfo && dataInfo.available_amount || 0.0}` }}
           <span
             class="availmount"
             @click="showWithdraw"

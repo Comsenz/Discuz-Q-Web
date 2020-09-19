@@ -32,7 +32,9 @@ import {
   InfiniteScroll,
   Upload,
   Progress,
-  Badge
+  Badge,
+  RadioGroup,
+  Radio
 } from 'element-ui'
 
 Vue.use(Button, { locale })
@@ -63,5 +65,8 @@ Vue.use(InfiniteScroll, { locale })
 Vue.use(Upload, { locale })
 Vue.use(Progress, { locale })
 Vue.use(Badge, { locale })
+Vue.use(RadioGroup, { locale })
+Vue.use(Radio, { locale })
+
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm

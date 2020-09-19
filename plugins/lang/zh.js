@@ -465,7 +465,8 @@ export default {
     hasNewContent: '有 {total}条新发布的内容',
     clickRefresh: '点击刷新',
     etc: '等',
-    attachmentTotal: '个附件'
+    attachmentTotal: '个附件',
+    threadCount: '附近共有 {total} 条内容'
   },
   // 站点管理页面
   manage: {
@@ -857,6 +858,7 @@ export default {
     myauthority: '我的权限',
     inviteyouas: '邀请您，作为',
     join: '加入',
+    joinnow: '立即加入',
     accepttheinvitationandbecome: '接受邀请，成为',
     permanent: '永久有效',
     continueResgister: '继续注册',
@@ -933,5 +935,15 @@ export default {
     loginSuccess: '登录成功',
     loginBindSuccess: '登录绑定成功',
     pleaseLogin: '请登录'
+  },
+  // 举报
+  report: {
+    reportTitle: '举报',
+    pleaseClickReasons: '请点击举报理由',
+    otherReason: '其他理由...',
+    confirm: '确认',
+    cancel: '取消',
+    enterOtherReason: '请输入其他理由',
+    reportSucceed: '举报成功'
   }
 }
