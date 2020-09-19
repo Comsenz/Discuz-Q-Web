@@ -15,49 +15,29 @@
         @visible-change="visibile => isManagementDrop = visibile"
       >
         <div :class="{'management': true, 'on-drop': isManagementDrop}">
-          <svg-icon
-            type="setting"
-            class="icon-setting"
-            style="font-size: 16px"
-          />
+          <svg-icon type="setting" class="icon-setting" style="font-size: 16px" />
           <span> {{ $t('topic.management') }} </span>
         </div>
-        <el-dropdown-menu
-          slot="dropdown"
-          style="padding: 0 10px"
-        >
+        <el-dropdown-menu slot="dropdown" style="padding: 0 10px">
           <el-dropdown-item
             v-for="(item, index) in managementList"
             :key="index"
             :command="{command: item.command ,item}"
             style="border-bottom: 1px solid #EDEDED; width: 98px; text-align: center"
-          >{{ item.text }}
+          >
+            {{ item.text }}
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <div
-        class="report"
-        @click="reportClick"
-      >
-        <i class="el-icon-warning-outline warning" />
+      <div class="report" @click="reportClick">
+        <svg-icon type="report" class="icon-setting" style="font-size: 16px" />
         {{ $t('report.reportTitle') }}
       </div>
-      <div
-        v-if="thread.isEssence"
-        class="essence"
-      >
-        <svg-icon
-          style="font-size: 51px;"
-          type="essence"
-        />
+      <topic-report v-if="isReport" :thread-id="thread._jv.id" :type="1" @close="isReport = false" />
+      <div v-if="thread.isEssence" class="essence">
+        <svg-icon style="font-size: 51px;" type="essence" />
       </div>
     </div>
-    <topic-report
-      v-if="isReport"
-      :thread-id="thread._jv.id"
-      :type="1"
-      @close="isReport = false"
-    />
   </div>
 </template>
 

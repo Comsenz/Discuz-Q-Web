@@ -5,7 +5,10 @@
         <avatar-component :author="comment.user" :size="45">
           {{ timerDiff(comment.updatedAt) + $t('topic.before') }}..
         </avatar-component>
-        <div v-if="comment.isApproved === 0" class="checking">{{ $t('topic.inReview') }}</div>
+        <div class="management">
+          <div v-if="comment.canHide" class="delete" @click="$emit('deleteComment', comment._jv.id)">{{ $t('topic.delete') }}</div>
+          <div v-if="true" class="checking">{{ $t('topic.inReview') }}</div>
+        </div>
       </div>
       <div class="container-detail">
         <div class="content-html" @click="showAll($event, comment)" v-html="formatSummary(comment)" />
@@ -34,8 +37,7 @@
               <span v-if="comment.replyCount > 0 " class="text">{{ $t('topic.replyAlready') + ' ' + comment.replyCount }}</span>
             </span>
           </div>
-          <div v-if="comment.canHide" class="right" @click="$emit('deleteComment', comment._jv.id)">{{ $t('topic.delete') }}</div>
-          <div class="report" @click="toShield(comment._jv.id)">举报</div>
+          <div class="report" @click="toShield(comment._jv.id)">{{ $t('report.reportTitle') }}</div>
         </div>
       </div>
       <editor
@@ -184,9 +186,17 @@ export default {
       display: flex;
       justify-content: space-between;
 
-      > .checking {
+      > .management{
         font-size: 16px;
-        color: #FA5151;
+        display: flex;
+        color: $color-blue-base;
+        > .delete {
+          cursor: pointer;
+        }
+        > .checking {
+          margin-left: 10px;
+          color: #FA5151;
+        }
       }
     }
 
@@ -239,15 +249,9 @@ export default {
             }
           }
         }
-        > .right {
-          cursor: pointer;
-          color: $color-blue-base;
-        }
-        .report{
-          color:#d0d4dc;
+        > .report {
           cursor: pointer;
         }
-
       }
     }
 
@@ -281,7 +285,7 @@ export default {
 
             > .delete-reply {
               cursor: pointer;
-              font-size: 14px;
+              font-size: 16px;
               color: $color-blue-base;
               float: right;
             }
