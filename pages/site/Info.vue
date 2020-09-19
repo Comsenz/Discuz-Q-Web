@@ -12,8 +12,8 @@
         <span class="color">{{ $t('post.paymentAmount') }}</span><span class="paymoney">{{ '¥' + ` ${site_price} ` }}元</span>
       </p>
       <p>
-        <span class="date color">{{ $t('site.periodvalidity') }}</span><span class="workdate">自加入起{{ forums.set_site && forums.set_site.site_expire
-          ? (forums.set_site && forums.set_site.site_expire) + $t('site.day')
+        <span class="date color">{{ $t('site.periodvalidity') }}</span><span class="workdate">自加入起 {{ forums.set_site && forums.set_site.site_expire
+          ? (forums.set_site && forums.set_site.site_expire ) + ` ${$t('site.day')}`
           : $t('site.permanent') }}</span>
       </p>
     </div>
@@ -113,9 +113,11 @@
 
 <script>
 import handleError from '@/mixin/handleError'
+import timerDiff from '@/mixin/timerDiff'
+
 let payWechat = null
 export default {
-  mixins: [handleError],
+  mixins: [handleError, timerDiff],
 
   data() {
     return {
@@ -134,6 +136,7 @@ export default {
     }
   },
   mounted() {
+    console.log(this.forums.set_site.site_install)
     this.userinfo()
     this.site_price = this.forums && this.forums.set_site && this.forums.set_site.site_price ? (1 * this.forums.set_site.site_price).toFixed(2) : 0
   },
