@@ -247,6 +247,9 @@ export default {
       }
       ::v-deep a {
         color: $color-blue-base;
+        &:hover {
+          border-bottom: 1px solid $color-blue-base;
+        }
       }
       @media screen and ( max-width: 1005px ) {
         font-size:14px !important;
