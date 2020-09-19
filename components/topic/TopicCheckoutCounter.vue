@@ -4,14 +4,8 @@
       <div class="row">
         <div class="head">{{ $t('pay.payProduct') }}</div>
         <div class="body product-information">
-          <span
-            v-if="rewardOrPay === 'reward'"
-            class="title"
-          > {{ $t('pay.supportAuthor') + $t('pay.keepWriting') }}</span>
-          <span
-            v-else
-            class="title"
-          > {{ $t('pay.supportAuthor') + $t(`pay.${text[threadType]}`) + $t('pay.getRight') }}</span>
+          <span v-if="rewardOrPay === 'reward'" class="title">{{ $t('pay.supportAuthor') + $t('pay.keepWriting') }}</span>
+          <span v-else class="title">{{ $t('pay.supportAuthor') + $t(`pay.${text[threadType]}`) + $t('pay.getRight') }}</span>
           <span>{{ $t('topic.author') + ': ' + (user.username || '') }}</span>
           <span>{{ $t('topic.content') + ': ' + content }}</span>
         </div>
@@ -49,7 +43,7 @@
           <div class="pay-card" :class="{'pay-card': true, 'selected': payWay === 'wxPay'}" @click="payWay = 'wxPay'">
             <div class="detail">
               <div class="pay-title">
-                <svg-icon class="active-svg-wx" style="fill: #8590A6;font-size: 18px" type="wechat" />
+                <svg-icon class="active-svg-wx" style="fill: #8590A6;font-size: 20px" type="wechat" />
                 <span>{{ $t('pay.wxPay') }}</span>
                 <div class="pay-tip">
                   <div>
@@ -65,13 +59,14 @@
         </div>
         <div class="body pay-way">
           <div
+            v-loading="loading"
             class="pay-card"
             :class="{'pay-card': true, 'selected': payWay === 'walletPay'}"
             @click="payWay = 'walletPay'"
           >
             <div class="detail">
               <div class="pay-title">
-                <svg-icon class="active-svg-wallet" style="fill: #8590a6;font-size: 18px" type="wallet" />
+                <svg-icon class="active-svg-wallet" style="fill: #8590a6;font-size: 20px" type="wallet" />
                 <span>{{ $t('pay.walletPay') }}</span>
                 <div class="pay-tip">
                   <div v-if="enoughBalance">
@@ -134,12 +129,13 @@ export default {
       text: ['getRemainingContent', 'getRemainingContent', 'getVideo', 'getPicture'],
       payWay: 'wxPay',
       rewardAmount: '',
-      defaultAmounts: ['1', '2', '5', '10', '20', '50', '88', '128']
+      defaultAmounts: ['1', '2', '5', '10', '20', '50', '88', '128'],
+      loading: false
     }
   },
   computed: {
     showAmount() {
-      return this.rewardOrPay === 'reward' ? this.rewardAmount : this.amount
+      return this.rewardOrPay === 'reward' ? (parseFloat(this.rewardAmount || '0') + 0.00001).toFixed(2) : this.amount
     },
     userWallet() {
       const { attributes: { walletBalance, canWalletPay }} = this.$store.state.user.info
@@ -152,6 +148,18 @@ export default {
         return parseFloat(this.amount) < parseFloat(this.userWallet.walletBalance)
       }
     }
+  },
+  created() {
+    this.loading = true
+    const userId = this.$store.state.user.info.id
+    if (!userId) {
+      this.loading = false
+      return
+    }
+    this.$store.dispatch('user/getUserInfo', userId).then(() => {
+      this.$store.commit('session/SET_USER_ID', userId)
+      this.loading = false
+    }, e => this.$store.commit('user/SET_USER_INFO', {}))
   },
   methods: {
     formatAmount(e) {
@@ -195,6 +203,7 @@ export default {
             color: $font-color-grey;
 
             &.title {
+              margin-bottom: 8px;
               color: $color-blue-base;
             }
           }
@@ -204,7 +213,7 @@ export default {
           > label {
             width: 430px;
             height: 50px;
-            border: 1px solid #EDEDED;
+            border: 2px solid #EDEDED;
             display: flex;
 
             > span {
@@ -238,7 +247,7 @@ export default {
               line-height: 50px;
 
               &.selected {
-                border: 1px solid $color-blue-base;
+                border: 2px solid $color-blue-base;
               }
             }
           }
@@ -265,7 +274,7 @@ export default {
             border-radius: 3px;
 
             &.selected {
-              border: 1px solid $color-blue-base;
+              border: 2px solid $color-blue-base;
 
               .active-tip {
                 color: #09BB07;
@@ -354,6 +363,7 @@ export default {
     margin-top: 30px;
 
     > span {
+      font-size: 14px;
       margin-right: 20px;
     }
   }

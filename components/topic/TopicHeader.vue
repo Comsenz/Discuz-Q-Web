@@ -3,7 +3,7 @@
     <avatar-component :author="author">
       {{ $t('topic.publishAt') }} {{ timerDiff(thread.createdAt) + $t('topic.before') }} ..
       <!--  TODO thread.updateAt 没更新，只能先用 firstPost.updateAt   -->
-      （{{ $t('topic.editAt') }} {{ timerDiff(thread.firstPost.updatedAt) + $t('topic.before') }}）
+      （{{ $t('topic.editAt') }} {{ timerDiff(thread.firstPost ? thread.firstPost.updatedAt : '') + $t('topic.before') }}）
     </avatar-component>
     <div class="container-management">
       <el-dropdown
