@@ -18,7 +18,7 @@
       >
         <svg-icon style="font-size: 20px; margin-top: 10px; fill: #8590A6" type="drop-down" />
       </div>
-      <button v-if="command[usersIndex].showButton && command[usersIndex].buttonText" @click="onClick(command, usersIndex)">
+      <button v-if="command[usersIndex].showButton && command[usersIndex].buttonText && canRewardOrPaid" @click="onClick(command, usersIndex)">
         <svg-icon style="font-size: 18px; fill: white" type="heart" />
         <span>{{ $t(`topic.${command[usersIndex].buttonText}`) }}</span>
       </button>
@@ -48,6 +48,10 @@ export default {
     threadType: {
       type: Number,
       default: 0
+    },
+    canRewardOrPaid: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

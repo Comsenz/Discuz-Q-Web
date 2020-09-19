@@ -19,9 +19,9 @@
           @payForVideo="showCheckoutCounter = true"
         />
         <topic-reward-list
-          v-if="forums && forums.paycenter && forums.paycenter.wxpay_close"
           :author="thread.user || {}"
           :paid-information="paidInformation"
+          :can-reward-or-paid="forums && forums.paycenter && forums.paycenter.wxpay_close && canRewardOrPaid"
           :thread-type="thread.type || 0"
           :user-lists="[thread.paidUsers || [], thread.rewardedUsers || [], article.likedUsers || []]"
           @payOrReward="showCheckoutCounter = true"
@@ -57,7 +57,7 @@
 </template>
 
 <script>
-const threadInclude = 'posts.replyUser,user.groups,user,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers'
+const threadInclude = 'posts.replyUser,user.groups,user,user.groups.permissionWithoutCategories,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers'
 import handleError from '@/mixin/handleError'
 
 export default {
@@ -97,6 +97,7 @@ export default {
       showWxPay: false,
       defaultLoading: false,
       articleLoading: false,
+      canRewardOrPaid: false,
       passwordError: false
     }
   },
@@ -129,6 +130,10 @@ export default {
         this.thread = data
         this.article = data.firstPost
         this.postId = this.article._jv.id
+        if (this.thread.user && this.thread.user.groups[0] && this.thread.user.groups[0].permissionWithoutCategories) {
+          this.canRewardOrPaid = this.thread.user.groups[0].permissionWithoutCategories.filter(item => item.permission === 'createThreadPaid').length > 0
+          console.log(this.canRewardOrPaid, '能不能', this.forums.paycenter.wxpay_close)
+        }
         this.initData()
       }, e => this.handleError(e, 'thread'))
     },
