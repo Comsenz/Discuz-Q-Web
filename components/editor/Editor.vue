@@ -323,7 +323,7 @@ export default {
 
     .resources-list {
       background: $background-color-grey;
-      padding: 20px;
+      padding: 20px 20px 30px;
     }
 
     .actions {

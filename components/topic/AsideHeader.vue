@@ -100,6 +100,7 @@ export default {
     }
 
     > .signature {
+      font-size: 12px;
       word-break: break-all;
       margin-top: 10px;
       color: $font-color-grey;

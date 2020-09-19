@@ -87,7 +87,6 @@ export default {
           const index = this.getRandom(this.EssenceThread.length)
           this.threeEssenceThread.push(this.EssenceThread[index])
           this.EssenceThread.splice(index, 1)
-          console.log(this.threeEssenceThread, '推荐的精品帖')
         }
       }, e => this.handleError(e))
     },

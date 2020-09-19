@@ -115,6 +115,7 @@ export default {
       border-bottom: 1px solid $border-color-base;
     }
     > .infinite-list-wrapper {
+      z-index: 100;
       background: #ffffff;
       min-width: 200px;
       max-height: 200px;
