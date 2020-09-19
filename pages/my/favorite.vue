@@ -96,6 +96,11 @@ export default {
         })
       }).catch(_ => {})
     }
+  },
+  head() {
+    return {
+      title: this.$t('profile.myfavorite')
+    }
   }
 }
 </script>

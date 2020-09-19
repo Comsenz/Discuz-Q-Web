@@ -281,6 +281,11 @@ export default {
       // eslint-disable-next-line no-param-reassign
       return s9e.parse(html)
     }
+  },
+  head() {
+    return {
+      title: this.forums && this.forums.set_site && this.forums.set_site.site_name || 'Discuz! Q'
+    }
   }
 }
 </script>

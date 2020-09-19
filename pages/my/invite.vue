@@ -7,7 +7,7 @@
           <avatar :user="{ id: detail.user.id, username: detail.user.username, avatarUrl: detail.user.avatarUrl}" :size="50" />
           <div class="user-info">
             <nuxt-link :to="`/profile?userId=${detail.user.id}`" class="user-name">{{ detail.user.username }}</nuxt-link>
-            <div class="create-at">{{ $t('invite.createdAt') }}: {{ detail.created_at | formatDate }}</div>
+            <div class="create-at">{{ $t('invite.createdAt') + $t('discuzq.symbol.colon') }} {{ detail.created_at | formatDate }}</div>
           </div>
           <div class="total-money">
             <div class="label">{{ $t('invite.allIncome') }}</div>
@@ -194,6 +194,11 @@ export default {
     handleCurrentChange(val) {
       this.pageNum = val
       this.getInviteList()
+    }
+  },
+  head() {
+    return {
+      title: this.$t('invite.invite')
     }
   }
 }

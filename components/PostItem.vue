@@ -387,6 +387,15 @@ export default {
             //   border-color: #D4E6FC;
             // }
           }
+          .icon{
+            font-size: 18px;
+          }
+        }
+        .comment .icon{
+          font-size: 17px;
+        }
+        .share .icon{
+          font-size: 17px;
         }
       }
       .reply-btn{

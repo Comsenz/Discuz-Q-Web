@@ -2,9 +2,11 @@
   <div class="chat-container">
     <div v-if="item.sender && +item.sender_user_id !== +userId" class="avatar">
       <avatar :user="{ id: item.sender.id,username: item.sender.username, avatarUrl: item.sender.avatarUrl}" :size="50" />
+      <div v-if="item.recipient_read_at === null" class="red-dot" />
     </div>
     <div v-if="item.recipient && +item.recipient_user_id !== +userId" class="avatar">
       <avatar :user="{ id: item.recipient.id,username: item.recipient.username, avatarUrl: item.recipient.avatarUrl}" :size="50" />
+      <div v-if="item.sender_read_at === null" class="red-dot" />
     </div>
     <div class="detail">
       <div class="top">
@@ -72,12 +74,9 @@ export default {
       width: calc(100% - 15px);
     }
   }
-  // &:hover{
-  //   background: #FAFBFC;
-  //   .delete{
-  //     display: block;
-  //   }
-  // }
+  &:hover{
+    background: #FAFBFC;
+  }
   // .delete{
   //   display: none;
   //   position: absolute;
@@ -86,6 +85,7 @@ export default {
   //   cursor: pointer;
   // }
   .avatar{
+    position: relative;
     margin-right: 15px;
     .system-avatar{
       padding:10px;
@@ -94,6 +94,15 @@ export default {
       .icon{
         font-size:34px;
       }
+    }
+    .red-dot{
+      position: absolute;
+      top: -2px;
+      right:-2px;
+      width:10px;
+      height:10px;
+      border-radius: 50%;
+      background: #FA5151;
     }
   }
   .detail{

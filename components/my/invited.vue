@@ -8,7 +8,7 @@
         </template>
       </div>
       <!-- 搜索 -->
-      <el-input v-model="searchText" :placeholder="$t('invite.searchPlaceholder')" class="search" size="medium" @keyup.enter.native="onClickSearch">
+      <el-input v-model="searchText" :placeholder="$t('invite.searchPlaceholder')" class="search" size="medium" @keyup.enter.native="onClickSearch" @input="onClickSearch">
         <i slot="suffix" class="el-icon-search el-input__icon" />
       </el-input>
       <el-button type="primary" size="medium" class="create-url" @click="createUserInvite">{{ $t('manage.generateInvitationUrl') }}</el-button>

@@ -12,6 +12,19 @@
 export default {
   data() {
     return {
+
+    }
+  },
+  computed: {
+    forums() {
+      return this.$store.state.site.info.attributes || {}
+    }
+  },
+  head() {
+    return {
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: this.forums && this.forums.set_site && this.forums.set_site.site_favicon || '/favicon.ico' }
+      ]
     }
   }
 }

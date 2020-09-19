@@ -195,6 +195,11 @@ export default {
       this.dialog.pageNum = 1
       this.getDialogList()
     }
+  },
+  head() {
+    return {
+      title: this.$t('profile.notice')
+    }
   }
 }
 </script>
@@ -225,7 +230,7 @@ export default {
   }
   .badge-item{
     ::v-deep .el-badge__content.is-fixed{
-      top: 6px;
+      top: 10px;
     }
   }
   .notice-list{
