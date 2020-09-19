@@ -297,7 +297,7 @@ export default {
     reward: '打赏',
     pay: '支付',
     read: '阅读',
-    readAlready: '读过',
+    readAlready: '人读过',
     collection: '收藏',
     collectionAlready: '已收藏',
     confirmCancelCollection: '确认取消收藏？',

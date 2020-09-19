@@ -124,7 +124,7 @@ export default {
         > .count {
           font-weight: bold;
           font-size: 16px;
-          line-height: 20px;
+          line-height: 22px;
         }
       }
     }

@@ -294,7 +294,7 @@ export default {
           margin-bottom: 20px;
           border-radius: 5px;
           text-align: center;
-          background: $background-color-grey;
+          background: #EDEDED;
           height: 35px;
           line-height: 35px;
           color: $font-color-grey;

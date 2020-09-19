@@ -12,7 +12,7 @@
     <div v-loading="threeEssenceThread.length === 0" class="recommend block">
       <div class="title">{{ $t('topic.recommend') }}</div>
       <div v-for="(item, index) in threeEssenceThread" :key="index" class="container-post">
-        <div class="content-html" v-html="item.firstPost.summaryText" />
+        <div class="content-html" v-html="item.firstPost.summary.replace(/(\r\n\t|\n|\r\t)/gm, '')" />
         <span class="view-count">{{ item.viewCount }} {{ $t('topic.readAlready') }}</span>
         <a :href="'/topic/' + item._jv.id">{{ $t('topic.toWatch') }}</a>
       </div>
@@ -87,6 +87,7 @@ export default {
           const index = this.getRandom(this.EssenceThread.length)
           this.threeEssenceThread.push(this.EssenceThread[index])
           this.EssenceThread.splice(index, 1)
+          console.log(this.threeEssenceThread, '推荐的精品帖')
         }
       }, e => this.handleError(e))
     },
@@ -146,6 +147,7 @@ export default {
           word-break: break-all;
           margin-top: 10px;
           margin-bottom: 10px;
+          font-size: 16px;
 
           ::v-deep p {
             font-size: 16px;

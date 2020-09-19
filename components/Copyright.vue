@@ -53,12 +53,9 @@ export default {
     }
     > .info {
       width: 100%;
-      display: inline-flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      @media screen and ( max-width: 1005px ) {
-        display: block;
-     }
+      > span {
+        margin-right: 10px;
+      }
       > .site {
         font-weight: bold;
       }
