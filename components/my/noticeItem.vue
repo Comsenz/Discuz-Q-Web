@@ -14,7 +14,7 @@
         <div v-if="item.title && item.type === 'system'" class="user-name">{{ item.title }}</div>
         <div class="time">{{ timerDiff(item.created_at) + $t('topic.before') }}</div>
       </div>
-      <nuxt-link v-if="item.post_content" :to="`/topic/comment?threadId=${item.thread_id}&commentId=${item.post_id}`" class="post-content" v-html="item.post_content" />
+      <nuxt-link v-if="item.post_content" :to="`/topic/comment?threadId=${item.thread_id}&commentId=${item.reply_post_id !== 0 ? item.reply_post_id : item.post_id}`" class="post-content" v-html="item.post_content" />
       <nuxt-link v-if="(item.thread_title || item.content) && item.type !== 'system'" :to="`/topic/${item.thread_id}`" class="thread">
         <div class="thread-user-name">{{ item.thread_username }}:</div>
         <div class="thread-title">

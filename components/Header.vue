@@ -182,9 +182,10 @@ export default {
       height: 50px;
     }
     .logo {
-      width: 150px;
-      height: 35px;
+      max-width: 140px;
+      max-height: 35px;
       cursor: pointer;
+      display: flex;
       @media screen and (max-width: 1005px) {
         width: 135px;
         height: 30px;

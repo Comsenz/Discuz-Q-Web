@@ -58,6 +58,7 @@ export default {
       }
       > .site {
         font-weight: bold;
+        white-space: nowrap;
       }
     }
 
