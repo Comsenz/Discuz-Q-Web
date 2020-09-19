@@ -49,7 +49,7 @@
             <div
               v-if="passerror"
               class="passerror"
-            >两次输入的密码不一致,请重新输入</div>
+            >{{ $t('modify.reenter') }}</div>
           </div>
           <div v-if="validate">
             <span class="title2">注册原因</span>
@@ -578,7 +578,7 @@ export default {
       margin-right: 0px;
     }
     .reg-input {
-      width: 300px;
+      width: 299px;
       margin-bottom: 20px;
     }
     .inputerr {
