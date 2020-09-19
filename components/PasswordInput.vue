@@ -43,7 +43,7 @@ export default {
     display: inline-block;
     line-height: 50px;
     text-align: center;
-    font-size: 40px;
+    font-size: 45px;
     font-weight: bold;
     height: 50px;
     width: 36px;

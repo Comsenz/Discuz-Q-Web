@@ -365,6 +365,7 @@ export default {
     allPost: '全部帖子（{total}）'
   },
   pay: {
+    passwordError: '密码错误请重试',
     checkoutCounter: '收银台',
     payProduct: '购买物品',
     hideAvatar: '隐藏头像',

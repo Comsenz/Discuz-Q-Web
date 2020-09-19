@@ -157,8 +157,7 @@ export default {
   },
   computed: {
     url() {
-      // if (process.client) return window.location.origin
-      return 'https://dq.comsenz-service.com'
+      return process.env.baseURL
     },
     header() {
       if (process.client) {
