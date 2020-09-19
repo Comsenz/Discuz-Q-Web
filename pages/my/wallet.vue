@@ -290,6 +290,8 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
+@import "@/assets/css/variable/color.scss";
+
 .mywallet {
   padding-left: 30px;
   @media screen and (max-width: 1005px) {
@@ -389,6 +391,9 @@ export default {
     font-weight: bold;
     font-size: 18px;
   }
+  ::v-deep .el-tabs .el-tabs__header .el-tabs__item.is-active :hover {
+    color: #000000;
+  }
   .el-tabs__nav-wrap {
     margin-bottom: 0px;
   }
@@ -404,5 +409,8 @@ export default {
   .el-input__inner:hover {
     border-color: #dcdfe6;
   }
+}
+::v-deep .el-tabs--border-card > .el-tabs__header .el-tabs__item:hover {
+  color: $color-blue-deep;
 }
 </style>

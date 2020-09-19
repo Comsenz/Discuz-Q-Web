@@ -12,14 +12,15 @@
         class="shieldtop"
       >
         <div :class="userList.length === 0 ? 'shieldnum hide':'shieldnum'">
-          找到<span class="searchusr">"{{ inputVal }}"</span>搜索结果{{ searchTotal }}条
+          {{ $t('manage.find') }}<span class="searchusr">"{{ inputVal }}"</span>{{ $t('profile.searchresult') }}{{ searchTotal }}{{ $t('topic.item') }}
         </div>
         <el-input
           v-model="inputVal"
           autocomplete="off"
           size="small"
-          placeholder="请输入要搜索的用户名"
+          :placeholder="$t('invite.searchPlaceholder')"
           class="shieldsearch"
+          @input="searchinput"
           @keyup.enter.native="onClickSearch"
         >
           <i
@@ -34,134 +35,174 @@
         class="shieldtop"
       >
         <div class="shieldnum">
-          共屏蔽{{ shieldTotal }}人
+          {{ $t('profile.totalshield') }}{{ shieldTotal }}{{ $t('profile.person') }}
         </div>
         <el-button
           type="primary"
           size="small"
           class="shieldbtn"
           @click="addShield"
-        >添加屏蔽用户</el-button>
+        >{{ $t('profile.addshield') }}</el-button>
       </div>
       <div
         v-if="!isSearch"
         class="shieldtable"
       >
         <!-- 黑名单列表表格 -->
-        <el-table
-          v-loading="loading"
-          :data="shieldList"
-          style="width:100%"
-        >
-          <el-table-column
-            label="成员名称"
-            min-width="100"
+        <div v-if="shieldTotal > 0">
+          <el-table
+            v-loading="loading"
+            :data="shieldList"
+            style="width:100%"
           >
-            <template slot-scope="scope">
-              <div class="flex">
-                <avatar
-                  :user="{ id: scope.row.id, username: scope.row.username, avatarUrl: scope.row.avatarUrl}"
-                  :size="30"
-                  :round="true"
-                />
-                <nuxt-link
-                  :to="`/profile?userId=${scope.row.id}`"
-                  class="user-name"
-                >{{ scope.row.username }}</nuxt-link>
-              </div>
-            </template>
-          </el-table-column>
-          <!-- <el-table-column
+            <el-table-column
+              :label="$t('manage.userName')"
+              min-width="100"
+            >
+              <template slot-scope="scope">
+                <div class="flex">
+                  <avatar
+                    :user="{ id: scope.row.id, username: scope.row.username, avatarUrl: scope.row.avatarUrl}"
+                    :size="30"
+                    :round="true"
+                  />
+                  <nuxt-link
+                    :to="`/profile?userId=${scope.row.id}`"
+                    class="user-name"
+                  >{{ scope.row.username }}</nuxt-link>
+                </div>
+              </template>
+            </el-table-column>
+            <!-- <el-table-column
           label="身份"
           width="140"
         /> -->
-          <el-table-column
-            label="操作"
-            width="97"
-          >
-            <template slot-scope="scope">
-              <el-button
-                type="text"
-                @click="changeshield(scope.row.id)"
-              >解除屏蔽</el-button>
-            </template>
-          </el-table-column>
+            <el-table-column
+              :label="$t('manage.operate')"
+              width="97"
+            >
+              <template slot-scope="scope">
+                <el-button
+                  type="text"
+                  class="operabtn"
+                  @click="changeshield(scope.row.id)"
+                >{{ $t('profile.deleteshield') }}</el-button>
+              </template>
+            </el-table-column>
 
-        </el-table>
-        <!-- 分页器 -->
-        <el-pagination
-          background
-          :current-page="pageNum"
-          :page-sizes="[10, 20, 30, 40]"
-          :page-size="pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="shieldTotal"
-          style="margin-top:15px;"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
+          </el-table>
+          <!-- 分页器 -->
+          <el-pagination
+            background
+            :current-page="pageNum"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="shieldTotal"
+            class="pagination"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          />
+        </div>
+        <template v-else>
+          <div
+            v-if="hasMore"
+            class="load-more"
+            @click="loadMore"
+          >{{ $t('topic.showMore') }}</div>
+          <div
+            v-else
+            class="no-more"
+          >
+            <svg-icon
+              v-if="userList.length === 0"
+              type="empty"
+              class="empty-icon"
+            />{{ shieldList.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noshield') }}
+          </div>
+        </template>
       </div>
       <!-- 搜索结果表格 -->
       <div
-        v-else
+        v-else-if="searchTotal>0"
         class="shieldtable"
       >
-        <el-table
-          v-loading="loading"
-          :data="userList"
-          style="width:100%"
-        >
-          <el-table-column
-            label="成员名称"
-            min-width="100"
+        <div>
+          <el-table
+            v-loading="loading"
+            :data="userList"
+            style="width:100%"
           >
-            <template slot-scope="scope">
-              <div class="flex">
-                <avatar
-                  :user="{ id: scope.row.id, username: scope.row.username, avatarUrl: scope.row.avatarUrl}"
-                  :size="30"
-                  :round="true"
-                />
-                <nuxt-link
-                  :to="`/profile?userId=${scope.row.id}`"
-                  class="user-name"
-                >{{ scope.row.username }}</nuxt-link>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="身份"
-            width="140"
-          >
-            <template slot-scope="scope">
-              {{ scope.row.groupName }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="操作"
-            width="97"
-          >
-            <template slot-scope="scope">
-              <el-button
-                type="text"
-                @click="shieldUser(scope.row.id)"
-              >屏蔽Ta</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <!-- 分页器 -->
-        <el-pagination
-          background
-          :current-page="pageNum"
-          :page-sizes="[10, 20, 30, 40]"
-          :page-size="pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="searchTotal"
-          style="margin-top:15px;"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
+            <el-table-column
+              :label="$t('manage.userName')"
+              min-width="100"
+            >
+              <template slot-scope="scope">
+                <div class="flex">
+                  <avatar
+                    :user="{ id: scope.row.id, username: scope.row.username, avatarUrl: scope.row.avatarUrl}"
+                    :size="30"
+                    :round="true"
+                  />
+                  <nuxt-link
+                    :to="`/profile?userId=${scope.row.id}`"
+                    class="user-name"
+                  >{{ scope.row.username }}</nuxt-link>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column
+              :label="$t('manage.identity')"
+              width="140"
+            >
+              <template slot-scope="scope">
+                {{ scope.row.groupName }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              :label="$t('manage.operate')"
+              width="97"
+            >
+              <template slot-scope="scope">
+                <el-button
+                  type="text"
+                  class="operabtn"
+                  @click="shieldUser(scope.row.id)"
+                >{{ $t('profile.shield') }}</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <!-- 分页器 -->
+          <el-pagination
+            background
+            :current-page="pageNum"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="searchTotal"
+            class="pagination"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          />
+        </div>
       </div>
+      <template v-else>
+        <div
+          v-if="hasMore"
+          class="load-more"
+          @click="loadMore"
+        >{{ $t('topic.showMore') }}</div>
+        <div
+          v-else
+          class="no-more"
+        >
+          <svg-icon
+            v-if="userList.length === 0"
+            type="empty"
+            class="empty-icon"
+          />{{ userList.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noData') }}
+        </div>
+      </template>
     </div>
   </div>
 
@@ -260,7 +301,7 @@ export default {
     unbundlingUser(uid) {
       this.$store.dispatch('jv/delete', `users/${uid}/deny`).then(() => {
         this.unbundlingArry.push(uid)
-        this.$t('profile.unboundsucceed')
+        this.$message.success(this.$t('profile.unboundsucceed'))
         this.getShieldList()
         this.getShieldData()
       })
@@ -268,6 +309,8 @@ export default {
     // 添加屏蔽
     addShield() {
       this.isSearch = true
+      this.userList = []
+      this.searchTotal = 0
     },
     onClickSearch(e) {
       this.inputVal = e.target.value
@@ -275,6 +318,10 @@ export default {
       this.userList = []
       this.pageNum = 1
       this.getUserList(e.target.value)
+    },
+    searchinput() {
+      this.userList = []
+      this.searchTotal = 0
     },
     // 搜索用户列表
     getUserList(key) {
@@ -335,6 +382,7 @@ export default {
         this.getShieldData()
         this.getShieldList()
         this.isSearch = false
+        this.$message.success(this.$t('profile.boundsucceed'))
       })
     },
     // 判断是否已解绑某个用户
@@ -403,6 +451,10 @@ export default {
   .shieldtable {
     padding: 0 30px;
     position: relative;
+    .pagination {
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
   }
   .post-list {
     .delete {
@@ -420,6 +472,9 @@ export default {
 }
 .user-name {
   margin-left: 10px;
+}
+.operabtn {
+  color: #8590a6;
 }
 
 ::v-deep .el-table {

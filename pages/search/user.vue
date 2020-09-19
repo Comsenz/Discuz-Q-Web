@@ -191,6 +191,9 @@ export default {
         margin-top: 40px;
         display:inline-block;
         cursor:pointer;
+        &:hover{
+          color: $color-blue-deep;
+        }
       }
     }
   }

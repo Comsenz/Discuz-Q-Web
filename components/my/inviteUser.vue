@@ -328,12 +328,17 @@ export default {
 }
 ::v-deep .el-dropdown-menu__item:not(.is-disabled):hover {
   background-color: transparent;
-  color: #409EFF;
+  color: $color-blue-base;
 }
 .no-more{
   margin-top: 40px;
 }
-// .create-url{
-//   margin-right:10px;
-// }
+.create-url{
+  background: $color-blue-base;
+  transition: all 0.2s ease-in-out;
+  &:hover{
+    background: $color-blue-deep;
+    border:1px solid $color-blue-deep;
+  }
+}
 </style>

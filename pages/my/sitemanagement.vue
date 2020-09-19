@@ -168,6 +168,13 @@ export default {
         font-weight:bold;
       }
     }
+    .el-tabs__header .el-tabs__item:hover {
+      color: $color-blue-deep;
+    }
+  }
+  ::v-deep .el-dropdown-menu__item:not(.is-disabled):hover {
+    background-color: transparent;
+    color: $color-blue-base;
   }
 }
 </style>

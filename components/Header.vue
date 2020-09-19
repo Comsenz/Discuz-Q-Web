@@ -98,16 +98,15 @@ export default {
     if (process.client && this.$route.query.q) {
       this.inputVal = this.$route.query.q
     }
-    // if (process.client && this.$route.path !== '/site/close') {
-    //   this.reloadUserInfo()
-    // }
+    if (process.client && this.$route.path !== '/site/close') {
+      this.reloadUserInfo()
+    }
     if (this.$route.path === '/site/close') {
       this.siteClose = true
     }
   },
   destroyed() {
     if (process.client) {
-      this.userInfoTimer = null
       clearInterval(this.userInfoTimer)
     }
   },
@@ -127,7 +126,7 @@ export default {
       if (this.userInfo && this.userInfo.id) {
         clearInterval(this.userInfoTimer)
         const _this = this
-        this.userInfoTimer = setInterval(_this.getUserInfo, 30000)
+        this.userInfoTimer = setInterval(_this.getUserInfo, 60000)
       }
     },
     async getUserInfo() {

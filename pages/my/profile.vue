@@ -924,14 +924,12 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
+@import "@/assets/css/variable/color.scss";
+
 ::v-deep input::-ms-reveal {
   display: none;
 }
 .myprofile {
-  // padding-left: 30px;
-  // @media screen and (max-width: 1005px) {
-  //   padding-left: 0 15px;
-  // }
   .bgcolor {
     background: #fafbfc;
   }
@@ -963,6 +961,9 @@ export default {
     width: 300px;
     background: #1878f3;
     margin-bottom: 48px;
+  }
+   .sigbutton:hover {
+    background:$color-blue-deep;
   }
   .disnone {
     display: none;
@@ -1045,7 +1046,6 @@ export default {
     @media screen and (max-width: 1005px) {
       width: 390px;
     }
-    // font-family: Microsoft YaHei;
     color: #000000;
   }
   .myprofile-btom-sign {
@@ -1067,7 +1067,6 @@ export default {
     padding-bottom: 20px;
     margin-top: 15px;
     width: 460px;
-    // font-family: Microsoft YaHei;
     color: #8590a6;
   }
   .ebutton {
@@ -1076,6 +1075,9 @@ export default {
     background: #1878f3;
     margin-bottom: 48px;
     margin-top: 10px;
+  }
+  .ebutton:hover {
+    background:$color-blue-deep;
   }
   .textarea {
     border: none;
@@ -1096,11 +1098,9 @@ export default {
   .count-b {
     width: 90px;
     height: 40px;
-    // padding: 15.5px 10px;
     padding: 0;
     margin-left: -4px;
     color: #606162;
-    // font-size: 10px;
     vertical-align: top;
   }
   .disabled {
@@ -1139,19 +1139,5 @@ export default {
 ::v-deep .el-input__inner:focus {
   border-color: #dcdfe6;
 }
-// ::v-deep .el-button:focus {
-//   background: #fff;
-//   // border: 1px solid #dcdfe6;
-//   color: #ffffff;
-// }
-// ::v-deep .el-button:hover {
-//   background: #fff;
-//   // border: 1px solid #dcdfe6;
-//   color: #ffffff;
-// }
-// ::v-deep .el-button:active {
-//   background: #fff;
-//   // border: 1px solid #dcdfe6;
-//   color: #ffffff;
-// }
+
 </style>

@@ -122,6 +122,7 @@ export default {
       background: #E5F2FF;
       transition: all 0.2s ease-in-out;
       border-radius: 2px;
+      font-weight: bold;
     }
     &:hover{
       color: $color-blue-base;
