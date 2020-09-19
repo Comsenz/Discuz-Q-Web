@@ -218,6 +218,7 @@ export default {
   },
   // 发布页
   post: {
+    download: '下载',
     free: '免费',
     callFriends: '@圈友',
     myFriends: '我的好友',

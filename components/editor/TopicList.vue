@@ -16,6 +16,7 @@
           @click="$emit('selectedTopic', ' #' + topic.content + '# ')"
         >
           <span>#{{ topic.content }}#</span>
+          <svg-icon v-show="topic.recommended === 1" type="recommend" style="font-size: 16px" />
           <span>{{ topic.view_count + $t('topic.hot') }}</span>
         </li>
       </ul>
@@ -98,7 +99,7 @@ export default {
   $font-color: #6D6D6D;
   .container-search-list {
     height: 245px;
-    min-width: 200px;
+    min-width: 300px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, .3);
     border-radius: 6px;
     .input-topic {
@@ -128,7 +129,7 @@ export default {
         overflow: hidden;
         > li {
           display: flex;
-          justify-content: space-between;
+          align-items: center;
           height: 50px;
           width: 100%;
           border-bottom: 1px solid $border-color-base;
@@ -139,9 +140,16 @@ export default {
           > span {
             white-space: nowrap;
             line-height: 50px;
+            margin-right: 15px;
             &:first-child {
-              flex: 0 1 auto;
-              margin-right: 20px;
+              max-width: 700px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              /*flex: 0 1 auto;*/
+            }
+            &:last-child {
+              margin-left: auto;
+              margin-right: 0;
             }
           }
           &:hover {

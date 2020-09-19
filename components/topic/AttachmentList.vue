@@ -1,7 +1,10 @@
 <template>
   <div class="attachment-item" @click="downloadAttachment(file.url)">
-    <svg-icon :type="extensionValidate(file.extension)" style="font-size: 18px" />
-    <span>{{ file.fileName }}</span>
+    <div>
+      <svg-icon :type="extensionValidate(file.extension)" style="font-size: 18px" />
+      <span>{{ file.fileName }}</span>
+    </div>
+    <div class="download">{{ $t('post.download') }}</div>
   </div>
 </template>
 
@@ -31,16 +34,22 @@ export default {
   .attachment-item {
     cursor: pointer;
     margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
     width: 100%;
     height: 40px;
     border-radius: 5px;
     border: 1px solid $border-color-base;
     padding: 0 10px;
-    display: flex;
     align-items: center;
 
     &:hover {
-      border: 1px solid $color-blue-base;
+      background: #F7FBFF;
+      border: 1px solid #E5F2FF;
+    }
+
+    > .download {
+      color: $color-blue-base
     }
 
     > span {

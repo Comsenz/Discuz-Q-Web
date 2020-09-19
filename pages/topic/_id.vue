@@ -39,7 +39,7 @@
         />
         <topic-password
           v-if="showPasswordInput"
-          :price="payment.rewardAmount ? payment.rewardAmount : (thread.price || 0)"
+          :price="parseInt(thread.price) === 0 ? payment.rewardAmount : (thread.price || 0)"
           :password-error="passwordError"
           @close="showPasswordInput = false"
           @password="payOrder"
@@ -132,7 +132,6 @@ export default {
         this.postId = this.article._jv.id
         if (this.thread.user && this.thread.user.groups[0] && this.thread.user.groups[0].permissionWithoutCategories) {
           this.canRewardOrPaid = this.thread.user.groups[0].permissionWithoutCategories.filter(item => item.permission === 'createThreadPaid').length > 0
-          console.log(this.canRewardOrPaid, '能不能', this.forums.paycenter.wxpay_close)
         }
         this.initData()
       }, e => this.handleError(e, 'thread'))
