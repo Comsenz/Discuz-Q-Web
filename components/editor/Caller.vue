@@ -89,10 +89,7 @@ export default {
   },
   methods: {
     getFriends() {
-      const params = {
-        'filter[type]': 2,
-        include
-      }
+      const params = { 'filter[type]': 2, include }
       return this.$store.dispatch('jv/get', ['follow', { params }]).then(data => {
         this.friendsLoading = false
         this.friends = data.filter(item => item.is_mutual === 1)

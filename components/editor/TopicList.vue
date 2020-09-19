@@ -1,11 +1,11 @@
 <template>
   <div class="container-search-list">
     <label>
-      <input type="text" class="input-topic" :placeholder="$t('post.topicInputTip')" @input="searchTopics">
+      <input type="text" :value="searchValue" class="input-topic" :placeholder="$t('post.topicInputTip')" @input="searchTopics">
     </label>
     <div class="infinite-list-wrapper" style="overflow:auto">
       <ul v-infinite-scroll="load" infinite-scroll-disabled="disabled">
-        <li v-if="searchList.length === 0 && searchValue && !loading" @click="$emit('selectedTopic', ' #' + searchValue + '# ')">
+        <li v-if="searchList.length === 0 && searchValue && !loading" @click="emitValue(searchValue)">
           <span>#{{ searchValue }}#</span>
           <span>{{ $t('topic.newTopic') }}</span>
         </li>
@@ -13,7 +13,7 @@
           v-for="(topic, index) in searchList"
           :key="index"
           class="infinite-list-item"
-          @click="$emit('selectedTopic', ' #' + topic.content + '# ')"
+          @click="emitValue(topic.content)"
         >
           <span>#{{ topic.content }}#</span>
           <svg-icon v-show="topic.recommended === 1" type="recommend" style="font-size: 16px" />
@@ -89,6 +89,11 @@ export default {
         this.pageNumber += 1
         this.getTopics()
       }
+    },
+    emitValue(value) {
+      this.$emit('selectedTopic', ' #' + value + '# ')
+      this.searchValue = ''
+      this.getTopics()
     }
   }
 }
