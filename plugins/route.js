@@ -1,6 +1,7 @@
 // route在server render也会跑
 // client执行顺序 => beforeEach - middleware - afterEach
 // server执行顺序 => beforeEach - afterEach - middleware
+import cookie from '../utils/parserCookie'
 const freePath = ['/user/login', '/user/register', '/site/info', '/user/warning', '/user/agreement', '/site/partner-invite']
 export default ({ app }) => {
   const { store, router } = app
@@ -38,6 +39,9 @@ export default ({ app }) => {
         }
       }
 
+      // 暂时先在这里种一下cookie, 带给ssr服务，避免ssr渲染无状态
+      const token = localStorage.getItem('access_token')
+      token && cookie.set('token', token)
       // 网站付费拦截
       if (freePath.includes(to.path)) return next()
       if (Object.keys(store.state.site.info).length === 0) return next()

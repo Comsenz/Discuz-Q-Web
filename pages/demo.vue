@@ -1,5 +1,11 @@
 <template>
   <div>
+    <div>
+      <div v-for="(item, index) in attr" :key="index">
+        <p :class="{ red: item.isSelect }">{{ item.text }}</p>
+        <el-button @click="selectFn(index)">点我</el-button>
+      </div>
+    </div>
     <el-button>默认按钮</el-button>
     <el-button type="primary" @click="getData">获取数据</el-button>
     <el-button type="success">成功按钮</el-button>
@@ -34,12 +40,17 @@ export default {
 
     const data = await store.dispatch('jv/get', _params)
     // console.log('asyncData =>', data)
-    return { info: data }
+    return { info: data, attr: [
+      { isSelect: false, text: 1 },
+      { isSelect: true, text: 1 },
+      { isSelect: false, text: 1 },
+      { isSelect: false, text: 1 }] }
   },
   data() {
     return {
       info: '',
       imageList: []
+
     }
   },
   mounted() {
@@ -72,6 +83,13 @@ export default {
     this.contentEditor && this.contentEditor.destroy()
   },
   methods: {
+    selectFn(index) {
+      console.log('当前点击索引', index)
+      const _attr = [...this.attr]
+      _attr[index].text = '!_attr[index].isSelect'
+      _attr[index].isSelect = !_attr[index].isSelect
+      this.attr = _attr
+    },
     getData() {
       const params = {
         _jv: {
@@ -89,3 +107,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .red {
+    color: red
+  }
+</style>
