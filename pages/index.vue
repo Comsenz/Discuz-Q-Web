@@ -315,7 +315,7 @@ export default {
       }
     }
     .list-top-item{
-      border-bottom: 1px solid #EFEFEF;
+      border-bottom: 1px solid $border-color-base;
       line-height: 19px;
       padding: 10.5px 22px;
       display: flex;
