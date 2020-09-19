@@ -21,7 +21,7 @@
           id="textarea"
           :value="post && post.text"
           :class="['input-text', editorStyle]"
-          :placeholder="$t('post.placeholder')"
+          :placeholder="typeInformation ? typeInformation.placeholder : ''"
           :maxlength="post && post.textLimit"
           @input="e => onPostContentChange('text', e.target.value)"
         />

@@ -106,7 +106,7 @@ export default {
       showReplyEditorForIndex: -1,
       replyPost: { text: '', imageList: [], attachedList: [] },
       replyType: { type: 4, textLimit: 450, showPayment: false, showTitle: false, showImage: true, showVideo: false,
-        showAttached: false, showMarkdown: false, showEmoji: true, showTopic: false, showCaller: true },
+        showAttached: false, showMarkdown: false, showEmoji: true, showTopic: false, showCaller: true, placeholder: '写下我的评论 ...' },
       showAllReply: false,
       replyLoading: false,
       isShield: false,
