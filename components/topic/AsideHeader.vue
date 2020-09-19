@@ -68,6 +68,7 @@ export default {
   },
   methods: {
     getAuthorInfo() {
+      if (!(this.author && this.author._jv && this.author._jv.id)) return
       return this.$store.dispatch('jv/get', [`users/${this.author._jv.id}`, { params: { include }}]).then(res => {
         if (res.dialog) this.dialog.id = res.dialog._jv.id
         this.dialog.name = this.author.username

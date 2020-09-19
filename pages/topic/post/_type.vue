@@ -227,6 +227,9 @@ export default {
       }
       return this.$store.dispatch('jv/patch', [threadParams, { url: `/threads/${this.threadId}` }])
     }
+  },
+  head() {
+    return { title: '发布' }
   }
 }
 </script>

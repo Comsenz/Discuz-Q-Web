@@ -206,6 +206,9 @@ export default {
         color: $color-blue-base;
         > .delete {
           cursor: pointer;
+          &:hover {
+            color: $color-blue-deep;
+          }
         }
         > .checking {
           margin-left: 10px;
@@ -312,6 +315,9 @@ export default {
               font-size: 16px;
               color: $color-blue-base;
               float: right;
+              &:hover {
+                color: $color-blue-deep;
+              }
             }
 
             > .timer {

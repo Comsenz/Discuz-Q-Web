@@ -93,6 +93,16 @@ export default {
       > .action-icon {
         font-size: 20px;
         fill: $font-color-grey;
+        &:hover {
+          fill: $color-blue-deep;
+        }
+      }
+
+      &:hover {
+        color: $color-blue-deep;
+        > .action-icon {
+          fill: $color-blue-deep;
+        }
       }
 
       > .content {
