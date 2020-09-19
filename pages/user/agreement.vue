@@ -72,6 +72,7 @@ export default {
   }
   .content {
     margin-top: 50px;
+    color:#6d6d6d;
   }
 }
 </style>

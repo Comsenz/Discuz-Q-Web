@@ -63,7 +63,8 @@ export default {
       loading: '加载中',
       noMatch: '无匹配数据',
       noData: '暂无数据',
-      noMoreData: '没有更多数据了！'
+      noMoreData: '没有更多数据了！',
+      noshield: '您没有屏蔽任何人'
     },
     // 提示框
     msgBox: {
@@ -762,6 +763,12 @@ export default {
     mywallet: '我的钱包',
     myfavorite: '我的收藏',
     myshield: '我的屏蔽',
+    shield: '屏蔽Ta',
+    totalshield: '共屏蔽',
+    deleteshield: '解除屏蔽',
+    person: '人',
+    addshield: '添加屏蔽用户',
+    searchresult: '搜索结果',
     circleinfo: '站点信息',
     search: '搜索',
     privateMessage: '私信',
@@ -784,8 +791,8 @@ export default {
     certification: '实名认证',
     tocertification: '去认证',
     signature: '签名',
+    boundsucceed: '屏蔽成功',
     unboundsucceed: '解除屏蔽成功',
-    addshield: '添加屏蔽用户',
     availableamount: '可用余额',
     freezeamount: '冻结金额',
     withdrawalslist: '提现记录',

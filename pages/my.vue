@@ -130,6 +130,7 @@ export default {
   min-height: 0px;
   .el-menu {
     padding-top: 20px;
+    border-radius: 5px 0;
   }
   .padd {
     padding-left: 30px !important;
@@ -138,6 +139,9 @@ export default {
     position: relative;
     @media screen and (max-width: 1005px) {
       padding: 0 40px;
+    }
+    &:hover{
+      color:$color-blue-deep;
     }
   }
   .divided {

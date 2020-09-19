@@ -1,7 +1,7 @@
 // route在server render也会跑
 // client执行顺序 => beforeEach - middleware - afterEach
 // server执行顺序 => beforeEach - afterEach - middleware
-const freePath = ['/user/login', '/user/register', '/site/info', '/user/warning', '/user/agreement']
+const freePath = ['/user/login', '/user/register', '/site/info', '/user/warning', '/user/agreement', '/site/partner-invite']
 export default ({ app }) => {
   const { store, router } = app
   router.beforeEach(async(to, from, next) => {
