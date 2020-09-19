@@ -18,7 +18,7 @@
         </template>
       </div>
       <!-- 搜索 -->
-      <el-input v-model="searchText" :placeholder="$t('manage.pleaseInputUserName')" class="search" size="medium" @keyup.enter.native="onClickSearch">
+      <el-input v-model="searchText" :placeholder="$t('manage.pleaseInputUserName')" class="search" size="medium" @keyup.enter.native="onClickSearch" @input="onClickSearch">
         <i slot="suffix" class="el-icon-search el-input__icon" />
       </el-input>
       <!-- 批量操作 -->

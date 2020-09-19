@@ -21,7 +21,7 @@
           id="textarea"
           :value="post && post.text"
           :class="['input-text', editorStyle]"
-          :placeholder="$t('post.placeholder')"
+          :placeholder="typeInformation ? typeInformation.placeholder : ''"
           :maxlength="post && post.textLimit"
           @input="e => onPostContentChange('text', e.target.value)"
         />
@@ -157,8 +157,7 @@ export default {
   },
   computed: {
     url() {
-      // if (process.client) return window.location.origin
-      return 'https://dq.comsenz-service.com'
+      return process.env.baseURL
     },
     header() {
       if (process.client) {
@@ -324,7 +323,7 @@ export default {
 
     .resources-list {
       background: $background-color-grey;
-      padding: 20px;
+      padding: 20px 20px 30px;
     }
 
     .actions {

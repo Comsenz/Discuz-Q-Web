@@ -106,6 +106,9 @@ export default {
     },
     role: {
       noRole: '暂无角色'
+    },
+    symbol: {
+      colon: '：'
     }
   },
   uploader: {
@@ -219,6 +222,7 @@ export default {
   },
   // 发布页
   post: {
+    download: '下载',
     free: '免费',
     callFriends: '@圈友',
     myFriends: '我的好友',
@@ -299,7 +303,7 @@ export default {
     reward: '打赏',
     pay: '支付',
     read: '阅读',
-    readAlready: '读过',
+    readAlready: '人读过',
     collection: '收藏',
     collectionAlready: '已收藏',
     confirmCancelCollection: '确认取消收藏？',
@@ -367,6 +371,7 @@ export default {
     allPost: '全部帖子（{total}）'
   },
   pay: {
+    passwordError: '密码错误请重试',
     checkoutCounter: '收银台',
     payProduct: '购买物品',
     hideAvatar: '隐藏头像',
@@ -468,6 +473,7 @@ export default {
     clickRefresh: '点击刷新',
     etc: '等',
     attachmentTotal: '个附件',
+    location: '位置信息',
     threadCount: '附近共有 {total} 条内容'
   },
   // 站点管理页面
@@ -501,7 +507,7 @@ export default {
     publicmode: '公开模式',
     circlemaster: '站长',
     myRole: '我的角色',
-    joinedTime: '加入时间',
+    joinedTime: '加入时间：',
     periodvalidity: '有效期至',
     myauthority: '我的权限',
     setting: '设置',
@@ -887,7 +893,7 @@ export default {
     codenotfound2: '该邀请码不存在',
     codeforbid2: '您当前已登录了帐号，无法使用邀请码进行注册，请退出后重试。',
     price: '费用',
-    role: '角色',
+    role: '角色：',
     to: '至',
     permission: '权限'
   },

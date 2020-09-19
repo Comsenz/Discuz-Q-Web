@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-upload
-      :action="url + '/api/attachments'"
+      :action="url + '/attachments'"
       :headers="header"
       :data="{ type: 1 }"
       name="file"

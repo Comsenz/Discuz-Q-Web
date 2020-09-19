@@ -100,6 +100,7 @@ export default {
     }
 
     > .signature {
+      font-size: 12px;
       word-break: break-all;
       margin-top: 10px;
       color: $font-color-grey;
@@ -124,7 +125,7 @@ export default {
         > .count {
           font-weight: bold;
           font-size: 16px;
-          line-height: 20px;
+          line-height: 22px;
         }
       }
     }

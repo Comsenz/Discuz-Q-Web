@@ -191,6 +191,11 @@ export default {
         this.$router.push('/search/user?q=' + this.$route.query.q)
       }
     }
+  },
+  head() {
+    return {
+      title: this.$t('search.search')
+    }
   }
 }
 </script>

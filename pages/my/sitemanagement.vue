@@ -120,6 +120,11 @@ export default {
         oInput.remove()
       }, 100)
     }
+  },
+  head() {
+    return {
+      title: this.$t('manage.siteManagement')
+    }
   }
 }
 </script>
@@ -172,9 +177,9 @@ export default {
       color: $color-blue-deep;
     }
   }
-  ::v-deep .el-dropdown-menu__item:not(.is-disabled):hover {
-    background-color: transparent;
-    color: $color-blue-base;
-  }
+}
+::v-deep .el-dropdown-menu__item:not(.is-disabled):hover {
+  background-color: transparent;
+  color: $color-blue-base;
 }
 </style>

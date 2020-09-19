@@ -508,7 +508,7 @@ export default {
         margin: 0 auto;
         width: 155px;
         height: 155px;
-        margin-top: 26px;
+        margin-top: 22px;
         img {
           width: 100%;
         }

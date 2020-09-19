@@ -186,6 +186,7 @@ export default {
         border-bottom: 1px solid $border-color-base;
       }
       > .infinite-list-wrapper {
+        z-index: 100;
         position: absolute;
         top: 40px;
         left: 0;

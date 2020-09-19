@@ -43,16 +43,16 @@ export default {
       typeInformation: {
         // 0 文字帖 1 帖子 2 视频 3 图片 4 评论
         0: { type: 0, headerText: 'postText', textLimit: 450, showPayment: false, showTitle: false, showImage: false, showVideo: false,
-          showAttached: false, showMarkdown: false, showEmoji: true, showTopic: true, showCaller: true },
+          showAttached: false, showMarkdown: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
         1: { type: 1, headerText: 'postPost', textLimit: 10000, showPayment: true, showTitle: true, showImage: true, showVideo: false,
-          showAttached: true, showMarkdown: true, showEmoji: true, showTopic: true, showCaller: true },
+          showAttached: true, showMarkdown: true, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
         2: { type: 2, headerText: 'postVideo', textLimit: 450, showPayment: true, showTitle: false, showImage: false, showVideo: true,
-          showAttached: false, showMarkdown: false, showEmoji: true, showTopic: true, showCaller: true },
+          showAttached: false, showMarkdown: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
         3: { type: 3, headerText: 'postImage', textLimit: 450, showPayment: true, showTitle: false, showImage: true, showVideo: false,
-          showAttached: false, showMarkdown: false, showEmoji: true, showTopic: true, showCaller: true }
+          showAttached: false, showMarkdown: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' }
       },
       categorySelectedId: '',
       isEditor: false,

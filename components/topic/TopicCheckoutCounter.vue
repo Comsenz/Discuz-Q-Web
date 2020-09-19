@@ -90,8 +90,12 @@
     </div>
     <div class="bottom">
       <span>￥ {{ showAmount + $t('pay.rmb') + $t('pay.payTo') + '，' + user.username || '' }} {{ $t('pay.ofAccount') }}</span>
-      <el-button v-if="payWay === 'wxPay'" size="medium" type="primary" @click="$emit('paying', { payWay, hideAvatar, rewardAmount })">{{ $t('pay.scanPay') }}</el-button>
-      <el-button v-if="payWay === 'walletPay'" :disabled="!enoughBalance || !userWallet.canWalletPay" size="medium" type="primary" @click="$emit('paying', { payWay, hideAvatar, rewardAmount })">{{ $t('pay.surePay') }}</el-button>
+      <button v-show="payWay === 'wxPay'" class="checkout-button" @click="$emit('paying', { payWay, hideAvatar, rewardAmount: formatToFixed(rewardAmount) })">
+        {{ $t('pay.scanPay') }}
+      </button>
+      <button v-show="payWay === 'walletPay'" class="checkout-button" @click="$emit('paying', { payWay, hideAvatar, rewardAmount: formatToFixed(rewardAmount) })">
+        {{ $t('pay.surePay') }}
+      </button>
     </div>
   </message-box>
 </template>
@@ -135,7 +139,7 @@ export default {
   },
   computed: {
     showAmount() {
-      return this.rewardOrPay === 'reward' ? (parseFloat(this.rewardAmount || '0') + 0.00001).toFixed(2) : this.amount
+      return this.rewardOrPay === 'reward' ? this.formatToFixed(this.rewardAmount) : this.amount
     },
     userWallet() {
       const { attributes: { walletBalance, canWalletPay }} = this.$store.state.user.info
@@ -165,6 +169,9 @@ export default {
     formatAmount(e) {
       e.target.value = formatAmount(e.target.value)
       this.rewardAmount = e.target.value
+    },
+    formatToFixed(amount) {
+      return (parseFloat(amount || '0') + 0.000001).toFixed(2)
     }
   }
 }
@@ -198,6 +205,7 @@ export default {
         margin-left: 15px;
         &.product-information {
           span {
+            word-break: break-all;
             display: block;
             line-height: 22.5px;
             color: $font-color-grey;
@@ -309,6 +317,7 @@ export default {
                 }
 
                 > .pay-tip {
+                  font-size: 14px;
                   margin-top: 10px;
                   color: $font-color-grey;
 
@@ -365,6 +374,16 @@ export default {
     > span {
       font-size: 14px;
       margin-right: 20px;
+    }
+    > .checkout-button {
+      height: 35px;
+      line-height: 35px;
+      text-align: center;
+      padding: 0 20px;
+      color: #fff;
+      border-radius: 3px;
+      background: $color-blue-base;
+      cursor: pointer;
     }
   }
 
