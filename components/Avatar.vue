@@ -58,15 +58,15 @@ export default {
     return {
       errorUrl: false,
       sizes: {
-        100: 'font-size: 40px;line-height: 100px;border-radius: 18px',
-        80: 'font-size: 32px;line-height: 80px;border-radius: 14px',
-        70: 'font-size: 28px;line-height: 70px;border-radius: 12px',
-        60: 'font-size: 26px;line-height: 60px;border-radius: 10px',
-        50: 'font-size: 24px;line-height: 50px;border-radius: 8px',
-        45: 'font-size: 22px;line-height: 45px;border-radius: 6px',
+        100: 'font-size: 40px;line-height: 100px;border-radius: 5px',
+        80: 'font-size: 32px;line-height: 80px;border-radius: 5px',
+        70: 'font-size: 28px;line-height: 70px;border-radius: 5px',
+        60: 'font-size: 26px;line-height: 60px;border-radius: 5px',
+        50: 'font-size: 24px;line-height: 50px;border-radius: 5px',
+        45: 'font-size: 22px;line-height: 45px;border-radius: 5px',
         40: 'font-size: 20px;line-height: 40px;border-radius: 5px',
-        30: 'font-size: 18px;line-height: 30px;border-radius: 4px',
-        35: 'font-size: 18px;line-height: 30px;border-radius: 4px'
+        30: 'font-size: 18px;line-height: 30px;border-radius: 5px',
+        35: 'font-size: 18px;line-height: 30px;border-radius: 5px'
       }
     }
   },
@@ -99,49 +99,49 @@ export default {
 .avatar-size-100 {
   width: 100px;
   height: 100px;
-  border-radius: 18px;
+  border-radius: 5px;
 }
 .avatar-size-80 {
   width: 80px;
   height: 80px;
-  border-radius: 14px;
+  border-radius: 5px;
 }
 
 .avatar-size-70 {
   width: 70px;
   height: 70px;
-  border-radius: 12px;
+  border-radius: 5px;
 }
 
 .avatar-size-60 {
   width: 60px;
   height: 60px;
-  border-radius: 10px;
+  border-radius: 5px;
 }
 .avatar-size-50 {
   width: 50px;
   height: 50px;
-  border-radius: 8px;
+  border-radius: 5px;
 }
 .avatar-size-45 {
   width: 45px;
   height: 45px;
-  border-radius: 8px;
+  border-radius: 5px;
 }
 .avatar-size-40 {
   width: 40px;
   height: 40px;
-  border-radius: 8px;
+  border-radius: 5px;
 }
 .avatar-size-35 {
   width: 35px;
   height: 35px;
-  border-radius: 6px;
+  border-radius: 5px;
 }
 .avatar-size-30 {
   width: 30px;
   height: 30px;
-  border-radius: 6px;
+  border-radius: 5px;
 }
 
 .round {
