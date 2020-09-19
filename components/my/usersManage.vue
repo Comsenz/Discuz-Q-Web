@@ -320,6 +320,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import '@/assets/css/variable/color.scss';
 .user-manage{
   overflow-x: auto;
 }
@@ -374,6 +375,9 @@ export default {
   .el-dropdown-link{
     color: #8590A6;
     cursor: pointer;
+    &:hover{
+      color: $color-blue-base;
+    }
   }
 }
 .disable{
@@ -382,13 +386,16 @@ export default {
 }
 ::v-deep .el-dropdown-menu__item:not(.is-disabled):hover {
   background-color: transparent;
-  color: #409EFF;
+  color: $color-blue-base;
 }
 .no-more{
   margin-top: 40px;
 }
 .user-name{
   margin-left: 10px;
+  &:hover{
+    color: $color-blue-base;
+  }
 }
 .flex{
   display: flex;

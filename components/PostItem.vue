@@ -316,7 +316,7 @@ export default {
       display: flex;
       align-items: center;
       font-size:16px;
-      margin-top: 10px;
+      margin-top: 15px;
       @media screen and ( max-width: 1005px ) {
         font-size:14px;
       }
@@ -374,17 +374,18 @@ export default {
           margin-right: 3px;
         }
         .like{
-          padding: 10px 15px;
-          line-height: 1;
-          border-radius:2px;
-          border:1px solid transparent;
+          // padding: 10px 15px;
+          // line-height: 1;
+          // border-radius:2px;
+          // border:1px solid transparent;
           // transition: all 0.1s ease-in;
           &.liked{
             color:$color-blue-base;
-            background: #E5F2FF;
-            &:hover{
-              border-color: #D4E6FC;
-            }
+            // padding: 10px 15px;
+            // background: #E5F2FF;
+            // &:hover{
+            //   border-color: #D4E6FC;
+            // }
           }
         }
       }

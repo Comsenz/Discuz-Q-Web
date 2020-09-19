@@ -127,6 +127,9 @@ export default {
     .post-content{
       padding:10px 0 0;
       display: block;
+      &:hover{
+        color: $color-blue-base;
+      }
     }
     .thread{
       background: #F5F5F5;
@@ -141,6 +144,9 @@ export default {
       .thread-title{
         flex: 1;
         @include text-hidden();
+        &:hover{
+          color: $color-blue-base;
+        }
       }
       .to-detail{
         color: $color-blue-base;

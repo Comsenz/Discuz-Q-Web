@@ -8,7 +8,7 @@
       v-model="activeName"
       type="border-card"
       class="register-select"
-      @tab-click="changeactive"
+      @tab-click="changeActive"
     >
       <!-- 用户名登录 -->
       <el-tab-pane
@@ -104,7 +104,7 @@
               <span>微信扫码登录</span>
             </div>
             <div class="qrcode">
-              <img :src="info.img">
+              <img :src="wechatLogin.base64_img">
             </div>
             <span class="qrtext">请用微信扫一扫扫码上方二维码</span>
           </div>
@@ -132,7 +132,6 @@ import { status } from '@/library/jsonapi-vuex/index'
 import handleError from '@/mixin/handleError'
 import tencentCaptcha from '@/mixin/tencentCaptcha'
 
-let QuickLogin = null
 export default {
   name: 'Login',
   mixins: [handleError, tencentCaptcha],
@@ -156,7 +155,9 @@ export default {
       code: '', // 注册邀请码
       loading: false,
       canReg: false,
-      ischeck: true
+      ischeck: true,
+      wechatLogin: {}, // 微信扫码登录信息
+      wehcatLoginTimer: null // 微信登录定时器
     }
   },
   computed: {
@@ -176,19 +177,22 @@ export default {
     if (code !== 'undefined') {
       this.code = code
     }
-
-    console.log('----this.forums-----', this.forums)
     if (this.forums && this.forums.set_site && this.forums.set_site.site_mode) {
       this.site_mode = this.forums.set_site.site_mode
     }
     if (this.forums && this.forums.set_reg && this.forums.set_reg.register_close) {
       this.canReg = true
     }
-    this.QRcode()
-    this.changeactive()
+    // this.QRcode()
+    // 获取配置优先的登录方式
+    this.activeName = this.forums ? this.forums.set_reg.register_type.toString() : ''
+    // 微信登录初始化
+    if (this.activeName === '2') {
+      this.createQRcode()
+    }
   },
   destroyed() {
-    clearInterval(QuickLogin)
+    window.clearInterval(this.wehcatLoginTimer)
   },
   methods: {
     check(value) {
@@ -220,11 +224,11 @@ export default {
       }
     },
     // tab激活
-    changeactive() {
-      // if (this.activeName === '2') {
-      //   this.QRcode()
-      // }
-      this.activeName = this.forums ? this.forums.set_reg.register_type.toString() : ''
+    changeActive() {
+      window.clearInterval(this.wehcatLoginTimer)
+      if (this.activeName === '2') {
+        this.createQRcode()
+      }
     },
 
     logind() {
@@ -376,45 +380,6 @@ export default {
           })
       }
     },
-    // 微信二维码
-    QRcode() {
-      const _params = {
-        _jv: {
-          type: '/oauth/wechat/web/user'
-        }
-      }
-      this.$store.dispatch('jv/get', _params).then(data => {
-        // console.log('user data => ', data)
-        if (data) {
-          this.info = data
-          this.scene_str = data.scene_str
-          console.log(this.scene_str)
-          QuickLogin = setInterval(() => {
-            if (this.loginStatus) {
-              clearInterval(QuickLogin)
-              return
-            }
-            this.getLoginStatus(this.scene_str)
-          }, 10000)
-        }
-      })
-    },
-    // 微信扫码登录状态
-    getLoginStatus(scene_str) {
-      const params = {
-        _jv: {
-          type: `oauth/wechat/web/user/search`
-        },
-        scene_str: scene_str
-      }
-      console.log(params)
-      this.$store.dispatch('jv/get', `/oauth/wechat/web/user/search?scene_str=${scene_str}`).then(data => {
-        console.log('user data => ', data)
-        if (data.id) {
-          this.loginStatus = true
-        }
-      })
-    },
     // qq登录
     qqLogin() {
       const params = {
@@ -429,12 +394,38 @@ export default {
     },
     iscanReg() {
       return [this.canReg ? '' : 'noreg']
+    },
+    // PC扫码登陆-生成二维码
+    createQRcode() {
+      this.$store.dispatch('jv/get', `/oauth/wechat/pc/qrcode`).then(res => {
+        console.log('user data => ', res)
+        if (res) {
+          this.wechatLogin = res
+          const _this = this
+          this.wehcatLoginTimer = setInterval(_this.getLoginStatus, 3000)
+        }
+      }, e => this.handleError(e))
+    },
+    // 轮询查询微信是否登录成功
+    getLoginStatus() {
+      if (this.wechatLogin && !this.wechatLogin.session_token) return
+      this.$store.dispatch('jv/get', `/oauth/wechat/pc/login/${this.wechatLogin.session_token}`).then(res => {
+        console.log('查询是否登录 ', res)
+        if (res.pc_login) {
+          clearInterval(this.wehcatLoginTimer)
+          this.$store.commit('session/SET_USER_ID', res._jv.id)
+          this.$store.commit('session/CHECK_SESSION', true)
+          this.$store.commit('session/SET_ACCESS_TOKEN', res.refresh_token)
+          this.logind()
+          this.$message.success('登录成功')
+        }
+      }, e => this.handleError(e))
     }
-
   }
 }
 </script>
 <style lang='scss' scoped>
+@import '@/assets/css/variable/color.scss';
 ::v-deep input::-ms-reveal {
   display: none;
 }
@@ -517,7 +508,6 @@ export default {
         margin: 0 auto;
         width: 155px;
         height: 155px;
-        border: 1px dashed black;
         margin-top: 26px;
         img {
           width: 100%;
@@ -545,7 +535,7 @@ export default {
     .findpass {
       // float: right;
       margin-left: 105px;
-      color: #1878f3;
+      color: $color-blue-base;
     }
     .logorreg {
       margin-top: 28px;
@@ -559,7 +549,7 @@ export default {
       color: #6d6d6d;
     }
     .agreement_text {
-      color: #1878f3;
+      color: $color-blue-base;
       cursor: pointer;
       margin-left: -3px;
     }
@@ -569,7 +559,12 @@ export default {
     // margin-left: 90px;
     margin-left: 70px;
     margin-top: 15px;
-    background: #1878f3;
+    background: $color-blue-base;
+    transition: all 0.2s ease-out;
+    &:hover{
+      border:1px solid $color-blue-deep;
+      background: $color-blue-deep;
+    }
   }
   .phone-input {
     width: 209px;
@@ -615,6 +610,9 @@ export default {
     border: none;
     font-weight: bold;
     font-size: 18px;
+  }
+  .el-tabs__header .el-tabs__item:hover {
+    color: $color-blue-deep;
   }
   .el-tabs__nav-wrap {
     margin-bottom: 0px;

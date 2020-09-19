@@ -131,6 +131,9 @@ export default {
       .svg-icon-delete{
         margin-right: 6px;
       }
+      &:hover{
+        color: $color-blue-deep;
+      }
     }
   }
 }

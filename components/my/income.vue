@@ -194,6 +194,7 @@ export default {
   .content {
     flex: 1;
     margin-left: 10px;
+    color: #777777;
   }
   .el-select {
     width: 140px;
@@ -204,9 +205,6 @@ export default {
   .search {
     margin-right: 10px;
   }
-}
-.red{
-  color: #fa5151;
 }
 .main{
   min-height: 500px;
@@ -235,18 +233,6 @@ export default {
     }
   }
 }
-.btn{
-  color: $font-color-grey;
-  padding: 0;
-  font-family: inherit;
-  &:last-child{
-    margin-left: 14px;
-  }
-}
-::v-deep .el-dropdown-menu__item:not(.is-disabled):hover {
-  background-color: transparent;
-  color: #409EFF;
-}
 .no-more{
   margin-top: 40px;
 }
@@ -256,5 +242,16 @@ export default {
 }
 .user-name{
   margin-left: 10px;
+  &:hover{
+    color: $color-blue-base;
+  }
+}
+.create-url{
+  background: $color-blue-base;
+  transition: all 0.2s ease-in-out;
+  &:hover{
+    background: $color-blue-deep;
+    border:1px solid $color-blue-deep;
+  }
 }
 </style>

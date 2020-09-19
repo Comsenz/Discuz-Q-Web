@@ -7,7 +7,7 @@
           <avatar :user="{ id: detail.user.id, username: detail.user.username, avatarUrl: detail.user.avatarUrl}" :size="50" />
           <div class="user-info">
             <nuxt-link :to="`/profile?userId=${detail.user.id}`" class="user-name">{{ detail.user.username }}</nuxt-link>
-            <div class="create-at">{{ detail.created_at | formatDate }}</div>
+            <div class="create-at">{{ $t('invite.createdAt') }}: {{ detail.created_at | formatDate }}</div>
           </div>
           <div class="total-money">
             <div class="label">{{ $t('invite.allIncome') }}</div>
@@ -245,6 +245,9 @@ export default {
         font-weight:bold;
       }
     }
+    .el-tabs__header .el-tabs__item:hover {
+      color: $color-blue-deep;
+    }
   }
   .detail-header{
     .title{
@@ -319,6 +322,9 @@ export default {
       }
       .user-name{
         margin-left: 10px;
+        &:hover{
+          color: $color-blue-base;
+        }
       }
     }
     .pagination {

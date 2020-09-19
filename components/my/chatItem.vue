@@ -137,6 +137,9 @@ export default {
       padding:10px 0 0;
       display: block;
       cursor: pointer;
+      &:hover{
+        color: $color-blue-base;
+      }
     }
   }
 }
