@@ -874,7 +874,7 @@ export default {
     myauthority: '我的权限',
     inviteyouas: '邀请您，作为',
     join: '加入',
-    joinnow: '立即加入',
+    joinnow: '立刻加入',
     accepttheinvitationandbecome: '接受邀请，成为',
     permanent: '永久有效',
     continueResgister: '继续注册',
