@@ -15,7 +15,7 @@
     </ul>
     <template slot="reference">
       <slot name="button">
-        <el-button v-permission:showAndHidePopover="''" type="primary" class="new-post">+{{ $t('profile.post') }}</el-button>
+        <el-button v-permission:showAndHidePopover="''" type="primary" class="new-post"><span class="add-icon">+</span>{{ $t('profile.post') }}</el-button>
       </slot>
     </template>
   </el-popover>
@@ -95,15 +95,19 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/css/variable/color.scss';
 // 重置element
-.el-button--primary {
+.new-post {
   background-color:$color-blue-base !important;
   border-color:$color-blue-base !important;
-  padding: 10px 20px !important;
+  padding: 9.5px 13.5px !important;
   border-radius: 2px;
   &:hover{
     opacity: 0.8;
     background-color: $color-blue-deep !important;
     border-color:$color-blue-deep !important;
+  }
+  .add-icon{
+    display:inline-block;
+    margin-right:5px;
   }
 }
 .type-container{
