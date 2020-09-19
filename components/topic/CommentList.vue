@@ -7,7 +7,7 @@
         </avatar-component>
         <div class="management">
           <div v-if="comment.canHide" class="delete" @click="$emit('deleteComment', comment._jv.id)">{{ $t('topic.delete') }}</div>
-          <div v-if="true" class="checking">{{ $t('topic.inReview') }}</div>
+          <div v-if="comment.isApproved === 0" class="checking">{{ $t('topic.inReview') }}</div>
         </div>
       </div>
       <div class="container-detail">
@@ -57,8 +57,10 @@
             <Avatar :user="reply.user || {}" size="30" />
             <div class="title-info">
               <span class="author-name">{{ reply.user ? reply.user.username : '' }}</span>
-              <span class="text">{{ $t('topic.reply') }}</span>
-              <span class="text">{{ comment.user ? comment.user.username : '' }}   </span>
+              <!--              <span v-show="reply.user && reply.user.groups" class="group">（{{ reply.user.groups[0].name }}）</span>-->
+              <span class="text reply">{{ $t('topic.reply') }}</span>
+              <span class="text comment-author">{{ comment.user ? comment.user.username : '' }}   </span>
+              <!--              <span v-show="comment.user && comment.user.groups" class="group">（{{ comment.user.groups[0].name }}）</span>-->
               <span class="timer">{{ formatDate(reply.updatedAt) }}</span>
               <span v-if="reply.canHide" class="delete-reply" @click.stop="$emit('deleteComment', reply._jv.id)">{{ $t('topic.delete') }}</span>
             </div>
@@ -126,7 +128,7 @@ export default {
     formatSummary(comment) {
       let html
       if (comment.contentHtml !== comment.summary) {
-        html = comment.summary + `&nbsp&nbsp&nbsp<button style="color: #00479B; cursor: pointer" class="showAllComment">${this.$t('topic.all')}<button>`
+        html = comment.summary + `&nbsp&nbsp&nbsp<button style="font-size: 16px;color: #00479B; cursor: pointer" class="showAllComment">${this.$t('topic.all')}<button>`
       } else {
         html = comment.contentHtml
       }
@@ -281,6 +283,13 @@ export default {
 
             > .text {
               color: $font-color-grey;
+              &.reply {
+                margin: 0 10px;
+              }
+              &.comment-author {
+                color: #000000;
+                margin-right: 10px;
+              }
             }
 
             > .delete-reply {

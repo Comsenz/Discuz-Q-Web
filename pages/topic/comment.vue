@@ -16,12 +16,9 @@
         <topic-content :article="comment || {}" :paid-information="{paid: true, price: 0}" :thread-type="3" :category="{}" :video="{}" />
         <div class="thread-card">
           <avatar-component :size="40" round :author="thread.user || {}">
-            {{ $t('topic.publishAt') }} {{ timerDiff(thread.createdAt) + $t('topic.before') }} ..
-            （{{ $t('topic.editAt') }} {{ timerDiff(thread.updatedAt) + $t('topic.before') }}）
+            {{ timerDiff(thread.createdAt) + $t('topic.before') }} ..
           </avatar-component>
-          <div class="content">
-            {{ thread.firstPost && thread.firstPost.summaryText }}
-          </div>
+          <div v-show="thread && thread.firstPost" class="content-html" v-html="thread.firstPost.summary" />
           <nuxt-link :to="`/topic/${thread._jv ? thread._jv.id : ''}`" class="view-more">{{ $t('topic.viewDetail') }}</nuxt-link>
           <svg-icon v-if="thread && thread.isEssence" style="font-size: 50px;" type="essence-comment" class="essence" />
         </div>
@@ -92,8 +89,8 @@ export default {
     }
   },
   mounted() {
-    if (Object.keys(this.thread).length === 0) this.getThread()
     if (Object.keys(this.comment).length === 0) this.getComment().then(() => { this.loading = false })
+    this.getThread()
     this.getReplyList()
   },
   methods: {
@@ -196,8 +193,21 @@ export default {
           width: 100%;
           padding: 15px;
           background: $background-color-grey;
-          > .content {
+          > .content-html {
             margin-top: 10px;
+            word-break: break-all;
+
+            ::v-deep p {
+              font-size: 16px;
+            }
+
+            ::v-deep img {
+              height: 22px;
+            }
+
+            ::v-deep a {
+              color: $color-blue-base;
+            }
           }
           > .view-more {
             position: absolute;
