@@ -139,7 +139,6 @@ export default {
     this.getThreadsList()
   },
   destroyed() {
-    this.tiemr = null
     clearInterval(this.timer)
   },
   methods: {

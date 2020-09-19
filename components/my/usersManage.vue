@@ -24,7 +24,7 @@
       <!-- 批量操作 -->
       <el-select v-model="handleValue" :placeholder="$t('manage.batchOperate')" :disabled="forums && forums.other && !forums.other.can_edit_user_group" size="medium" @change="onChangeGroup">
         <el-option
-          v-for="item in groupList"
+          v-for="item in groupInviteList"
           :key="item.value"
           :disabled="item.value === '7'"
           :label="$t('manage.set') + item.label"
@@ -68,7 +68,7 @@
               {{ $t('manage.modifyRole') }}
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item v-for="(item,index) in groupList" :key="index" :command="{'userId':scope.row._jv.id, 'command':item.value}" :disabled="item.value === '7' ">{{ $t('manage.set') + item.label }}</el-dropdown-item>
+              <el-dropdown-item v-for="(item,index) in groupInviteList" :key="index" :command="{'userId':scope.row._jv.id, 'command':item.value}">{{ $t('manage.set') + item.label }}</el-dropdown-item>
               <el-dropdown-item v-if="userInfo && userInfo.canEdit && scope.row.status === 0" :command="{'userId':scope.row._jv.id, 'command':'disable'}">{{ $t('manage.disable') }}</el-dropdown-item>
               <el-dropdown-item v-else-if="userInfo && userInfo.canEdit && scope.row.status === 1" :command="{'userId':scope.row._jv.id, 'command':'normal'}">{{ $t('manage.cancelDisable') }}</el-dropdown-item>
             </el-dropdown-menu>
@@ -114,6 +114,7 @@ export default {
       selectedGroup: '', // 筛选项 选中的用户组
       groupId: [], // 用于接口的用户组数组
       groupList: [], // 用户组列表
+      groupInviteList: [], // 返回当前用户可见用户组（非管理员不返回游客、管理员用户组）
       handleValue: '',
       pageNum: 1,
       pageSize: 10,
@@ -137,18 +138,30 @@ export default {
   mounted() {
     this.getUserList()
     this.getGroupList()
+    this.getGroupList('invite')
   },
   methods: {
     // 获取用户组
-    getGroupList() {
-      const params = {}
+    getGroupList(type) {
+      const params = {
+        'filter[type]': type
+      }
       this.$store.dispatch('jv/get', ['groups', { params }]).then(res => {
-        res.forEach(item => {
-          this.groupList.push({
-            label: item.name,
-            value: item._jv.id
+        if (type) {
+          res.forEach(item => {
+            this.groupInviteList.push({
+              label: item.name,
+              value: item._jv.id
+            })
           })
-        })
+        } else {
+          res.forEach(item => {
+            this.groupList.push({
+              label: item.name,
+              value: item._jv.id
+            })
+          })
+        }
       })
     },
     getUserList() {

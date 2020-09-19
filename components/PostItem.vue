@@ -264,7 +264,6 @@ export default {
       .image{
         width:185px;
         height: 185px;
-        border-radius: 5px;
         margin-right: 10px;
         @media screen and ( max-width: 1005px ) {
           width:130px;
