@@ -131,6 +131,7 @@ export default {
   .el-menu {
     padding-top: 20px;
     border-radius: 5px 0;
+    width:150px;
   }
   .padd {
     padding-left: 30px !important;
