@@ -18,7 +18,7 @@
       <el-input
         v-model="inputVal"
         size="small"
-        :placeholder="$t('search.search')"
+        :placeholder="$t('manage.pleaseInputUserName')"
         class="h-search"
         @change="onClickSearch"
         @keyup.enter.native="onClickSearch"

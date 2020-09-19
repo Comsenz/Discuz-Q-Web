@@ -34,7 +34,7 @@
       />
       <el-input
         v-model="newPasswordRepeat"
-        :placeholder="$t('modify.enterNewRepeat')"
+        :placeholder="$t('modify.resetrepeatpass')"
         show-password
         @keyup.enter.native="submit"
       />

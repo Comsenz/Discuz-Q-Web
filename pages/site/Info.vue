@@ -9,7 +9,7 @@
     <div class="payinfo">
       <p class="payinfo-title">{{ $t('manage.payInfoTitle') }}</p>
       <p>
-        <span class="color">{{ $t('post.paymentAmount') }}</span><span class="paymoney">{{ '¥' + site_price }}元</span>
+        <span class="color">{{ $t('post.paymentAmount') }}</span><span class="paymoney">{{ '¥' + ` ${site_price} ` }}元</span>
       </p>
       <p>
         <span class="date color">{{ $t('site.periodvalidity') }}</span><span class="workdate">自加入起{{ forums.set_site && forums.set_site.site_expire

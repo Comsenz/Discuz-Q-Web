@@ -68,7 +68,11 @@
         label="金额"
         width="113"
         sortable
-      />
+      >
+        <template slot-scope="scope">
+          <span style="font-size:16px;" v-html="scope.row.cash_apply_amount" />
+        </template>
+      </el-table-column>
     </el-table>
     <!-- 分页器 -->
     <el-pagination
@@ -278,7 +282,7 @@ export default {
   }
 }
 .selector {
-.el-date-editor {
+  .el-date-editor {
     @media screen and (max-width: 900px) {
       width: 160px;
     }

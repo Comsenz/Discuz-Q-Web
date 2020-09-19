@@ -24,6 +24,7 @@
           v-model="otherReasonValue"
           type="textarea"
           :rows="5"
+          :disabled="!isOther"
           placeholder="请输入举报理由"
         />
       </div>
@@ -32,10 +33,12 @@
       <div class="allbtn">
         <el-button
           class="comfirm"
+          type="small"
           @click="reportConfirmClick(type)"
         >确认</el-button>
         <el-button
           class="cancel"
+          type="small"
           @click="reportCancelClick"
         >取消</el-button>
       </div>
@@ -68,6 +71,7 @@ export default {
       inputInfo: '',
       otherReasonValue: '',
       currentReport: '',
+      isOther: false,
       reportData: [
         {
           // 举报理由
@@ -107,6 +111,9 @@ export default {
     select(val) {
       console.log('select', val)
       this.currentReport = val
+      if (this.currentReport === 'other') {
+        this.isOther = true
+      }
     },
     // 确认举报
     reportConfirmClick(type) {
@@ -184,7 +191,7 @@ export default {
     }
     ::v-deep .el-textarea__inner {
       color: #c0c4cc;
-      background: #dcdee6;
+      background: #f4f5f6;
       margin-top: 20px;
     }
   }

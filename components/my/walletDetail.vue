@@ -63,7 +63,7 @@
         :sort-method="sortAmount"
       >
         <template slot-scope="scope">
-          <span v-html="amountFormat(scope.row.change_available_amount)" />
+          <span style="font-size:16px;" v-html="amountFormat(scope.row.change_available_amount)" />
         </template>
       </el-table-column>
     </el-table>

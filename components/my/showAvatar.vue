@@ -105,9 +105,15 @@
         <div class="pre-button">
           <el-button
             type="primary"
+            size="small"
+            class="btnw"
             @click="down"
-          >确 定</el-button>
-          <el-button @click="handleClose2">取 消</el-button>
+          >使用</el-button>
+          <el-button
+            size="small"
+            class="btnw"
+            @click="handleClose2"
+          >取消</el-button>
         </div>
       </div>
     </el-dialog>
@@ -277,6 +283,7 @@ export default {
     vertical-align: bottom;
     .uptext {
       width: 150px;
+      margin-top: 10px;
       span {
         font-weight: bold;
       }
@@ -301,7 +308,7 @@ export default {
   .preview2 {
     display: inline-flex;
     flex-direction: column;
-    margin-left: 20px;
+    margin-left: 17px;
     text-align: center;
     // align-items: center;
   }
@@ -316,7 +323,7 @@ export default {
     justify-content: center;
     align-items: center;
     .squarep {
-      width: 46px;
+      width: 53px;
       display: inline-block;
     }
   }
@@ -333,15 +340,27 @@ export default {
     align-items: center;
     margin-top: 20px;
     .squarep {
-      width: 46px;
+      width: 53px;
     }
   }
   .pre-button {
     display: inline-block;
     margin-top: 91px;
+    .btnw{
+      width:70px;
+    }
   }
   ::v-deep .el-dialog__body {
     padding: 20px 15px;
   }
+}
+::v-deep .el-dialog__title {
+  line-height: 24px;
+  font-size: 16px;
+  color: #6d6d6d;
+  font-weight: bold;
+}
+::v-deep .el-dialog__headerbtn {
+  font-size: 22px;
 }
 </style>

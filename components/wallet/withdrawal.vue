@@ -11,7 +11,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="head">可提现金额</div>
+        <div class="head">{{ $t('modify.withdrawable') }}</div>
         <div class="body product-information">
           <span class="title2"> ￥ {{ balance }}</span>
         </div>
@@ -23,22 +23,23 @@
             <span>￥</span>
             <input
               v-model="canAmount"
-              placeholder="请输入您提现的金额"
+              :placeholder="$t('modify.enteramount')"
               type="text"
+              class="rinput"
               @input="settlement"
             >
           </label>
         </div>
       </div>
       <div class="row">
-        <div class="head">实际提现金额</div>
+        <div class="head">{{ $t('modify.actualamout') }}</div>
         <div class="body product-information">
           <span class="title3"> ￥ {{ contint || 0 }}</span>
-          <span style="font-size:12px; margin-top:10px"> 手续费：{{ procedures }}元 ({{ percentage }}%)</span>
+          <span class="title4"> {{ $t('modify.servicechaege') }}{{ procedures }}{{ $t('modify.percentage') }} ({{ percentage }}%)</span>
         </div>
       </div>
       <div class="row">
-        <div class="head reward">请输入验证码</div>
+        <div class="head reward">{{ $t('user.verificationCode2') }}</div>
         <div class="body reward">
           <!-- 发送验证码 -->
           <label>
@@ -69,16 +70,17 @@
             您还未绑定手机请到<span
               style="font-weight:bold;color:#1878F3;cursor:pointer;"
               @click="tomy"
-            > 个人中心 </span>
+            > {{ $t('profile.personalhomepage') }} </span>
             进行手机的绑定</span>
         </div>
       </div>
     </div>
     <div class="bottom">
-      <span>￥{{ contint || 0 }}{{ $t('pay.rmb') + '提现到' + '，' + name || '' }} {{ $t('pay.ofAccount') }}</span>
+      <span style="font-size:14px">￥{{ contint || 0 }}{{ $t('pay.rmb') + '提现到' + '，' + name || '' }} {{ $t('pay.ofAccount') }}</span>
       <el-button
         size="medium"
         type="primary"
+        class="border"
         @click="btncash"
       >确认提现</el-button>
     </div>
@@ -366,6 +368,10 @@ export default {
             color: #1878f3;
             font-weight: 400;
           }
+          &.title4 {
+            font-size: 12px;
+            margin-top: 10px;
+          }
         }
       }
 
@@ -375,6 +381,10 @@ export default {
           border-top: none;
           border-right: none;
           border-bottom: none;
+          .rinput {
+            font-size: 16px;
+            color: #000000;
+          }
         }
         .phone {
           margin-top: 10px;
@@ -523,7 +533,9 @@ export default {
   padding: 0 20px;
   background: #f5f6f7;
   margin-top: 30px;
-
+  .border {
+    border-radius: 2px;
+  }
   > span {
     margin-right: 20px;
   }
