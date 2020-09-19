@@ -150,6 +150,11 @@ export default {
         this.getThreadsList()
       }
     }
+  },
+  head() {
+    return {
+      title: '位置信息'
+    }
   }
 }
 </script>
@@ -197,6 +202,7 @@ export default {
     @include background();
     .thread-count{
       font-size: 18px;
+      font-weight: bold;
       padding: 20px 15px 16.5px;
       border-bottom: 1px solid $border-color-base;
       @media screen and ( max-width: 1005px ) {

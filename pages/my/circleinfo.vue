@@ -53,8 +53,8 @@
           </div>
           <div class="user-info">
             <div class="name base-font-size">{{ userInfo.username }}</div>
-            <div class="role">{{ $t('site.role') }}:{{ forums.user && forums.user.groups && forums.user.groups.length > 0 && forums.user.groups[0].name || '' }}</div>
-            <div v-if="userInfo.joinedAt" class="join-time">{{ $t('manage.joinedTime') }}:{{ userInfo.joinedAt.substr(0, 10) }}
+            <div class="role">{{ $t('site.role') }} {{ forums.user && forums.user.groups && forums.user.groups.length > 0 && forums.user.groups[0].name || '' }}</div>
+            <div v-if="userInfo.joinedAt" class="join-time">{{ $t('manage.joinedTime') }} {{ userInfo.joinedAt.substr(0, 10) }}
               <template v-if="forums && forums.set_site.site_mode === 'pay'">,{{ $t('site.periodvalidity') + $t('site.to') + handleExpiredAt(userInfo.expiredAt) }}
                 <!-- <template v-if="userInfo.expiredAt">({{ $t('pay.surplus') + (handleDays('userInfo.expiredAt') > 0 ? handleDays('userInfo.expiredAt') : 0) + $t('site.day') }})</template> -->
               </template>
@@ -171,6 +171,11 @@ export default {
       const _date = Math.round(new Date(date) / 1000)
       return timestamp2day(_date)
     }
+  },
+  head() {
+    return {
+      title: this.$t('manage.circleinfo')
+    }
   }
 }
 </script>
@@ -188,7 +193,7 @@ export default {
 }
 .logo{
   // width: 294px;
-  height: 88px;
+  height: 55px;
 }
 .grey-color{
   color: $font-color-grey;
@@ -235,7 +240,7 @@ export default {
 }
 .site-detail{
   margin-top:30px;
-  padding-bottom: 20px;
+  padding-bottom: 27.5px;
   border-bottom: 1px solid $border-color-base;
   .header{
     display: flex;
@@ -249,6 +254,7 @@ export default {
   .content{
     margin-top: 15px;
     color: #000;
+    padding-bottom: 12.5px;
     ::v-deep.el-textarea__inner{
       font-family: inherit;
     }
@@ -261,7 +267,7 @@ export default {
   }
 }
 .circlemode{
-  margin-top: 20px;
+  margin-top: 22.5px;
   border-bottom: 1px solid $border-color-base;
   padding-bottom: 20px;
   .content{
@@ -270,7 +276,7 @@ export default {
   }
 }
 .permission{
-  margin-top: 20px;
+  margin-top: 22.5px;
   .user-detail{
     display: flex;
     margin-top: 12px;

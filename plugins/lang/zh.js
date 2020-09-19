@@ -106,6 +106,9 @@ export default {
     },
     role: {
       noRole: '暂无角色'
+    },
+    symbol: {
+      colon: '：'
     }
   },
   uploader: {
@@ -500,7 +503,7 @@ export default {
     publicmode: '公开模式',
     circlemaster: '站长',
     myRole: '我的角色',
-    joinedTime: '加入时间',
+    joinedTime: '加入时间：',
     periodvalidity: '有效期至',
     myauthority: '我的权限',
     setting: '设置',
@@ -884,7 +887,7 @@ export default {
     codenotfound2: '该邀请码不存在',
     codeforbid2: '您当前已登录了帐号，无法使用邀请码进行注册，请退出后重试。',
     price: '费用',
-    role: '角色',
+    role: '角色：',
     to: '至',
     permission: '权限'
   },

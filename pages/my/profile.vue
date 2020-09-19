@@ -1,13 +1,6 @@
 <template>
-  <div
-    v-loading="loading"
-    class="myprofile"
-  >
-    <div
-      v-if="userInfo"
-      class="myprofile-c"
-      style="padding-bottom:0px"
-    >
+  <div v-loading="loading" class="myprofile">
+    <div v-if="userInfo" class="myprofile-c" style="padding-bottom:0px">
       <div class="myprofile-top mtop">
         <Avatar
           :user="{ id: userInfo.id, username: userInfo.username, avatarUrl: avataruserInfo.avatarUrl}"
@@ -21,71 +14,41 @@
           <span class="usrname">{{ userInfo.username }}</span>
           <span class="usrid">{{ userInfo && userInfo.groupsName ? userInfo.groupsName : '' }}</span>
         </div>
-        <span
-          v-if="userInfo && userInfo.isReal"
-          class="iden"
-        >
-          <svg-icon
-            type="auth"
-            class="auth-icon"
-          />
+        <span v-if="userInfo && userInfo.isReal" class="iden">
+          <svg-icon type="auth" class="auth-icon" />
           <span class="real">已实名认证</span>
         </span>
         <span
           v-else-if="userInfo && !userInfo.isReal && forums &&forums.qcloud && forums.qcloud.qcloud_faceid"
           class="iden"
         >
-          <svg-icon
-            class="auth-icon"
-            type="warning"
-          /> <span class="nreal">未实名认证</span>
+          <svg-icon class="auth-icon" type="warning" />
+          <span class="nreal">未实名认证</span>
         </span>
-        <span
-          class="setavatar"
-          @click="setAvatar"
-        >设置头像</span>
-        <show-avatar
-          v-if="isShowAvatar"
-          :user-id="userId"
-          @change="changeShow"
-        />
+        <span class="setavatar" @click="setAvatar">设置头像</span>
+        <show-avatar v-if="isShowAvatar" :user-id="userId" @change="changeShow" />
       </div>
       <div class="myprofile-bottom">
-        <div
-          class="myprofile-title marglef"
-          @click="toTopic"
-        >
+        <div class="myprofile-title marglef" @click="toTopic">
           <span>{{ $t('profile.topic') }}</span>
           <span class="num">{{ userInfo.threadCount }}</span>
         </div>
-        <div
-          class="myprofile-title"
-          @click="toFollowing"
-        >
+        <div class="myprofile-title" @click="toFollowing">
           <span>{{ $t('profile.following') }}</span>
           <span class="num">{{ userInfo.fansCount }}</span>
         </div>
-        <div
-          class="myprofile-title"
-          @click="toFollowers"
-        >
+        <div class="myprofile-title" @click="toFollowers">
           <span>{{ $t('profile.followers') }}</span>
           <span class="num">{{ userInfo.followCount }}</span>
         </div>
-        <div
-          class="myprofile-title"
-          @click="toLikes"
-        >
+        <div class="myprofile-title" @click="toLikes">
           <span>{{ $t('profile.likes') }}</span>
           <span class="num">{{ userInfo.likedCount }}</span>
         </div>
       </div>
     </div>
     <!-- 用户名 -->
-    <div
-      v-if="userInfo"
-      :class="isNameModify ? 'myprofile-c bgcolor': 'myprofile-c'"
-    >
+    <div v-if="userInfo" :class="isNameModify ? 'myprofile-c bgcolor': 'myprofile-c'">
       <div class="myprofile-top">
         <span class="sig">{{ $t('profile.username') }}</span>
         <span
@@ -97,13 +60,8 @@
       <div
         v-show="!isNameModify"
         class="myprofile-btom2"
-      >
-        {{ userInfo && userInfo.username ? userInfo.username:'' }}
-      </div>
-      <div
-        v-show="isNameModify"
-        class="myprofile-btom"
-      >
+      >{{ userInfo && userInfo.username ? userInfo.username:'' }}</div>
+      <div v-show="isNameModify" class="myprofile-btom">
         <form>
           <el-input
             ref="username"
@@ -111,20 +69,13 @@
             :placeholder="$t('modify.numbermodifitions')"
             class="passbtom"
           />
-          <el-button
-            type="primary"
-            class="ebutton"
-            @click="nameSub"
-          >确定修改</el-button>
+          <el-button type="primary" class="ebutton" @click="nameSub">确定修改</el-button>
         </form>
       </div>
     </div>
 
     <!-- 签名 -->
-    <div
-      v-if="userInfo"
-      :class="isSignModify ? 'myprofile-c bgcolor': 'myprofile-c'"
-    >
+    <div v-if="userInfo" :class="isSignModify ? 'myprofile-c bgcolor': 'myprofile-c'">
       <div class="myprofile-top">
         <span class="sig">{{ $t('modify.signaturetitle') }}</span>
         <span
@@ -135,13 +86,8 @@
       <div
         v-show="!isSignModify"
         :class="userInfo.signature !=='' ?'myprofile-btom-sign':'myprofile-btom-sign signcolor'"
-      >
-        {{ userInfo.signature ? userInfo.signature : '暂无签名' }}
-      </div>
-      <div
-        v-show="isSignModify"
-        class="text"
-      >
+      >{{ userInfo.signature ? userInfo.signature : '暂无签名' }}</div>
+      <div v-show="isSignModify" class="text">
         <textarea
           ref="sign"
           v-model="inputVal"
@@ -150,12 +96,10 @@
           class="textarea"
           @input="fun"
         />
-        <div class="cannum">{{ $t('modify.canalsoinput')+ `${num-wordnumber}` + $t('modify.wordnumber') }}</div>
-        <el-button
-          type="primary"
-          class="sigbutton"
-          @click="sigComfirm"
-        >确定修改</el-button>
+        <div
+          class="cannum"
+        >{{ $t('modify.canalsoinput')+ `${num-wordnumber}` + $t('modify.wordnumber') }}</div>
+        <el-button type="primary" class="sigbutton" @click="sigComfirm">确定修改</el-button>
       </div>
     </div>
     <!-- 手机号 -->
@@ -171,22 +115,14 @@
           @click="mobileModify"
         >{{ (!isMobileModify ?!userInfo.mobile ? '绑定手机': $t('profile.modify') : '取消修改') }}</span>
       </div>
-      <div
-        v-show="!isMobileModify"
-        class="myprofile-btom2"
-      >
-        <div :class="userInfo.mobile ? 'pmobile' : ''">
-          {{ userInfo.mobile ? userInfo.mobile : $t('modify.setphontitle') }}
-        </div>
+      <div v-show="!isMobileModify" class="myprofile-btom2">
+        <div
+          :class="userInfo.mobile ? 'pmobile' : ''"
+        >{{ userInfo.mobile ? userInfo.mobile : $t('modify.setphontitle') }}</div>
       </div>
       <!-- 修改手机号 -->
-      <div
-        v-show="(isMobileModify && userInfo.mobile)"
-        class="myprofile-btom"
-      >
-        <div class="pmobile">
-          {{ userInfo.mobile }}
-        </div>
+      <div v-show="(isMobileModify && userInfo.mobile)" class="myprofile-btom">
+        <div class="pmobile">{{ userInfo.mobile }}</div>
         <div>
           <el-input
             ref="oldphone"
@@ -195,23 +131,10 @@
             class="phone-input"
           />
 
-          <el-button
-            class="count-b"
-            size="middle"
-            @click="sendsms2"
-          >{{ content }}</el-button>
+          <el-button class="count-b" size="middle" @click="sendsms2">{{ content }}</el-button>
 
-          <el-input
-            v-model="newphon"
-            placeholder="输入新手机号码"
-            class="passbtom"
-            @input="changeinput"
-          />
-          <el-input
-            v-model="newVerifyCode"
-            placeholder="请输入新手机验证码"
-            class="phone-input"
-          />
+          <el-input v-model="newphon" placeholder="输入新手机号码" class="passbtom" @input="changeinput" />
+          <el-input v-model="newVerifyCode" placeholder="请输入新手机验证码" class="phone-input" />
           <el-button
             class="count-b"
             :class="{disabled: !canClick2}"
@@ -221,17 +144,10 @@
           >{{ content2 }}</el-button>
         </div>
 
-        <el-button
-          type="primary"
-          class="ebutton"
-          @click="mobileComfirm"
-        >提交修改</el-button>
+        <el-button type="primary" class="ebutton" @click="mobileComfirm">提交修改</el-button>
       </div>
       <!-- 新用户绑定手机号 -->
-      <div
-        v-show="(isMobileModify && !userInfo.mobile)"
-        class="myprofile-btom"
-      >
+      <div v-show="(isMobileModify && !userInfo.mobile)" class="myprofile-btom">
         <div>
           <el-input
             ref="oldphone"
@@ -241,11 +157,7 @@
             class="passbtom"
             @input="changeinput"
           />
-          <el-input
-            v-model="setnum"
-            placeholder="请输入手机验证码"
-            class="phone-input"
-          />
+          <el-input v-model="setnum" placeholder="请输入手机验证码" class="phone-input" />
           <el-button
             class="count-b"
             :class="{disabled: !canClick}"
@@ -255,18 +167,11 @@
           >{{ content }}</el-button>
         </div>
 
-        <el-button
-          type="primary"
-          class="ebutton"
-          @click="dingphon"
-        >提交修改</el-button>
+        <el-button type="primary" class="ebutton" @click="dingphon">提交修改</el-button>
       </div>
     </div>
     <!-- 密码 -->
-    <div
-      v-if="userInfo"
-      :class="isPassModify ? 'myprofile-c bgcolor': 'myprofile-c'"
-    >
+    <div v-if="userInfo" :class="isPassModify ? 'myprofile-c bgcolor': 'myprofile-c'">
       <div class="myprofile-top">
         <span class="sig">{{ $t('profile.password') }}</span>
         <span
@@ -277,13 +182,8 @@
       <div
         v-show="!isPassModify"
         class="myprofile-btom2"
-      >
-        {{ userInfo && userInfo.hasPassword ?'已设置':'未设置密码' }}
-      </div>
-      <div
-        v-show="isPassModify"
-        class="myprofile-btom"
-      >
+      >{{ userInfo && userInfo.hasPassword ?'已设置':'未设置密码' }}</div>
+      <div v-show="isPassModify" class="myprofile-btom">
         <form>
           <el-input
             ref="oldpass"
@@ -308,26 +208,16 @@
               type="password"
               show-password
             />
-            <div
-              v-if="passerror"
-              class="passerror"
-            >两次输入的密码不一致,请重新输入</div>
+            <div v-if="passerror" class="passerror">两次输入的密码不一致,请重新输入</div>
           </div>
 
-          <el-button
-            type="primary"
-            class="ebutton"
-            @click="passSub"
-          >确定修改</el-button>
+          <el-button type="primary" class="ebutton" @click="passSub">确定修改</el-button>
         </form>
       </div>
     </div>
 
     <!-- 微信 -->
-    <div
-      v-if="userInfo"
-      :class="isWechatModify ? 'myprofile-c bgcolor': 'myprofile-c'"
-    >
+    <div v-if="userInfo" :class="isWechatModify ? 'myprofile-c bgcolor': 'myprofile-c'">
       <div class="myprofile-top">
         <span class="sig">{{ $t('profile.wechat') }}</span>
         <span
@@ -338,8 +228,11 @@
       <div
         v-show="!isWechatModify"
         class="myprofile-btom2"
-      >
-        {{ userInfo && userInfo.wechat ?userInfo.wechat.nickname :'未绑定微信' }}
+      >{{ userInfo && userInfo.wechat ?userInfo.wechat.nickname :'未绑定微信' }}</div>
+      <div v-show="isWechatModify" class="wehcat-bind">
+        <el-image :src="wechatBind.base64_img" class="qr-code" />
+        <div>请用微信扫一扫</div>
+        <div>扫码上方二维码</div>
       </div>
     </div>
 
@@ -360,14 +253,8 @@
       <div
         v-show="!isRealModify"
         class="myprofile-btom2"
-      >
-        {{ userInfo && userInfo.realname ?'已设置':'未实名认证' }}
-      </div>
-      <div
-        v-show="isRealModify"
-        class="myprofile-btom"
-      >
-
+      >{{ userInfo && userInfo.realname ?'已设置':'未实名认证' }}</div>
+      <div v-show="isRealModify" class="myprofile-btom">
         <div>
           <el-input
             ref="realname"
@@ -375,19 +262,10 @@
             :placeholder="$t('modify.realname')"
             class="passbtom"
           />
-          <el-input
-            v-model="idNumber"
-            :placeholder="$t('modify.enteridnumber')"
-            class="passbtom"
-          />
-
+          <el-input v-model="idNumber" :placeholder="$t('modify.enteridnumber')" class="passbtom" />
         </div>
 
-        <el-button
-          type="primary"
-          class="ebutton"
-          @click="realSub"
-        >确定提交</el-button>
+        <el-button type="primary" class="ebutton" @click="realSub">确定提交</el-button>
       </div>
     </div>
     <div
@@ -397,9 +275,9 @@
       <div class="myprofile-top">
         <span class="sig">{{ $t('modify.realnametitle') }}</span>
       </div>
-      <div class="myprofile-btom2">
-        {{ userInfo && userInfo.realname ?userInfo.realname +` (${userInfo.identity})`:'' }}
-      </div>
+      <div
+        class="myprofile-btom2"
+      >{{ userInfo && userInfo.realname ?userInfo.realname +` (${userInfo.identity})`:'' }}</div>
     </div>
   </div>
 </template>
@@ -407,9 +285,10 @@
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
 import handleError from '@/mixin/handleError'
+import bindWechat from '@/mixin/bindWechat'
 const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
 export default {
-  mixins: [handleError, tcaptchs],
+  mixins: [handleError, bindWechat, tcaptchs],
   data() {
     return {
       userId: this.$store.getters['session/get']('userId'),
@@ -446,7 +325,6 @@ export default {
       rebind: false, // 是否修改手机号
       isShowAvatar: false, // 是否设置头像
       passerror: false
-
     }
   },
   computed: {
@@ -508,16 +386,21 @@ export default {
       const params = {
         include: 'groups,wechat'
       }
-      this.$store.dispatch('jv/get', [`users/${this.userId}`, { params }]).then(res => {
-        console.log('useriinfo', res)
-        this.loading = false
-        this.userInfo = res
-        this.signcontent = this.userInfo.signature
-        this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
-        this.wordnumber = this.signcontent.length
-      }, e => {
-        this.handleError(e)
-      })
+      this.$store.dispatch('jv/get', [`users/${this.userId}`, { params }]).then(
+        (res) => {
+          console.log('useriinfo', res)
+          this.loading = false
+          this.userInfo = res
+          this.signcontent = this.userInfo.signature
+          this.userInfo.groupsName = this.userInfo.groups
+            ? this.userInfo.groups[0].name
+            : ''
+          this.wordnumber = this.signcontent.length
+        },
+        (e) => {
+          this.handleError(e)
+        }
+      )
     },
     setAvatar() {
       this.isShowAvatar = true
@@ -548,15 +431,20 @@ export default {
         },
         signature: this.inputVal
       }
-      status.run(() => this.$store.dispatch('jv/patch', params)).then(res => {
-        if (res) {
-          this.isSignModify = !this.isSignModify
-          this.$message.success(this.$t('modify.modificationsucc'))
-          this.userinfo()
-        }
-      }, e => {
-        this.handleError(e)
-      })
+      status
+        .run(() => this.$store.dispatch('jv/patch', params))
+        .then(
+          (res) => {
+            if (res) {
+              this.isSignModify = !this.isSignModify
+              this.$message.success(this.$t('modify.modificationsucc'))
+              this.userinfo()
+            }
+          },
+          (e) => {
+            this.handleError(e)
+          }
+        )
     },
     // 手机位数简单校验
     changeinput() {
@@ -607,25 +495,28 @@ export default {
     // 腾讯验证码
     tcaptcha() {
       // eslint-disable-next-line no-undef
-      this.captcha = new TencentCaptcha(this.forums.qcloud.qcloud_captcha_app_id, res => {
-        if (res.ret === 0) {
-          this.ticket = res.ticket
-          this.randstr = res.randstr
-          // 验证通过后发布
-          console.log('验证码发送')
-          if (this.novice) {
-            if (this.rebind) {
-              this.sendVerifyCode2()
+      this.captcha = new TencentCaptcha(
+        this.forums.qcloud.qcloud_captcha_app_id,
+        (res) => {
+          if (res.ret === 0) {
+            this.ticket = res.ticket
+            this.randstr = res.randstr
+            // 验证通过后发布
+            console.log('验证码发送')
+            if (this.novice) {
+              if (this.rebind) {
+                this.sendVerifyCode2()
+              } else {
+                // 新手机验证码发送
+                this.setphon()
+              }
             } else {
-              // 新手机验证码发送
-              this.setphon()
+              // 修改手机验证码发送
+              this.sendVerifyCode()
             }
-          } else {
-            // 修改手机验证码发送
-            this.sendVerifyCode()
           }
         }
-      })
+      )
       // 显示验证码
       this.captcha.show()
     },
@@ -640,13 +531,17 @@ export default {
         captcha_ticket: this.ticket,
         captcha_rand_str: this.randstr
       }
-      const postphon = status.run(() => this.$store.dispatch('jv/post', params))
-      postphon
-        .then(res => {
+      const postphon = status.run(() =>
+        this.$store.dispatch('jv/post', params)
+      )
+      postphon.then(
+        (res) => {
           if (res.interval) this.countDown(res.interval)
           this.ticket = ''
           this.randstr = ''
-        }, e => this.handleError(e))
+        },
+        (e) => this.handleError(e)
+      )
     },
     dingphon() {
       if (this.newphon) {
@@ -664,9 +559,11 @@ export default {
         code: this.setnum,
         type: 'bind'
       }
-      const postphon = status.run(() => this.$store.dispatch('jv/post', params))
-      postphon
-        .then(res => {
+      const postphon = status.run(() =>
+        this.$store.dispatch('jv/post', params)
+      )
+      postphon.then(
+        (res) => {
           if (res) {
             this.isMobileModify = !this.isMobileModify
             this.$message.success(this.$t('modify.phontitle'))
@@ -685,9 +582,11 @@ export default {
               }
               // include: 'groups',
             }
-            _this.$store.dispatch('jv/get', promsget).then(() => { })
+            _this.$store.dispatch('jv/get', promsget).then(() => {})
           }
-        }, e => this.handleError(e))
+        },
+        (e) => this.handleError(e)
+      )
     },
     // 修改手机号
     mobileModify() {
@@ -707,15 +606,19 @@ export default {
         captcha_ticket: this.ticket,
         captcha_rand_str: this.randstr
       }
-      const postphon = status.run(() => this.$store.dispatch('jv/post', params))
-      postphon
-        .then(res => {
+      const postphon = status.run(() =>
+        this.$store.dispatch('jv/post', params)
+      )
+      postphon.then(
+        (res) => {
           console.log('旧手机验证码', res, this.content)
           if (res.interval) this.countDown(res.interval)
           this.rebind = true
           this.ticket = ''
           this.randstr = ''
-        }, e => this.handleError(e))
+        },
+        (e) => this.handleError(e)
+      )
     },
     // 新手机验证码发送
     sendVerifyCode2() {
@@ -726,15 +629,19 @@ export default {
         captcha_ticket: this.ticket,
         captcha_rand_str: this.randstr
       }
-      const postphon = status.run(() => this.$store.dispatch('jv/post', params))
-      postphon
-        .then(res => {
+      const postphon = status.run(() =>
+        this.$store.dispatch('jv/post', params)
+      )
+      postphon.then(
+        (res) => {
           console.log('绑定新手机验证码', res)
           if (res.interval) this.countDown2(res.interval)
           this.rebind = true
           this.ticket = ''
           this.randstr = ''
-        }, e => this.handleError(e))
+        },
+        (e) => this.handleError(e)
+      )
     },
     // 手机号确认修改
     mobileComfirm() {
@@ -749,12 +656,14 @@ export default {
         code: this.oldVerifyCode,
         type: 'verify'
       }
-      this.$store.dispatch('jv/post', params)
-        .then(res => {
+      this.$store.dispatch('jv/post', params).then(
+        (res) => {
           if (res) {
             this.$message.success('旧手机验证成功')
           }
-        }, e => this.handleError(e))
+        },
+        (e) => this.handleError(e)
+      )
     },
     // 验证新手机号
     newVerify() {
@@ -767,23 +676,26 @@ export default {
         code: this.newVerifyCode,
         type: 'rebind'
       }
-      const postphon = status.run(() => this.$store.dispatch('jv/post', params))
-      postphon
-        .then(res => {
+      const postphon = status.run(() =>
+        this.$store.dispatch('jv/post', params)
+      )
+      postphon.then(
+        (res) => {
           if (res) {
             this.isMobileModify = !this.isMobileModify
             this.$message.success(this.$t('modify.phontitle'))
             // eslint-disable-next-line object-curly-spacing
             const param = { _jv: { type: 'forum' } }
-            _this.$store.dispatch('jv/get', param).then(() => {
-            })
+            _this.$store.dispatch('jv/get', param).then(() => {})
             const promsget = {
               _jv: { type: 'users', id: this.userId }
               // include: 'groups',
             }
-            _this.$store.dispatch('jv/get', promsget).then(() => { })
+            _this.$store.dispatch('jv/get', promsget).then(() => {})
           }
-        }, e => this.handleError(e))
+        },
+        (e) => this.handleError(e)
+      )
     },
     // 修改密码
     passModify() {
@@ -794,7 +706,12 @@ export default {
     },
     // 密码为空校验
     passSub() {
-      if (this.oldPassWord && this.newPassWord && this.renewPassword && this.newPassword === this.renewPassword) {
+      if (
+        this.oldPassWord &&
+        this.newPassWord &&
+        this.renewPassword &&
+        this.newPassword === this.renewPassword
+      ) {
         this.passwordComfirm()
       } else if (!this.oldPassWord) {
         this.$message.error(this.$t('modify.oldpassword'))
@@ -815,18 +732,28 @@ export default {
         newPassword: this.newPassWord,
         password_confirmation: this.renewPassword
       }
-      const postphon = status.run(() => this.$store.dispatch('jv/patch', params))
-      postphon
-        .then(res => {
+      const postphon = status.run(() =>
+        this.$store.dispatch('jv/patch', params)
+      )
+      postphon.then(
+        (res) => {
           if (res) {
             this.$message.success(this.$t('modify.titlepassword'))
             this.isPassModify = !this.isPassModify
           }
-        }, e => this.handleError(e))
+        },
+        (e) => this.handleError(e)
+      )
     },
     // 微信
     wechatModify() {
       this.isWechatModify = !this.isWechatModify
+      if (this.wehcatTimer) {
+        window.clearInterval(this.wehcatTimer)
+      }
+      if (this.isWechatModify) {
+        this.createQRcode()
+      }
     },
     // 实名认证
     realModify() {
@@ -853,24 +780,30 @@ export default {
         realname: this.realName,
         identity: this.idNumber
       }
-      const patchname = status.run(() => this.$store.dispatch('jv/patch', params))
-      patchname
-        .then(res => {
+      const patchname = status.run(() =>
+        this.$store.dispatch('jv/patch', params)
+      )
+      patchname.then(
+        (res) => {
           this.isRealModify = !this.isRealModify
           this.userinfo()
           this.$store.dispatch('user/getUserInfo', this.userId)
-          this.$message.success(
-            this.$t('modify.nameauthensucc')
-          )
-        }, e => {
+          this.$message.success(this.$t('modify.nameauthensucc'))
+        },
+        (e) => {
           // eslint-disable-next-line object-curly-spacing
-          const { response: { data: { errors } } } = e
+          const {
+            response: {
+              data: { errors }
+            }
+          } = e
           if (errors[0].statusCode === 422 && errors[0].detail) {
             this.$message.error(errors[0].detail[0])
           } else if (errors[0].detail) {
             this.$message.error(errors[0].detail)
           }
-        })
+        }
+      )
     },
     // 用户名修改
     usernameModify() {
@@ -895,9 +828,11 @@ export default {
         },
         username: this.newName
       }
-      const patchname = status.run(() => this.$store.dispatch('jv/patch', params))
-      patchname
-        .then(res => {
+      const patchname = status.run(() =>
+        this.$store.dispatch('jv/patch', params)
+      )
+      patchname.then(
+        (res) => {
           if (res) {
             console.log('修改用户名', res)
             this.isNameModify = !this.isNameModify
@@ -905,7 +840,9 @@ export default {
           }
           this.userinfo()
           this.$store.dispatch('user/getUserInfo', this.userId)
-        }, e => this.handleError(e))
+        },
+        (e) => this.handleError(e)
+      )
     },
     toTopic() {
       this.$router.push(`/profile?userId=${this.userId}&current=1`)
@@ -919,7 +856,11 @@ export default {
     toLikes() {
       this.$router.push(`/profile?userId=${this.userId}&current=2`)
     }
-
+  },
+  head() {
+    return {
+      title: this.$t('profile.myprofile')
+    }
   }
 }
 </script>
@@ -962,8 +903,8 @@ export default {
     background: #1878f3;
     margin-bottom: 48px;
   }
-   .sigbutton:hover {
-    background:$color-blue-deep;
+  .sigbutton:hover {
+    background: $color-blue-deep;
   }
   .disnone {
     display: none;
@@ -1077,7 +1018,7 @@ export default {
     margin-top: 10px;
   }
   .ebutton:hover {
-    background:$color-blue-deep;
+    background: $color-blue-deep;
   }
   .textarea {
     border: none;
@@ -1139,5 +1080,18 @@ export default {
 ::v-deep .el-input__inner:focus {
   border-color: #dcdfe6;
 }
-
+.wehcat-bind{
+  padding-top:20px;
+  width: 155px;
+  text-align: center;
+}
+.qr-code {
+  width: 155px;
+  height: 155px;
+  margin-bottom:10px;
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
 </style>
