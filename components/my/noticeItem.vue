@@ -31,7 +31,7 @@
         </div>
         <div class="to-detail">{{ $t('notice.toDetail') }}</div>
       </nuxt-link>
-      <div v-if="item.type === 'system'" class="post-content">{{ item.content }}</div>
+      <div v-if="item.type === 'system'" class="post-content" v-html="item.content" />
       <div v-if="item.type === 'rewarded' && item.amount" class="amount">+ {{ $t('post.yuanItem') + item.amount }}</div>
     </div>
   </div>
