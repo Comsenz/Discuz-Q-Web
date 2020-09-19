@@ -192,8 +192,8 @@ export default {
   }
 }
 .logo{
-  // width: 294px;
-  height: 55px;
+  max-width: 294px;
+  max-height: 55px;
 }
 .grey-color{
   color: $font-color-grey;
