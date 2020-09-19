@@ -2,12 +2,12 @@
   <div class="header">
     <div class="header-container">
       <div class="flex">
-        <nuxt-link to="/" class="logo">
+        <div class="logo" @click="toIndex">
           <img
             :src="forums && forums.set_site && forums.set_site.site_header_logo ? forums.set_site.site_header_logo : require('static/logo.png')"
             alt="头部logo"
           >
-        </nuxt-link>
+        </div>
         <el-input
           v-model="inputVal"
           autocomplete="off"
@@ -148,6 +148,9 @@ export default {
       if (this.inputVal) {
         this.$router.push('/search?q=' + this.inputVal)
       }
+    },
+    toIndex() {
+      window.location.href = '/'
     }
   }
 }

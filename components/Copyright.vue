@@ -2,8 +2,8 @@
   <div class="copyright">
     <div class="info">
       <span>Powered By</span>
-      <span class="site">{{ forums.set_site && forums.set_site.site_name || 'Discuz!Q' }}</span>
-      <span class="block">© 2014-{{ forums.set_site && forums.set_site.site_expire ? '20' + forums.set_site.site_expire : year }}</span>
+      <span class="site">Discuz! Q</span>
+      <span class="block">© {{ year }}</span>
     </div>
     <div>分享 / 交流 / 共融</div>
     <div class="id">
@@ -53,9 +53,14 @@ export default {
     }
     > .info {
       width: 100%;
-      > span {
-        margin-right: 10px;
-      }
+      display: flex;
+      justify-content: space-between;
+      // > span {
+      //   margin-right: 10px;
+      //   &:last-child {
+      //     margin-right: 0;
+      //   }
+      // }
       > .site {
         font-weight: bold;
         white-space: nowrap;

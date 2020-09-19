@@ -9,7 +9,15 @@
     <div class="detail">
       <div class="top">
         <template v-if="item.type !== 'system'">
-          <nuxt-link v-if="item.user_name" :to="`/profile?userId=${item.user_id}`" class="user-name">{{ item.user_name }}<span v-if="item.thread_user_groups === '管理员'" class="text">({{ item.thread_user_groups }})</span></nuxt-link><span class="text">{{ typeMap[item.type] }}</span>
+          <nuxt-link v-if="item.user_name" :to="`/profile?userId=${item.user_id}`" class="user-name">{{ item.user_name }}<span v-if="item.thread_user_groups === '管理员'" class="text">({{ item.thread_user_groups }})</span></nuxt-link><span class="text">
+            <template v-if="item.type === 'rewarded'">
+              <template v-if="item.isScale">{{ item.order_type === 1 ? typeMap['registerScale'] : item.order_type === 2 ? typeMap['rewardScale'] : item.order_type === 3 ? typeMap['payScale'] : typeMap[item.type] }}
+              </template>
+              <template v-else-if="item.order_type === 3">{{ typeMap['payMe'] }}</template>
+              <template v-else>{{ typeMap[item.type] }}</template>
+            </template>
+            <template v-else>{{ typeMap[item.type] }}</template>
+          </span>
         </template>
         <div v-if="item.title && item.type === 'system'" class="user-name">{{ item.title }}</div>
         <div class="time">{{ timerDiff(item.created_at) + $t('topic.before') }}</div>
@@ -46,6 +54,10 @@ export default {
         'replied': this.$t('notice.repliedMe'),
         'liked': this.$t('notice.likedMe'),
         'rewarded': this.$t('notice.rewardedMe'),
+        'payMe': this.$t('notice.payMe'),
+        'registerScale': this.$t('notice.registerScale'),
+        'rewardScale': this.$t('notice.rewardScale'),
+        'payScale': this.$t('notice.payScale'),
         'system': this.$t('notice.system')
       }
     }

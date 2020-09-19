@@ -2,8 +2,8 @@
   <div class="adv-container">
     <div ref="qrcode" class="qrcode" />
     <div class="adv-info">
-      <div class="adv-title">微信小程序版</div>
-      DISCUZ! 分享、交流、共融
+      <div class="adv-title"> 扫一扫，访问移动端</div>
+      DISCUZ! Q，小众也有圈子
     </div>
   </div>
 </template>

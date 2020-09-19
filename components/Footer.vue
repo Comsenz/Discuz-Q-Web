@@ -1,6 +1,6 @@
 <template>
   <div class="footer">
-    <span> Powered By &nbsp;  <span class="bold">{{ forums.set_site && forums.set_site.site_name || 'Discuz!Q' }}</span> &nbsp;    © 2014-{{ year }} &nbsp;&nbsp;分享&nbsp;&nbsp;/&nbsp;&nbsp;交流 &nbsp;&nbsp;/&nbsp;&nbsp;共融 </span>
+    <span> Powered By &nbsp;  <span class="bold">Discuz!Q</span> &nbsp;    © {{ year }} &nbsp;&nbsp;分享&nbsp;&nbsp;/&nbsp;&nbsp;交流 &nbsp;&nbsp;/&nbsp;&nbsp;共融 </span>
     <div>
       <span class="site-record">{{ forums.set_site ? forums.set_site.site_record : '' }}</span>
       <a href="https://beian.miit.gov.cn/" target="_blank">{{ forums.set_site ? forums.set_site.site_record_code : '' }}</a>
@@ -39,7 +39,7 @@ export default {
     margin-right: 20px;
   }
   a:hover{
-    color: #00479B;
+    color: #006CD1;
   }
 }
 </style>
