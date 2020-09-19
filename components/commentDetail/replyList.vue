@@ -83,6 +83,7 @@ export default {
       margin-left: 60px;
 
       > .content-html {
+        line-height: 24px;
         word-break: break-all;
         margin-top: 10px;
 

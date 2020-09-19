@@ -19,7 +19,7 @@
         <svg-icon style="font-size: 20px; margin-top: 10px; fill: #8590A6" type="drop-down" />
       </div>
       <button v-if="command[usersIndex].showButton && command[usersIndex].buttonText && canRewardOrPaid" @click="onClick(command, usersIndex)">
-        <svg-icon style="font-size: 18px; fill: white" type="heart" />
+        <svg-icon style="font-size: 16px; fill: white; margin-right: 10px" :type="command[usersIndex].icon" />
         <span>{{ $t(`topic.${command[usersIndex].buttonText}`) }}</span>
       </button>
     </div>
@@ -61,12 +61,14 @@ export default {
         {
           value: 24,
           title: 'pay',
-          buttonText: 'pay'
+          buttonText: 'pay',
+          icon: 'pay'
         },
         {
           value: 24,
           title: 'reward',
-          buttonText: 'reward'
+          buttonText: 'reward',
+          icon: 'heart'
         },
         {
           value: 24,
@@ -143,6 +145,8 @@ export default {
       }
 
       > button {
+        display: flex;
+        align-items: center;
         margin-top: 30px;
         border-radius: 2px;
         height: 35px;
@@ -152,8 +156,6 @@ export default {
 
         > span {
           color: #ffffff;
-          line-height: 40px;
-
         }
       }
     }
