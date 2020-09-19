@@ -71,7 +71,7 @@ export default {
 @import '@/assets/css/variable/color.scss';
 @import '@/assets/css/variable/mixin.scss';
 .category-container{
-  padding: 0 20px;
+  padding: 5px 20px;
   margin-bottom: 16px;
   // max-height: 490px;
   // overflow-y: auto;
@@ -86,7 +86,7 @@ export default {
     font-size: 16px;
     color: #6D6D6D;
     cursor: pointer;
-    &.last-child{
+    &:last-child{
       border-bottom: none;
     }
     &:hover,&.active{

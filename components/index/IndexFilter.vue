@@ -149,7 +149,7 @@ export default {
 }
 
 .el-dropdown-menu{
-  padding: 0 10px;
+  padding: 5px 10px;
   .el-dropdown-menu__item{
     border-top: 1px solid #EDEDED;
     min-width: 100px;
