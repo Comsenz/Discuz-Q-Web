@@ -53,16 +53,16 @@ export default {
     width: 925px;
     margin-top: 60px;
     @media screen and (max-width: 1005px) {
-      width:850px;
+      width: 850px;
     }
     @media screen and (max-width: 930px) {
-      width:800px;
+      width: 800px;
     }
-     @media screen and (max-width: 870px) {
-      width:750px;
+    @media screen and (max-width: 870px) {
+      width: 750px;
     }
-     @media screen and (max-width: 800px) {
-      width:700px;
+    @media screen and (max-width: 800px) {
+      width: 700px;
     }
   }
   .title {
@@ -72,7 +72,8 @@ export default {
   }
   .content {
     margin-top: 50px;
-    color:#6d6d6d;
+    color: #6d6d6d;
+    margin-bottom: 50px;
   }
 }
 </style>

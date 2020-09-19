@@ -36,7 +36,7 @@
               @keyup.enter.native="register"
             />
           </div>
-          <div class="rep">
+          <div :class="passerror ?'rep passerr':'rep'">
             <span class="title2">重复密码</span>
             <el-input
               v-model="repeatPassWord"
@@ -46,7 +46,10 @@
               show-password
               @keyup.enter.native="register"
             />
-            <div v-if="passerror" class="passerror">两次输入的密码不一致,请重新输入</div>
+            <div
+              v-if="passerror"
+              class="passerror"
+            >{{ $t('modify.reenter') }}</div>
           </div>
           <div v-if="validate">
             <span class="title2">注册原因</span>
@@ -554,8 +557,12 @@ export default {
         position: absolute;
         bottom: 0px;
         left: 85px;
-        color:#FA5151;
+        color: #fa5151;
       }
+    }
+    .passerr {
+      height: 66px;
+      margin-bottom: 10px;
     }
     .title {
       width: 66px;
@@ -571,12 +578,12 @@ export default {
       margin-right: 0px;
     }
     .reg-input {
-      width: 300px;
+      width: 299px;
       margin-bottom: 20px;
     }
-    .inputerr{
-      ::v-deep .el-input__inner{
-        border: 1px solid #FA5151;
+    .inputerr {
+      ::v-deep .el-input__inner {
+        border: 1px solid #fa5151;
         color: #fa5151;
       }
     }

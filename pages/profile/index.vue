@@ -228,7 +228,6 @@ export default {
       isShield: false,
       unbundlingArry: [], // 解绑用户组
       unbundUserData: [] // 已屏蔽用户组
-
     }
   },
   computed: {
@@ -318,6 +317,10 @@ export default {
           return
         }
       }
+      if (this.isShield2) {
+        this.$message.error('你已被屏蔽')
+        return
+      }
       const params = {
         _jv: {
           type: 'follow'
@@ -329,7 +332,7 @@ export default {
         .then(() => {
           this.getUserInfo(this.userId)
           if (this.$refs.followers) this.$refs.followers.getFollowerList('change')
-        })
+        }, e => this.handleError(e))
     },
     // 取消关注
     deleteFollow(userInfo) {
@@ -433,7 +436,7 @@ export default {
       .info-content {
         color: #333333;
         margin-top: 10px;
-        width: 700px;
+        width: 680px;
         overflow: hidden;
         /* height: 80px; */
         overflow-wrap: break-word;
@@ -613,7 +616,7 @@ export default {
     font-size: 16px;
   }
   .el-tabs__content {
-    padding: 10px 0;
+    padding: 0;
   }
   .el-tabs__header .el-tabs__item:nth-child(2) {
     padding-left: 0px;
@@ -629,7 +632,7 @@ export default {
     margin-bottom: 0px;
   }
   .el-input__inner {
-    border-radius: 0px;
+    border-radius: 2px;
   }
   .el-button {
     border-radius: 0px;

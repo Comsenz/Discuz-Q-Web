@@ -470,7 +470,7 @@ export default {
       margin-right: 0px;
     }
     .reg-input {
-      width: 300px;
+      width: 299px;
       margin-bottom: 20px;
     }
     .quick {

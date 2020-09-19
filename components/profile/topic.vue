@@ -71,7 +71,7 @@ export default {
           this.hasMore = res.length === this.pageSize
           this.data = [...this.data, ...res]
           if (res._jv) {
-            this.hasMore = this.data.length < res._jv.json.meta.total
+            this.hasMore = this.data.length < res._jv.json.meta.threadCount
           }
           console.log('当前主题数据', this.data)
         })
