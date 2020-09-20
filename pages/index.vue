@@ -1,30 +1,28 @@
 <template>
   <div v-loading="index_loading" class="container">
     <main class="cont-left">
-      <div class="hide" :class="{show: !index_loading}">
-        <index-filter @onChangeFilter="onChangeFilter" @onChangeType="onChangeType" @onChangeSort="onChangeSort" />
-        <div v-if="threadsStickyData.length > 0" class="list-top">
-          <div v-for="(item, index) in threadsStickyData" :key="index" class="list-top-item">
-            <div class="top-label">{{ $t('home.sticky') }}</div>
-            <nuxt-link :to="`/topic/${item._jv && item._jv.id}`" class="top-title">
-              <template v-if="item.type === 1">
-                {{ item.title }}
-              </template>
-              <div v-else v-html="formatRichText(item.firstPost && item.firstPost.summary)" />
-            </nuxt-link>
-          </div>
+      <index-filter @onChangeFilter="onChangeFilter" @onChangeType="onChangeType" @onChangeSort="onChangeSort" />
+      <div v-if="threadsStickyData.length > 0" class="list-top">
+        <div v-for="(item, index) in threadsStickyData" :key="index" class="list-top-item">
+          <div class="top-label">{{ $t('home.sticky') }}</div>
+          <nuxt-link :to="`/topic/${item._jv && item._jv.id}`" class="top-title">
+            <template v-if="item.type === 1">
+              {{ item.title }}
+            </template>
+            <div v-else v-html="formatRichText(item.firstPost && item.firstPost.summary)" />
+          </nuxt-link>
         </div>
-        <div v-if="total > 0" class="new-post">
-          <div class="new-post-cont">{{ $t('home.hasNewContent', { total }) }} <span class="refresh" @click="reloadThreadsList">{{ $t('home.clickRefresh') }}</span></div>
-        </div>
-        <div class="post-list">
-          <post-item v-for="(item, index) in threadsData" :key="index" :item="item" />
-          <loading v-if="loading" />
-          <template v-else>
-            <div v-if="hasMore" class="load-more" @click="loadMore">{{ $t('topic.showMore') }}</div>
-            <div v-else class="no-more"><svg-icon v-if="threadsData.length === 0" type="empty" class="empty-icon" />{{ threadsData.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noData') }}</div>
-          </template>
-        </div>
+      </div>
+      <div v-if="total > 0" class="new-post">
+        <div class="new-post-cont">{{ $t('home.hasNewContent', { total }) }} <span class="refresh" @click="reloadThreadsList">{{ $t('home.clickRefresh') }}</span></div>
+      </div>
+      <div class="post-list">
+        <post-item v-for="(item, index) in threadsData" :key="index" :item="item" />
+        <loading v-if="loading" />
+        <template v-else>
+          <div v-if="hasMore" class="load-more" @click="loadMore">{{ $t('topic.showMore') }}</div>
+          <div v-else class="no-more"><svg-icon v-if="threadsData.length === 0" type="empty" class="empty-icon" />{{ threadsData.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noData') }}</div>
+        </template>
       </div>
     </main>
     <aside class="cont-right">
@@ -62,7 +60,9 @@ export default {
       include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
       'filter[isSticky]': 'no',
       'filter[isApproved]': 1,
-      'filter[isDeleted]': 'no'
+      'filter[isDeleted]': 'no',
+      'page[number]': 1,
+      'page[limit]': 10
     }
     const userParams = {
       include: 'groups',
@@ -76,9 +76,9 @@ export default {
       const recommendUser = await store.dispatch('jv/get', ['users/recommended', { userParams }])
       // 处理一下data
       if (Array.isArray(threadsStickyData)) {
-        resData.threadsStickyData = threadsStickyData.slice(0, 5)
+        resData.threadsStickyData = threadsStickyData
       } else if (threadsStickyData && threadsStickyData._jv && threadsStickyData._jv.json) {
-        resData.threadsStickyData = threadsStickyData._jv.json.data.slice(0, 5) || []
+        resData.threadsStickyData = threadsStickyData._jv.json.data || []
       }
 
       if (Array.isArray(threadsData)) {
@@ -105,7 +105,7 @@ export default {
   data() {
     return {
       loading: false,
-      index_loading: true,
+      index_loading: false,
       threadsStickyData: [], // 置顶主题列表
       threadsData: [], // 主题列表
       categoryData: [], // 分类列表
@@ -131,12 +131,19 @@ export default {
     }
   },
   mounted() {
-    this.threadsStickyData = []
-    this.threadsData = []
-    this.categoryData = []
-    this.getCategoryList()
-    this.getThreadsSticky()
-    this.getThreadsList()
+    // this.threadsStickyData = []
+    // this.threadsData = []
+    // this.categoryData = []
+    if (this.threadsStickyData.length === 0) {
+      this.getThreadsSticky()
+    }
+    if (this.threadsData.length === 0) {
+      this.index_loading = true
+      this.getThreadsList()
+    }
+    if (this.categoryData.length === 0) {
+      this.getCategoryList()
+    }
   },
   destroyed() {
     clearInterval(this.timer)
