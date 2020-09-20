@@ -58,7 +58,11 @@ export default {
       if (Array.isArray(categoryData)) {
         resData.categoryData = categoryData
       } else if (categoryData && categoryData._jv && categoryData._jv.json) {
-        resData.categoryData = categoryData._jv.json.data || []
+        const _categoryData = categoryData._jv.json.data || []
+        _categoryData.forEach((item, index) => {
+          _categoryData[index] = { ...item, ...item.attributes, '_jv': { 'id': item.id }}
+        })
+        resData.categoryData = _categoryData
       }
       callback(null, resData)
     } catch (error) {
@@ -92,7 +96,6 @@ export default {
     '$route': 'init'
   },
   mounted() {
-    this.getCategoryList()
     this.init()
   },
   methods: {
@@ -102,19 +105,6 @@ export default {
         this.getUserList()
         this.getThreadsList()
       }
-    },
-    // 分类列表
-    getCategoryList() {
-      this.$store.dispatch('jv/get', ['categories', {}]).then(res => {
-        const resData = [...res] || []
-        let thread_count = 0 // 计算全部帖子数
-        resData.forEach(item => {
-          thread_count += item.thread_count
-        })
-        this.categoryData = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), thread_count: thread_count }, ...resData]
-      }, e => {
-        this.handleError(e)
-      })
     },
     getUserList() {
       this.userList = []

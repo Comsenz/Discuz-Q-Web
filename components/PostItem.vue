@@ -253,7 +253,6 @@ export default {
       color: #000;
       flex: 0 0 60%;
       max-height: 96px;
-      padding-bottom: 10px;
       ::v-deep p {
         font-size: 16px !important;
       }
@@ -269,6 +268,8 @@ export default {
       }
       @media screen and ( max-width: 1005px ) {
         font-size:14px !important;
+        max-height: 80px;
+        line-height: 20px;
         ::v-deep p {
           font-size: 14px !important;
         }

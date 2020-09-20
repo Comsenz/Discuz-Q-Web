@@ -45,6 +45,7 @@ export default {
       'filter[isSticky]': 'no',
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no',
+      'page[limit]': 10,
       'filter[location]': query.longitude + ',' + query.latitude
     }
     const userParams = {
@@ -53,19 +54,26 @@ export default {
     }
     try {
       const resData = {}
-      const threadsData = await store.dispatch('jv/get', ['threads', { threadsParams }])
-      const recommendUser = await store.dispatch('jv/get', ['users/recommended', { userParams }])
+      const threadsData = await store.dispatch('jv/get', ['threads', { params: threadsParams }])
+      const recommendUser = await store.dispatch('jv/get', ['users/recommended', { params: userParams }])
       // 处理一下data
-
       if (Array.isArray(threadsData)) {
         resData.threadsData = threadsData.slice(0, 10)
       } else if (threadsData && threadsData._jv && threadsData._jv.json) {
-        resData.threadsData = threadsData._jv.json.data.slice(0, 10) || []
+        var _threadsData = threadsData._jv.json.data || []
+        _threadsData.forEach((item, index) => {
+          _threadsData[index] = { ...item, ...item.attributes, 'firstPost': item.relationships.firstPost.data, 'user': item.relationships.user.data, 'groups': item.relationships.groups.data, '_jv': { 'id': item.id }}
+        })
+        resData.threadsData = _threadsData
       }
       if (Array.isArray(recommendUser)) {
         resData.recommendUserData = recommendUser
       } else if (recommendUser && recommendUser._jv && recommendUser._jv.json) {
-        resData.recommendUserData = recommendUser._jv.json.data || []
+        const _recommendUser = recommendUser._jv.json.data || []
+        _recommendUser.forEach((item, index) => {
+          _recommendUser[index] = { ...item, ...item.attributes }
+        })
+        resData.recommendUserData = _recommendUser
       }
       callback(null, resData)
     } catch (error) {
