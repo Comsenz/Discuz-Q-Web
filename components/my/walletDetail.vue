@@ -414,7 +414,7 @@ export default {
   margin-top: 15px;
 }
 ::v-deep.el-table .cell {
-  padding-left: 0px;
+  // padding-left: 0px;
 
   font-weight: 400;
 }
