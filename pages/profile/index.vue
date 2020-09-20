@@ -17,7 +17,7 @@
           />
           <div class="profile-info">
             <span class="info-name">{{ userInfo.username || '' }}</span>
-            <span class="info-actor">{{ userInfo.groupsName }}</span>
+            <span class="info-actor">{{ userInfo.groups && userInfo.groups[0] && userInfo.groups[0].isDisplay ? userInfo.groupsName : '' }}</span>
           </div>
         </div>
         <el-tabs
@@ -92,7 +92,7 @@
             v-if="userInfo && userInfo.isReal"
             type="auth"
             class="auth-icon"
-          />{{ userInfo.groupsName }}
+          />{{ userInfo.groups && userInfo.groups[0] && userInfo.groups[0].isDisplay ? userInfo.groupsName : '' }}
         </span>
         <p
           v-if="userInfo.signature"
