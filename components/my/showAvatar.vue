@@ -69,14 +69,8 @@
         class="show-preview"
         :style="{'width': previews.w + 'px', 'height': previews.h + 'px', 'overflow': 'hidden', 'display':'inline-block','position':'absolute','margin-left':'18px','margin-top':'7px'}"
       >
-        <div
-          :style="previews.div"
-          class="preview"
-        >
-          <img
-            :src="previews.url"
-            :style="previews.img"
-          >
+        <div :style="previews.div" class="preview">
+          <img :src="previews.url" :style="previews.img">
         </div>
       </div>
       <!-- 圆形预览图 -->
@@ -84,14 +78,8 @@
         class="show-preview"
         :style="{'width': 100 + 'px', 'height': 100 + 'px', 'overflow': 'hidden', 'display':'inline-block','position':'absolute','margin-left':'20px','border-radius':'50%','top':'51%'}"
       >
-        <div
-          :style="previews.div"
-          class="preview"
-        >
-          <img
-            :src="previews.url"
-            :style="previews.img"
-          >
+        <div :style="previewCycle" class="preview">
+          <img :src="previews.url" :style="previews.img">
         </div>
       </div>
 
@@ -140,6 +128,7 @@ export default {
       dialogVisible: true,
       cropImageFormVisible: false,
       previews: {},
+      previewCycle: {},
       option: {
         img: '',
         size: 1, // 裁剪生成图片的质量
@@ -223,6 +212,13 @@ export default {
     // 实时预览函数
     realTime(data) {
       this.previews = data
+      this.previewCycle = {
+        width: this.previews.w + 'px',
+        height: this.previews.h + 'px',
+        overflow: 'hidden',
+        margin: '0',
+        zoom: 0.66666666666
+      }
     },
     down() {
       // 获取blob格式的裁剪后的图片
