@@ -86,21 +86,6 @@ export default {
         line-height: 24px;
         word-break: break-all;
         margin-top: 10px;
-
-        ::v-deep p {
-          font-size: 16px;
-        }
-
-        ::v-deep img {
-          height: 22px;
-        }
-
-        ::v-deep a {
-          color: $color-blue-base;
-          &:hover {
-            border-bottom: 1px solid $color-blue-base;
-          }
-        }
       }
 
       > .images {

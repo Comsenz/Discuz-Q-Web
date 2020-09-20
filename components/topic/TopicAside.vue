@@ -148,21 +148,6 @@ export default {
           margin-top: 10px;
           margin-bottom: 10px;
           font-size: 16px;
-
-          ::v-deep p {
-            font-size: 16px;
-          }
-
-          ::v-deep img {
-            height: 22px;
-          }
-
-          ::v-deep a {
-            color: $color-blue-base;
-            &:hover {
-              border-bottom: 1px solid $color-blue-base;
-            }
-          }
         }
 
         > .view-count {

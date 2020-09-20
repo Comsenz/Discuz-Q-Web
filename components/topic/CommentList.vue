@@ -225,22 +225,6 @@ export default {
       > .content-html {
         word-break: break-all;
         margin-top: 10px;
-
-        ::v-deep p {
-          display: inline;
-          font-size: 16px;
-        }
-
-        ::v-deep img {
-          height: 22px;
-        }
-
-        ::v-deep a {
-          color: $color-blue-base;
-          &:hover {
-            border-bottom: 1px solid $color-blue-base;
-          }
-        }
       }
 
       > .images {
@@ -341,21 +325,6 @@ export default {
           margin-bottom: 20px;
           margin-left: 40px;
           word-break: break-all;
-
-          ::v-deep p {
-            font-size: 16px;
-          }
-
-          ::v-deep img {
-            height: 22px;
-          }
-
-          ::v-deep a {
-            color: $color-blue-base;
-            &:hover {
-              border-bottom: 1px solid $color-blue-base;
-            }
-          }
         }
 
         > .images {

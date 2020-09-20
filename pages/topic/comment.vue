@@ -208,21 +208,6 @@ export default {
           > .content-html {
             margin-top: 10px;
             word-break: break-all;
-
-            ::v-deep p {
-              font-size: 16px;
-            }
-
-            ::v-deep img {
-              height: 22px;
-            }
-
-            ::v-deep a {
-              color: $color-blue-base;
-              &:hover {
-                border-bottom: 1px solid $color-blue-base;
-              }
-            }
           }
           > .view-more {
             position: absolute;

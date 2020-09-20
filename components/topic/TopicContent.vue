@@ -200,8 +200,8 @@ export default {
 
     > .content-html {
       margin-top: 22px;
-      font-size: 16px;
-      word-break: break-all;
+      /*font-size: 16px;*/
+      /*word-break: break-all;*/
 
       &.hide-cover {
         position: relative;
@@ -217,33 +217,11 @@ export default {
           background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
         }
       }
-
-      ::v-deep p {
-        font-size: 16px;
-      }
-
-      ::v-deep img {
-        height: 22px;
-      }
-
-      ::v-deep a {
-        color: $color-blue-base;
-        &:hover {
-          border-bottom: 1px solid $color-blue-base;
-        }
-      }
     }
 
     @media screen and ( max-width: 1005px ) {
       .title {
         font-size: 18px;
-      }
-      .content-html {
-        font-size: 16px;
-        word-break: break-all;
-        ::v-deep p {
-          font-size: 14px;
-        }
       }
     }
 

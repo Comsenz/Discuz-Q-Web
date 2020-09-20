@@ -1,0 +1,152 @@
+.content-html {
+  width: 100%;
+  font-size: 1em;
+  line-height: 1.5;
+  user-select: none;
+  word-break: break-word;
+  div {
+    margin: 0;
+    padding: 0;
+    display: block;
+    word-break: break-word;
+  }
+  p {
+    padding-bottom: 0.5em;
+    clear: both;
+  }
+  i, cite, em, var, address { font-style: italic; }
+  .spaceshow { white-space: pre; }
+  pre, tt, code, kbd, samp { font-family: monospace; }
+  .pre {
+    padding: 16px;
+    margin: 1em 0;
+    overflow: auto;
+    font-size: 24px;
+    white-space: pre;
+    background: #f5f5f5;
+  }
+  code {
+    padding: 16px;
+    margin: 10px 0;
+    overflow: auto;
+    font-size: 24px;
+    white-space: pre;
+    background: #f5f5f5;
+  }
+  .big { font-size: 1.17em; }
+  .small, .sub, .sup { font-size: 0.83em; }
+  .sub { vertical-align: sub; }
+  .sup { vertical-align: super; }
+  .s, .strike, .del { text-decoration: line-through; }
+  .strong, .text, .span, .s { display: inline; }
+  .video { margin: 22px 0; text-align: center; }
+  .video-video { width: 100%; }
+  .uni-image { max-width: 100%; }
+  img {
+    height: 22px;
+    display: block;
+    max-width: 100%;
+    margin-bottom: 0;
+    overflow: hidden;
+  }
+  blockquote {
+    padding: 22px 0 22px 22px;
+    margin: 10px 0;
+    color: #6a737d;
+    border-left: 6px solid #dbdbdb;
+  }
+  blockquote p {
+    margin: 0;
+  }
+  ul, ol {
+    display: block;
+    padding-left: 2em;
+    margin: 1em 0;
+  }
+  ol {
+    list-style-type: disc;
+  }
+  ul > li {
+    display: list-item;
+    align-items: baseline;
+    text-align: match-parent;
+  }
+  ol ul {
+    list-style-type: circle;
+  }
+  u {
+    text-decoration: underline;
+  }
+  .hide {
+    display: none;
+  }
+  del {
+    display: inline;
+  }
+  .figure {
+    overflow: hidden;
+  }
+  .tablebox {
+    padding: 8px;
+    overflow: auto;
+    font-size: 13px;
+    background: #f5f5f5;
+    background-color: #f5f5f5;
+  }
+  table table, table {
+    overflow: auto;
+    white-space: pre;
+    border-collapse: collapse;
+    box-sizing: border-box;
+  }
+  table thead, table tfoot, table th {
+    font-weight: bold;
+    background: #ececec;
+    border-collapse: collapse;
+    box-sizing: border-box;
+  }
+  table tr {
+    overflow: auto;
+    border-collapse: collapse;
+    box-sizing: border-box;
+  }
+  table th,
+  table td {
+    overflow: auto;
+    border: 2px solid #dadada;
+    border-collapse: collapse;
+    box-sizing: border-box;
+  }
+  tbody {
+    border: 1px solid #dadada;
+    border-collapse: collapse;
+    box-sizing: border-box;
+  }
+  a {
+    color: #1878F3;
+    &:hover {
+      border-bottom: 1px solid #1878F3;
+    }
+  }
+  .audio, .uni-audio-default {
+    display: block;
+  }
+  .inline {
+    display: inline;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
