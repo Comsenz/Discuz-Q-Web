@@ -148,8 +148,9 @@ export default {
       }
 
       .el-progress-circle {
-        height: 50px;
-        width: 50px;
+        height: 80px !important;
+        width: 80px !important;
+        margin: 0 auto !important;
       }
     }
 
