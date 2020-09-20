@@ -81,12 +81,13 @@ export default {
       } else if (threadsStickyData && threadsStickyData._jv && threadsStickyData._jv.json) {
         resData.threadsStickyData = threadsStickyData._jv.json.data || []
       }
-
       if (Array.isArray(threadsData)) {
         resData.threadsData = threadsData.slice(0, 10)
       } else if (threadsData && threadsData._jv && threadsData._jv.json) {
         resData.threadsData = threadsData._jv.json.data.slice(0, 10) || []
       }
+      // 用于判断是否有新主题
+      resData.threadCount = threadsData._jv.json.meta.threadCount
       if (Array.isArray(categoryData)) {
         let thread_count = 0 // 计算全部帖子数
         categoryData.forEach(item => {
@@ -114,7 +115,7 @@ export default {
   data() {
     return {
       loading: false,
-      index_loading: true,
+      index_loading: false,
       threadsStickyData: [], // 置顶主题列表
       threadsData: [], // 主题列表
       categoryData: [], // 分类列表
@@ -128,6 +129,7 @@ export default {
       fromUserId: '', // 关注人id
       hasMore: false,
       timer: null, // 轮询获取新主题 定时器
+      threadCount: 0, // 主题总数
       total: 0 // 新的主题数，通过轮询获取
     }
   },
@@ -153,6 +155,12 @@ export default {
       if (this.threadsData.length === this.pageSize) {
         this.hasMore = true
       }
+      if (this.timer) {
+        clearInterval(this.timer)
+      }
+      this.timer = setInterval(() => {
+        this.autoLoadThreads()
+      }, 30000)
     }
     if (this.categoryData.length === 0) {
       this.getCategoryList()
@@ -209,9 +217,12 @@ export default {
         if (data._jv) {
           this.hasMore = this.threadsData.length < data._jv.json.meta.threadCount
         }
-        clearInterval(this.timer)
+        this.threadCount = data._jv.json.meta.threadCount
+        if (this.timer) {
+          clearInterval(this.timer)
+        }
         this.timer = setInterval(() => {
-          this.autoLoadThreads(data._jv.json.meta.threadCount)
+          this.autoLoadThreads()
         }, 30000)
       }, e => {
         this.handleError(e)
@@ -240,7 +251,7 @@ export default {
       })
     },
     // 轮询查看是否有新主题
-    autoLoadThreads(count) {
+    autoLoadThreads() {
       const params = {
         'filter[isSticky]': 'no',
         'filter[isApproved]': 1,
@@ -252,7 +263,7 @@ export default {
         'page[limit]': 1
       }
       this.$store.dispatch('jv/get', ['threads', { params }]).then(data => {
-        this.total = data._jv.json.meta.threadCount - count
+        this.total = data._jv.json.meta.threadCount - this.threadCount
         console.log('新主题数', this.total)
       })
     },
