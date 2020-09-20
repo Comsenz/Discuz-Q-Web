@@ -54,13 +54,14 @@ export default {
     > .info {
       width: 100%;
       display: flex;
-      justify-content: space-between;
-      // > span {
-      //   margin-right: 10px;
-      //   &:last-child {
-      //     margin-right: 0;
-      //   }
-      // }
+      white-space: nowrap;
+      // justify-content: space-between;
+      > span {
+        margin-right: 15px;
+        &:last-child {
+          margin-right: 0;
+        }
+      }
       > .site {
         font-weight: bold;
         white-space: nowrap;

@@ -236,7 +236,7 @@ export default {
       if (!userId) return
       console.log('hhhhhhhhhh')
       const params = {
-        include: 'groups,wechat'
+        include: 'groups'
       }
       // 登录成功重新获取一下站点信息
       this.$store.dispatch('site/getSiteInfo')

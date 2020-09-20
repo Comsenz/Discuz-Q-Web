@@ -119,6 +119,7 @@ export default {
     const currentDate = `${year}-${month}`
     return {
       loading: false,
+      hasMore: false,
       value: '', // 提现记录被选择到的类型id
       pageSize3: 10, // 冻结每页展示的数目
       pageNum3: 1, // 冻结当前页数

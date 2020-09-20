@@ -120,6 +120,7 @@ export default {
     const currentDate = `${year}-${month}`
     return {
       loading: false,
+      hasMore: false,
       value: '',
       pageSize4: 10, // 订单每页展示的数目
       pageNum4: 1, // 订单当前页数
