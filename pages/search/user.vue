@@ -83,7 +83,6 @@ export default {
     '$route': 'init'
   },
   mounted() {
-    this.getCategoryList()
     this.init()
   },
   methods: {
