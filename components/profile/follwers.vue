@@ -278,7 +278,7 @@ export default {
     margin-right: 10px;
   }
   .info {
-    margin-left: 10px;
+    margin-left: 15px;
     .count {
       margin-top: 8px;
     }

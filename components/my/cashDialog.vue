@@ -27,65 +27,87 @@
         <!-- ,{{ $t('profile.amountinvolved') }}￥{{ sumMoney }} -->
       </span>
     </div>
-    <!-- 提现记录表格 -->
-    <el-table
-      v-loading="loading"
-      :data="dataList"
-      style="width:100%"
-    >
-      <el-table-column
-        type="selection"
-        width="40"
-      />
-      <el-table-column
-        prop="id"
-        label="ID"
-        width="55"
-      />
-      <el-table-column
-        prop="cash_status"
-        label="记录描述"
-        :formatter="statusFormat2"
-      />
-      <el-table-column
-        label="时间"
-        width="140"
-        prop="created_at"
-        :formatter="dateFormat"
-      />
-      <el-table-column
-        prop="cash_status"
-        label="状态"
-        width="97"
-        :formatter="statusFormat"
+    <div v-if="total > 0">
+      <!-- 提现记录表格 -->
+      <el-table
+        v-loading="loading"
+        :data="dataList"
+        style="width:100%"
       >
-        <template slot-scope="scope">
-          <span v-html="statusFormat(scope.row)" />
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="cash_apply_amount"
-        label="金额"
-        width="113"
-        sortable
+        <el-table-column
+          type="selection"
+          width="40"
+        />
+        <el-table-column
+          prop="id"
+          label="ID"
+          width="55"
+        />
+        <el-table-column
+          prop="cash_status"
+          label="记录描述"
+          :formatter="statusFormat2"
+        />
+        <el-table-column
+          label="时间"
+          width="140"
+          prop="created_at"
+          :formatter="dateFormat"
+        />
+        <el-table-column
+          prop="cash_status"
+          label="状态"
+          width="97"
+          :formatter="statusFormat"
+        >
+          <template slot-scope="scope">
+            <span v-html="statusFormat(scope.row)" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="cash_apply_amount"
+          label="金额"
+          width="113"
+          sortable
+        >
+          <template slot-scope="scope">
+            <span
+              style="font-size:16px;"
+              v-html="scope.row.cash_apply_amount"
+            />
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 分页器 -->
+      <el-pagination
+        background
+        :current-page="pageNum"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        style="margin-top:15px;"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
+    <template v-else>
+      <div
+        v-if="hasMore"
+        class="load-more"
+        @click="loadMore"
+      >{{ $t('topic.showMore') }}</div>
+      <div
+        v-else
+        class="no-more"
       >
-        <template slot-scope="scope">
-          <span style="font-size:16px;" v-html="scope.row.cash_apply_amount" />
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 分页器 -->
-    <el-pagination
-      background
-      :current-page="pageNum"
-      :page-sizes="[10, 20, 30, 40]"
-      :page-size="pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="total"
-      style="margin-top:15px;"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
+        <svg-icon
+          v-if="dataList.length === 0"
+          type="empty"
+          class="empty-icon"
+        />{{ dataList.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noData') }}
+      </div>
+    </template>
   </div>
 </template>
 
@@ -293,6 +315,9 @@ export default {
     }
   }
 }
+.no-more {
+  padding: 94px 0;
+}
 ::v-deep.el-tabs {
   .el-tabs__header {
     background: transparent;
@@ -340,7 +365,7 @@ export default {
   font-weight: 400;
 }
 ::v-deep .el-table-column--selection .cell {
-  padding-left:11px;
+  padding-left: 11px;
 }
 
 ::v-deep .el-table thead {

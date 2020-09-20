@@ -26,62 +26,81 @@
         {{ $t('profile.total') }}{{ total3 }}{{ $t('profile.records') }},{{ $t('profile.amountinvolved') }}￥{{ walletFreeze }}
       </span>
     </div> -->
-    <!-- 冻结金额。表格 -->
-    <el-table
-      v-loading="loading"
-      :data="freezelist"
-    >
-      <el-table-column
-        type="selection"
-        width="40"
-      />
-      <el-table-column
-        prop="id"
-        label="ID"
-        width="55"
-      />
-      <el-table-column
-        prop="change_desc"
-        label="记录描述"
-      />
-      <el-table-column
-        label="时间"
-        width="140"
-        prop="created_at"
-        :formatter="dateFormat"
-      />
-      <!-- <el-table-column
+    <div v-if="total3 > 0">
+      <!-- 冻结金额。表格 -->
+      <el-table
+        v-loading="loading"
+        :data="freezelist"
+      >
+        <el-table-column
+          type="selection"
+          width="40"
+        />
+        <el-table-column
+          prop="id"
+          label="ID"
+          width="55"
+        />
+        <el-table-column
+          prop="change_desc"
+          label="记录描述"
+        />
+        <el-table-column
+          label="时间"
+          width="140"
+          prop="created_at"
+          :formatter="dateFormat"
+        />
+        <!-- <el-table-column
             prop="cash_status"
             label="状态"
             width="97"
             :formatter="statusFormat"
           /> -->
-      <el-table-column
-        label="金额"
-        width="113"
-        sortable
-        :sort-method="sortAmount"
+        <el-table-column
+          label="金额"
+          width="113"
+          sortable
+          :sort-method="sortAmount"
+        >
+          <template slot-scope="scope">
+            <span
+              style="font-size:16px;"
+              v-html="amountFormat(scope.row.change_freeze_amount)"
+            />
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 分页器 -->
+      <el-pagination
+        background
+        :current-page="pageNum3"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="pageSize3"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total3"
+        style="margin-top:15px;"
+        @size-change="handleSizeChange3"
+        @current-change="handleCurrentChange3"
+      />
+    </div>
+    <template v-else>
+      <div
+        v-if="hasMore"
+        class="load-more"
+        @click="loadMore"
+      >{{ $t('topic.showMore') }}</div>
+      <div
+        v-else
+        class="no-more"
       >
-        <template slot-scope="scope">
-          <span
-            style="font-size:16px;"
-            v-html="amountFormat(scope.row.change_freeze_amount)"
-          />
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 分页器 -->
-    <el-pagination
-      background
-      :current-page="pageNum3"
-      :page-sizes="[10, 20, 30, 40]"
-      :page-size="pageSize3"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="total3"
-      style="margin-top:15px;"
-      @size-change="handleSizeChange3"
-      @current-change="handleCurrentChange3"
-    />
+        <svg-icon
+          v-if="freezelist.length === 0"
+          type="empty"
+          class="empty-icon"
+        />{{ freezelist.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noData') }}
+      </div>
+    </template>
   </div>
 </template>
 
@@ -276,6 +295,9 @@ export default {
       margin-left: 0px;
     }
   }
+}
+.no-more {
+  padding: 94px 0;
 }
 ::v-deep.el-tabs {
   .el-tabs__header {

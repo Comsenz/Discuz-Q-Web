@@ -188,7 +188,7 @@ export default {
       margin-top: 20px;
     }
     ::v-deep .el-textarea__inner {
-      color: #c0c4cc;
+      color: black;
       background: #f4f5f6;
       margin-top: 20px;
     }

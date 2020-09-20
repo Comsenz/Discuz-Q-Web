@@ -27,61 +27,80 @@
         <!-- ,{{ $t('profile.amountinvolved') }}￥{{ sumMoney2 }} -->
       </span>
     </div>
-    <!-- 钱包记录表格 -->
-    <el-table
-      v-loading="loading"
-      :data="dataList2"
-    >
-      <!-- <el-table-column
+    <div v-if="total2 > 0">
+      <!-- 钱包记录表格 -->
+      <el-table
+        v-loading="loading"
+        :data="dataList2"
+      >
+        <!-- <el-table-column
         type="selection"
         width="40"
       /> -->
-      <el-table-column
-        prop="id"
-        label="ID"
-        width="55"
+        <el-table-column
+          prop="id"
+          label="ID"
+          width="55"
+        />
+        <el-table-column
+          prop="change_desc"
+          label="记录描述"
+        />
+        <el-table-column
+          label="时间"
+          width="140"
+          prop="created_at"
+          :formatter="dateFormat"
+        />
+        <el-table-column
+          label="状态"
+          width="97"
+          :formatter="statusFormat2"
+        />
+        <el-table-column
+          label="金额"
+          width="113"
+          sortable
+          :sort-method="sortAmount"
+        >
+          <template slot-scope="scope">
+            <span
+              style="font-size:16px;"
+              v-html="amountFormat(scope.row.change_available_amount)"
+            />
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 分页器 -->
+      <el-pagination
+        background
+        :current-page="pageNum2"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="pageSize2"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total2"
+        style="margin-top:15px;"
+        @size-change="handleSizeChange2"
+        @current-change="handleCurrentChange2"
       />
-      <el-table-column
-        prop="change_desc"
-        label="记录描述"
-      />
-      <el-table-column
-        label="时间"
-        width="140"
-        prop="created_at"
-        :formatter="dateFormat"
-      />
-      <el-table-column
-        label="状态"
-        width="97"
-        :formatter="statusFormat2"
-      />
-      <el-table-column
-        label="金额"
-        width="113"
-        sortable
-        :sort-method="sortAmount"
+    </div>
+    <template v-else>
+      <div
+        v-if="hasMore"
+        class="load-more"
+        @click="loadMore"
+      >{{ $t('topic.showMore') }}</div>
+      <div
+        v-else
+        class="no-more"
       >
-        <template slot-scope="scope">
-          <span
-            style="font-size:16px;"
-            v-html="amountFormat(scope.row.change_available_amount)"
-          />
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 分页器 -->
-    <el-pagination
-      background
-      :current-page="pageNum2"
-      :page-sizes="[10, 20, 30, 40]"
-      :page-size="pageSize2"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="total2"
-      style="margin-top:15px;"
-      @size-change="handleSizeChange2"
-      @current-change="handleCurrentChange2"
-    />
+        <svg-icon
+          v-if="dataList2.length === 0"
+          type="empty"
+          class="empty-icon"
+        />{{ dataList2.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noData') }}
+      </div>
+    </template>
   </div>
 </template>
 
@@ -370,6 +389,9 @@ export default {
       width: 120px;
     }
   }
+}
+.no-more {
+  padding: 94px 0;
 }
 ::v-deep.el-tabs {
   .el-tabs__header {
