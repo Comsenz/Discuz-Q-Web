@@ -10,7 +10,7 @@ export default ({ app }) => {
   router.beforeEach(async(to, from, next) => {
     // 根据ua跳转到移动端
     if (env.isMobile) {
-      let path = ''
+      let path = '/'
       const _map = mobileRouter.map
       if (to.matched && to.matched.length > 0) {
         const _path = to.matched[to.matched.length - 1 ].path
@@ -38,7 +38,7 @@ export default ({ app }) => {
             path = _map[_path] + to.query.code
             break
           default:
-            path = _map[_path]
+            path = _map[_path] || '/'
         }
       }
       window.location.href = process.env.mobileDomain + path
