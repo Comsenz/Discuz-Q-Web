@@ -127,6 +127,7 @@ export default {
     const currentDate = `${year}-${month}`
     return {
       loading: false,
+      hasMore: false,
       date: currentDate, // 提现记录日期
       value: '', // 提现记录被选择到的类型id
       pageSize: 10, // 提现记录每页展示的数目

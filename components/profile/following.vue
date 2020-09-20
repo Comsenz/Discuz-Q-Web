@@ -3,7 +3,7 @@
     <div class="ftop">
       <el-select
         v-model="value"
-        placeholder="目前接口不支持排序"
+        placeholder="排序"
         class="fselect"
         size="small"
         @change="confirm"
@@ -125,21 +125,16 @@ export default {
       currentLoginId: this.$store.getters['session/get']('userId'),
       loading: false,
       hasMore: false,
+      sort: '',
       options: [{
-        value: '',
-        label: '接口不支持排序'
+        label: this.$t('home.noLimit'),
+        value: ''
       }, {
-        value: '1',
-        label: '主题数'
-
+        label: this.$t('home.sortCreatedAt'),
+        value: '-createdAt'
       }, {
-        value: '2',
-        label: '关注数'
-
-      }, {
-        value: '3',
-        label: '粉丝数'
-
+        label: this.$t('home.sortUpdatedAt'),
+        value: '-updatedAt'
       }]
     }
   },
@@ -153,6 +148,7 @@ export default {
       const params = {
         include: 'toUser,toUser.groups',
         'filter[type]': 1,
+        sort: this.sort,
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         'filter[user_id]': this.userId,
@@ -172,7 +168,6 @@ export default {
           if (res._jv) {
             this.hasMore = this.followingList.length < res._jv.json.meta.total
           }
-          console.log('用户关注列表2', this.followingList)
         })
     },
     // 添加关注
@@ -232,7 +227,11 @@ export default {
       this.$router.push(`/profile?userId=${userId}`)
     },
     confirm(e) {
-
+      this.sort = e
+      this.pageNum = 1
+      this.followingList = []
+      this.getFollowingList('change')
+      console.log(e)
     },
     onClickSearch() {
       this.pageNum = 1

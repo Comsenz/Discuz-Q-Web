@@ -120,6 +120,7 @@ export default {
     const currentDate = `${year}-${month}`
     return {
       loading: false,
+      hasMore: false,
       value: '', // 提现记录被选择到的类型id
       pageSize2: 10, // 钱包明细每页展示的数目
       pageNum2: 1, // 钱包明细当前页数

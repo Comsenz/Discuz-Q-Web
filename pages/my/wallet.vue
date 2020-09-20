@@ -397,10 +397,10 @@ export default {
     height: 40px;
   }
   .el-input__inner {
-    border-radius: 0px;
+    border-radius: 2px;
   }
   .el-button {
-    border-radius: 0px;
+    border-radius: 2px;
   }
   .el-input__inner:focus {
     border-color: #dcdfe6;
