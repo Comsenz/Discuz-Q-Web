@@ -269,7 +269,19 @@ export default {
           if (res) {
             this.cashwithdrawal()
           }
-        }, e => this.handleError(e))
+        }, e => {
+          // eslint-disable-next-line object-curly-spacing
+          const { response: { data: { errors } } } = e
+          console.log(errors[0])
+          if (errors[0]) {
+            if (errors[0].status === '422') {
+              console.log(errors[0].detail, errors[0])
+              this.$message.error(errors[0].detail[0])
+            } else if (errors[0].status === 500) {
+              this.$message.error(this.$t(`core.${errors[0].code}`))
+            }
+          }
+        })
     },
     // 提现申请
     cashwithdrawal() {
@@ -294,22 +306,20 @@ export default {
             // this.$router.go(0)
           }
         }, e => {
-          console.log('提现错误', e)
           // eslint-disable-next-line object-curly-spacing
           const { response: { data: { errors } } } = e
+          console.log(errors)
           if (errors[0]) {
-            if (errors[0].status === 422) {
+            if (errors[0].status === '422') {
               this.$message.error(errors[0].detail[0])
               this.canAmount = ''
               this.contint = ''
               this.procedures = 0
-              this.$emit('close')
             } else if (errors[0].status === 500) {
-              this.$message.error(errors[0].detail)
+              this.$message.error(this.$t(`core.${errors[0].code}`))
               this.canAmount = ''
               this.contint = ''
               this.procedures = 0
-              this.$emit('close')
             }
           }
         })
