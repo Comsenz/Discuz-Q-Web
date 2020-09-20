@@ -90,12 +90,12 @@
     </div>
     <div class="bottom">
       <span>￥ {{ showAmount + $t('pay.rmb') + $t('pay.payTo') + '，' + user.username || '' }} {{ $t('pay.ofAccount') }}</span>
-      <button v-show="payWay === 'wxPay'" class="checkout-button" @click="$emit('paying', { payWay, hideAvatar, rewardAmount: formatToFixed(rewardAmount) })">
+      <el-button v-show="payWay === 'wxPay'" type="primary" class="checkout-button" @click="$emit('paying', { payWay, hideAvatar, rewardAmount: formatToFixed(rewardAmount) })">
         {{ $t('pay.scanPay') }}
-      </button>
-      <button v-show="payWay === 'walletPay'" class="checkout-button" @click="$emit('paying', { payWay, hideAvatar, rewardAmount: formatToFixed(rewardAmount) })">
+      </el-button>
+      <el-button v-show="payWay === 'walletPay'" type="primary" class="checkout-button" @click="$emit('paying', { payWay, hideAvatar, rewardAmount: formatToFixed(rewardAmount) })">
         {{ $t('pay.surePay') }}
-      </button>
+      </el-button>
     </div>
   </message-box>
 </template>
@@ -227,13 +227,15 @@ export default {
             > span {
               text-align: center;
               line-height: 50px;
-              font-size: 16px;
+              font-size: 20px;
               display: block;
               width: 40px;
             }
 
             > input {
+              line-height: 15px;
               flex: 1;
+              font-size: 18px;
               border: none;
               color: #C0C4CC;
             }
@@ -374,16 +376,6 @@ export default {
     > span {
       font-size: 14px;
       margin-right: 20px;
-    }
-    > .checkout-button {
-      height: 35px;
-      line-height: 35px;
-      text-align: center;
-      padding: 0 20px;
-      color: #fff;
-      border-radius: 3px;
-      background: $color-blue-base;
-      cursor: pointer;
     }
   }
 

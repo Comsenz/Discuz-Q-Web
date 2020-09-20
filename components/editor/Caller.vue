@@ -203,6 +203,8 @@ export default {
             color: #6D6D6D;
             font-size: 14px;
             cursor: pointer;
+            white-space: nowrap;
+            margin-right: 15px;
             &.selected {
               background: #E5F2FF;
             }

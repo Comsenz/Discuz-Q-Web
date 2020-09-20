@@ -31,7 +31,7 @@
       </el-dropdown>
       <div class="report" @click="reportClick">
         <svg-icon type="report" class="icon-setting" style="font-size: 16px" />
-        {{ $t('report.reportTitle') }}
+        <span>{{ $t('report.reportTitle') }}</span>
       </div>
       <topic-report v-if="isReport" :thread-id="thread._jv.id" :type="1" @close="isReport = false" />
       <div v-if="thread.isEssence" class="essence">
@@ -103,12 +103,16 @@ export default {
     display: flex;
     .report {
       margin-top: 5px;
-      font-size: 16px;
-      line-height: 16px;
+      font-size: 12px;
       cursor: pointer;
       color: #d0d4dc;
       margin-left: 20px;
       height: 16px;
+      display: flex;
+      align-items: center;
+      > span {
+        margin-left: 5px;
+      }
       .warning {
         height: 16px;
       }
@@ -117,11 +121,15 @@ export default {
       height: 20px;
 
       > .management {
+        display: flex;
+        align-items: center;
         margin-top: 5px;
-        font-size: 16px;
-        line-height: 16px;
+        font-size: 12px;
         cursor: pointer;
         color: $font-color-grey;
+        > span {
+          margin-left: 5px;
+        }
 
         &:focus {
           border: none;
