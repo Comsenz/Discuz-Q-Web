@@ -41,6 +41,14 @@
     </div>
     <div v-if="unpaid && threadType === 1" class="hide-content-tip">{{ $t('pay.contentHide') }}</div>
     <nuxt-link v-if="category.name" :to="{path: '/', query: { categoryId: category._jv.id } }" class="tag">{{ category.name }}</nuxt-link>
+    <div>
+      <nuxt-link v-if="location.location" :to="`/location?longitude=${location.longitude}&latitude=${location.latitude}`" class="location">
+        <span class="flex">
+          <svg-icon type="location" class="icon" />
+          <span> {{ location.location }} </span>
+        </span>
+      </nuxt-link>
+    </div>
     <video-pop v-if="showVideoPop" :cover-url="video.cover_url" :url="video.media_url" @remove="showVideoPop = false" />
     <audio id="audio-player" :src="currentAudio.url" style="display: none" />
   </article>
@@ -76,6 +84,10 @@ export default {
       default: 0
     },
     category: {
+      type: Object,
+      default: () => {}
+    },
+    location: {
       type: Object,
       default: () => {}
     }
@@ -310,6 +322,31 @@ export default {
       background: $background-color-grey;
       color: #777;
       font-size: 12px;
+      &:hover {
+        background: #E5F2FF;
+      }
+    }
+    .location{
+      display: inline-block;
+      background: #F7F7F7;
+      border-radius: 13px;
+      font-size:12px;
+      color: #777777;
+      padding:4px 10px;
+      line-height: 16px;
+      margin-top: 10px;
+      transition: all 0.1s ease-in-out;
+      &:hover{
+        background-color: #E5F2FF;
+        color: $font-color-grey;
+      }
+      .flex{
+        display: flex;
+        align-items: center;
+      }
+      .icon{
+        margin-right: 4px;
+      }
     }
 
   }
