@@ -92,7 +92,7 @@ export default {
     padding: 20px;
     background: #ffffff;
     border-radius: 3px;
-
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.03);
     > .title {
       font-size: 16px;
       font-weight: bolder;

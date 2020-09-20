@@ -1,7 +1,7 @@
 <template>
   <div>
     <Cover />
-    <div class="checkout-counter">
+    <div class="message-box" :style="{overflow: overflow}">
       <div class="container-title">
         <div class="title">{{ title }}</div>
         <svg-icon style="font-size: 14px; cursor: pointer" type="close" @click="$emit('close')" />
@@ -19,13 +19,17 @@ export default {
     title: {
       type: String,
       default: ''
+    },
+    overflow: {
+      type: String,
+      default: 'auto'
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .checkout-counter {
+  .message-box {
     z-index: 100;
     position: fixed;
     top: 50%;
@@ -53,7 +57,7 @@ export default {
     }
   }
   @media screen and ( max-width: 1005px ) {
-    .checkout-counter {
+    .message-box {
       width: 750px;
     }
   }

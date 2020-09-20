@@ -1,5 +1,5 @@
 <template>
-  <message-box :title="$t('post.callFriends')" @close="$emit('close')">
+  <message-box :title="$t('post.callFriends')" overflow="visible" @close="$emit('close')">
     <div class="top">
       <div class="container-selectedCaller">
         <div v-for="(username, index) in selectedFriends" :key="index" class="selectedCaller">

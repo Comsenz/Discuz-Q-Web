@@ -26,11 +26,12 @@
 const threadInclude = 'firstPost,firstPost.images,firstPost.attachments,category,threadVideo'
 import publishResource from '@/mixin/publishResource'
 import handleError from '@/mixin/handleError'
+import isLogin from '@/mixin/isLogin'
 import tencentCaptcha from '@/mixin/tencentCaptcha'
 
 export default {
   name: 'Post',
-  mixins: [tencentCaptcha, handleError, publishResource],
+  mixins: [tencentCaptcha, handleError, publishResource, isLogin],
   validate({ params }) {
     return parseFloat(params.type) < 4
   },
@@ -132,6 +133,7 @@ export default {
       })
     },
     checkPublish() {
+      if (!this.isLogin()) return
       // 0 文字帖 1 帖子 2 视频 3 图片
       if (!this.categorySelectedId) return this.$message.warning(this.$t('post.theClassifyCanNotBeBlank'))
       if (this.post.text.length > this.typeInformation[this.type].textLimit) return this.$message.warning(this.$t('post.messageLengthCannotOver'))

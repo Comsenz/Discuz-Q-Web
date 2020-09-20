@@ -88,20 +88,23 @@ export default {
 
       &.disabled {
         cursor: not-allowed;
+        &:hover {
+          color: $font-color-grey;
+          > .action-icon {
+            fill: $font-color-grey;
+          }
+        }
       }
 
       > .action-icon {
         font-size: 20px;
         fill: $font-color-grey;
-        &:hover {
-          fill: $color-blue-deep;
-        }
       }
 
       &:hover {
-        color: $color-blue-deep;
+        color: $color-blue-base;
         > .action-icon {
-          fill: $color-blue-deep;
+          fill: $color-blue-base;
         }
       }
 

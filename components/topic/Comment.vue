@@ -33,9 +33,10 @@ const postInclude = 'user,replyUser,images,thread,user.groups,thread.category,th
 import publishResource from '@/mixin/publishResource'
 import postLegalityCheck from '@/mixin/postLegalityCheck'
 import handleError from '@/mixin/handleError'
+import isLogin from '@/mixin/isLogin'
 export default {
   name: 'Comment',
-  mixins: [handleError, publishResource, postLegalityCheck],
+  mixins: [handleError, publishResource, postLegalityCheck, isLogin],
   props: {
     threadId: {
       type: String,
@@ -111,6 +112,7 @@ export default {
       }, () => console.log('取消删除'))
     },
     postCommentPublish() {
+      if (!this.isLogin()) return
       if (!this.comment.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
       if (this.comment.text.length > this.commentType.textLimit) return this.$message.warning(this.$t('post.messageLengthCannotOver'))
       this.onCommentPublish = true

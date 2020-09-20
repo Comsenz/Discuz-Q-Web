@@ -92,6 +92,7 @@
 
 <script>
 import handleError from '@/mixin/handleError'
+import isLogin from '@/mixin/isLogin'
 import publishResource from '@/mixin/publishResource'
 import postLegalityCheck from '@/mixin/postLegalityCheck'
 import timerDiff from '@/mixin/timerDiff'
@@ -100,7 +101,7 @@ import dayjs from 'dayjs'
 
 export default {
   name: 'CommentList',
-  mixins: [handleError, timerDiff, publishResource, postLegalityCheck],
+  mixins: [handleError, timerDiff, publishResource, postLegalityCheck, isLogin],
   props: {
     commentList: {
       type: Array,
@@ -150,6 +151,7 @@ export default {
       if (e.target.matches('.showAllComment')) this.$router.push(`/topic/comment?threadId=${this.threadId}&commentId=${comment._jv.id}`)
     },
     replyPublish(id) {
+      if (!this.isLogin()) return
       if (!this.replyPost.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
       if (this.replyPost.text.length > this.replyType.textLimit) return this.$message.warning(this.$t('post.messageLengthCannotOver'))
       this.onReplyPublish = true
