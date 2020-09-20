@@ -80,7 +80,6 @@ export default {
         sort: this.isPositiveSort ? '-createdAt' : 'createdAt',
         include: postInclude
       }}]).then(data => {
-        console.log(data, 'data')
         this.commentList = data
         this.postCount = data.length > 0 ? (data[0].thread.postCount - 1) : 0
       }, e => this.handleError(e)).finally(() => { this.loading = false })

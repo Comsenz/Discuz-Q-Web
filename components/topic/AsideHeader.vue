@@ -66,6 +66,9 @@ export default {
     },
     deep: true
   },
+  mounted() {
+    this.getAuthorInfo()
+  },
   methods: {
     getAuthorInfo() {
       if (!(this.author && this.author._jv && this.author._jv.id)) return

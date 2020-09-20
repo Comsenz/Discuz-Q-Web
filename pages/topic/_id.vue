@@ -64,7 +64,7 @@ export default {
   name: 'Post',
   layout: 'custom_layout',
   mixins: [handleError],
-  async asyncData({ app, params, store }) {
+  async asyncData({ params, store }) {
     try {
       const threadData = await store.dispatch('jv/get', [`threads/${params.id}`, { params: { include: threadInclude }}])
       return { thread: threadData, article: threadData.firstPost, postId: threadData.firstPost._jv.id }
@@ -119,24 +119,26 @@ export default {
     }
   },
   mounted() {
-    this.getThread()
+    this.initData()
+    if (Object.keys(this.thread).length === 0) this.getThread()
+    // this.getThread()
   },
   methods: {
     getThread() {
       return this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include: threadInclude }}]).then(data => {
         if (data.isDeleted) return this.$router.push('/error')
-        console.log('thread => ', data)
         this.articleLoading = false
         this.thread = data
         this.article = data.firstPost
         this.postId = this.article._jv.id
-        if (this.thread.user && this.thread.user.groups[0] && this.thread.user.groups[0].permissionWithoutCategories) {
-          this.canRewardOrPaid = this.thread.user.groups[0].permissionWithoutCategories.filter(item => item.permission === 'createThreadPaid').length > 0
-        }
         this.initData()
       }, e => this.handleError(e, 'thread'))
     },
     initData() {
+      if (this.thread.user && this.thread.user.groups[0] && this.thread.user.groups[0].permissionWithoutCategories) {
+        this.canRewardOrPaid = this.thread.user.groups[0].permissionWithoutCategories.filter(item => item.permission === 'createThreadPaid').length > 0
+      }
+      console.log(this.thread, 'data')
       this.initManagementList(this.thread)
       this.initPaidInformation(this.thread)
       this.initActions(this.thread, this.article)

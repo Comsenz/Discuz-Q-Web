@@ -1,6 +1,6 @@
 export default {
   get: function(name, cookie) {
-    const _cookie = cookie || document.cookie
+    const _cookie = cookie || process.client && document.cookie || ''
     const cookieName = encodeURIComponent(name) + '='
     const cookieStart = _cookie.indexOf(cookieName)
     let val = null

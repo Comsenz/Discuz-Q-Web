@@ -15,7 +15,7 @@
         </div>
         <topic-content :article="comment || {}" :paid-information="{paid: true, price: 0}" :thread-type="3" :category="{}" :video="{}" />
         <div class="thread-card">
-          <avatar-component :size="40" round :author="thread.user || {}">
+          <avatar-component :size="40" round :author="thread && thread.user || {}">
             {{ timerDiff(thread.createdAt) + $t('topic.before') }} ..
           </avatar-component>
           <div v-show="thread && thread.firstPost" class="content-html" v-html="thread && thread.firstPost && thread.firstPost.summary || ''" />
@@ -41,7 +41,7 @@ const commentInclude = 'user,likedUsers,commentPosts,commentPosts.user,commentPo
 const replyInclude = 'replyUser,user.groups,user,images'
 import handleError from '@/mixin/handleError'
 import timerDiff from '@/mixin/timerDiff'
-import service from '@/api/request'
+// import service from '@/api/request'
 
 export default {
   name: 'Comment',
@@ -53,11 +53,22 @@ export default {
     try {
       const thread = await store.dispatch('jv/get', [`threads/${threadId}`, { params: { include: threadInclude }}])
       const comment = await store.dispatch('jv/get', [`posts/${commentId}`, { params: { include: commentInclude }}])
-      const { data: { included: commentIncluded }} = await service.get(`posts/${commentId}`, { include: commentInclude })
-      if (comment && commentIncluded) comment.user = commentIncluded.filter(item => item.type === 'users')[0].attributes
+      // TODO 暂时不用 SSR 避免出问题
+      // const replyList = await store.dispatch('jv/get', [`posts`, {
+      //   params: {
+      //     'filter[thread]': threadId,
+      //     'filter[reply]': commentId,
+      //     'filter[isDeleted]': 'no',
+      //     sort: '-createdAt',
+      //     'filter[isComment]': 'yes',
+      //     include: replyInclude
+      //   }
+      // }])
+      // const { data: { included: commentIncluded }} = await service.get(`posts/${commentId}`, { include: commentInclude })
+      // if (comment && commentIncluded) comment.user = commentIncluded.filter(item => item.type === 'users')[0].attributes
       return { thread, comment }
     } catch (e) {
-      console.log('ssr err')
+      console.log('ssr err', e)
       return { loading: true }
     }
   },
@@ -86,13 +97,12 @@ export default {
   },
   mounted() {
     if (Object.keys(this.comment).length === 0) this.getComment().then(() => { this.loading = false })
-    this.getThread()
+    if (Object.keys(this.thread).length === 0) this.getThread()
     this.getReplyList()
   },
   methods: {
     getThread() {
       return this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include: threadInclude }}]).then(response => {
-        console.log(response, '12')
         if (response.isDeleted) return this.$router.push('/404')
         this.thread = response
       }, e => this.handleError(e))
@@ -106,7 +116,7 @@ export default {
     getReplyList() {
       if (this.replyLoading) return
       this.replyLoading = true
-      this.$store.dispatch('jv/get', [`posts`, {
+      return this.$store.dispatch('jv/get', [`posts`, {
         params: {
           'filter[thread]': this.threadId,
           'filter[reply]': this.commentId,
