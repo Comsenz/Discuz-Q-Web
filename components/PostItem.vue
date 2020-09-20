@@ -386,6 +386,7 @@ export default {
         .btn{
           color: $font-color-grey;
           cursor: pointer;
+          min-width: 100px;
           &:hover{
             color:$color-blue-base;
           }
@@ -414,8 +415,11 @@ export default {
         .comment .icon{
           font-size: 17px;
         }
-        .share .icon{
-          font-size: 17px;
+        .share{
+          min-width: auto;
+          .icon{
+            font-size: 17px;
+          }
         }
       }
       .reply-btn{
