@@ -5,7 +5,7 @@
       <span class="site">Discuz! Q</span>
       <span class="block">© {{ year }}</span>
     </div>
-    <div>分享 / 交流 / 共融</div>
+    <!-- <div>分享 / 交流 / 共融</div> -->
     <div class="id">
       <div>{{ forums.set_site ? forums.set_site.site_record : '' }}</div>
       <div class="site-record-code">
