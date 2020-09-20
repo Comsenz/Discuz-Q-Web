@@ -19,9 +19,7 @@
           >其他理由</el-radio>
         </el-radio-group>
       </div>
-      <div
-        class="other"
-      >
+      <div class="other">
         <el-input
           v-model="otherReasonValue"
           type="textarea"
@@ -113,9 +111,7 @@ export default {
     select(val) {
       console.log('select', val)
       this.currentReport = val
-      if (this.currentReport === 'other') {
-        this.isOther = true
-      }
+      this.isOther = this.currentReport === 'other'
     },
     // 确认举报
     reportConfirmClick(type) {

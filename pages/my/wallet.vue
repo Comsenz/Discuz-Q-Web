@@ -377,6 +377,7 @@ export default {
     color: #b5b5b5;
     padding: 0 52px 0 2px;
     font-size: 16px;
+    transition: none;
   }
   .el-tabs__content {
     padding: 10px 0;
@@ -391,11 +392,9 @@ export default {
     font-weight: bold;
     font-size: 18px;
   }
-  ::v-deep .el-tabs .el-tabs__header .el-tabs__item.is-active :hover {
-    color: #000000;
-  }
   .el-tabs__nav-wrap {
     margin-bottom: 0px;
+    height: 40px;
   }
   .el-input__inner {
     border-radius: 0px;

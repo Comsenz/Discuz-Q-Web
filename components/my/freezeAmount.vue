@@ -63,7 +63,10 @@
         :sort-method="sortAmount"
       >
         <template slot-scope="scope">
-          <span style="font-size:16px;" v-html="amountFormat(scope.row.change_freeze_amount)" />
+          <span
+            style="font-size:16px;"
+            v-html="amountFormat(scope.row.change_freeze_amount)"
+          />
         </template>
       </el-table-column>
     </el-table>
@@ -317,15 +320,19 @@ export default {
 //   margin-top: 15px;
 // }
 ::v-deep.el-table .cell {
-  padding-left: 10px;
+  padding-left: 0px;
   font-weight: 400;
 }
-::v-deep .el-table thead {
-  color: #303133;
+::v-deep .el-table-column--selection .cell {
+  padding-left: 11px;
 }
 ::v-deep .el-table th,
 .el-table tr {
   background-color: #fafafa !important;
+  padding: 3px 0;
+}
+::v-deep .el-table thead {
+  color: #303133;
 }
 ::v-deep .el-pagination .btn-prev {
   margin-left: 110px;
