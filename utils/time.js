@@ -95,3 +95,13 @@ export const formatDate = (date, fmt) => {
   }
   return fmt
 }
+
+// 2020年-4月-16日
+
+export const time2YearMonthDay = date => {
+  const d = new Date(date)
+  const year = d.getFullYear() + '年'
+  const month = d.getMonth() + 1 + '月'
+  const dated = d.getDate() + '日'
+  return [year, month, dated].join('-')
+}

@@ -16,10 +16,12 @@
           <el-radio
             label="other"
             class="otherr"
-          >其他</el-radio>
+          >其他理由</el-radio>
         </el-radio-group>
       </div>
-      <div class="other">
+      <div
+        class="other"
+      >
         <el-input
           v-model="otherReasonValue"
           type="textarea"

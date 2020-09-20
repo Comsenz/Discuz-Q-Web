@@ -21,7 +21,7 @@
     <div class="content-info abs">
       <p>
         <span class="color">{{ $t('site.creationtime') }}</span>
-        <span class="workdate">{{ forums.set_site && forums.set_site.site_install }}</span>
+        <span class="workdate">{{ forums.set_site && time2YearMonthDay(forums.set_site.site_install) }}</span>
       </p>
       <p>
         <span class="date color">{{ $t('site.circlemaster') }}</span>
@@ -64,7 +64,10 @@
         <span class="workdate2">{{ forums.set_site && forums.set_site.site_introduction }}</span>
       </p>
     </div>
-    <p v-if="isLogin">
+    <p
+      v-if="isLogin"
+      class="joinnow"
+    >
       <span>{{ $t('site.justonelaststepjoinnow') }}</span>
       <span class="bold">
         {{ forums.set_site && forums.set_site.site_name }}
@@ -72,9 +75,9 @@
       <span>{{ $t('site.site') }}</span>
       <el-button
         type="primary"
-        class="r-button"
+        :class="isLogin ? 'r-button islogin' :'r-button'"
         @click="paysureShow"
-      >{{ $t('site.paynow') }}，¥{{ (forums.set_site && forums.set_site.site_price) || 0 }}
+      >{{ $t('site.paynow') }}，¥{{ ` ${site_price} ` || 0 }}
         {{
           forums.set_site && forums.set_site.site_expire
             ? `  / ${$t('site.periodvalidity')}${forums.set_site &&
@@ -113,11 +116,11 @@
 
 <script>
 import handleError from '@/mixin/handleError'
-import timerDiff from '@/mixin/timerDiff'
+// import { time2YearMonthDay } from '@/utils/time'
 
 let payWechat = null
 export default {
-  mixins: [handleError, timerDiff],
+  mixins: [handleError],
 
   data() {
     return {
@@ -136,11 +139,19 @@ export default {
     }
   },
   mounted() {
-    console.log(this.forums.set_site.site_install)
+    // console.log(time2YearMonthDay(this.forums.set_site.site_install))
     this.userinfo()
     this.site_price = this.forums && this.forums.set_site && this.forums.set_site.site_price ? (1 * this.forums.set_site.site_price).toFixed(2) : 0
   },
   methods: {
+    time2YearMonthDay(date) {
+      const d = new Date(date)
+      const year = d.getFullYear() + '年'
+      console.log(typeof d.getMonth(), d.getMonth())
+      const month = d.getMonth() < 10 ? `${0}${d.getMonth() + 1}月` : d.getMonth() + 1 + '月'
+      const dated = d.getDate() < 10 ? 0`${0}${d.getDate()}日` : d.getDate() + '日'
+      return [year, month, dated].join('')
+    },
     userinfo() {
       const params = {
         include: 'groups,wechat'
@@ -271,6 +282,9 @@ export default {
   width: 400px;
   margin-top: 62px;
   flex-direction: column;
+  .joinnow {
+    margin-top: 40px;
+  }
   .info-title {
     width: 130px;
     height: 35px;
@@ -352,6 +366,9 @@ export default {
     margin-top: 20px;
     margin-bottom: 60px;
     background: #1878f3;
+  }
+  .islogin {
+    margin-top: 10px;
   }
 }
 </style>

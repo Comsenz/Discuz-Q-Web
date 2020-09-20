@@ -67,7 +67,7 @@
       <!-- 方形预览图 -->
       <div
         class="show-preview"
-        :style="{'width': previews.w + 'px', 'height': previews.h + 'px', 'overflow': 'hidden', 'display':'inline-block','position':'absolute','margin-left':'20px'}"
+        :style="{'width': previews.w + 'px', 'height': previews.h + 'px', 'overflow': 'hidden', 'display':'inline-block','position':'absolute','margin-left':'18px','margin-top':'7px'}"
       >
         <div
           :style="previews.div"
@@ -82,7 +82,7 @@
       <!-- 圆形预览图 -->
       <div
         class="show-preview"
-        :style="{'width': 100 + 'px', 'height': 100 + 'px', 'overflow': 'hidden', 'display':'inline-block','position':'absolute','margin-left':'20px','border-radius':'50%','top':'49%'}"
+        :style="{'width': 100 + 'px', 'height': 100 + 'px', 'overflow': 'hidden', 'display':'inline-block','position':'absolute','margin-left':'20px','border-radius':'50%','top':'51%'}"
       >
         <div
           :style="previews.div"

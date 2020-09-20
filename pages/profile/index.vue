@@ -481,8 +481,9 @@ export default {
       width: 70px;
       height: 35px;
       color: #1878f3;
-      background: #ffffff;
-      border-color: #1878f3;
+      background: #ffffff !important;
+      border:1px solid #1878f3 !important;
+      border-color: #1878f3 !important;
       font-size: 14px;
       border-radius: 0px;
       margin-left: 5px;
@@ -614,6 +615,7 @@ export default {
     color: #b5b5b5;
     padding: 0 52px 0 0px;
     font-size: 16px;
+    transition:none;
   }
   .el-tabs__content {
     padding: 0;
@@ -630,6 +632,7 @@ export default {
   }
   .el-tabs__nav-wrap {
     margin-bottom: 0px;
+    height: 40px;
   }
   .el-input__inner {
     border-radius: 2px;

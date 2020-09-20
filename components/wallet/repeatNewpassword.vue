@@ -5,9 +5,9 @@
   >
     <div class="container">
       <div class="block show-amount">
-        <div class="title">{{ $t('modify.enterNewRepeat') }}</div>
+        <div class="title">{{ $t('modify.enterpaymentagin') }}</div>
         <div class="amount">
-          <span>请重新输入上一步设置的密码</span>
+          <span>{{ $t('modify.repeatpasstip') }}</span>
         </div>
       </div>
       <div class="block input-password">
