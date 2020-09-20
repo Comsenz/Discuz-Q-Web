@@ -17,7 +17,7 @@
       </header>
       <main>
         <div class="main">
-          <div class="invite-total">{{ $t('invite.inviteTotal', { total }) }}</div>
+          <!-- <div class="invite-total">{{ $t('invite.inviteTotal', { total }) }}</div> -->
           <el-table v-loading="loading" :data="incomeDetailList" :default-sort="{prop: 'created_at', order: 'descending'}" @sort-change="sortChange">
             <el-table-column :label="$t('invite.inviteUserName')">
               <template slot-scope="scope">
