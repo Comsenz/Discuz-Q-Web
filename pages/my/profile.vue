@@ -536,7 +536,7 @@ export default {
     },
     // 获取输入字数长度
     fun(e) {
-      this.wordnumber = e.target.value.length
+      this.wordnumber = e.length
     },
     // 修改签名
     signModify() {

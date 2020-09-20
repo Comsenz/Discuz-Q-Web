@@ -142,4 +142,7 @@ export default {
     }
   }
 }
+.no-more {
+  padding: 94px 0;
+}
 </style>

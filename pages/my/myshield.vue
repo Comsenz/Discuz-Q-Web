@@ -115,7 +115,7 @@
             class="no-more"
           >
             <svg-icon
-              v-if="userList.length === 0"
+              v-if="shieldList.length === 0"
               type="empty"
               class="empty-icon"
             />{{ shieldList.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noshield') }}

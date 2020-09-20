@@ -520,7 +520,7 @@ export default {
     box-shadow: none;
     border-radius: 5px;
     ::v-deep.el-tabs__header {
-      padding: 20px 20px 6px;
+      padding: 8px 20px 5px;
     }
   }
   .profile-cc {
