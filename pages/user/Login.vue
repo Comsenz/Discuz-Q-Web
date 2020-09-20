@@ -421,11 +421,16 @@ export default {
         }
       }, e => this.handleError(e))
     }
+  },
+  head() {
+    return {
+      title: this.$t('user.login')
+    }
   }
 }
 </script>
 <style lang='scss' scoped>
-@import '@/assets/css/variable/color.scss';
+@import "@/assets/css/variable/color.scss";
 ::v-deep input::-ms-reveal {
   display: none;
 }
@@ -561,8 +566,8 @@ export default {
     margin-top: 15px;
     background: $color-blue-base;
     transition: all 0.2s ease-out;
-    &:hover{
-      border:1px solid $color-blue-deep;
+    &:hover {
+      border: 1px solid $color-blue-deep;
       background: $color-blue-deep;
     }
   }

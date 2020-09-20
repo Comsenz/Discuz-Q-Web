@@ -526,11 +526,16 @@ export default {
         `/user/login?&validate=${this.validate}`
       )
     }
-
+  },
+  head() {
+    return {
+      title: this.$t('profile.register')
+    }
   }
 }
 </script>
 <style lang='scss' scoped>
+@import "@/assets/css/variable/color.scss";
 ::v-deep input::-ms-reveal {
   display: none;
 }
@@ -707,6 +712,9 @@ export default {
     border: none;
     font-weight: bold;
     font-size: 18px;
+  }
+  .el-tabs__header .el-tabs__item:hover {
+    color: $color-blue-deep;
   }
   .el-tabs__nav-wrap {
     margin-bottom: 0px;
