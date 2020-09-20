@@ -32,7 +32,11 @@ module.exports = {
           this.isWechatModify = false
           this.$message.success('绑定成功')
         }
-      }, e => this.handleError(e))
+      }, e => {
+        this.handleError(e)
+        window.clearInterval(this.wehcatTimer)
+        this.createQRcode()
+      })
     }
   }
 }

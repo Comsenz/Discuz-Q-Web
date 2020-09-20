@@ -419,7 +419,11 @@ export default {
           this.logind()
           this.$message.success('登录成功')
         }
-      }, e => this.handleError(e))
+      }, e => {
+        clearInterval(this.wehcatLoginTimer)
+        this.handleError(e)
+        this.createQRcode()
+      })
     }
   },
   head() {
