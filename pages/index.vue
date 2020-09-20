@@ -61,6 +61,7 @@ export default {
       'filter[isSticky]': 'no',
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no',
+      'filter[categoryId]': query.categoryId,
       'page[number]': 1,
       'page[limit]': 10
     }
@@ -87,9 +88,17 @@ export default {
         resData.threadsData = threadsData._jv.json.data.slice(0, 10) || []
       }
       if (Array.isArray(categoryData)) {
-        resData.categoryData = categoryData
+        let thread_count = 0 // 计算全部帖子数
+        categoryData.forEach(item => {
+          thread_count += item.thread_count
+        })
+        this.categoryData = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), thread_count: thread_count }, ...categoryData]
       } else if (categoryData && categoryData._jv && categoryData._jv.json) {
-        resData.categoryData = categoryData._jv.json.data || []
+        let thread_count = 0 // 计算全部帖子数
+        categoryData._jv.json.data.forEach(item => {
+          thread_count += item.thread_count
+        })
+        this.categoryData = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), thread_count: thread_count }, ...categoryData._jv.json.data] || []
       }
       if (Array.isArray(recommendUser)) {
         resData.recommendUserData = recommendUser
@@ -105,7 +114,7 @@ export default {
   data() {
     return {
       loading: false,
-      index_loading: false,
+      index_loading: true,
       threadsStickyData: [], // 置顶主题列表
       threadsData: [], // 主题列表
       categoryData: [], // 分类列表
@@ -140,6 +149,10 @@ export default {
     if (this.threadsData.length === 0) {
       this.index_loading = true
       this.getThreadsList()
+    } else {
+      if (this.threadsData.length === this.pageSize) {
+        this.hasMore = true
+      }
     }
     if (this.categoryData.length === 0) {
       this.getCategoryList()

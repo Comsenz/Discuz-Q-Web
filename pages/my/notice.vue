@@ -93,7 +93,7 @@ export default {
     getDialogList() {
       this.dialog.loading = true
       const params = {
-        'include': 'dialogMessage,sender,recipient',
+        'include': 'dialogMessage,sender,recipient,sender.groups,recipient.groups',
         'sort': '-dialogMessageId',
         'page[number]': this.dialog.pageNum,
         'page[limit]': this.dialog.pageSize

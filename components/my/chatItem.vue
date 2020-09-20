@@ -11,10 +11,16 @@
     <div class="detail">
       <div class="top">
         <template v-if="+item.sender_user_id !== +userId">
-          <nuxt-link v-if="item.sender && item.sender.username" :to="`/profile?userId=${item.sender.id}`" class="user-name">{{ item.sender.username }}</nuxt-link><span class="text">{{ $t('notice.chat') }}</span>
+          <nuxt-link v-if="item.sender && item.sender.username" :to="`/profile?userId=${item.sender.id}`" class="user-name">{{ item.sender.username }}
+            <span v-if="item.sender.groups && item.sender.groups.length > 0 && item.sender.groups[0].isDisplay" class="text">({{ item.sender.groups[0].name }})</span>
+          </nuxt-link>
+          <span class="text">{{ $t('notice.chat') }}</span>
         </template>
         <template v-if=" +item.recipient_user_id !== +userId">
-          <nuxt-link v-if="item.recipient && item.recipient.username" :to="`/profile?userId=${item.recipient.id}`" class="user-name">{{ item.recipient.username }}</nuxt-link><span class="text">{{ $t('notice.chat') }}</span>
+          <nuxt-link v-if="item.recipient && item.recipient.username" :to="`/profile?userId=${item.recipient.id}`" class="user-name">{{ item.recipient.username }}
+            <span v-if="item.recipient.groups && item.recipient.groups.length > 0 && item.recipient.groups[0].isDisplay" class="text">({{ item.recipient.groups[0].name }})</span>
+          </nuxt-link>
+          <span class="text">{{ $t('notice.chat') }}</span>
         </template>
         <div class="time">{{ (item.dialogMessage ? item.dialogMessage.created_at : item.created_at) | formatDate }}</div>
       </div>
@@ -114,7 +120,11 @@ export default {
     .top{
       .user-name{
         font-weight: bold;
-
+        .text{
+          font-size: 12px;
+          color: $font-color-grey;
+          margin-left: 0;
+        }
       }
       .text{
         color: #6D6D6D;
