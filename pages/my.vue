@@ -87,11 +87,13 @@ export default {
       }
     },
     setCurrentRoute() {
-      console.log('routtttt', this.$route)
       this.currentNumber = this.switchCase(this.$route.path)
     },
     currentInfo(index) {
       this.currentNumber = index
+      if (this.$route.path === this.menuList[index].index) {
+        window.location.href = this.$route.path
+      }
     },
     isActive(index) {
       this.currentNumber = this.switchCase(this.$route.path)
