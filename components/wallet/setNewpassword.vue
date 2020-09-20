@@ -1,5 +1,5 @@
 <template>
-  <message-box
+  <message
     :title="$t('profile.editpaypassword')"
     @close="$emit('close')"
   >
@@ -21,7 +21,7 @@
         >{{ $t('core.sms_verify_error') }}</div> -->
       </div>
     </div>
-  </message-box>
+  </message>
 </template>
 
 <script>

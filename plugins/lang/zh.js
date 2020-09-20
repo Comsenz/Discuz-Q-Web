@@ -786,7 +786,7 @@ export default {
     searchresult: '搜索结果',
     circleinfo: '站点信息',
     search: '搜索',
-    privateMessage: '私信',
+    privateMessage: '发私信',
     circlemanagement: '站点管理',
     topic: '主题',
     following: '关注',
