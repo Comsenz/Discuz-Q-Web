@@ -263,6 +263,7 @@ export default {
       return this.$store.dispatch('jv/patch', params).then(data => {
         data.firstPost && this.initManagementList(data)
         data.firstPost && this.initActions(data)
+        if (item.command === 'isSticky') return item.isStatus ? this.$message.success(this.$t('topic.stickySuccess')) : this.$message.success(this.$t('topic.cancelStickySuccess'))
         if (item.command === 'isLiked') return this.setLikeUser(!item.isStatus, data)
         if (item.command === 'isDeleted') return this.afterDeleted()
       }, e => this.handleError(e)).finally(() => { this.defaultLoading = false })
