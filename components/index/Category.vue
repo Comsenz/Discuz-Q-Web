@@ -1,6 +1,6 @@
 <template>
-  <div v-if="list.length > 0" class="category-container">
-    <div v-for="(item, index) in list" :key="index" class="category-item" :class="{'active': selectId === (item._jv && item._jv.id), 'loading': postLoading}" @click="onChange(item._jv && item._jv.id)">
+  <div v-if="categoryList.length > 0" class="category-container">
+    <div v-for="(item, index) in categoryList" :key="index" class="category-item" :class="{'active': selectId === (item._jv && item._jv.id), 'loading': postLoading}" @click="onChange(item._jv && item._jv.id)">
       <i v-if="selectId === (item._jv && item._jv.id)" class="el-icon-arrow-left arrow-icon" />
       <div class="flex">
         <div class="title">{{ item.name }}</div>
@@ -26,39 +26,51 @@ export default {
       }
     }
   },
-  // 异步数据用法
-  // async asyncData({ params, store }) {
-  //   try {
-  //     const data = await store.dispatch('jv/get', ['categories', {}])
-  //     return { list: [{ _jv: { id: 0 }, name: this.$t('topic.whole') }, ...data] }
-  //   } catch (error) {
-  //     console.log('ssr err')
-  //     return { list: [] }
-  //   }
-  // },
   data() {
     return {
-      selectId: 0
+      selectId: 0,
+      categoryList: []
+    }
+  },
+  watch: {
+    list: {
+      handler(val) {
+        let thread_count = 0 // 计算全部帖子数
+        val.forEach(item => {
+          thread_count += item.thread_count
+        })
+        this.categoryList = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), thread_count: thread_count }, ...val]
+      },
+      deep: true
     }
   },
   mounted() {
-    // if (this.list.length === 0) {
-    //   this.getCategoryList()
-    // }
+    if (this.list.length === 0) {
+      this.getCategoryList()
+    } else {
+      let thread_count = 0 // 计算全部帖子数
+      this.list.forEach(item => {
+        thread_count += item.thread_count
+      })
+      this.categoryList = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), thread_count: thread_count }, ...this.list]
+    }
     if (this.$route.query.categoryId) {
       this.onChange(this.$route.query.categoryId)
     }
   },
   methods: {
-    // getCategoryList() {
-    //   this.$store.dispatch('jv/get', ['categories', {}]).then(res => {
-    //     const resData = [...res] || []
-    //     this.list = [{ _jv: { id: 0 }, name: this.$t('topic.whole') }, ...resData]
-    //     console.log(this.list)
-    //   }, e => {
-    //     this.handleError(e)
-    //   })
-    // },
+    getCategoryList() {
+      this.$store.dispatch('jv/get', ['categories', {}]).then(res => {
+        const resData = [...res] || []
+        let thread_count = 0 // 计算全部帖子数
+        resData.forEach(item => {
+          thread_count += item.thread_count
+        })
+        this.categoryList = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), thread_count: thread_count }, ...resData]
+      }, e => {
+        this.handleError(e)
+      })
+    },
     onChange(id) {
       if (this.postLoading) return
       this.selectId = id

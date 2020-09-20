@@ -54,7 +54,8 @@ export default {
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no',
       'filter[categoryId]': query.categoryId,
-      include: ['firstPost']
+      'page[number]': 1,
+      include: 'firstPost'
     }
     const threadsParams = {
       include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
@@ -71,40 +72,46 @@ export default {
     }
     try {
       const resData = {}
-      const threadsStickyData = await store.dispatch('jv/get', ['threads', { threadsStickyParams }])
-      const threadsData = await store.dispatch('jv/get', ['threads', { threadsParams }])
+      const threadsStickyData = await store.dispatch('jv/get', ['threads', { params: threadsStickyParams }])
+      const threadsData = await store.dispatch('jv/get', ['threads', { params: threadsParams }])
       const categoryData = await store.dispatch('jv/get', ['categories', {}])
-      const recommendUser = await store.dispatch('jv/get', ['users/recommended', { userParams }])
+      const recommendUser = await store.dispatch('jv/get', ['users/recommended', { params: userParams }])
       // 处理一下data
       if (Array.isArray(threadsStickyData)) {
         resData.threadsStickyData = threadsStickyData
       } else if (threadsStickyData && threadsStickyData._jv && threadsStickyData._jv.json) {
-        resData.threadsStickyData = threadsStickyData._jv.json.data || []
+        var _threadsStickyData = threadsStickyData._jv.json.data || []
+        _threadsStickyData.forEach((item, index) => {
+          _threadsStickyData[index] = { ...item, ...item.attributes, 'firstPost': item.relationships.firstPost.data, '_jv': { 'id': item.id }}
+        })
+        resData.threadsStickyData = _threadsStickyData
       }
       if (Array.isArray(threadsData)) {
-        resData.threadsData = threadsData.slice(0, 10)
+        resData.threadsData = threadsData
       } else if (threadsData && threadsData._jv && threadsData._jv.json) {
-        resData.threadsData = threadsData._jv.json.data.slice(0, 10) || []
+        var _threadsData = threadsData._jv.json.data || []
+        _threadsData.forEach((item, index) => {
+          _threadsData[index] = { ...item, ...item.attributes, 'firstPost': item.relationships.firstPost.data, 'user': item.relationships.user.data, '_jv': { 'id': item.id }}
+        })
+        resData.threadsData = _threadsData
       }
-      // 用于判断是否有新主题
-      resData.threadCount = threadsData._jv.json.meta.threadCount
       if (Array.isArray(categoryData)) {
-        let thread_count = 0 // 计算全部帖子数
-        categoryData.forEach(item => {
-          thread_count += item.thread_count
-        })
-        this.categoryData = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), thread_count: thread_count }, ...categoryData]
+        resData.categoryData = categoryData
       } else if (categoryData && categoryData._jv && categoryData._jv.json) {
-        let thread_count = 0 // 计算全部帖子数
-        categoryData._jv.json.data.forEach(item => {
-          thread_count += item.thread_count
+        const _categoryData = categoryData._jv.json.data || []
+        _categoryData.forEach((item, index) => {
+          _categoryData[index] = { ...item, ...item.attributes, '_jv': { 'id': item.id }}
         })
-        this.categoryData = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), thread_count: thread_count }, ...categoryData._jv.json.data] || []
+        resData.categoryData = _categoryData
       }
       if (Array.isArray(recommendUser)) {
         resData.recommendUserData = recommendUser
       } else if (recommendUser && recommendUser._jv && recommendUser._jv.json) {
-        resData.recommendUserData = recommendUser._jv.json.data || []
+        const _recommendUser = recommendUser._jv.json.data || []
+        _recommendUser.forEach((item, index) => {
+          _recommendUser[index] = { ...item, ...item.attributes }
+        })
+        resData.recommendUserData = _recommendUser
       }
       callback(null, resData)
     } catch (error) {
@@ -161,9 +168,6 @@ export default {
       this.timer = setInterval(() => {
         this.autoLoadThreads()
       }, 30000)
-    }
-    if (this.categoryData.length === 0) {
-      this.getCategoryList()
     }
   },
   destroyed() {
@@ -237,19 +241,6 @@ export default {
         this.getThreadsList()
       }
     },
-    // 分类列表
-    getCategoryList() {
-      this.$store.dispatch('jv/get', ['categories', {}]).then(res => {
-        const resData = [...res] || []
-        let thread_count = 0 // 计算全部帖子数
-        resData.forEach(item => {
-          thread_count += item.thread_count
-        })
-        this.categoryData = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), thread_count: thread_count }, ...resData]
-      }, e => {
-        this.handleError(e)
-      })
-    },
     // 轮询查看是否有新主题
     autoLoadThreads() {
       const params = {
@@ -263,7 +254,10 @@ export default {
         'page[limit]': 1
       }
       this.$store.dispatch('jv/get', ['threads', { params }]).then(data => {
-        this.total = data._jv.json.meta.threadCount - this.threadCount
+        if (this.threadCount > 0) {
+          this.total = data._jv.json.meta.threadCount - this.threadCount
+        }
+        this.threadCount = data._jv.json.meta.threadCount
         console.log('新主题数', this.total)
       })
     },
