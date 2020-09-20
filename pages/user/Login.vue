@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="forums"
     v-loading="loading"
     class="register"
   >
@@ -32,9 +33,8 @@
             @keyup.enter.native="UserLogin"
           />
           <div class="agreement">
-            <el-checkbox v-model="checked">
-              <span class="agree">{{ $t('user.status') }} </span>
-            </el-checkbox>
+            <el-checkbox v-model="checked" />
+            <span class="agree">{{ $t('user.status') }} </span>
             <div class="logorreg">
               <span v-if="canReg">尚无帐号，立即
                 <span
@@ -532,18 +532,18 @@ export default {
     }
   }
   .agreement {
-    width: 310px;
-    // margin-left: 90px;
+    // width: 310px;
     margin-left: 70px;
-    margin-top: 5px;
-    font-size: 14px;
+    // margin-top: 5px;
+    font-size: 12px;
     .findpass {
-      // float: right;
       margin-left: 105px;
       color: $color-blue-base;
     }
     .logorreg {
       margin-top: 28px;
+      display: flex;
+      justify-content: space-between;
       .noreg {
         position: absolute;
         top: 140px;
@@ -552,6 +552,7 @@ export default {
     }
     .agree {
       color: #6d6d6d;
+      font-size: 12px;
     }
     .agreement_text {
       color: $color-blue-base;
@@ -604,6 +605,7 @@ export default {
     color: #b5b5b5;
     padding: 0 45px 0 10px;
     font-size: 16px;
+    transition: none;
   }
   .el-tabs__header .el-tabs__item:last-child {
     padding-right: 0px;
@@ -628,12 +630,12 @@ export default {
   .el-button {
     border-radius: 2px;
   }
-  .el-input__inner:focus {
-    border-color: #dcdfe6;
-  }
-  .el-input__inner:hover {
-    border-color: #dcdfe6;
-  }
+  // .el-input__inner:focus {
+  //   border-color: #dcdfe6;
+  // }
+  // .el-input__inner:hover {
+  //   border-color: #dcdfe6;
+  // }
   // .el-button:focus {
   //   background: #fff;
   //   border: 1px solid #dcdfe6;
@@ -653,4 +655,12 @@ export default {
 // ::v-deep .el-tabs__content {
 //   padding: 15px 5px;
 // }
+::v-deep .el-tabs--border-card > .el-tabs__content {
+  margin-top: 7px;
+}
+::v-deep .el-checkbox__input.is-checked .el-checkbox__inner,
+.el-checkbox__input.is-indeterminate .el-checkbox__inner {
+  background-color: $color-blue-base;
+  border-color: $color-blue-base;
+}
 </style>
