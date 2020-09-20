@@ -47,7 +47,7 @@
           <div class="flex">
             <span class="name text-hidden">{{ Item.toUser.username }}</span>
             <span
-              v-if="Item.toUser.groups"
+              v-if="Item.toUser.groups && Item.toUser.groups[0] && Item.toUser.groups[0].isDisplay"
               class="role"
             >{{ Item.toUser && Item.toUser.groups && Item.toUser.groups[0]
               ? Item.toUser.groups[0].name

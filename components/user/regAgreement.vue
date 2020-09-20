@@ -68,17 +68,18 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
+@import "@/assets/css/variable/color.scss";
 .reg-agreement {
   display: inline-block;
   .agree {
     color: #6d6d6d;
   }
   .regagree {
-    // display: inline-block;
-    // width: 80px;
-    margin-left: -7px;
     color: #409eff;
     cursor: pointer;
+    &:hover {
+      color: $color-blue-base;
+    }
   }
   .moreheight {
     position: absolute;

@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="forums"
     v-loading="loading"
     class="register"
   >
@@ -64,18 +65,24 @@
           <div class="agreement">
             <!-- <el-checkbox v-model="checked" /> -->
             <reg-agreement @check="check" />
-            <div class="logorreg">
+            <!-- <div class="logorreg">
               <span
                 v-if="register"
                 @click="jump2Login"
               >已有帐号，立即<nuxt-link to="/user/login">{{ $t('user.login') }}</nuxt-link> </span>
-            </div>
+            </div> -->
           </div>
           <el-button
             type="primary"
             class="r-button"
             @click="register"
           >{{ $t('user.register') }}</el-button>
+          <div class="tologin">
+            <span
+              v-if="register"
+              @click="jump2Login"
+            >已有帐号，立即<nuxt-link to="/user/login">{{ $t('user.login') }}</nuxt-link> </span>
+          </div>
         </form>
 
       </el-tab-pane>
@@ -647,10 +654,10 @@ export default {
     }
   }
   .agreement {
-    width: 310px;
+    /* width: 310px; */
     margin-left: 70px;
-    margin-top: 5px;
-    font-size: 14px;
+    /* margin-top: 5px; */
+    font-size: 12px;
     a {
       color: #1878f3;
     }
@@ -669,6 +676,15 @@ export default {
     margin-left: 70px;
     margin-top: 15px;
     background: #1878f3;
+  }
+  .tologin {
+    margin-left: 70px;
+    font-size: 12px;
+    margin-bottom: 160px;
+    margin-top: 10px;
+    a {
+      color: $color-blue-base;
+    }
   }
   .phone-input {
     width: 209px;
@@ -701,6 +717,8 @@ export default {
     color: #b5b5b5;
     padding: 0 45px 0 10px;
     font-size: 16px;
+    margin-bottom: 6px;
+    transition: none;
   }
   .el-tabs__header .el-tabs__item:last-child {
     padding-right: 0px;
@@ -726,12 +744,12 @@ export default {
   .el-button {
     border-radius: 2px;
   }
-  .el-input__inner:focus {
-    border-color: #dcdfe6;
-  }
-  .el-input__inner:hover {
-    border-color: #dcdfe6;
-  }
+  // .el-input__inner:focus {
+  //   border-color: #dcdfe6;
+  // }
+  // .el-input__inner:hover {
+  //   border-color: #dcdfe6;
+  // }
   //  .el-button:focus{
   //   background: #FFF;
   //   border: 1px solid #DCDFE6;
@@ -747,5 +765,13 @@ export default {
   //   border: 1px solid #DCDFE6;
   //   color: #606266;
   // }
+}
+::v-deep .el-tabs--border-card > .el-tabs__content {
+  margin-top: 7px;
+}
+::v-deep .el-checkbox__input.is-checked .el-checkbox__inner,
+.el-checkbox__input.is-indeterminate .el-checkbox__inner {
+  background-color: $color-blue-base;
+  border-color: $color-blue-base;
 }
 </style>
