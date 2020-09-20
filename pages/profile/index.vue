@@ -401,6 +401,8 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
+@import "@/assets/css/variable/color.scss";
+
 .profile {
   width: 100%;
   .profile-h {
@@ -482,7 +484,7 @@ export default {
       height: 35px;
       color: #1878f3;
       background: #ffffff !important;
-      border:1px solid #1878f3 !important;
+      border: 1px solid #1878f3 !important;
       border-color: #1878f3 !important;
       font-size: 14px;
       border-radius: 0px;
@@ -518,7 +520,7 @@ export default {
     box-shadow: none;
     border-radius: 5px;
     ::v-deep.el-tabs__header {
-      padding: 20px;
+      padding: 20px 20px 6px;
     }
   }
   .profile-cc {
@@ -615,7 +617,7 @@ export default {
     color: #b5b5b5;
     padding: 0 52px 0 0px;
     font-size: 16px;
-    transition:none;
+    transition: none;
   }
   .el-tabs__content {
     padding: 0;
@@ -629,6 +631,9 @@ export default {
     border: none;
     font-weight: bold;
     font-size: 18px;
+  }
+  .el-tabs__header .el-tabs__item:hover {
+    color: $color-blue-deep;
   }
   .el-tabs__nav-wrap {
     margin-bottom: 0px;

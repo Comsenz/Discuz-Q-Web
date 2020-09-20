@@ -6,8 +6,9 @@
     <avatar v-if="item.user" :user="{ id: item.user.id, username: item.user.username, avatarUrl: item.user.avatarUrl}" class="avatar" />
     <div class="main-cont">
       <div class="top-flex">
-        <nuxt-link v-if="item.user" :to="`/profile?userId=${item.user.id}`" class="user-name">{{ item.user.username }}
-          <span v-if="item.user && item.user.groups && item.user.groups.length > 0 && item.user.groups[0]._jv && +item.user.groups[0]._jv.id === 1" class="admin">({{ item.user.groups[0].name }})</span>
+        <nuxt-link v-if="item.user" :to="`/profile?userId=${item.user.id}`" class="user-info">
+          <span class="user-name">{{ item.user.username }}</span>
+          <span v-if="item.user && item.user.groups && item.user.groups.length > 0" class="admin">({{ item.user.groups[0].name }})</span>
         </nuxt-link>
         <div v-if="item.createdAt" class="time">{{ $t('topic.publishAt') }} {{ item.createdAt | formatDate }}</div>
       </div>
@@ -129,6 +130,7 @@ export default {
       if (this.loading) return
       if (!this.item.firstPost.canLike) {
         this.$message.error(this.$t('topic.noThreadLikePermission'))
+        return
       }
       this.loading = true
       const isLiked = !this.item.firstPost.isLiked
@@ -210,19 +212,24 @@ export default {
     .first-post{
       cursor: pointer;
     }
-    .user-name{
-      font-size:16px;
-      font-weight: bold;
+    .user-info{
+      flex: 1;
       display: flex;
-      flex: 0 0 60%;
-      @include text-hidden();
-      @media screen and ( max-width: 1005px ) {
-        font-size:14px;
+      align-items: baseline;
+      .user-name{
+        font-size:16px;
+        font-weight: bold;
+        display: flex;
+        max-width: 50%;
+        @include text-hidden();
+        @media screen and ( max-width: 1005px ) {
+          font-size:14px;
+        }
       }
       .admin{
         color: $font-color-grey;
         font-size: 12px;
-        margin-left: 5px;
+        margin-left: 10px;
       }
     }
     .time{

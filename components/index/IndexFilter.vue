@@ -1,7 +1,12 @@
 <template>
   <div class="index-top-conttainer">
     <div class="index-filter">
-      <div v-for="(item, index) in filterQuery" :key="index" class="filter-btn" :class="{ 'active': query.filter === item.value }" @click="onClickFilter(item.value)">{{ item.label }}</div>
+      <template v-for="(item, index) in filterQuery">
+        <template v-if="item.value === 'followed'">
+          <div v-if=" userId > 0" :key="index" class="filter-btn" :class="{ 'active': query.filter === item.value }" @click="onClickFilter(item.value)">{{ item.label }}</div>
+        </template>
+        <div v-else :key="index" class="filter-btn" :class="{ 'active': query.filter === item.value }" @click="onClickFilter(item.value)">{{ item.label }}</div>
+      </template>
       <el-dropdown class="filter-dropdown" placement="bottom" @command="handleCommandType">
         <span class="el-dropdown-link" :class="{'active': query.filterType !== ''}">
           {{ $t('home.filterType') }}<i class="el-icon-arrow-down el-icon--right" />

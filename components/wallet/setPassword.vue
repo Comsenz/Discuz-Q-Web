@@ -1,5 +1,5 @@
 <template>
-  <message-box
+  <message
     :title="$t('profile.setpaypassword')"
     @close="$emit('close')"
   >
@@ -21,7 +21,7 @@
         >{{ $t('modify.passwordinputerro') }}</div> -->
       </div>
     </div>
-  </message-box>
+  </message>
 </template>
 
 <script>

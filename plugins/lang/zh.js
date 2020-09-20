@@ -63,7 +63,7 @@ export default {
       loading: '加载中',
       noMatch: '无匹配数据',
       noData: '暂无数据',
-      noMoreData: '没有更多数据了！',
+      noMoreData: '没有更多数据了',
       noshield: '您没有屏蔽任何人'
     },
     // 提示框
@@ -538,6 +538,7 @@ export default {
   },
   // 消息页面
   notice: {
+    message: '私信',
     notice: '消息',
     relate: '@我的',
     relatedMe: '@了我',
@@ -547,6 +548,7 @@ export default {
     likedMe: '点赞了我',
     reward: '财务通知',
     rewardedMe: '打赏了我',
+    pay: '支付我的',
     payMe: '支付了我',
     registerScale: '的注册分成',
     rewardScale: '的打赏分成',
@@ -784,7 +786,7 @@ export default {
     searchresult: '搜索结果',
     circleinfo: '站点信息',
     search: '搜索',
-    privateMessage: '私信',
+    privateMessage: '发私信',
     circlemanagement: '站点管理',
     topic: '主题',
     following: '关注',

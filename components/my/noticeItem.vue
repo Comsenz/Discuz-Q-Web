@@ -32,7 +32,16 @@
         <div class="to-detail">{{ $t('notice.toDetail') }}</div>
       </nuxt-link>
       <div v-if="item.type === 'system'" class="post-content" v-html="item.content" />
-      <div v-if="item.type === 'rewarded' && item.amount" class="amount">+ {{ $t('post.yuanItem') + item.amount }}</div>
+      <div v-if="item.type === 'withdrawal'" class="thread">
+        <template v-if="item.cash_status === 2">{{ $t('notice.approved') }}</template>
+        <template v-if="item.cash_status === 3">{{ $t('notice.unapproved') }}</template>
+      </div>
+      <div v-if="item.type === 'withdrawal' && item.cash_actual_amount" class="amount">
+        - {{ $t('post.yuanItem') + item.cash_actual_amount }}
+      </div>
+      <div v-if="item.type === 'rewarded' && item.amount" class="amount">
+        + {{ $t('post.yuanItem') + item.amount }}
+      </div>
     </div>
   </div>
 </template>
@@ -145,8 +154,7 @@ export default {
     }
     .thread{
       background: #F5F5F5;
-      padding:15px;
-      line-height: 1;
+      padding:13px 15px;
       display:flex;
       margin-top: 10px;
       .thread-user-name{

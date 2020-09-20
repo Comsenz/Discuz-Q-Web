@@ -44,22 +44,22 @@ export default {
       activeName: 'chat',
       noticeTypeList: [
         {
-          label: '私信',
+          label: this.$t('notice.message'),
           value: 'chat'
         }, {
-          label: '@我的',
+          label: this.$t('notice.relate'),
           value: 'related'
         }, {
-          label: '回复我的',
+          label: this.$t('notice.reply'),
           value: 'replied'
         }, {
-          label: '点赞我的',
+          label: this.$t('notice.like'),
           value: 'liked'
         }, {
-          label: '支付我的',
+          label: this.$t('notice.reward'),
           value: 'rewarded'
         }, {
-          label: '系统通知',
+          label: this.$t('notice.system'),
           value: 'system'
         }
       ],
@@ -120,6 +120,9 @@ export default {
         'filter[type]': this.activeName,
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize
+      }
+      if (this.activeName === 'rewarded') {
+        params['filter[type]'] = 'rewarded,withdrawal'
       }
       this.$store.dispatch('jv/get', ['notification', { params }]).then(async(data) => {
         this.hasMore = data.length === this.pageSize

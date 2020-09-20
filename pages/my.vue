@@ -190,6 +190,7 @@ export default {
     padding: 1px 6px;
     margin-left: 2px;
     border-radius: 6px;
+    font-weight: normal;
   }
 }
 .my-main {

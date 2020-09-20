@@ -139,12 +139,20 @@
         v-show="isSignModify"
         class="text"
       >
-        <textarea
+        <!-- <textarea
           ref="sign"
           v-model="inputVal"
           type="text"
           placeholder="请输入签名内容"
           class="textarea"
+          @input="fun"
+        /> -->
+        <el-input
+          ref="sign"
+          v-model="inputVal"
+          type="textarea"
+          :rows="5"
+          placeholder="请输入签名内容"
           @input="fun"
         />
         <div class="cannum">{{ $t('modify.canalsoinput')+ `${num-wordnumber}` + $t('modify.wordnumber') }}</div>
@@ -197,7 +205,7 @@
           <el-input
             v-model="newphon"
             placeholder="输入新手机号码"
-            class="passbtom"
+            :class="isChange ? 'passbtom phonechange': 'passbtom'"
             @input="changeinput"
           />
           <el-input
@@ -231,7 +239,7 @@
             v-model="newphon"
             maxlength="11"
             placeholder="请输入绑定的手机号"
-            class="passbtom"
+            :class="isChange ? 'passbtom phonechange': 'passbtom'"
             @input="changeinput"
           />
           <el-input
@@ -291,7 +299,7 @@
             type="password"
             show-password
           />
-          <div class="rep">
+          <div :class="passerror ? 'rep passerr' : 'rep'">
             <el-input
               v-model="renewPassword"
               :placeholder="$t('modify.enterNewRepeat')"
@@ -440,7 +448,8 @@ export default {
       loading: true,
       rebind: false, // 是否修改手机号
       isShowAvatar: false, // 是否设置头像
-      passerror: false
+      passerror: false,
+      isChange: false
     }
   },
   computed: {
@@ -564,6 +573,8 @@ export default {
     },
     // 手机位数简单校验
     changeinput() {
+      this.isChange = true
+      if (this.newphon === '') this.isChange = false
       setTimeout(() => {
         this.newphon = this.newphon.replace(/[^\d]/g, '')
       }, 30)
@@ -666,7 +677,6 @@ export default {
     },
     // 验证手机号
     bindphon() {
-      const _this = this
       const params = {
         _jv: {
           type: 'sms/verify'
@@ -683,22 +693,9 @@ export default {
           if (res) {
             this.isMobileModify = !this.isMobileModify
             this.$message.success(this.$t('modify.phontitle'))
-            const param = {
-              _jv: {
-                type: 'forum'
-              }
-            }
-            _this.$store.dispatch('jv/get', param).then(() => {
-              // console.log(1, 'froums');
-            })
-            const promsget = {
-              _jv: {
-                type: 'users',
-                id: this.userId
-              }
-              // include: 'groups',
-            }
-            _this.$store.dispatch('jv/get', promsget).then(() => { })
+            this.userinfo()
+            this.$store.dispatch('user/getUserInfo', this.userId)
+            this.newphon = ''
           }
         },
         (e) => this.handleError(e)
@@ -783,7 +780,6 @@ export default {
     },
     // 验证新手机号
     newVerify() {
-      const _this = this
       const params = {
         _jv: {
           type: 'sms/verify'
@@ -800,14 +796,8 @@ export default {
           if (res) {
             this.isMobileModify = !this.isMobileModify
             this.$message.success(this.$t('modify.phontitle'))
-            // eslint-disable-next-line object-curly-spacing
-            const param = { _jv: { type: 'forum' } }
-            _this.$store.dispatch('jv/get', param).then(() => { })
-            const promsget = {
-              _jv: { type: 'users', id: this.userId }
-              // include: 'groups',
-            }
-            _this.$store.dispatch('jv/get', promsget).then(() => { })
+            this.userinfo()
+            this.$store.dispatch('user/getUserInfo', this.userId)
           }
         },
         (e) => this.handleError(e)
@@ -1092,6 +1082,7 @@ export default {
       .num {
         font-size: 18px;
         color: #8590a6;
+        line-height: 24px;
       }
     }
   }
@@ -1174,6 +1165,13 @@ export default {
     width: 300px;
     margin-bottom: 10px;
   }
+  .phonechange {
+    font-size: 20px;
+    font-weight: bold;
+    ::v-deep .el-input__inner {
+      color: #000000;
+    }
+  }
   .rep {
     position: relative;
     .passerror {
@@ -1183,6 +1181,10 @@ export default {
       font-size: 14px;
       color: #fa5151;
     }
+  }
+  .passerr {
+    margin-bottom: 30px;
+    height: 56px;
   }
   .inputerr {
     ::v-deep .el-input__inner {
@@ -1199,6 +1201,11 @@ export default {
 }
 ::v-deep .el-input__inner:focus {
   border-color: #dcdfe6;
+}
+::v-deep .el-textarea__inner {
+  font-family: inherit;
+  margin-left: 17px;
+  margin-top: 15px;
 }
 .wehcat-bind {
   padding-top: 20px;

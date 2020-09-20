@@ -190,8 +190,8 @@ export default {
       cursor: pointer;
       display: flex;
       @media screen and (max-width: 1005px) {
-        width: 135px;
-        height: 30px;
+        max-width: 135px;
+        max-height: 30px;
       }
       img {
         height: 100%;
@@ -268,6 +268,7 @@ export default {
       max-width: 120px;
     }
     .notice-btn {
+      line-height: 1;
       .flex {
         display: flex;
         align-items: center;
@@ -276,7 +277,7 @@ export default {
         font-size: 12px;
         color: #fff;
         background: #ff0000;
-        padding: 0px 6px;
+        padding: 1px 6px;
         border-radius: 6px;
         margin-left: 2px;
       }
