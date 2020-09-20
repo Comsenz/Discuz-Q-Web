@@ -16,6 +16,7 @@
           :paid-information="paidInformation"
           :thread-type="thread.type || 0"
           :category="thread.category || {}"
+          :location="location"
           @payForVideo="showCheckoutCounter = true"
         />
         <topic-reward-list
@@ -86,6 +87,7 @@ export default {
       ],
       paidInformation: { price: '0', paid: false, paidUsers: [], paidCount: 0 },
       payment: { orderNo: '', payment_type: 0, status: 0, wechat_qrcode: '', rewardAmount: '' },
+      location: { location: '', latitude: '', longitude: '' },
       managementList: [
         { name: 'canEdit', command: 'toEdit', isStatus: false, canOpera: false, text: this.$t('topic.edit'), type: '0' },
         { name: 'canEssence', command: 'isEssence', isStatus: false, canOpera: false, text: this.$t('topic.essence'), type: '1' },
@@ -139,10 +141,13 @@ export default {
         this.canRewardOrPaid = this.thread.user.groups[0].permissionWithoutCategories.filter(item => item.permission === 'createThreadPaid').length > 0
         if (this.thread.user.groups[0]._jv.id === '1') this.canRewardOrPaid = true
       }
-      console.log(this.thread, 'data')
       this.initManagementList(this.thread)
       this.initPaidInformation(this.thread)
       this.initActions(this.thread, this.article)
+      this.initLocation(this.thread)
+    },
+    initLocation(data) {
+      for (const key in this.location) this.location[key] = data[key]
     },
     initPaidInformation(data) {
       for (const key in this.paidInformation) this.paidInformation[key] = data[key]
