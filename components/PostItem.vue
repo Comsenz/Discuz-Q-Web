@@ -8,7 +8,7 @@
       <div class="top-flex">
         <nuxt-link v-if="item.user" :to="`/profile?userId=${item.user.id}`" class="user-info">
           <span class="user-name">{{ item.user.username }}</span>
-          <span v-if="item.user && item.user.groups && item.user.groups.length > 0" class="admin">({{ item.user.groups[0].name }})</span>
+          <span v-if="item.user && item.user.groups && item.user.groups.length > 0 && item.user.groups[0].isDisplay" class="admin">({{ item.user.groups[0].name }})</span>
         </nuxt-link>
         <div v-if="item.createdAt" class="time">{{ $t('topic.publishAt') }} {{ item.createdAt | formatDate }}</div>
       </div>
