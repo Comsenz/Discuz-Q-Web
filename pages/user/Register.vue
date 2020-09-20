@@ -548,7 +548,7 @@ export default {
 }
 .register {
   display: flex;
-  width: 400px;
+  width: 415px;
   margin-top: 62px;
   flex-direction: column;
   .register-title {
