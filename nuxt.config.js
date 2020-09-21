@@ -9,7 +9,7 @@ export default {
   // https://discuz.chat https://dq.comsenz-service.com
   env: {
     mobileDomain: process.env.NODE_ENV !== 'production' ? 'https://dq.comsenz-service.com' : 'https://discuz.chat',
-    baseURL: process.env.NODE_ENV !== 'production' ? 'https://dq.comsenz-service.com/api' : '/api'
+    baseURL: process.env.NODE_ENV !== 'production' ? 'https://discuz.chat/api' : '/api'
   },
   /*
   ** Nuxt rendering mode
