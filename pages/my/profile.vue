@@ -329,10 +329,10 @@
     >
       <div class="myprofile-top">
         <span class="sig">{{ $t('profile.wechat') }}</span>
-        <span
+        <!-- <span
           class="setavatar"
           @click="wechatModify"
-        >{{ (!isWechatModify ? $t('profile.modify') : $t('profile.cancelModify')) }}</span>
+        >{{ (!isWechatModify ? $t('profile.modify') : $t('profile.cancelModify')) }}</span> -->
       </div>
       <div
         v-show="!isWechatModify"
@@ -812,18 +812,19 @@ export default {
     },
     // 密码为空校验
     passSub() {
+      console.log('newPass')
       if (
         this.oldPassWord &&
         this.newPassWord &&
         this.renewPassword &&
-        this.newPassword === this.renewPassword
+        this.newPassWord === this.renewPassword
       ) {
         this.passwordComfirm()
       } else if (!this.oldPassWord) {
         this.$message.error(this.$t('modify.oldpassword'))
       } else if (!this.newPassWord) {
         this.$message.error(this.$t('modify.newpassword'))
-      } else if (this.newPassword !== this.renewPassword) {
+      } else if (this.newPassWord !== this.renewPassword) {
         this.$message.error(this.$t('modify.masstext'))
         this.passerror = true
       }
@@ -846,6 +847,11 @@ export default {
           if (res) {
             this.$message.success(this.$t('modify.titlepassword'))
             this.isPassModify = !this.isPassModify
+            this.oldPassWord = ''
+            this.newPassWord = ''
+            this.renewPassword = ''
+            this.passerror = false
+            this.userinfo()
           }
         },
         (e) => this.handleError(e)

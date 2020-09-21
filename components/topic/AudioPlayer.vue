@@ -1,6 +1,9 @@
 <template>
   <div class="audio">
-    <div v-if="currentFile && currentAudio.isPlay" class="control" @click="$emit('pause')">
+    <div v-if="currentFile && currentAudio.isLoading" class="control">
+      <svg-icon type="loading" rotate style="font-size: 32px" />
+    </div>
+    <div v-else-if="currentFile && currentAudio.isPlay" class="control" @click="$emit('pause')">
       <svg-icon type="audio-pause" style="font-size: 32px" />
     </div>
     <div v-else class="control" @click="$emit('play', file)">
@@ -153,7 +156,7 @@ export default {
           -moz-user-select:none; /*火狐*/
           -webkit-user-select:none; /*webkit浏览器*/
           -ms-user-select:none; /*IE10*/
-          max-width: 235px;
+          max-width: 205px;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;

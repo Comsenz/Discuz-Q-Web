@@ -31,6 +31,7 @@
               :alt="image.filename"
               fit="cover"
               lazy
+              @click.self="onClickImage"
             >
               <div slot="placeholder" class="image-slot">
                 <i class="el-icon-loading" />
@@ -55,7 +56,7 @@
           <!-- 附件 -->
           <div v-if="item.firstPost.attachments && item.firstPost.attachments.length > 0" class="attachment" @click="toDetail">
             <svg-icon :type="extensionValidate(item.firstPost.attachments[0].extension)" />
-            <div class="name">{{ item.firstPost.attachments[0].fileName }}</div>
+            <div class="name text-hidden">{{ item.firstPost.attachments[0].fileName }}</div>
             <div v-if="item.firstPost.attachments.length > 1" class="total">{{ $t('home.etc') + item.firstPost.attachments.length + $t('home.attachmentTotal') }}</div>
           </div>
         </div>
@@ -69,9 +70,9 @@
         <!-- 操作 -->
         <div class="bottom-handle">
           <div class="left">
-            <div v-permission:handleLike="''" class="btn like" :class="{'liked': item.firstPost.isLiked}">
+            <div v-permission:handleLike="''" class="btn like" :class="{'liked': isLiked}">
               <svg-icon v-permission:handleLike="''" type="like" class="icon" />
-              {{ item.firstPost.isLiked ? $t('topic.liked') : $t('topic.like') }} {{ item.firstPost.likeCount > 0 ? item.firstPost.likeCount : '' }}</div>
+              {{ isLiked ? $t('topic.liked') : $t('topic.like') }} {{ likeCount > 0 ? likeCount : '' }}</div>
             <div class="btn comment" @click="toDetail">
               <svg-icon type="post-comment" class="icon" />
               {{ $t('topic.comment') }} {{ item.postCount - 1 > 0 ? item.postCount - 1 : '' }}</div>
@@ -116,12 +117,23 @@ export default {
     return {
       loading: false,
       showVideoPop: false,
-      showViewer: false
+      showViewer: false,
+      isLiked: false
     }
   },
   computed: {
     unpaid() {
       return !(this.item.paid || parseFloat(this.item.price) === 0)
+    }
+  },
+  watch: {
+    item: {
+      handler(val) {
+        this.isLiked = val.firstPost && val.firstPost.isLiked
+        this.likeCount = val.firstPost && val.firstPost.likeCount
+      },
+      deep: true,
+      immediate: true
     }
   },
   methods: {
@@ -133,7 +145,7 @@ export default {
         return
       }
       this.loading = true
-      const isLiked = !this.item.firstPost.isLiked
+      const isLiked = !this.isLiked
       const params = {
         _jv: {
           type: 'posts',
@@ -143,6 +155,12 @@ export default {
       }
       return this.$store.dispatch('jv/patch', params).then(data => {
         this.$message.success(isLiked ? '点赞成功' : '取消点赞成功')
+        if (isLiked) {
+          this.likeCount++
+        } else {
+          this.likeCount--
+        }
+        this.isLiked = isLiked
       }, e => {
         this.handleError(e)
       }).finally(() => {
@@ -254,10 +272,9 @@ export default {
       color: #000;
       flex: 0 0 60%;
       max-height: 96px;
-      ::v-deep p {
+      ::v-deep p,h1,h2,h3,h4,h5,h6 {
         font-size: 16px !important;
       }
-
       ::v-deep img {
         height: 22px;
       }

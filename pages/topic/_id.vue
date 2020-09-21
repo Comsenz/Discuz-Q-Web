@@ -41,8 +41,8 @@
         <topic-password
           v-if="showPasswordInput"
           :price="parseInt(thread.price) === 0 ? payment.rewardAmount : (thread.price || 0)"
-          :password-error="passwordError"
-          @close="showPasswordInput = false"
+          :password-error.sync="passwordError"
+          @close="showPasswordInput = passwordError = false"
           @password="payOrder"
         />
         <topic-wx-pay

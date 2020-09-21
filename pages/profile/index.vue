@@ -111,7 +111,7 @@
           <svg-icon
             type="canshield"
             class="canshield-icon"
-          />屏蔽Ta
+          />{{ $t('profile.shield') }}
         </div>
         <div
           v-else
@@ -121,7 +121,7 @@
           <svg-icon
             type="unshield"
             class="unshield-icon"
-          />解除屏蔽
+          />{{ $t('profile.deleteshield') }}
         </div>
         <!-- follow 关注状态 0：未关注 1：已关注 2：互相关注 -->
         <el-button
@@ -166,13 +166,21 @@
             :label="$t('profile.topic')+ ` (${userInfo.threadCount || 0})`"
             name="1"
           >
-            <topic :user-id="userId" />
+            <topic
+              v-if="activeName === '1' "
+              ref="topic"
+              :user-id="userId"
+            />
           </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.likes')+ ` (${userInfo.likedCount || 0})`"
             name="2"
           >
-            <like :user-id="userId" />
+            <like
+              v-if="activeName === '2'"
+              ref="like"
+              :user-id="userId"
+            />
           </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.following')+ ` (${userInfo.followCount || 0})`"
@@ -214,7 +222,7 @@ export default {
   mixins: [handleError],
   data() {
     return {
-      userId: 0, // 路由获取的用户id
+      userId: '', // 路由获取的用户id
       currentLoginId: this.$store.getters['session/get']('userId'), // 当前登录用户id
       userInfo: '',
       current: '', // 当前激活的tab
@@ -241,14 +249,15 @@ export default {
     }
   },
   created() {
-    const { userId, current } = this.$route.query
-    this.userId = userId || this.currentLoginId
-    this.current = current
-    this.changeactive()
-    this.getUserInfo(this.userId)
-    this.getAuth()
+
   },
   mounted() {
+    const { userId, current } = this.$route.query
+    this.userId = userId
+    this.current = current
+    this.activeName = this.current ? this.current : this.activeName
+    this.getUserInfo(this.userId)
+    this.getAuth()
     window.addEventListener('scroll', this.handleScroll)
     this.getShieldData()
     // this.$nextTick(() => {
@@ -271,8 +280,7 @@ export default {
       }
     },
     // tab激活
-    changeactive() {
-      this.activeName = this.current ? this.current : this.activeName
+    changeactive(e) {
     },
     // 私信权限判断
     getAuth() {
@@ -586,8 +594,9 @@ export default {
         width: 70px;
         height: 35px;
         color: #1878f3;
-        background: #ffffff;
-        border-color: #1878f3;
+        background: #ffffff !important;
+        border: 1px solid #1878f3 !important;
+        border-color: #1878f3 !important;
         font-size: 14px;
         border-radius: 0px;
         margin-left: 0px;

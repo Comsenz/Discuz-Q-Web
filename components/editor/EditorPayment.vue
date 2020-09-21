@@ -65,8 +65,8 @@ export default {
   },
   data() {
     return {
-      freeWords: this.payment.freeWords || '',
-      price: this.payment.price || '',
+      freeWords: 0,
+      price: 0,
       options: [
         {
           value: false,
@@ -76,6 +76,16 @@ export default {
           value: true,
           label: this.$t('post.paidWatch')
         }]
+    }
+  },
+  watch: {
+    payment: {
+      handler() {
+        this.freeWords = this.payment.freeWords || 0
+        this.price = this.payment.price || 0
+      },
+      immediate: true,
+      deep: true
     }
   },
   methods: {

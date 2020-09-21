@@ -87,18 +87,22 @@ table {
 }
 
 ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  font-family: inherit;
   color: #C0C4CC;
 }
 
 ::-moz-placeholder { /* Firefox 19+ */
+  font-family: inherit;
   color: #C0C4CC;
 }
 
 :-ms-input-placeholder { /* IE 10+ */
+  font-family: inherit;
   color: #C0C4CC;
 }
 
 :-moz-placeholder { /* Firefox 18- */
+  font-family: inherit;
   color: #C0C4CC;
 }
 
@@ -252,8 +256,8 @@ $em: 16px;
   img { height: 22px; display: block; max-width: 100%; margin-bottom: 0; overflow: hidden; }
   blockquote { padding: 22px 0 22px 22px; margin: 10px 0; color: #6a737d; border-left: 6px solid #dbdbdb; }
   blockquote p { margin: 0; }
-  ul, ol { display: block; padding-left: 2 * $em; margin: 1em 0; list-style: disc; }
-  ol { list-style-type: disc; }
+  ul { display: block; padding-left: 2 * $em; margin: 1em 0; list-style: disc; }
+  ol { display: block; padding-left: 2 * $em; margin: 1em 0; list-style: revert; }
   ul > li { display: list-item; align-items: baseline; text-align: match-parent; }
   ol ul { list-style-type: circle; }
   u { text-decoration: underline; }

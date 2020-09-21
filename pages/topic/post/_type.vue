@@ -106,12 +106,10 @@ export default {
         this.$nextTick(() => { this.textarea.style.height = this.textarea.scrollHeight + 'px' })
 
         if (data.firstPost.images.length > 0) {
-          console.log(data.firstPost.images)
           this.editResourceShow.showUploadImg = true
           this.initThreadResource(this.post.imageList, data.firstPost.images)
         }
         if (data.firstPost.attachments.length > 0) {
-          console.log(data.firstPost.attachments)
           this.editResourceShow.showUploadAttached = true
           this.initThreadResource(this.post.attachedList, data.firstPost.attachments)
         }

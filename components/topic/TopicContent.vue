@@ -41,8 +41,8 @@
     </div>
     <div v-if="unpaid && threadType === 1" class="hide-content-tip">{{ $t('pay.contentHide') }}</div>
     <nuxt-link v-if="category.name" :to="{path: '/', query: { categoryId: category._jv.id } }" class="tag">{{ category.name }}</nuxt-link>
-    <div>
-      <nuxt-link v-if="location.location" :to="`/location?longitude=${location.longitude}&latitude=${location.latitude}`" class="location">
+    <div v-if="location && location.location">
+      <nuxt-link :to="`/location?longitude=${location.longitude}&latitude=${location.latitude}`" class="location">
         <span class="flex">
           <svg-icon type="location" class="icon" />
           <span> {{ location.location }} </span>
@@ -102,7 +102,8 @@ export default {
         duration: '',
         audio: '',
         seeking: false,
-        isPlay: false
+        isPlay: false,
+        isLoading: false
       }
     }
   },
@@ -159,6 +160,7 @@ export default {
         this.currentAudio.url = file.url
         this.currentAudio.id = file._jv.id
         this.currentAudio.audio.src = this.currentAudio.url
+        this.currentAudio.isLoading = true
         this.currentAudio.audio.load()
       }
       window.setTimeout(() => {
@@ -170,6 +172,7 @@ export default {
     },
     onProgressing() {
       if (this.currentAudio.seeking) return
+      this.currentAudio.isLoading = false
       this.currentAudio.duration = this.currentAudio.audio.duration
       this.currentAudio.currentTime = this.currentAudio.audio.currentTime
     },
@@ -184,6 +187,7 @@ export default {
       this.currentAudio.currentTime = ''
     },
     pause() {
+      this.currentAudio.isLoading = false
       this.currentAudio.isPlay = false
       this.currentAudio.audio.pause()
     },

@@ -56,6 +56,7 @@
       </el-tab-pane>
       <!-- 手机号登录 -->
       <el-tab-pane
+        v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms"
         :label="$t('user.phonelogin')"
         name="1"
       >
@@ -93,7 +94,7 @@
         >{{ $t('user.login') }}</el-button>
       </el-tab-pane>
       <!-- 快捷登录 -->
-      <el-tab-pane
+      <!-- <el-tab-pane
         :label="$t('user.quicklogin')"
         name="2"
       >
@@ -108,7 +109,7 @@
             </div>
             <span class="qrtext">请用微信扫一扫扫码上方二维码</span>
           </div>
-          <!-- <div class="quick-container">
+           <div class="quick-container">
             <div class="quick-title">
               <img src="@/assets/qq.png">
               <span>qq一键登录</span>
@@ -120,9 +121,9 @@
               <img src="@/assets/qq-big.png">
             </div>
             <span>点击用QQ号码登陆注册</span>
-          </div> -->
+          </div>
         </div>
-      </el-tab-pane>
+      </el-tab-pane> -->
     </el-tabs>
   </div>
 </template>
@@ -187,8 +188,9 @@ export default {
     // 获取配置优先的登录方式
     this.activeName = this.forums ? this.forums.set_reg.register_type.toString() : ''
     // 微信登录初始化
-    if (this.activeName === '2') {
-      this.createQRcode()
+    if (this.activeName === '2' || this.forums && this.forums.qcloud && !this.forums.qcloud.qcloud_sms) {
+      this.activeName = '0'
+      // this.createQRcode()
     }
   },
   destroyed() {
@@ -545,6 +547,7 @@ export default {
       color: $color-blue-base;
     }
     .logorreg {
+      width:300px;
       margin-top: 28px;
       display: flex;
       justify-content: space-between;

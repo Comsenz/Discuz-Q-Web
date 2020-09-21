@@ -1,6 +1,6 @@
 <template>
   <svg
-    :class="'svg-icon svg-icon-' + type"
+    :class="['svg-icon','svg-icon-' + type, rotate ? 'rotate' : '']"
     role="img"
     :title="type"
     aria-hidden="true"
@@ -17,6 +17,10 @@ export default {
     type: {
       type: String,
       default: ''
+    },
+    rotate: {
+      type: Boolean,
+      default: false
     }
   }
 }
@@ -30,5 +34,13 @@ export default {
   fill: currentColor;
   overflow: hidden;
   transition: all ease 0.3s;
+}
+@keyframes rotating{
+  from{transform:rotate(0)}
+  to{transform:rotate(360deg)}
+}
+
+.rotate {
+  animation:rotating 1.2s linear infinite
 }
 </style>
