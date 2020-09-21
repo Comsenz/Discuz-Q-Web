@@ -51,18 +51,18 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="时间"
+          :label="$t('profile.time')"
           width="140"
           prop="created_at"
           :formatter="dateFormat"
         />
         <el-table-column
-          label="状态"
+          :label="$t('profile.status')"
           width="97"
           :formatter="statusFormat4"
         />
         <el-table-column
-          label="金额"
+          :label="$t('pay.sumOfMoney')"
           width="113"
           sortable
           :sort-method="sortAmount"
