@@ -121,9 +121,8 @@ export default {
     }
   },
   mounted() {
-    this.initData()
     if (Object.keys(this.thread).length === 0) this.getThread()
-    // this.getThread()
+    else this.initData()
   },
   methods: {
     getThread() {
