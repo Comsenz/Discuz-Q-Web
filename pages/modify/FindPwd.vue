@@ -229,12 +229,12 @@ export default {
   ::v-deep.el-button {
     border-radius: 2px;
   }
-  ::v-deep.el-input__inner:focus {
-    border-color: #dcdfe6;
-  }
-  ::v-deep.el-input__inner:hover {
-    border-color: #dcdfe6;
-  }
+  // ::v-deep.el-input__inner:focus {
+  //   border-color: #dcdfe6;
+  // }
+  // ::v-deep.el-input__inner:hover {
+  //   border-color: #dcdfe6;
+  // }
   ::v-deep.el-input__inner {
     border-radius: 2px;
     // border-right: none;
