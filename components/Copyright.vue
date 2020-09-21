@@ -7,7 +7,7 @@
     </div>
     <!-- <div>分享 / 交流 / 共融</div> -->
     <div class="id">
-      <div>
+      <div class="site-record-code">
         <a href="https://beian.miit.gov.cn/" target="_blank">{{ forums.set_site ? forums.set_site.site_record : '' }}</a>
       </div>
       <div v-if="forums && forums.set_site && forums.set_site.site_record_code" class="site-record-code">
