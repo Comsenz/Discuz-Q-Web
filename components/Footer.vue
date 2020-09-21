@@ -1,6 +1,6 @@
 <template>
   <div class="footer">
-    <span> Powered By &nbsp;  <span class="bold">Discuz!Q</span> &nbsp;    © {{ year }} &nbsp;&nbsp;分享&nbsp;&nbsp;/&nbsp;&nbsp;交流 &nbsp;&nbsp;/&nbsp;&nbsp;共融 </span>
+    <span> Powered By &nbsp;  <a class="bold" href="https://discuz.com" target="_blank">Discuz! Q</a> &nbsp;    © {{ year }} &nbsp;&nbsp;分享&nbsp;&nbsp;/&nbsp;&nbsp;交流 &nbsp;&nbsp;/&nbsp;&nbsp;共融 </span>
     <div>
       <span class="site-record">{{ forums.set_site ? forums.set_site.site_record : '' }}</span>
       <a href="https://beian.miit.gov.cn/" target="_blank">{{ forums.set_site ? forums.set_site.site_record_code : '' }}</a>

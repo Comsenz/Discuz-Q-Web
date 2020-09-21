@@ -2,7 +2,7 @@
   <div class="copyright">
     <div class="info">
       <span>Powered By</span>
-      <span class="site">Discuz! Q</span>
+      <a class="site" href="https://discuz.com" target="_blank">Discuz! Q</a>
       <span class="block">© {{ year }}</span>
     </div>
     <!-- <div>分享 / 交流 / 共融</div> -->
@@ -63,6 +63,7 @@ export default {
         }
       }
       > .site {
+        margin-right: 15px;
         font-weight: bold;
         white-space: nowrap;
       }

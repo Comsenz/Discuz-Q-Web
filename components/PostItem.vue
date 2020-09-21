@@ -272,10 +272,9 @@ export default {
       color: #000;
       flex: 0 0 60%;
       max-height: 96px;
-      ::v-deep p {
+      ::v-deep p,h1,h2,h3,h4,h5,h6 {
         font-size: 16px !important;
       }
-
       ::v-deep img {
         height: 22px;
       }
