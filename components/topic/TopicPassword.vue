@@ -10,7 +10,7 @@
       </div>
       <div class="block input-password">
         <div class="title">{{ $t('pay.payPassword') }}</div>
-        <password-input :error="passwordError" @password="password => $emit('password', password)" />
+        <password-input :error="passwordError" @password="updatePassword" />
         <div v-show="passwordError" class="error-tip">{{ $t('pay.passwordError') }}</div>
       </div>
     </div>
@@ -28,6 +28,12 @@ export default {
     passwordError: {
       type: Boolean,
       default: false
+    }
+  },
+  methods: {
+    updatePassword(password) {
+      this.$emit('password', password)
+      this.$emit('update:passwordError', false)
     }
   }
 }
