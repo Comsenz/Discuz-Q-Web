@@ -329,6 +329,7 @@ export default {
       }
 
       > .input-text {
+        font-family: inherit;
         width: 100%;
         background: $background-color-grey;
         border: none;

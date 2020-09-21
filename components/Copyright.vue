@@ -7,9 +7,11 @@
     </div>
     <!-- <div>分享 / 交流 / 共融</div> -->
     <div class="id">
-      <div>{{ forums.set_site ? forums.set_site.site_record : '' }}</div>
-      <div class="site-record-code">
-        <a href="https://beian.miit.gov.cn/" target="_blank">{{ forums.set_site ? forums.set_site.site_record_code : '' }}</a>
+      <div>
+        <a href="https://beian.miit.gov.cn/" target="_blank">{{ forums.set_site ? forums.set_site.site_record : '' }}</a>
+      </div>
+      <div v-if="forums && forums.set_site && forums.set_site.site_record_code" class="site-record-code">
+        <a :href="`http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=${forums && forums.set_site && forums.set_site.site_record_code.replace(/[^0-9]/ig,'')}`" target="_blank">{{ forums.set_site.site_record_code }}</a>
       </div>
       <span>{{ $t('home.theme') }}: {{ forums.other ? forums.other.count_users : '' }}</span>
       <span>{{ $t('home.invitation') }}: {{ forums.other ? forums.other.count_threads : '' }}</span>
@@ -22,7 +24,8 @@ export default {
   name: 'Copyright',
   data() {
     return {
-      year: '2019'
+      year: '2019',
+      site_record_code: ''
     }
   },
   computed: {

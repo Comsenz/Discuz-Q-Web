@@ -2,8 +2,8 @@
   <div class="footer">
     <span> Powered By &nbsp;  <a class="bold" href="https://discuz.com" target="_blank">Discuz! Q</a> &nbsp;    © {{ year }} &nbsp;&nbsp;分享&nbsp;&nbsp;/&nbsp;&nbsp;交流 &nbsp;&nbsp;/&nbsp;&nbsp;共融 </span>
     <div>
-      <span class="site-record">{{ forums.set_site ? forums.set_site.site_record : '' }}</span>
-      <a href="https://beian.miit.gov.cn/" target="_blank">{{ forums.set_site ? forums.set_site.site_record_code : '' }}</a>
+      <a class="site-record" href="https://beian.miit.gov.cn/" target="_blank">{{ forums.set_site ? forums.set_site.site_record : '' }}</a>
+      <a v-if="forums && forums.set_site && forums.set_site.site_record_code" :href="`http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=${forums && forums.set_site && forums.set_site.site_record_code.replace(/[^0-9]/ig,'')}`" target="_blank">{{ forums.set_site.site_record_code }}</a>
     </div>
   </div>
 </template>
