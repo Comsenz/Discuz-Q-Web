@@ -341,7 +341,7 @@ export default {
     }
     .list-top-item{
       border-bottom: 1px solid #F5F5F5;
-      line-height: 19px;
+      line-height: 21px;
       padding: 10.5px 22px;
       display: flex;
       align-items: center;
@@ -360,7 +360,7 @@ export default {
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 1;
         font-size: 16px !important;
-        max-height: 19px;
+        max-height: 21px;
         ::v-deep p {
           font-size: 16px !important;
         }

@@ -9,12 +9,11 @@ export default ({ app }) => {
   const { store, router } = app
   router.beforeEach(async(to, from, next) => {
     // 根据ua跳转到移动端
-    if (env.isMobile) {
+    if (env.isMobile && !env.isTablet) {
       let path = '/'
       const _map = mobileRouter.map
       if (to.matched && to.matched.length > 0) {
         const _path = to.matched[to.matched.length - 1 ].path
-        console.log('to', to)
         switch (_path) {
           case '/topic/:id?':
             path = _map[_path] + to.params.id
