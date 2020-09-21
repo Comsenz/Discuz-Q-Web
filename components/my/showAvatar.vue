@@ -26,11 +26,10 @@
             :on-change="selectChange"
             :http-request="httpRequest"
           >
-            <el-button>选择头像</el-button>
+            <el-button>{{ $t('profile.showavatar') }}</el-button>
 
           </el-upload>
-          <p class="uptext">支持上传 <span>jpg/png </span> 文件
-            且不超过 <span>500kb</span></p>
+          <p class="uptext">{{ $t('profile.supportupload') }} <span>{{ $t('profile.jpgorpng') }} </span> {{ $t('profile.filemost') }} <span>500kb</span></p>
         </div>
         <!-- 裁剪框 -->
         <div
@@ -69,8 +68,14 @@
         class="show-preview"
         :style="{'width': previews.w + 'px', 'height': previews.h + 'px', 'overflow': 'hidden', 'display':'inline-block','position':'absolute','margin-left':'17px','margin-top':'7px'}"
       >
-        <div :style="previews.div" class="preview">
-          <img :src="previews.url" :style="previews.img">
+        <div
+          :style="previews.div"
+          class="preview"
+        >
+          <img
+            :src="previews.url"
+            :style="previews.img"
+          >
         </div>
       </div>
       <!-- 圆形预览图 -->
@@ -78,17 +83,23 @@
         class="show-preview"
         :style="{'width': 100 + 'px', 'height': 100 + 'px', 'overflow': 'hidden', 'display':'inline-block','position':'absolute','margin-left':'17px','border-radius':'50%','top':'51%'}"
       >
-        <div :style="previewCycle" class="preview">
-          <img :src="previews.url" :style="previews.img">
+        <div
+          :style="previewCycle"
+          class="preview"
+        >
+          <img
+            :src="previews.url"
+            :style="previews.img"
+          >
         </div>
       </div>
 
       <div class="preview2">
         <div class="square">
-          <span class="squarep">150像素预览</span>
+          <span class="squarep">{{ $t('profile.px1') }}</span>
         </div>
         <div class="circle">
-          <span class="squarep">100像素预览</span>
+          <span class="squarep">{{ $t('profile.px2') }}</span>
         </div>
         <div class="pre-button">
           <el-button
@@ -96,12 +107,12 @@
             size="small"
             class="btnw"
             @click="down"
-          >使用</el-button>
+          >{{ $t('profile.avataruse') }}</el-button>
           <el-button
             size="small"
             class="btnw"
             @click="handleClose2"
-          >取消</el-button>
+          >{{ $t('profile.avatarcancel') }}</el-button>
         </div>
       </div>
     </el-dialog>
@@ -342,8 +353,8 @@ export default {
   .pre-button {
     display: inline-block;
     margin-top: 91px;
-    .btnw{
-      width:70px;
+    .btnw {
+      width: 70px;
     }
   }
   ::v-deep .el-dialog__body {
