@@ -509,7 +509,7 @@ export default {
         return
       }
       const params = {
-        include: 'groups'
+        include: 'groups,wechat'
       }
       this.$store.dispatch('jv/get', [`users/${this.userId}`, { params }]).then(
         (res) => {

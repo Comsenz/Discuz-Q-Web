@@ -101,7 +101,6 @@ export default {
   padding: 9.5px 13.5px !important;
   border-radius: 2px;
   &:hover{
-    opacity: 0.8;
     background-color: $color-blue-deep !important;
     border-color:$color-blue-deep !important;
   }

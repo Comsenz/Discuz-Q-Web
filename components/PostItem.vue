@@ -152,18 +152,19 @@ export default {
     // 跳转详情页
     toDetail() {
       if (!this.canViewPostsFn()) return
-      this.$router.push({ path: `/topic/${this.item._jv && this.item._jv.id}` })
+      // this.$router.push({ path: `/topic/${this.item._jv && this.item._jv.id}` })
+      window.open(`/topic/${this.item._jv && this.item._jv.id}`, '_blank')
     },
     // 点击图片 判断是否付费， 未付费跳转详情页
     onClickImage() {
       if (!this.unpaid || !this.canViewPostsFn()) return
-      this.$router.push({ path: `/topic/${this.item._jv && this.item._jv.id}` })
+      window.open(`/topic/${this.item._jv && this.item._jv.id}`, '_blank')
     },
     // 点击视频 判断是否付费， 未付费跳转详情页
     openVideo() {
       if (!this.canViewPostsFn()) return
       if (this.unpaid) {
-        this.$router.push({ path: `/topic/${this.item._jv && this.item._jv.id}` })
+        window.open(`/topic/${this.item._jv && this.item._jv.id}`, '_blank')
       } else {
         this.showVideoPop = true
       }
@@ -341,8 +342,13 @@ export default {
         font-size:14px;
       }
       .name{
-        max-width:200px;
+        max-width: 380px;
+        max-height: 21px;
         margin-left: 5px;
+        @media screen and ( max-width: 1005px ) {
+          max-width: 350px;
+          max-height: 19px;
+        }
       }
       .total{
         color: #000000;
@@ -401,14 +407,14 @@ export default {
           // border-radius:2px;
           // border:1px solid transparent;
           // transition: all 0.1s ease-in;
-          &.liked{
-            color:$color-blue-base;
-            // padding: 10px 15px;
-            // background: #E5F2FF;
-            // &:hover{
-            //   border-color: #D4E6FC;
-            // }
-          }
+          // &.liked{
+          //   color:$color-blue-base;
+          //   // padding: 10px 15px;
+          //   // background: #E5F2FF;
+          //   // &:hover{
+          //   //   border-color: #D4E6FC;
+          //   // }
+          // }
           .icon{
             font-size: 18px;
           }

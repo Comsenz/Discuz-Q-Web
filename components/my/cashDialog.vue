@@ -47,7 +47,14 @@
           prop="cash_status"
           label="记录描述"
           :formatter="statusFormat2"
-        />
+        >
+          <template slot-scope="scope">
+            <span
+              class="desc"
+              v-html="statusFormat2(scope.row)"
+            />
+          </template>
+        </el-table-column>
         <el-table-column
           label="时间"
           width="140"
@@ -302,6 +309,9 @@ export default {
     @media screen and (max-width: 900px) {
       margin-left: 60px;
     }
+  }
+  .desc:hover {
+    color: #1878f3;
   }
 }
 .selector {

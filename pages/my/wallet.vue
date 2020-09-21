@@ -46,7 +46,7 @@
           <svg-icon
             type="shield"
             class="shield-icon"
-          />已设置 / 修改
+          />{{ $t('profile.walletpasset') }}
         </div>
         <div
           v-else
@@ -285,6 +285,11 @@ export default {
           this.hasPassword = res.user.canWalletPay
         }, e => this.handleError(e))
     }
+  },
+  head() {
+    return {
+      title: this.$t('profile.mywallet')
+    }
   }
 
 }
@@ -410,6 +415,6 @@ export default {
   }
 }
 ::v-deep .el-tabs--border-card > .el-tabs__header .el-tabs__item:hover {
-  color: $color-blue-deep;
+  color: #00479b;
 }
 </style>

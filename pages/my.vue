@@ -144,7 +144,7 @@ export default {
       padding: 0 40px;
     }
     &:hover{
-      color:$color-blue-deep;
+      color:#00479b;
     }
   }
   .divided {
