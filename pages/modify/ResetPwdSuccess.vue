@@ -35,10 +35,14 @@ export default {
   height: 300px;
   width: 300px;
   .btn {
-    background: #ffffff;
     color: #1878f3;
-    border-radius:2px;
+    background: #ffffff !important;
+    border: 1px solid #1878f3 !important;
+    border-color: #1878f3 !important;
+    border-radius: 2px;
   }
+  // .btn :hover{
+  // }
   > .title {
     font-weight: bold;
     color: #343434;
