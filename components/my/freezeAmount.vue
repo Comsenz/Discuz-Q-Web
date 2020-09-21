@@ -44,7 +44,11 @@
         <el-table-column
           prop="change_desc"
           label="记录描述"
-        />
+        >
+          <template slot-scope="scope">
+            <span class="desc">{{ scope.row.change_desc }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           label="时间"
           width="140"
@@ -295,6 +299,9 @@ export default {
     @media screen and (max-width: 850px) {
       margin-left: 0px;
     }
+  }
+  .desc:hover {
+    color: #1878f3;
   }
 }
 .no-more {

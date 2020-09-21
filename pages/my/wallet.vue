@@ -410,6 +410,6 @@ export default {
   }
 }
 ::v-deep .el-tabs--border-card > .el-tabs__header .el-tabs__item:hover {
-  color: $color-blue-deep;
+  color: #00479b;
 }
 </style>
