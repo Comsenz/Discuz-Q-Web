@@ -72,7 +72,7 @@ export default {
       border-top: 1px solid $border-color-base;
       margin-top: 17px;
       padding-top: 15px;
-      line-height: 20px;
+      line-height: 25px;
       > span {
         &:last-child {
           margin-left: 20px;

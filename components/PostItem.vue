@@ -341,7 +341,7 @@ export default {
         font-size:14px;
       }
       .name{
-        max-width:200px;
+        max-width: 380px;
         margin-left: 5px;
       }
       .total{
@@ -401,14 +401,14 @@ export default {
           // border-radius:2px;
           // border:1px solid transparent;
           // transition: all 0.1s ease-in;
-          &.liked{
-            color:$color-blue-base;
-            // padding: 10px 15px;
-            // background: #E5F2FF;
-            // &:hover{
-            //   border-color: #D4E6FC;
-            // }
-          }
+          // &.liked{
+          //   color:$color-blue-base;
+          //   // padding: 10px 15px;
+          //   // background: #E5F2FF;
+          //   // &:hover{
+          //   //   border-color: #D4E6FC;
+          //   // }
+          // }
           .icon{
             font-size: 18px;
           }

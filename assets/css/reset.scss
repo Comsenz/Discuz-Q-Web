@@ -160,7 +160,7 @@ table {
 }
 .load-more{
   color:  #1878F3;
-  border:1px solid #1878F3;
+  border:1px solid #E5F2FF;
   font-size: 16px;
   text-align: center;
   padding:12px 0;
@@ -171,7 +171,7 @@ table {
   transition: all 0.2s ease-in-out;
   &:hover{
     background: #E5F2FF;
-    border:1px solid #D4E6FC;
+    border:1px solid #1878F3;
   }
 }
 
@@ -204,6 +204,7 @@ table {
 .el-button.el-button--primary {
   border: none !important;
   background: #1878F3 !important;
+  border-radius: 2px !important;
   &:hover {
     border: none !important;
     background: #006CD1 !important;
