@@ -280,26 +280,31 @@ export default {
   }
 
   ::-webkit-scrollbar-thumb:active {
+    font-family: inherit;
     background: rgba(0, 0, 0, 0.4);
     -webkit-border-radius: 100px;
   }
 
   ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    font-family: inherit;
     font-size: 16px;
     color: #8590A6;
   }
 
   ::-moz-placeholder { /* Firefox 19+ */
+    font-family: inherit;
     font-size: 16px;
     color: #8590A6;
   }
 
   :-ms-input-placeholder { /* IE 10+ */
+    font-family: inherit;
     font-size: 16px;
     color: #8590A6;
   }
 
   :-moz-placeholder { /* Firefox 18- */
+    font-family: inherit;
     font-size: 16px;
     color: #8590A6;
   }
