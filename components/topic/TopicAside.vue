@@ -12,9 +12,9 @@
     <div v-loading="threeEssenceThread.length === 0" class="recommend block">
       <div class="title">{{ $t('topic.recommend') }}</div>
       <div v-for="(item, index) in threeEssenceThread" :key="index" class="container-post">
-        <div class="content-html" v-html="item.firstPost.summary.replace(/(\r\n\t|\n|\r\t)/gm, '')" />
+        <div class="content-html" v-html="item.firstPost.summaryText" />
         <span class="view-count">{{ item.viewCount }} {{ $t('topic.readAlready') }}</span>
-        <a :href="'/topic/' + item._jv.id">{{ $t('topic.toWatch') }}</a>
+        <a target="_blank" :href="'/topic/' + item._jv.id">{{ $t('topic.toWatch') }}</a>
       </div>
     </div>
     <advertising style="margin-top: 15px;margin-bottom:3px;" />
