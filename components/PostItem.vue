@@ -72,7 +72,7 @@
           <div class="left">
             <div v-permission:handleLike="''" class="btn like" :class="{'liked': isLiked}">
               <svg-icon v-permission:handleLike="''" type="like" class="icon" />
-              {{ isLiked ? $t('topic.liked') : $t('topic.like') }} {{ item.firstPost.likeCount > 0 ? item.firstPost.likeCount : '' }}</div>
+              {{ isLiked ? $t('topic.liked') : $t('topic.like') }} {{ likeCount > 0 ? likeCount : '' }}</div>
             <div class="btn comment" @click="toDetail">
               <svg-icon type="post-comment" class="icon" />
               {{ $t('topic.comment') }} {{ item.postCount - 1 > 0 ? item.postCount - 1 : '' }}</div>
@@ -129,7 +129,8 @@ export default {
   watch: {
     item: {
       handler(val) {
-        this.isLiked = val.firstPost.isLiked
+        this.isLiked = val.firstPost && val.firstPost.isLiked
+        this.likeCount = val.firstPost && val.firstPost.likeCount
       },
       deep: true,
       immediate: true
@@ -154,6 +155,11 @@ export default {
       }
       return this.$store.dispatch('jv/patch', params).then(data => {
         this.$message.success(isLiked ? '点赞成功' : '取消点赞成功')
+        if (isLiked) {
+          this.likeCount++
+        } else {
+          this.likeCount--
+        }
         this.isLiked = isLiked
       }, e => {
         this.handleError(e)

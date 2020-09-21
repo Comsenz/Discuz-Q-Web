@@ -547,6 +547,7 @@ export default {
       color: $color-blue-base;
     }
     .logorreg {
+      width:300px;
       margin-top: 28px;
       display: flex;
       justify-content: space-between;
