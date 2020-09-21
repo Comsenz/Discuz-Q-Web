@@ -102,7 +102,8 @@ export default {
         duration: '',
         audio: '',
         seeking: false,
-        isPlay: false
+        isPlay: false,
+        isLoading: false
       }
     }
   },
@@ -159,6 +160,7 @@ export default {
         this.currentAudio.url = file.url
         this.currentAudio.id = file._jv.id
         this.currentAudio.audio.src = this.currentAudio.url
+        this.currentAudio.isLoading = true
         this.currentAudio.audio.load()
       }
       window.setTimeout(() => {
@@ -170,6 +172,7 @@ export default {
     },
     onProgressing() {
       if (this.currentAudio.seeking) return
+      this.currentAudio.isLoading = false
       this.currentAudio.duration = this.currentAudio.audio.duration
       this.currentAudio.currentTime = this.currentAudio.audio.currentTime
     },
@@ -184,6 +187,7 @@ export default {
       this.currentAudio.currentTime = ''
     },
     pause() {
+      this.currentAudio.isLoading = false
       this.currentAudio.isPlay = false
       this.currentAudio.audio.pause()
     },

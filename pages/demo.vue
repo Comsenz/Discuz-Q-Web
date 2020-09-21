@@ -15,7 +15,7 @@
     <div id="vditor" />
     <p>svg</p>
     <div>
-      <svg-icon style="font-size: 100px;" type="alipay" />
+      <svg-icon style="font-size: 100px;" rotate type="loading" />
     </div>
 
     <p>store commit</p>

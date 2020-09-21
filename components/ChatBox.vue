@@ -5,7 +5,7 @@
       <span>{{ $t('chat.chatWithYou') }}</span>
       <svg-icon class="icon-close" type="close" style="font-size: 16px" @click="$emit('close')" />
     </div>
-    <div ref="chatContent" class="chat-content">
+    <div ref="chatContent" v-loading="loading" element-loading-background="rgba(0, 0, 0, 0)" class="chat-content">
       <div v-if="loadMoreMessage" class="load-tip">{{ noMore ? $t('chat.noMore') : $t('chat.loadRecord') }}</div>
       <div v-for="(item, index) in recordList" :key="index" class="record">
         <div v-if="item.user_id === parseInt(userId)" class="record-item mine">
@@ -57,6 +57,7 @@ export default {
       recordTotal: 0,
       pageLimit: 10,
       pollId: '',
+      loading: false,
       onChatPublish: false,
       chatContent: { text: '', imageList: [], attachedList: [] },
       chatType: { type: 4, textLimit: 450, showPayment: false, showTitle: false, showImage: false, showVideo: false,
@@ -75,7 +76,13 @@ export default {
   watch: {
     dialog: {
       handler(val) {
-        if (val.id && val.name) this.getChatRecord(val.id).then(() => this.$nextTick(() => { this.$refs.chatContent.scrollTop = this.$refs.chatContent.scrollHeight }))
+        this.loading = true
+        if (val.id && val.name) {
+          this.getChatRecord(val.id).then(() => {
+            this.loading = false
+            this.$nextTick(() => { this.$refs.chatContent.scrollTop = this.$refs.chatContent.scrollHeight })
+          })
+        } else this.loading = false
       },
       deep: true,
       immediate: true
