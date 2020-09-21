@@ -391,6 +391,11 @@ export default {
         return true
       }
     }
+  },
+  head() {
+    return {
+      title: this.$t('profile.myshield')
+    }
   }
 }
 </script>

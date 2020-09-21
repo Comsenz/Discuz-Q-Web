@@ -397,6 +397,11 @@ export default {
       })
     }
 
+  },
+  head() {
+    return {
+      title: this.$t('profile.myperson')
+    }
   }
 }
 </script>

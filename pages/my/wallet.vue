@@ -46,7 +46,7 @@
           <svg-icon
             type="shield"
             class="shield-icon"
-          />已设置 / 修改
+          />{{ $t('profile.walletpasset') }}
         </div>
         <div
           v-else
@@ -284,6 +284,11 @@ export default {
           this.dataInfo = res
           this.hasPassword = res.user.canWalletPay
         }, e => this.handleError(e))
+    }
+  },
+  head() {
+    return {
+      title: this.$t('profile.mywallet')
     }
   }
 
