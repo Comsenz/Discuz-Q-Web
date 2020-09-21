@@ -68,6 +68,7 @@ export default {
   async asyncData({ params, store }) {
     try {
       const threadData = await store.dispatch('jv/get', [`threads/${params.id}`, { params: { include: threadInclude }}])
+      console.log('thread =>', threadData)
       return { thread: threadData, article: threadData.firstPost, postId: threadData.firstPost._jv.id }
     } catch (e) {
       console.log('ssr err')
