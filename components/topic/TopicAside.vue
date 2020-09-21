@@ -160,6 +160,9 @@ export default {
           float: right;
           font-size: 12px;
           color: $color-blue-base;
+          &:hover {
+            color: $color-blue-deep
+          }
         }
       }
 

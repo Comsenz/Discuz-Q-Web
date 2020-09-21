@@ -2,7 +2,7 @@
   <div class="attachment-item" @click="downloadAttachment(file.url)">
     <div>
       <svg-icon :type="extensionValidate(file.extension)" style="font-size: 18px" />
-      <span>{{ file.fileName }}</span>
+      <span class="file-name">{{ file.fileName }}</span>
     </div>
     <div class="download">{{ $t('post.download') }}</div>
   </div>
@@ -58,6 +58,14 @@ export default {
       overflow: hidden;
       text-overflow: ellipsis;
       margin-left: 10px;
+      white-space: nowrap;
+    }
+
+    .file-name {
+      max-width: 380px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
       white-space: nowrap;
     }
   }

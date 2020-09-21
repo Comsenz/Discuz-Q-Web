@@ -35,7 +35,7 @@
       </div>
       <topic-report v-if="isReport" :thread-id="thread._jv.id" :type="1" @close="isReport = false" />
       <div v-if="thread.isEssence" class="essence">
-        <svg-icon style="font-size: 51px;" type="essence" />
+        <svg-icon style="font-size: 50px;" type="essence" />
       </div>
     </div>
   </div>
