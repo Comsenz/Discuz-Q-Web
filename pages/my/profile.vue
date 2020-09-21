@@ -329,10 +329,10 @@
     >
       <div class="myprofile-top">
         <span class="sig">{{ $t('profile.wechat') }}</span>
-        <span
+        <!-- <span
           class="setavatar"
           @click="wechatModify"
-        >{{ (!isWechatModify ? $t('profile.modify') : $t('profile.cancelModify')) }}</span>
+        >{{ (!isWechatModify ? $t('profile.modify') : $t('profile.cancelModify')) }}</span> -->
       </div>
       <div
         v-show="!isWechatModify"

@@ -124,7 +124,7 @@
         >{{ $t('user.register') }}</el-button>
       </el-tab-pane>
       <!-- 快速注册 -->
-      <el-tab-pane label="快速注册">
+      <!-- <el-tab-pane label="快速注册">
         <div class="quick">
           <div class="quick-container">
             <div class="quick-title">
@@ -136,7 +136,7 @@
             </div>
             <span class="qrtext">请用微信扫一扫扫码上方二维码</span>
           </div>
-          <!-- <div class="quick-container">
+           <div class="quick-container">
             <div class="quick-title">
               <img src="@/assets/qq.png">
               <span>qq一键注册</span>
@@ -145,9 +145,9 @@
               <img src="@/assets/qq-big.png">
             </div>
             <span>点击用QQ号码登陆注册</span>
-          </div> -->
+          </div>
         </div>
-      </el-tab-pane>
+      </el-tab-pane> -->
     </el-tabs>
   </div>
 </template>
@@ -217,7 +217,7 @@ export default {
     if (this.forums && this.forums.set_reg) {
       this.validate = this.forums.set_reg.register_validate
     }
-    this.QRcode()
+    // this.QRcode()
     this.changeactive()
   },
   destroyed() {
@@ -272,6 +272,9 @@ export default {
       //   this.QRcode()
       // }
       this.activeName = this.forums ? this.forums.set_reg.register_type.toString() : ''
+      if (this.activeName === '2') {
+        this.activeName = '0'
+      }
     },
     changeinput() {
       setTimeout(() => {

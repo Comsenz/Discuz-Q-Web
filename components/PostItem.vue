@@ -31,6 +31,7 @@
               :alt="image.filename"
               fit="cover"
               lazy
+              @click.self="onClickImage"
             >
               <div slot="placeholder" class="image-slot">
                 <i class="el-icon-loading" />
@@ -69,9 +70,9 @@
         <!-- 操作 -->
         <div class="bottom-handle">
           <div class="left">
-            <div v-permission:handleLike="''" class="btn like" :class="{'liked': item.firstPost.isLiked}">
+            <div v-permission:handleLike="''" class="btn like" :class="{'liked': isLiked}">
               <svg-icon v-permission:handleLike="''" type="like" class="icon" />
-              {{ item.firstPost.isLiked ? $t('topic.liked') : $t('topic.like') }} {{ item.firstPost.likeCount > 0 ? item.firstPost.likeCount : '' }}</div>
+              {{ isLiked ? $t('topic.liked') : $t('topic.like') }} {{ item.firstPost.likeCount > 0 ? item.firstPost.likeCount : '' }}</div>
             <div class="btn comment" @click="toDetail">
               <svg-icon type="post-comment" class="icon" />
               {{ $t('topic.comment') }} {{ item.postCount - 1 > 0 ? item.postCount - 1 : '' }}</div>
@@ -116,12 +117,22 @@ export default {
     return {
       loading: false,
       showVideoPop: false,
-      showViewer: false
+      showViewer: false,
+      isLiked: false
     }
   },
   computed: {
     unpaid() {
       return !(this.item.paid || parseFloat(this.item.price) === 0)
+    }
+  },
+  watch: {
+    item: {
+      handler(val) {
+        this.isLiked = val.firstPost.isLiked
+      },
+      deep: true,
+      immediate: true
     }
   },
   methods: {
@@ -133,7 +144,7 @@ export default {
         return
       }
       this.loading = true
-      const isLiked = !this.item.firstPost.isLiked
+      const isLiked = !this.isLiked
       const params = {
         _jv: {
           type: 'posts',
@@ -143,6 +154,7 @@ export default {
       }
       return this.$store.dispatch('jv/patch', params).then(data => {
         this.$message.success(isLiked ? '点赞成功' : '取消点赞成功')
+        this.isLiked = isLiked
       }, e => {
         this.handleError(e)
       }).finally(() => {
