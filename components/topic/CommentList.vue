@@ -20,7 +20,7 @@
             :src="image.thumbUrl"
             :alt="image.filename"
             :data-source="image.url"
-            fit="contain"
+            fit="cover"
           />
         </div>
         <div class="actions">
@@ -74,7 +74,7 @@
               :src="image.thumbUrl"
               :alt="image.filename"
               :data-source="image.url"
-              fit="contain"
+              fit="cover"
             />
           </div>
           <div class="line" />
@@ -131,7 +131,8 @@ export default {
       handler(val) {
         if (!this.showAllReply) this.replyList = val.map(item => item.lastThreeComments)
       },
-      deep: true
+      deep: true,
+      immediate: true
     }
   },
   methods: {

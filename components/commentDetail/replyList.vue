@@ -17,7 +17,7 @@
             :src="image.thumbUrl"
             :alt="image.filename"
             :data-source="image.url"
-            fit="contain"
+            fit="cover"
           />
         </div>
         <div class="actions">
