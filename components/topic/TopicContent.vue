@@ -41,8 +41,8 @@
     </div>
     <div v-if="unpaid && threadType === 1" class="hide-content-tip">{{ $t('pay.contentHide') }}</div>
     <nuxt-link v-if="category.name" :to="{path: '/', query: { categoryId: category._jv.id } }" class="tag">{{ category.name }}</nuxt-link>
-    <div>
-      <nuxt-link v-if="location.location" :to="`/location?longitude=${location.longitude}&latitude=${location.latitude}`" class="location">
+    <div v-if="location">
+      <nuxt-link :to="`/location?longitude=${location.longitude}&latitude=${location.latitude}`" class="location">
         <span class="flex">
           <svg-icon type="location" class="icon" />
           <span> {{ location.location }} </span>

@@ -1,6 +1,6 @@
 <template>
   <div class="attachment-item" @click="downloadAttachment(file.url)">
-    <div>
+    <div class="info">
       <svg-icon :type="extensionValidate(file.extension)" style="font-size: 18px" />
       <span class="file-name">{{ file.fileName }}</span>
     </div>
@@ -67,6 +67,8 @@ export default {
       text-overflow: ellipsis;
       display: inline-block;
       white-space: nowrap;
+      vertical-align: middle;
+      line-height: 18px;
     }
   }
 </style>

@@ -153,7 +153,7 @@ export default {
           -moz-user-select:none; /*火狐*/
           -webkit-user-select:none; /*webkit浏览器*/
           -ms-user-select:none; /*IE10*/
-          max-width: 235px;
+          max-width: 205px;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
