@@ -93,7 +93,7 @@
         >{{ $t('user.login') }}</el-button>
       </el-tab-pane>
       <!-- 快捷登录 -->
-      <el-tab-pane
+      <!-- <el-tab-pane
         :label="$t('user.quicklogin')"
         name="2"
       >
@@ -108,7 +108,7 @@
             </div>
             <span class="qrtext">请用微信扫一扫扫码上方二维码</span>
           </div>
-          <!-- <div class="quick-container">
+           <div class="quick-container">
             <div class="quick-title">
               <img src="@/assets/qq.png">
               <span>qq一键登录</span>
@@ -120,9 +120,9 @@
               <img src="@/assets/qq-big.png">
             </div>
             <span>点击用QQ号码登陆注册</span>
-          </div> -->
+          </div>
         </div>
-      </el-tab-pane>
+      </el-tab-pane> -->
     </el-tabs>
   </div>
 </template>
@@ -188,7 +188,8 @@ export default {
     this.activeName = this.forums ? this.forums.set_reg.register_type.toString() : ''
     // 微信登录初始化
     if (this.activeName === '2') {
-      this.createQRcode()
+      this.activeName = '0'
+      // this.createQRcode()
     }
   },
   destroyed() {
