@@ -88,6 +88,7 @@
       </el-tab-pane>
       <!-- 手机号注册 -->
       <el-tab-pane
+        v-if="forums.qcloud && forums.qcloud.qcloud_sms"
         :label="$t('user.phoneregister')"
         name="1"
       >
@@ -272,7 +273,7 @@ export default {
       //   this.QRcode()
       // }
       this.activeName = this.forums ? this.forums.set_reg.register_type.toString() : ''
-      if (this.activeName === '2') {
+      if (this.activeName === '2' || this.forums && this.forums.qcloud && !this.forums.qcloud.qcloud_sms) {
         this.activeName = '0'
       }
     },

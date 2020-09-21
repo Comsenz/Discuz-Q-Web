@@ -56,7 +56,7 @@
           <!-- 附件 -->
           <div v-if="item.firstPost.attachments && item.firstPost.attachments.length > 0" class="attachment" @click="toDetail">
             <svg-icon :type="extensionValidate(item.firstPost.attachments[0].extension)" />
-            <div class="name">{{ item.firstPost.attachments[0].fileName }}</div>
+            <div class="name text-hidden">{{ item.firstPost.attachments[0].fileName }}</div>
             <div v-if="item.firstPost.attachments.length > 1" class="total">{{ $t('home.etc') + item.firstPost.attachments.length + $t('home.attachmentTotal') }}</div>
           </div>
         </div>

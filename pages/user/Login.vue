@@ -56,6 +56,7 @@
       </el-tab-pane>
       <!-- 手机号登录 -->
       <el-tab-pane
+        v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms"
         :label="$t('user.phonelogin')"
         name="1"
       >
@@ -187,7 +188,7 @@ export default {
     // 获取配置优先的登录方式
     this.activeName = this.forums ? this.forums.set_reg.register_type.toString() : ''
     // 微信登录初始化
-    if (this.activeName === '2') {
+    if (this.activeName === '2' || this.forums && this.forums.qcloud && !this.forums.qcloud.qcloud_sms) {
       this.activeName = '0'
       // this.createQRcode()
     }
