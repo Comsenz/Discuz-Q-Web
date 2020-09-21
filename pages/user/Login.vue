@@ -582,6 +582,9 @@ export default {
     ::v-deep.el-input__inner {
       border-right: none;
     }
+    ::v-deep.el-input__inner:focus {
+      border-color: #dcdfe6;
+    }
   }
   .count-b {
     width: 90px;
