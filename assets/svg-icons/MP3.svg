@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="26" height="25.577" viewBox="0 0 26 25.577">
+  <g id="组_2361" data-name="组 2361" transform="translate(-59 -797)">
+    <g id="组_1851" data-name="组 1851" transform="translate(-35 582.885)">
+      <path id="路径_244" data-name="路径 244" d="M75.729,227.932q0-5.839,0-11.677a1.128,1.128,0,0,1,.195-.784.8.8,0,0,1,.6-.316c.106,0,.211-.009.317-.009q6.619,0,13.237,0a.6.6,0,0,1,.468.191q3.475,3.488,6.956,6.971a.555.555,0,0,1,.143.356q.01,8.508,0,17.016a1.606,1.606,0,0,1-.1.545.746.746,0,0,1-.647.483,2.77,2.77,0,0,1-.365.014h-19.7c-.114,0-.228,0-.341-.011a.817.817,0,0,1-.746-.685,3.178,3.178,0,0,1-.03-.461Q75.728,233.746,75.729,227.932Zm1.841-10.965v21.922H95.83V224.265h-7.3v-7.3Zm17.418,5.482-4.625-4.625v4.625Z" transform="translate(20.271 -1.025)" fill="#aaa"/>
+      <path id="路径_245" data-name="路径 245" d="M160.417,413.9v-1.78h10.922v1.78Z" transform="translate(-58.911 -185.195)" fill="#aaa"/>
+      <path id="路径_246" data-name="路径 246" d="M171.349,496.745v1.776H160.418v-1.776Z" transform="translate(-58.912 -264.32)" fill="#aaa"/>
+      <path id="路径_247" data-name="路径 247" d="M165.037,328v1.774h-4.514V328Z" transform="translate(-59.01 -106.547)" fill="#aaa"/>
+    </g>
+    <rect id="矩形_1840" data-name="矩形 1840" width="26" height="12" transform="translate(59 807)" fill="#0eaf52"/>
+    <text id="MP3" transform="translate(61 817)" fill="#fff" font-size="10" font-family="MicrosoftYaHei-Bold, Microsoft YaHei" font-weight="700" letter-spacing="-0.05em"><tspan x="0" y="0">MP3</tspan></text>
+  </g>
+</svg>

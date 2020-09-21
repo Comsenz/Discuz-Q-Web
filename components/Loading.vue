@@ -1,0 +1,28 @@
+<template>
+  <div class="loading-container">
+    {{ $t('discuzq.list.loading') }}...
+    <!-- <i class="el-icon-loading" :style="`font-size: ${fontSize}px`" /> -->
+  </div>
+</template>
+<script>
+export default {
+  props: {
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    fontSize: {
+      type: Number,
+      default: 32
+    }
+  }
+}
+</script>
+<style lang="scss" scoped>
+.loading-container{
+  text-align: center;
+  padding:30px 0;
+  color: #8590A6;
+  font-size: 14px;
+}
+</style>
