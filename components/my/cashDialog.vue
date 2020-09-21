@@ -56,14 +56,14 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="时间"
+          :label="$t('profile.time')"
           width="140"
           prop="created_at"
           :formatter="dateFormat"
         />
         <el-table-column
           prop="cash_status"
-          label="状态"
+          :label="$t('profile.status')"
           width="97"
           :formatter="statusFormat"
         >
@@ -73,7 +73,7 @@
         </el-table-column>
         <el-table-column
           prop="cash_apply_amount"
-          label="金额"
+          :label="$t('pay.sumOfMoney')"
           width="113"
           sortable
         >

@@ -111,7 +111,7 @@
           <svg-icon
             type="canshield"
             class="canshield-icon"
-          />屏蔽Ta
+          />{{ $t('profile.shield') }}
         </div>
         <div
           v-else
@@ -121,7 +121,7 @@
           <svg-icon
             type="unshield"
             class="unshield-icon"
-          />解除屏蔽
+          />{{ $t('profile.deleteshield') }}
         </div>
         <!-- follow 关注状态 0：未关注 1：已关注 2：互相关注 -->
         <el-button
