@@ -67,7 +67,7 @@
       <!-- 方形预览图 -->
       <div
         class="show-preview"
-        :style="{'width': previews.w + 'px', 'height': previews.h + 'px', 'overflow': 'hidden', 'display':'inline-block','position':'absolute','margin-left':'18px','margin-top':'7px'}"
+        :style="{'width': previews.w + 'px', 'height': previews.h + 'px', 'overflow': 'hidden', 'display':'inline-block','position':'absolute','margin-left':'17px','margin-top':'7px'}"
       >
         <div :style="previews.div" class="preview">
           <img :src="previews.url" :style="previews.img">
@@ -76,7 +76,7 @@
       <!-- 圆形预览图 -->
       <div
         class="show-preview"
-        :style="{'width': 100 + 'px', 'height': 100 + 'px', 'overflow': 'hidden', 'display':'inline-block','position':'absolute','margin-left':'20px','border-radius':'50%','top':'51%'}"
+        :style="{'width': 100 + 'px', 'height': 100 + 'px', 'overflow': 'hidden', 'display':'inline-block','position':'absolute','margin-left':'17px','border-radius':'50%','top':'51%'}"
       >
         <div :style="previewCycle" class="preview">
           <img :src="previews.url" :style="previews.img">
