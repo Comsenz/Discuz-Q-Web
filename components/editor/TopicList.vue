@@ -21,7 +21,7 @@
         </li>
       </ul>
       <p v-if="loading" class="loading-tip">{{ $t('core.loading') }}</p>
-      <p v-if="noMore" class="loading-tip">{{ $t('core.noMoreData') }}</p>
+      <!--      <p v-if="noMore" class="loading-tip">{{ $t('core.noMoreData') }}</p>-->
     </div>
   </div>
 </template>
@@ -72,9 +72,10 @@ export default {
       const params = {
         'page[limit]': this.pageLimit,
         'page[number]': this.pageNumber,
-        'sort': '-viewCount'
+        'sort': 'recommended'
       }
       if (this.searchValue) params['filter[content]'] = this.searchValue
+      if (!this.searchValue) params['filter[recommended]'] = 1
       return this.$store.dispatch('jv/get', ['topics', { params }]).then(data => {
         const { _jv: { json: { meta }}} = data
         this.loading = false
