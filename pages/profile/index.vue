@@ -249,14 +249,13 @@ export default {
     }
   },
   created() {
-
-  },
-  mounted() {
     const { userId, current } = this.$route.query
-    this.userId = userId
+    this.userId = userId || ''
     this.current = current
     this.activeName = this.current ? this.current : this.activeName
     this.getUserInfo(this.userId)
+  },
+  mounted() {
     this.getAuth()
     window.addEventListener('scroll', this.handleScroll)
     this.getShieldData()

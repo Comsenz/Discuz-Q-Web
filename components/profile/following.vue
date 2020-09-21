@@ -157,6 +157,7 @@ export default {
       status
         .run(() => this.$store.dispatch('jv/get', ['follow', { params }]))
         .then(res => {
+          console.log(this.userId)
           console.log('用户关注列表', res)
           this.loading = false
           this.hasMore = res.length === this.pageSize
