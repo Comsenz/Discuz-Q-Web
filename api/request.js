@@ -1,14 +1,23 @@
 import axios from 'axios'
 import Qs from 'qs'
 // import store from '@/store'
+
 // 创建 Axios 实例
 
-// const isDev = process.env.NODE_ENV === 'development'
+let baseURL = '/api'
+
+// SSR 服务端处理
+if (process.server === true) {
+  if (process.env.NODE_ENV === 'production') {
+    baseURL = `http://127.0.0.1:80${baseURL}`
+  } else {
+    baseURL = `http://127.0.0.1:3000${baseURL}`
+  }
+}
 
 const service = axios.create({
-  // baseURL: process.env.VUE_APP_BASE_API,
-  baseURL: process.env.NODE_ENV === 'production' ? (process.server === true ? 'http://127.0.0.1:80/api' : process.env.baseURL) : process.env.baseURL,
-  // timeout: 60000,  // 请求超时时间；Respone 拦截器要做好提示处理
+  baseURL,
+  // timeout: 60000,  // 请求超时时间，Respone 拦截器要做好提示处理
   paramsSerializer: params =>
     Qs.stringify(params, {
       arrayFormat: 'repeat'
@@ -30,17 +39,20 @@ service.interceptors.request.use(
     return oConfig
   },
   oError => {
-    console.log('req err => ', oError)
+    console.log('Request Error => ', oError)
+
     return Promise.reject(oError)
   }
 )
 // Respone 拦截器
 service.interceptors.response.use(
   oRes => {
+    // console.log('Response => ', oRes)
+
     return oRes
   },
   oError => {
-    // console.log('Response error => ', oError)
+    console.log('Response Error => ', oError)
 
     if (oError.response && oError.response.data && oError.response.data.errors) {
       oError.response.data.errors.forEach(error => {

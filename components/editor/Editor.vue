@@ -157,7 +157,7 @@ export default {
   },
   computed: {
     url() {
-      return process.env.baseURL
+      return '/api'
     },
     header() {
       if (process.client) {
