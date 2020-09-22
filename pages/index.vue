@@ -118,19 +118,19 @@ export default {
       // console.log('ssr err', error)
 
       callback(null, {
-        _error__abc: {
-          error_keys: Object.keys(error),
-          error: String(error),
-          errno: error.errno,
-          code: error.code,
-          syscall: error.syscall,
-          address: error.address,
-          port: error.port,
-          config: error.config,
-          request_domain: (error.request || {}).domain,
-          request_keys: Object.keys(error.request || {}),
-          response_keys: Object.keys(error.response || {})
-        }
+        // _error__abc: {
+        //   error_keys: Object.keys(error),
+        //   error: String(error),
+        //   errno: error.errno,
+        //   code: error.code,
+        //   syscall: error.syscall,
+        //   address: error.address,
+        //   port: error.port,
+        //   config: error.config,
+        //   request_domain: (error.request || {}).domain,
+        //   request_keys: Object.keys(error.request || {}),
+        //   response_keys: Object.keys(error.response || {})
+        // }
       })
     }
   },

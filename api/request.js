@@ -9,7 +9,7 @@ let baseURL = '/api'
 // SSR 服务端处理
 if (process.server === true) {
   if (process.env.NODE_ENV === 'production') {
-    baseURL = `https://dq.comsenz-service.com${baseURL}`
+    baseURL = `http://127.0.0.1:80${baseURL}`
   } else {
     baseURL = `http://127.0.0.1:3000${baseURL}`
   }
