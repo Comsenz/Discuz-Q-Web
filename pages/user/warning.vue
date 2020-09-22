@@ -67,8 +67,9 @@ export default {
       // width: 100px;
       height: 35px;
       color: #1878f3;
-      background: #ffffff;
-      border-color: #1878f3;
+      background: #ffffff !important;
+      border: 1px solid #1878f3 !important;
+      border-color: #1878f3 !important;
       font-size: 14px;
       border-radius: 2px;
       // padding: 0px;

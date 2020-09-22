@@ -105,7 +105,7 @@ export default {
   },
   proxy: {
     '/api': {
-      target: API_URL, // 目标服务器
+      target: API_URL_DEV, // 目标服务器
       changeOrigin: true
     }
   },
