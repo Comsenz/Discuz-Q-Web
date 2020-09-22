@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@nuxtjs/babel-preset-app": "^0.8.0",
+    "@nuxtjs/proxy": "^2.0.1",
     "babel-eslint": "^10.1.0",
     "babel-plugin-component": "^1.1.1",
     "eslint": "^7.6.0",

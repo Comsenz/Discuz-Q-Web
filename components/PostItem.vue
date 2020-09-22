@@ -270,7 +270,7 @@ export default {
       line-height: 24px;
       font-size: 16px !important;
       color: #000;
-      flex: 0 0 60%;
+      max-width: 585px;
       max-height: 96px;
       ::v-deep p,h1,h2,h3,h4,h5,h6 {
         font-size: 16px !important;
@@ -288,6 +288,7 @@ export default {
         font-size:14px !important;
         max-height: 80px;
         line-height: 20px;
+        max-width: 410px;
         ::v-deep p {
           font-size: 14px !important;
         }
