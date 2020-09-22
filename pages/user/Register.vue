@@ -218,7 +218,6 @@ export default {
     if (this.forums && this.forums.set_reg) {
       this.validate = this.forums.set_reg.register_validate
     }
-    // this.QRcode()
     this.changeactive()
   },
   destroyed() {
