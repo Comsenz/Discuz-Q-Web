@@ -115,8 +115,21 @@ export default {
       }
       callback(null, resData)
     } catch (error) {
-      console.log('ssr err')
-      callback(null, {})
+      // console.log('ssr err', error)
+
+      callback(null, {
+        _error__abc: {
+          error: String(error),
+          errno: error.errno,
+          code: error.code,
+          syscall: error.syscall,
+          address: error.address,
+          port: error.port,
+          config: error.config,
+          request_currentUrl: (error.request || {})._currentUrl,
+          request_domain: (error.request || {}).domain
+        }
+      })
     }
   },
   data() {
