@@ -13,7 +13,7 @@ const API_URL_DEV = 'https://dq.comsenz-service.com'
 export default {
   env: {
     mobileDomain: process.env.NODE_ENV === 'production' ? API_URL : API_URL_DEV,
-    baseURL: process.env.NODE_ENV === 'production' ? `/api` : 'http://localhost:3000/api'
+    baseURL: process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:3000/api'
   },
   /*
   ** Nuxt rendering mode

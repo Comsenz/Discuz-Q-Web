@@ -4,9 +4,10 @@ import Qs from 'qs'
 // 创建 Axios 实例
 
 // const isDev = process.env.NODE_ENV === 'development'
+
 const service = axios.create({
   // baseURL: process.env.VUE_APP_BASE_API,
-  baseURL: process.env.baseURL,
+  baseURL: process.env.NODE_ENV === 'production' ? (process.server === true ? 'http://127.0.0.1:80/api' : process.env.baseURL) : process.env.baseURL,
   // timeout: 60000,  // 请求超时时间；Respone 拦截器要做好提示处理
   paramsSerializer: params =>
     Qs.stringify(params, {
