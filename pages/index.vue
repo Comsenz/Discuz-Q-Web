@@ -119,6 +119,7 @@ export default {
 
       callback(null, {
         _error__abc: {
+          error_keys: Object.keys(error),
           error: String(error),
           errno: error.errno,
           code: error.code,
@@ -126,8 +127,9 @@ export default {
           address: error.address,
           port: error.port,
           config: error.config,
-          request_currentUrl: (error.request || {})._currentUrl,
-          request_domain: (error.request || {}).domain
+          request_domain: (error.request || {}).domain,
+          request_keys: Object.keys(error.request || {}),
+          response_keys: Object.keys(error.response || {})
         }
       })
     }
