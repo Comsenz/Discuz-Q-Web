@@ -412,6 +412,7 @@ import handleError from '@/mixin/handleError'
 import bindWechat from '@/mixin/bindWechat'
 const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
 export default {
+  layout: 'center_layout',
   mixins: [handleError, bindWechat, tcaptchs],
   data() {
     return {

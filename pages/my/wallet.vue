@@ -133,6 +133,7 @@ import { status } from '@/library/jsonapi-vuex/index'
 import handleError from '@/mixin/handleError'
 
 export default {
+  layout: 'center_layout',
   mixins: [
     handleError
   ],
