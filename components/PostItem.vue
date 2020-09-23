@@ -171,18 +171,18 @@ export default {
     toDetail() {
       if (!this.canViewPostsFn()) return
       // this.$router.push({ path: `/topic/${this.item._jv && this.item._jv.id}` })
-      window.open(`/topic/${this.item._jv && this.item._jv.id}`, '_blank')
+      window.open(`/topic/index?id=${this.item._jv && this.item._jv.id}`, '_blank')
     },
     // 点击图片 判断是否付费， 未付费跳转详情页
     onClickImage() {
       if (!this.unpaid || !this.canViewPostsFn()) return
-      window.open(`/topic/${this.item._jv && this.item._jv.id}`, '_blank')
+      window.open(`/topic/index?id=${this.item._jv && this.item._jv.id}`, '_blank')
     },
     // 点击视频 判断是否付费， 未付费跳转详情页
     openVideo() {
       if (!this.canViewPostsFn()) return
       if (this.unpaid) {
-        window.open(`/topic/${this.item._jv && this.item._jv.id}`, '_blank')
+        window.open(`/topic/index?id=${this.item._jv && this.item._jv.id}`, '_blank')
       } else {
         this.showVideoPop = true
       }

@@ -2,14 +2,18 @@ import enLocale from './plugins/lang/en.js'
 import zhLocale from './plugins/lang/zh.js'
 
 const path = require('path')
+
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
+
+const API_URL = 'https://discuz.chat'
+const API_URL_DEV = 'https://dq.comsenz-service.com'
+
 export default {
-  // https://discuz.chat https://dq.comsenz-service.com
   env: {
-    mobileDomain: process.env.NODE_ENV !== 'production' ? 'https://dq.comsenz-service.com' : 'https://discuz.chat',
-    baseURL: process.env.NODE_ENV !== 'production' ? 'https://discuz.chat/api' : '/api'
+    mobileDomain: process.env.NODE_ENV === 'production' ? API_URL : API_URL_DEV,
+    baseURL: process.env.NODE_ENV === 'production' ? `/api` : 'http://localhost:3000/api'
   },
   /*
   ** Nuxt rendering mode
@@ -38,7 +42,8 @@ export default {
     ]
   },
   router: {
-    middleware: 'header'
+    middleware: 'header',
+    routeNameSplitter: '/'
   },
   /*
   ** Global CSS
@@ -75,7 +80,8 @@ export default {
   */
   modules: [
     '@nuxtjs/axios',
-    'nuxt-i18n'
+    'nuxt-i18n',
+    '@nuxtjs/proxy'
   ],
 
   i18n: {
@@ -96,6 +102,13 @@ export default {
 
   axios: {
     // proxyHeaders: false
+    proxy: true
+  },
+  proxy: {
+    '/api': {
+      target: API_URL_DEV, // 目标服务器
+      changeOrigin: true
+    }
   },
   /*
   ** Build configuration
@@ -135,6 +148,10 @@ export default {
     },
     // svg处理
     extend(config, context) {
+      // 生成环境清除log
+      // if (context.isClient && !context.isDev) {
+      // config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
+      // }
       // Run ESLint on save
       if (context.isDev && context.isClient) {
         config.module.rules.push({

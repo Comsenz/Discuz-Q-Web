@@ -15,7 +15,7 @@
         <div v-if="item.title && item.firstPost.summaryText" class="content-html">{{ item.title || item.firstPost.summaryText }}</div>
         <div v-else class="content-html" v-html="item.firstPost.summary" />
         <span class="view-count">{{ item.viewCount }} {{ $t('topic.readAlready') }}</span>
-        <a target="_blank" :href="'/topic/' + item._jv.id">{{ $t('topic.toWatch') }}</a>
+        <a target="_blank" :href="'/topic/index?id=' + item._jv.id">{{ $t('topic.toWatch') }}</a>
       </div>
     </div>
     <advertising style="margin-top: 15px;margin-bottom:3px;" />

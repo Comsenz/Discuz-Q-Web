@@ -65,9 +65,9 @@ export default {
   name: 'Post',
   layout: 'custom_layout',
   mixins: [handleError],
-  async asyncData({ params, store }) {
+  async asyncData({ query, store }) {
     try {
-      const threadData = await store.dispatch('jv/get', [`threads/${params.id}`, { params: { include: threadInclude }}])
+      const threadData = await store.dispatch('jv/get', [`threads/${query.id}`, { params: { include: threadInclude }}])
       console.log('thread =>', threadData)
       return { thread: threadData, article: threadData.firstPost, postId: threadData.firstPost._jv.id }
     } catch (e) {
@@ -106,7 +106,7 @@ export default {
   },
   computed: {
     threadId() {
-      return this.$route.params.id
+      return this.$route.query.id
     },
     userId() {
       return this.$store.getters['session/get']('userId')
@@ -127,6 +127,7 @@ export default {
   },
   methods: {
     getThread() {
+      console.log(this.threadId, 'sdfsdfsdf')
       return this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include: threadInclude }}]).then(data => {
         if (data.isDeleted) return this.$router.push('/error')
         this.articleLoading = false
