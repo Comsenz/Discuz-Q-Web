@@ -380,21 +380,22 @@ export default {
             res &&
             res.data &&
             res.data.errors &&
+            res.data.errors[0].code === 'register_validate'
+          ) {
+            // this.$message.error('帐号审核中，请等管理员审核通过')
+            this.$router.push(`/user/warning?username=${this.userName}`)
+            return
+          }
+          if (
+            res &&
+            res.data &&
+            res.data.errors &&
             res.data.errors[0]
           ) {
             const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code
             const errorText = res.data.errors[0].detail ? res.data.errors[0].detail[0] : this.$t(`core.${error}`)
             console.log('error', errorText)
             this.$message.error(errorText)
-          }
-          if (
-            res &&
-            res.data &&
-            res.data.errors &&
-            res.data.errors[0].code === 'register_validate'
-          ) {
-            // this.$message.error('帐号审核中，请等管理员审核通过')
-            this.$router.push(`/user/warning?username=${this.userName}`)
           }
         })
         .catch(err => {
@@ -471,21 +472,22 @@ export default {
               res &&
               res.data &&
               res.data.errors &&
+              res.data.errors[0].code === 'register_validate'
+            ) {
+              // this.$message.error('帐号审核中，请等管理员审核通过')
+              this.$router.push(`/user/warning?username=${this.phoneNumber}`)
+              return
+            }
+            if (
+              res &&
+              res.data &&
+              res.data.errors &&
               res.data.errors[0]
             ) {
               const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code
               const errorText = res.data.errors[0].detail ? res.data.errors[0].detail[0] : this.$t(`core.${error}`)
               console.log('error', error)
               this.$message.error(errorText)
-            }
-            if (
-              res &&
-              res.data &&
-              res.data.errors &&
-              res.data.errors[0].code === 'register_validate'
-            ) {
-              this.$message.error('帐号审核中，请等管理员审核通过')
-              this.$router.push(`/user/warning?username=${this.phoneNumber}`)
             }
           })
           .catch(err => {

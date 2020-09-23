@@ -154,7 +154,10 @@
         @close="chatting = false"
       />
     </div>
-    <div class="profile-c">
+    <div
+      v-if="userInfo && forums"
+      class="profile-c"
+    >
       <div class="profile-cc">
         <el-tabs
           v-model="activeName"
