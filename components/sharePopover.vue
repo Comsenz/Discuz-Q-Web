@@ -48,7 +48,7 @@ export default {
     copyLink() {
       const oInput = document.createElement('input')
       if (process.client) {
-        oInput.value = window.location.host + '/topic/' + this.threadsId
+        oInput.value = window.location.host + '/topic/index?id=' + this.threadsId
         oInput.id = 'copyInput'
         document.body.appendChild(oInput)
         oInput.select()

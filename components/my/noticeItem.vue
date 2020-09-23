@@ -50,7 +50,7 @@
       />
       <nuxt-link
         v-if="(item.thread_title || item.content) && item.type !== 'system'"
-        :to="`/topic/${item.thread_id}`"
+        :to="`/topic/index?id=${item.thread_id}`"
         class="thread"
         target="_blank"
       >

@@ -140,7 +140,7 @@ export default {
         type: 'warning'
       }).then(() => {
         return this.$store.dispatch('jv/patch', params).then(() => {
-          type === 'comment' ? this.$router.push(`/topic/${this.thread._jv.id}`) : this.getReplyList()
+          type === 'comment' ? this.$router.push(`/topic/index?id=${this.thread._jv.id}`) : this.getReplyList()
           this.$message.success(this.$t('topic.deleteSuccess'))
         }, e => this.handleError(e))
       }, () => console.log('取消删除'))
