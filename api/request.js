@@ -1,22 +1,10 @@
 import axios from 'axios'
 import Qs from 'qs'
-// import store from '@/store'
+import env from '@/utils/env.js'
 
 // 创建 Axios 实例
-
-let baseURL = '/api'
-
-// SSR 服务端处理
-if (process.server === true) {
-  if (process.env.NODE_ENV === 'production') {
-    baseURL = `https://discuz.chat${baseURL}`
-  } else {
-    baseURL = `http://127.0.0.1:3000${baseURL}`
-  }
-}
-
 const service = axios.create({
-  baseURL,
+  baseURL: '/api',
   // timeout: 60000,  // 请求超时时间，Respone 拦截器要做好提示处理
   paramsSerializer: params =>
     Qs.stringify(params, {
@@ -26,16 +14,24 @@ const service = axios.create({
 
 // Request 拦截器
 service.interceptors.request.use(
-  oConfig => {
+  (oConfig) => {
+    // SSR 服务端 baseURL 修正处理
+    if (process.server) {
+      oConfig.baseURL = `${process.env.NODE_ENV === 'production' ? 'https:' : 'http:'}//${env.host}${oConfig.baseURL}`
+    }
+
     oConfig.headers['Accept'] = 'application/vnd.api+json'
+
     if (process.client && localStorage.getItem('access_token')) {
       oConfig.headers['authorization'] = `Bearer ${localStorage.getItem('access_token')}`
     }
+
     // TODO: 由于腾讯的网络环境不能发PATCH请求，所有的PATCH请求要改一下，改成用POST，然后在header里加 x-http-method-override: patch
     if (oConfig.method === 'patch') {
       oConfig.method = 'post'
       oConfig.headers['x-http-method-override'] = 'patch'
     }
+
     return oConfig
   },
   oError => {
