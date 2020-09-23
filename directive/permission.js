@@ -19,15 +19,13 @@ function callback(binding, vnode) {
       token = localStorage.getItem('access_token')
     }
     if (!token) {
-      // store.commit('login/SHOW_LOGIN')
-      // 后期再处理
       if (process.client) {
-        Message.error('请登录后再操作')
+        Message.error('请登录')
         window.setTimeout(() => {
           location.href = '/user/login'
         }, 1000)
       } else {
-        console.log('请登录后再操作')
+        console.log('请登录')
       }
     } else {
       const that = vnode.context
