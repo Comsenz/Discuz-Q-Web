@@ -2,46 +2,46 @@
 // client执行顺序 => beforeEach - middleware - afterEach
 // server执行顺序 => beforeEach - afterEach - middleware
 import cookie from '../utils/parserCookie'
-import env from '../utils/env.js'
-import mobileRouter from '../utils/mobileRouter.js'
+// import env from '../utils/env.js'
+// import mobileRouter from '../utils/mobileRouter.js'
 const freePath = ['/user/login', '/user/register', '/site/info', '/user/warning', '/user/agreement', '/site/partner-invite']
 export default ({ app }) => {
   const { store, router } = app
   router.beforeEach(async(to, from, next) => {
     // 根据ua跳转到移动端
-    if (env.isMobile && !env.isTablet) {
-      let path = '/'
-      const _map = mobileRouter.map
-      if (to.matched && to.matched.length > 0) {
-        const _path = to.matched[to.matched.length - 1 ].path
-        switch (_path) {
-          case '/topic/:id?':
-            path = _map[_path] + to.params.id
-            break
-          case '/profile':
-            path = _map[_path] + to.query.userId
-            break
-          case '/topic/post/:type?':
-            path = _map[_path] + to.params.type
-            break
-          case '/topic/comment':
-            path = _map[_path] + `?threadId=${to.query.threadId}&commentId=${to.query.commentId}`
-            break
-          case '/search/user':
-            path = _map[_path] + to.query.q
-            break
-          case '/location':
-            path = _map[_path] + `?longitude=${to.query.longitude}&latitude=${to.query.latitude}`
-            break
-          case '/site/partner-invite':
-            path = _map[_path] + to.query.code
-            break
-          default:
-            path = _map[_path] || '/'
-        }
-      }
-      window.location.href = process.env.mobileDomain + path
-    }
+    // if (env.isMobile && !env.isTablet) {
+    //   let path = '/'
+    //   const _map = mobileRouter.map
+    //   if (to.matched && to.matched.length > 0) {
+    //     const _path = to.matched[to.matched.length - 1 ].path
+    //     switch (_path) {
+    //       case '/topic/:id?':
+    //         path = _map[_path] + to.params.id
+    //         break
+    //       case '/profile':
+    //         path = _map[_path] + to.query.userId
+    //         break
+    //       case '/topic/post/:type?':
+    //         path = _map[_path] + to.params.type
+    //         break
+    //       case '/topic/comment':
+    //         path = _map[_path] + `?threadId=${to.query.threadId}&commentId=${to.query.commentId}`
+    //         break
+    //       case '/search/user':
+    //         path = _map[_path] + to.query.q
+    //         break
+    //       case '/location':
+    //         path = _map[_path] + `?longitude=${to.query.longitude}&latitude=${to.query.latitude}`
+    //         break
+    //       case '/site/partner-invite':
+    //         path = _map[_path] + to.query.code
+    //         break
+    //       default:
+    //         path = _map[_path] || '/'
+    //     }
+    //   }
+    //   window.location.href = process.env.mobileDomain + path
+    // }
     if (process.client) {
       // 登录页不判断站点关闭
       if (from.path === '/site/close' && to.path === '/user/login') return next()
@@ -50,15 +50,17 @@ export default ({ app }) => {
         try {
           await store.dispatch('site/getSiteInfo')
         } catch (e) {
-          const { response: { data: { errors }}} = e
-          // 站点关闭跳转
-          if (errors[0].code === 'site_closed') {
-            console.log(errors[0].code)
-            await store
-              .dispatch('forum/setError', { code: errors[0].code, detail: errors[0].detail[0] })
-            if (to.path === '/site/close') return next()
-            next({ path: '/site/close' })
-            return
+          if (e) {
+            const { response: { data: { errors }}} = e
+            // 站点关闭跳转
+            if (errors[0].code === 'site_closed') {
+              console.log(errors[0].code)
+              await store
+                .dispatch('forum/setError', { code: errors[0].code, detail: errors[0].detail[0] })
+              if (to.path === '/site/close') return next()
+              next({ path: '/site/close' })
+              return
+            }
           }
         }
       }

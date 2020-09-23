@@ -146,11 +146,15 @@ export default {
     },
     onClickSearch() {
       if (this.inputVal) {
-        this.$router.push('/search?q=' + this.inputVal)
+        this.$router.push('/site/search?q=' + this.inputVal)
       }
     },
     toIndex() {
-      window.location.href = '/'
+      if (this.$route.path === '/') {
+        window.location.href = '/'
+      } else {
+        this.$router.push('/')
+      }
     }
   }
 }

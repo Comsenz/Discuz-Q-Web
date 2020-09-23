@@ -75,6 +75,7 @@
 import handleError from '@/mixin/handleError'
 import { timestamp2day } from '@/utils/time'
 export default {
+  layout: 'center_layout',
   name: 'SiteInfo',
   mixins: [handleError],
   // meta: {

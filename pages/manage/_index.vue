@@ -39,6 +39,7 @@
 
 <script>
 export default {
+  layout: 'center_layout',
   name: 'UserManage',
   data() {
     return {

@@ -211,6 +211,7 @@
 <script>
 import handleError from '@/mixin/handleError'
 export default {
+  layout: 'center_layout',
   mixins: [handleError],
   data() {
     return {
