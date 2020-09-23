@@ -522,7 +522,7 @@ export default {
     margin-top: 15px;
     .recomusr {
       background: white;
-      margin-top: 16px;
+      // margin-top: 16px;
       border-radius: 5px;
     }
   }

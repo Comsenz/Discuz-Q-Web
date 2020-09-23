@@ -3,15 +3,26 @@
     <main class="cont-left">
       <div class="search-header">
         <div class="result-count">
-          为您找到 <span v-if="q" class="keyword">"{{ q }}"</span>的相关搜索结果 {{ userCount + threadCount }} {{ $t('topic.item') }}
+          为您找到 <span
+            v-if="q"
+            class="keyword"
+          >"{{ q }}"</span>的相关搜索结果 {{ userCount + threadCount }} {{ $t('topic.item') }}
         </div>
         <create-post-popover />
       </div>
       <div class="count">{{ $t('search.users') }} {{ userCount }} 名</div>
       <div class="user-list">
         <div class="user-flex">
-          <nuxt-link v-for="(item, index) in userList.slice(0, userPageSize)" :key="index" :to="`/profile?userId=${item.id}`" class="user-item">
-            <avatar :user="item" :size="45" />
+          <nuxt-link
+            v-for="(item, index) in userList.slice(0, userPageSize)"
+            :key="index"
+            :to="`/profile/index?userId=${item.id}`"
+            class="user-item"
+          >
+            <avatar
+              :user="item"
+              :size="45"
+            />
             <div class="info">
               <div class="name text-hidden">{{ item.username }}</div>
               <div class="fans">{{ $t('profile.followers') }} {{ item.fansCount || 0 }}</div>
@@ -20,23 +31,56 @@
         </div>
         <loading v-if="userLoading" />
         <template v-else>
-          <div v-if="userCount > userPageSize" class="user-load-more" @click="toUserList">{{ $t('topic.showMore') }}{{ $t('search.users') }}</div>
-          <div v-if="userList.length === 0" class="no-more"><svg-icon type="empty" class="empty-icon" />{{ $t('search.norelatedusersfound') }}</div>
+          <div
+            v-if="userCount > userPageSize"
+            class="user-load-more"
+            @click="toUserList"
+          >{{ $t('topic.showMore') }}{{ $t('search.users') }}</div>
+          <div
+            v-if="userList.length === 0"
+            class="no-more"
+          >
+            <svg-icon
+              type="empty"
+              class="empty-icon"
+            />{{ $t('search.norelatedusersfound') }}
+          </div>
         </template>
       </div>
       <div class="count">{{ $t('home.invitation') }} {{ threadCount }} {{ $t('topic.item') }}</div>
       <div class="post-list">
-        <post-item v-for="(item, index) in threadsList" :key="index" :item="item" />
+        <post-item
+          v-for="(item, index) in threadsList"
+          :key="index"
+          :item="item"
+        />
         <loading v-if="loading" />
         <template v-else>
-          <div v-if="hasMore" class="load-more" @click="loadMore">{{ $t('topic.showMore') }}</div>
-          <div v-else class="no-more"><svg-icon v-if="threadsList.length === 0" type="empty" class="empty-icon" />{{ threadsList.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noData') }}</div>
+          <div
+            v-if="hasMore"
+            class="load-more"
+            @click="loadMore"
+          >{{ $t('topic.showMore') }}</div>
+          <div
+            v-else
+            class="no-more"
+          >
+            <svg-icon
+              v-if="threadsList.length === 0"
+              type="empty"
+              class="empty-icon"
+            />{{ threadsList.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noData') }}
+          </div>
         </template>
       </div>
     </main>
     <aside class="cont-right">
       <div class="category background-color">
-        <category :post-loading="loading" :list="categoryData" @onChange="onChangeCategory" />
+        <category
+          :post-loading="loading"
+          :list="categoryData"
+          @onChange="onChangeCategory"
+        />
       </div>
       <advertising />
       <copyright :forums="forums" />
@@ -191,95 +235,95 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/css/variable/color.scss';
-@mixin background(){
+@import "@/assets/css/variable/color.scss";
+@mixin background() {
   background: #fff;
   border-radius: 5px;
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.03);
 }
-.app-cont{
+.app-cont {
   box-shadow: none;
 }
-.container{
-  display:flex;
-  background: #F4F5F6;
+.container {
+  display: flex;
+  background: #f4f5f6;
   width: 100%;
-  .cont-left{
-    flex:auto;
+  .cont-left {
+    flex: auto;
     @include background();
-    .search-header{
+    .search-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding:18px 20px;
-      border-bottom: 1px solid #EFEFEF;
-      .result-count{
+      padding: 18px 20px;
+      border-bottom: 1px solid #efefef;
+      .result-count {
         font-size: 16px;
         margin-right: 20px;
-        .keyword{
-          color: #FA5151
+        .keyword {
+          color: #fa5151;
         }
       }
     }
-    .count{
+    .count {
       font-size: 16px;
       padding: 18px 20px 0;
     }
-    .user-list{
+    .user-list {
       padding: 18px 20px;
-      border-bottom: 1px solid #EFEFEF;
-      .user-flex{
+      border-bottom: 1px solid #efefef;
+      .user-flex {
         display: flex;
         align-items: center;
       }
-      .user-item{
+      .user-item {
         display: flex;
         align-items: center;
         margin-right: 80px;
-        @media screen and ( max-width: 1005px ) {
+        @media screen and (max-width: 1005px) {
           margin-right: 20px;
         }
-        .info{
+        .info {
           margin-left: 10px;
-          .name{
-            font-size:16px;
+          .name {
+            font-size: 16px;
             max-width: 100px;
-            @media screen and ( max-width: 1005px ) {
+            @media screen and (max-width: 1005px) {
               max-width: 80px;
             }
           }
-          .fans{
-            color: #8590A6;
+          .fans {
+            color: #8590a6;
             margin-top: 2px;
           }
         }
       }
-      .user-load-more{
-        color: #8590A6;
+      .user-load-more {
+        color: #8590a6;
         margin-top: 40px;
-        display:inline-block;
-        cursor:pointer;
+        display: inline-block;
+        cursor: pointer;
       }
     }
   }
-  .cont-right{
-    margin-left:15px;
-    width:300px;
+  .cont-right {
+    margin-left: 15px;
+    width: 300px;
     flex: 0 0 300px;
-    @media screen and ( max-width: 1005px ) {
-      width:220px;
+    @media screen and (max-width: 1005px) {
+      width: 220px;
       flex: 0 0 220px;
     }
-    .background-color{
+    .background-color {
       @include background();
-       margin-bottom: 16px;
+      margin-bottom: 16px;
     }
-    .category{
+    .category {
       margin-bottom: 0;
     }
   }
 }
-.empty-icon{
+.empty-icon {
   margin-right: 6px;
 }
 </style>

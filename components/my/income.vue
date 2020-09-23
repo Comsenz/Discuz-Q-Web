@@ -8,29 +8,70 @@
         </template>
       </div>
       <!-- 搜索 -->
-      <el-input v-model="searchText" :placeholder="$t('invite.searchPlaceholder')" class="search" size="medium" @keyup.enter.native="onClickSearch" @input="onClickSearch">
-        <i slot="suffix" class="el-icon-search el-input__icon" />
+      <el-input
+        v-model="searchText"
+        :placeholder="$t('invite.searchPlaceholder')"
+        class="search"
+        size="medium"
+        @keyup.enter.native="onClickSearch"
+        @input="onClickSearch"
+      >
+        <i
+          slot="suffix"
+          class="el-icon-search el-input__icon"
+        />
       </el-input>
-      <el-button type="primary" size="medium" class="create-url" @click="createUserInvite">{{ $t('manage.generateInvitationUrl') }}</el-button>
+      <el-button
+        type="primary"
+        size="medium"
+        class="create-url"
+        @click="createUserInvite"
+      >{{ $t('manage.generateInvitationUrl') }}</el-button>
     </div>
     <div class="main">
-      <el-table ref="multipleTable" v-loading="loading" :data="incomeList" :default-sort="{prop: 'created_at', order: 'descending'}" @sort-change="sortChange">
+      <el-table
+        ref="multipleTable"
+        v-loading="loading"
+        :data="incomeList"
+        :default-sort="{prop: 'created_at', order: 'descending'}"
+        @sort-change="sortChange"
+      >
         <el-table-column :label="$t('invite.inviteUserName')">
           <template slot-scope="scope">
-            <div v-if="scope.row.sourceUser && scope.row.sourceUser.username" class="flex">
-              <avatar :user="{ id: scope.row.sourceUser.id, username: scope.row.sourceUser.username, avatarUrl: scope.row.sourceUser.avatarUrl}" :size="30" :round="true" />
-              <nuxt-link :to="`/profile?userId=${scope.row.sourceUser.id}`" class="user-name">{{ scope.row.sourceUser.username }}</nuxt-link>
+            <div
+              v-if="scope.row.sourceUser && scope.row.sourceUser.username"
+              class="flex"
+            >
+              <avatar
+                :user="{ id: scope.row.sourceUser.id, username: scope.row.sourceUser.username, avatarUrl: scope.row.sourceUser.avatarUrl}"
+                :size="30"
+                :round="true"
+              />
+              <nuxt-link
+                :to="`/profile/index?userId=${scope.row.sourceUser.id}`"
+                class="user-name"
+              >{{ scope.row.sourceUser.username }}</nuxt-link>
             </div>
             <template v-else>{{ $t('core.userDeleted') }}</template>
           </template>
         </el-table-column>
-        <el-table-column prop="created_at" :label="$t('invite.incomeAt')" sortable="custom">
+        <el-table-column
+          prop="created_at"
+          :label="$t('invite.incomeAt')"
+          sortable="custom"
+        >
           <template slot-scope="scope">
             {{ scope.row.created_at | formatDate }}
           </template>
         </el-table-column>
-        <el-table-column :label="$t('invite.income')" width="100">
-          <div slot-scope="scope" class="last-table">
+        <el-table-column
+          :label="$t('invite.income')"
+          width="100"
+        >
+          <div
+            slot-scope="scope"
+            class="last-table"
+          >
             {{ $t('post.yuanItem') + scope.row.change_available_amount }}
           </div>
         </el-table-column>
@@ -187,7 +228,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import '@/assets/css/variable/color.scss';
+@import "@/assets/css/variable/color.scss";
 .filter-cont {
   display: flex;
   align-items: center;
@@ -206,19 +247,19 @@ export default {
     margin-right: 10px;
   }
 }
-.main{
+.main {
   min-height: 500px;
 }
-.el-table{
+.el-table {
   margin-top: 10px;
   ::v-deep thead th {
     color: #303133;
     background-color: #fafafa;
-    &:nth-last-child(2){
+    &:nth-last-child(2) {
       text-align: right;
     }
   }
-  .last-table{
+  .last-table {
     text-align: right;
     color: #606266;
   }
@@ -227,31 +268,31 @@ export default {
   text-align: right;
   padding-top: 20px;
   padding-bottom: 20px;
-  @media screen and ( max-width: 1005px ) {
-    ::v-deep .el-pagination__sizes{
+  @media screen and (max-width: 1005px) {
+    ::v-deep .el-pagination__sizes {
       display: none;
     }
   }
 }
-.no-more{
+.no-more {
   margin-top: 40px;
 }
-.flex{
+.flex {
   display: flex;
   align-items: center;
 }
-.user-name{
+.user-name {
   margin-left: 10px;
-  &:hover{
+  &:hover {
     color: $color-blue-base;
   }
 }
-.create-url{
+.create-url {
   background: $color-blue-base;
   transition: all 0.2s ease-in-out;
-  &:hover{
+  &:hover {
     background: $color-blue-deep;
-    border:1px solid $color-blue-deep;
+    border: 1px solid $color-blue-deep;
   }
 }
 </style>

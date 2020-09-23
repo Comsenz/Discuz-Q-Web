@@ -178,6 +178,7 @@ export default {
     if (code !== 'undefined') {
       this.code = code
     }
+    console.log(this.forums)
     if (this.forums && this.forums.set_site && this.forums.set_site.site_mode) {
       this.site_mode = this.forums.set_site.site_mode
     }

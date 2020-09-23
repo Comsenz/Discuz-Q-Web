@@ -2,8 +2,16 @@
   <div class="user-manage">
     <div class="filter-cont">
       <!-- 筛选 -->
-      <el-select v-model="selectedGroup" :placeholder="$t('profile.pleaseselect')" size="medium" @change="onChangeFilter">
-        <el-option :label="$t('manage.allIdentity')" value="" />
+      <el-select
+        v-model="selectedGroup"
+        :placeholder="$t('profile.pleaseselect')"
+        size="medium"
+        @change="onChangeFilter"
+      >
+        <el-option
+          :label="$t('manage.allIdentity')"
+          value=""
+        />
         <el-option
           v-for="item in groupList"
           :key="item.value"
@@ -18,11 +26,27 @@
         </template>
       </div>
       <!-- 搜索 -->
-      <el-input v-model="searchText" :placeholder="$t('manage.pleaseInputUserName')" class="search" size="medium" @keyup.enter.native="onClickSearch" @input="onClickSearch">
-        <i slot="suffix" class="el-icon-search el-input__icon" />
+      <el-input
+        v-model="searchText"
+        :placeholder="$t('manage.pleaseInputUserName')"
+        class="search"
+        size="medium"
+        @keyup.enter.native="onClickSearch"
+        @input="onClickSearch"
+      >
+        <i
+          slot="suffix"
+          class="el-icon-search el-input__icon"
+        />
       </el-input>
       <!-- 批量操作 -->
-      <el-select v-model="handleValue" :placeholder="$t('manage.batchOperate')" :disabled="forums && forums.other && !forums.other.can_edit_user_group" size="medium" @change="onChangeGroup">
+      <el-select
+        v-model="handleValue"
+        :placeholder="$t('manage.batchOperate')"
+        :disabled="forums && forums.other && !forums.other.can_edit_user_group"
+        size="medium"
+        @change="onChangeGroup"
+      >
         <el-option
           v-for="item in groupInviteList"
           :key="item.value"
@@ -32,23 +56,48 @@
         />
       </el-select>
     </div>
-    <el-table ref="multipleTable" v-loading="loading" :data="userList" style="width: 100%" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="35" />
-      <el-table-column :label="$t('manage.userName')" min-width="100">
+    <el-table
+      ref="multipleTable"
+      v-loading="loading"
+      :data="userList"
+      style="width: 100%"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column
+        type="selection"
+        width="35"
+      />
+      <el-table-column
+        :label="$t('manage.userName')"
+        min-width="100"
+      >
         <template slot-scope="scope">
           <div class="flex">
-            <avatar :user="{ id: scope.row.id, username: scope.row.username, avatarUrl: scope.row.avatarUrl}" :size="30" :round="true" />
-            <nuxt-link :to="`/profile?userId=${scope.row.id}`" class="user-name">{{ scope.row.username }}</nuxt-link>
+            <avatar
+              :user="{ id: scope.row.id, username: scope.row.username, avatarUrl: scope.row.avatarUrl}"
+              :size="30"
+              :round="true"
+            />
+            <nuxt-link
+              :to="`/profile/index?userId=${scope.row.id}`"
+              class="user-name"
+            >{{ scope.row.username }}</nuxt-link>
           </div>
         </template>
       </el-table-column>
       <el-table-column :label="$t('manage.identity')">
         <template slot-scope="scope">{{ scope.row.groups && scope.row.groups.length > 0 && scope.row.groups[0] ? scope.row.groups[0].name : '' }}</template>
       </el-table-column>
-      <el-table-column :label="$t('profile.status')" min-width="60">
+      <el-table-column
+        :label="$t('profile.status')"
+        min-width="60"
+      >
         <template slot-scope="scope">
           <template v-if="scope.row.status === 0">{{ $t('manage.normal') }}</template>
-          <span v-else class="red">{{ $t('manage.disable') }}</span>
+          <span
+            v-else
+            class="red"
+          >{{ $t('manage.disable') }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('manage.circleAge')">
@@ -57,20 +106,46 @@
         </template>
       </el-table-column>
       <!-- <el-table-column label="加入方式" /> -->
-      <el-table-column :label="$t('manage.lastUpdateAt')" width="140">
+      <el-table-column
+        :label="$t('manage.lastUpdateAt')"
+        width="140"
+      >
         <template slot-scope="scope">{{ scope.row.updatedAt | formatDate }}</template>
       </el-table-column>
-      <el-table-column fixed="right" :label="$t('manage.operate')" width="80">
+      <el-table-column
+        fixed="right"
+        :label="$t('manage.operate')"
+        width="80"
+      >
         <template slot-scope="scope">
-          <span v-if="forums && forums.other && !forums.other.can_edit_user_group && userInfo && !userInfo.canEdit" class="disable">{{ $t('manage.modifyRole') }}</span>
-          <el-dropdown v-else class="handle-dropdown" placement="bottom" trigger="click" @command="handleCommand">
+          <span
+            v-if="forums && forums.other && !forums.other.can_edit_user_group && userInfo && !userInfo.canEdit"
+            class="disable"
+          >{{ $t('manage.modifyRole') }}</span>
+          <el-dropdown
+            v-else
+            class="handle-dropdown"
+            placement="bottom"
+            trigger="click"
+            @command="handleCommand"
+          >
             <span class="el-dropdown-link">
               {{ $t('manage.modifyRole') }}
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item v-for="(item,index) in groupInviteList" :key="index" :command="{'userId':scope.row._jv.id, 'command':item.value}">{{ $t('manage.set') + item.label }}</el-dropdown-item>
-              <el-dropdown-item v-if="userInfo && userInfo.canEdit && scope.row.status === 0" :command="{'userId':scope.row._jv.id, 'command':'disable'}">{{ $t('manage.disable') }}</el-dropdown-item>
-              <el-dropdown-item v-else-if="userInfo && userInfo.canEdit && scope.row.status === 1" :command="{'userId':scope.row._jv.id, 'command':'normal'}">{{ $t('manage.cancelDisable') }}</el-dropdown-item>
+              <el-dropdown-item
+                v-for="(item,index) in groupInviteList"
+                :key="index"
+                :command="{'userId':scope.row._jv.id, 'command':item.value}"
+              >{{ $t('manage.set') + item.label }}</el-dropdown-item>
+              <el-dropdown-item
+                v-if="userInfo && userInfo.canEdit && scope.row.status === 0"
+                :command="{'userId':scope.row._jv.id, 'command':'disable'}"
+              >{{ $t('manage.disable') }}</el-dropdown-item>
+              <el-dropdown-item
+                v-else-if="userInfo && userInfo.canEdit && scope.row.status === 1"
+                :command="{'userId':scope.row._jv.id, 'command':'normal'}"
+              >{{ $t('manage.cancelDisable') }}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -320,8 +395,8 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import '@/assets/css/variable/color.scss';
-.user-manage{
+@import "@/assets/css/variable/color.scss";
+.user-manage {
   overflow-x: auto;
 }
 .filter-cont {
@@ -330,19 +405,19 @@ export default {
   .content {
     flex: 1;
     margin-left: 10px;
-    .text-bold{
-      font-weight:bold
+    .text-bold {
+      font-weight: bold;
     }
   }
   .el-select {
     width: 140px;
-    @media screen and ( max-width: 1005px ) {
+    @media screen and (max-width: 1005px) {
       width: 120px;
     }
   }
   .el-input {
     width: 220px;
-    @media screen and ( max-width: 1005px ) {
+    @media screen and (max-width: 1005px) {
       width: 140px;
     }
   }
@@ -350,10 +425,10 @@ export default {
     margin-right: 10px;
   }
 }
-.red{
+.red {
   color: #fa5151;
 }
-.el-table{
+.el-table {
   margin-top: 10px;
   ::v-deep thead th {
     color: #303133;
@@ -364,40 +439,39 @@ export default {
   text-align: right;
   padding-top: 20px;
   padding-bottom: 20px;
-  @media screen and ( max-width: 1005px ) {
-    ::v-deep .el-pagination__sizes{
+  @media screen and (max-width: 1005px) {
+    ::v-deep .el-pagination__sizes {
       display: none;
     }
   }
-
 }
-.handle-dropdown{
-  .el-dropdown-link{
-    color: #8590A6;
+.handle-dropdown {
+  .el-dropdown-link {
+    color: #8590a6;
     cursor: pointer;
-    &:hover{
+    &:hover {
       color: $color-blue-base;
     }
   }
 }
-.disable{
+.disable {
   cursor: no-drop;
-  color: #8590A6;
+  color: #8590a6;
 }
 ::v-deep .el-dropdown-menu__item:not(.is-disabled):hover {
   background-color: transparent;
   color: $color-blue-base;
 }
-.no-more{
+.no-more {
   margin-top: 40px;
 }
-.user-name{
+.user-name {
   margin-left: 10px;
-  &:hover{
+  &:hover {
     color: $color-blue-base;
   }
 }
-.flex{
+.flex {
   display: flex;
   align-items: center;
 }

@@ -218,7 +218,6 @@ export default {
     if (this.forums && this.forums.set_reg) {
       this.validate = this.forums.set_reg.register_validate
     }
-    // this.QRcode()
     this.changeactive()
   },
   destroyed() {
@@ -268,10 +267,9 @@ export default {
       })
     },
     // tab激活
-    changeactive() {
-      // if (this.activeName === '2') {
-      //   this.QRcode()
-      // }
+    changeactive(tab) {
+      this.passWord = ''
+      console.log('tab', this.passWord)
       this.activeName = this.forums ? this.forums.set_reg.register_type.toString() : ''
       if (this.activeName === '2' || this.forums && this.forums.qcloud && !this.forums.qcloud.qcloud_sms) {
         this.activeName = '0'
@@ -295,6 +293,8 @@ export default {
         this.$message.error('密码不能为空')
       } else if (this.passWord !== this.repeatPassWord) {
         this.$message.error('两次输入的密码不一致,请重新输入')
+        this.passWord = ''
+        this.repeatPassWord = ''
         this.passerror = true
       } else if (!this.ischeck) {
         this.$message.error('请同意协议')
@@ -384,7 +384,7 @@ export default {
           ) {
             const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code
             const errorText = res.data.errors[0].detail ? res.data.errors[0].detail[0] : this.$t(`core.${error}`)
-            console.log('error', error)
+            console.log('error', errorText)
             this.$message.error(errorText)
           }
           if (
@@ -393,12 +393,14 @@ export default {
             res.data.errors &&
             res.data.errors[0].code === 'register_validate'
           ) {
-            this.$message.error('帐号审核中，请等管理员审核通过')
+            // this.$message.error('帐号审核中，请等管理员审核通过')
             this.$router.push(`/user/warning?username=${this.userName}`)
           }
         })
         .catch(err => {
           this.loading = false
+          this.passWord = ''
+          this.repeatPassWord = ''
           console.log(err)
         })
     },

@@ -70,9 +70,26 @@ export default {
       const threadData = await store.dispatch('jv/get', [`threads/${query.id}`, { params: { include: threadInclude }}])
       console.log('thread =>', threadData)
       return { thread: threadData, article: threadData.firstPost, postId: threadData.firstPost._jv.id }
-    } catch (e) {
-      console.log('ssr err')
-      return { articleLoading: true }
+    } catch (error) {
+      // console.log('ssr err', error)
+
+      return {
+        articleLoading: true
+
+        // _error__abc: {
+        //   error_keys: Object.keys(error),
+        //   error: String(error),
+        //   errno: error.errno,
+        //   code: error.code,
+        //   syscall: error.syscall,
+        //   address: error.address,
+        //   port: error.port,
+        //   config: error.config,
+        //   request_domain: (error.request || {}).domain,
+        //   request_keys: Object.keys(error.request || {}),
+        //   response_keys: Object.keys(error.response || {})
+        // }
+      }
     }
   },
   data() {
