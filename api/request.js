@@ -1,10 +1,20 @@
 import axios from 'axios'
 import Qs from 'qs'
-import env from '@/utils/env.js'
+
+let baseURL = '/api'
+
+// SSR 服务端 baseURL 修正处理
+if (process.server === true) {
+  if (process.env.NODE_ENV === 'production') {
+    baseURL = `${process.env.VUE_APP_CONFIG_API_URL}${baseURL}`
+  } else {
+    baseURL = `http://127.0.0.1:${process.env.npm_package_config_nuxt_port || 3000}${baseURL}`
+  }
+}
 
 // 创建 Axios 实例
 const service = axios.create({
-  baseURL: '/api',
+  baseURL,
   // timeout: 60000,  // 请求超时时间，Respone 拦截器要做好提示处理
   paramsSerializer: params =>
     Qs.stringify(params, {
@@ -14,12 +24,7 @@ const service = axios.create({
 
 // Request 拦截器
 service.interceptors.request.use(
-  (oConfig) => {
-    // SSR 服务端 baseURL 修正处理
-    if (process.server) {
-      oConfig.baseURL = `${process.env.NODE_ENV === 'production' ? 'https:' : 'http:'}//${env.host}${oConfig.baseURL}`
-    }
-
+  oConfig => {
     oConfig.headers['Accept'] = 'application/vnd.api+json'
 
     if (process.client && localStorage.getItem('access_token')) {
