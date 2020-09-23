@@ -227,7 +227,7 @@ export default {
       }
     },
     toUser(userId) {
-      this.$router.push(`/profile?userId=${userId}`)
+      this.$router.push(`/profile/index?userId=${userId}`)
     },
     confirm(e) {
 

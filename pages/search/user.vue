@@ -3,25 +3,45 @@
     <main class="cont-left">
       <div class="search-header">
         <div class="result-count">
-          为您找到 <span v-if="q" class="keyword">"{{ q }}"</span>的相关用户搜索结果 {{ userCount }} {{ $t('topic.item') }}
+          为您找到 <span
+            v-if="q"
+            class="keyword"
+          >"{{ q }}"</span>的相关用户搜索结果 {{ userCount }} {{ $t('topic.item') }}
         </div>
         <create-post-popover />
       </div>
       <div class="user-list">
         <div class="user-flex">
-          <!-- <nuxt-link v-for="(item, index) in userList" :key="index" :to="`/profile?userId=${item.id}`" class="user-item">
+          <!-- <nuxt-link v-for="(item, index) in userList" :key="index" :to="`/profile/index?userId=${item.id}`" class="user-item">
             <avatar :user="item" :size="45" />
             <div class="info">
               <div class="name text-hidden">{{ item.username }}</div>
               <div v-if="item.fansCount > 0" class="fans">{{ $t('profile.followers') }}{{ item.fansCount }}</div>
             </div>
           </nuxt-link> -->
-          <user-item v-for="(item, index) in userList" :key="index" :item="item" />
+          <user-item
+            v-for="(item, index) in userList"
+            :key="index"
+            :item="item"
+          />
         </div>
         <loading v-if="loading" />
         <template v-else>
-          <div v-if="hasMore" class="load-more" @click="loadMore">{{ $t('topic.showMore') }}{{ $t('search.users') }}</div>
-          <div v-else class="no-more"><svg-icon v-if="userList.length === 0" type="empty" class="empty-icon" />{{ $t(userList.length > 0 ? 'discuzq.list.noMoreData' : 'discuzq.list.noData') }}</div>
+          <div
+            v-if="hasMore"
+            class="load-more"
+            @click="loadMore"
+          >{{ $t('topic.showMore') }}{{ $t('search.users') }}</div>
+          <div
+            v-else
+            class="no-more"
+          >
+            <svg-icon
+              v-if="userList.length === 0"
+              type="empty"
+              class="empty-icon"
+            />{{ $t(userList.length > 0 ? 'discuzq.list.noMoreData' : 'discuzq.list.noData') }}
+          </div>
         </template>
       </div>
     </main>
@@ -146,70 +166,70 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/css/variable/color.scss';
-@mixin background(){
+@import "@/assets/css/variable/color.scss";
+@mixin background() {
   background: #fff;
   border-radius: 5px;
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.03);
 }
-.app-cont{
+.app-cont {
   box-shadow: none;
 }
-.container{
-  display:flex;
-  background: #F4F5F6;
+.container {
+  display: flex;
+  background: #f4f5f6;
   width: 100%;
-  .cont-left{
-    flex:auto;
+  .cont-left {
+    flex: auto;
     @include background();
-    .search-header{
+    .search-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding:18px 20px;
-      border-bottom: 1px solid #EFEFEF;
-      .result-count{
+      padding: 18px 20px;
+      border-bottom: 1px solid #efefef;
+      .result-count {
         font-size: 16px;
         margin-right: 20px;
-        .keyword{
-          color: #FA5151
+        .keyword {
+          color: #fa5151;
         }
       }
     }
-    .count{
+    .count {
       font-size: 16px;
       padding: 18px 20px 0;
     }
-    .user-list{
-      .user-load-more{
-        color: #8590A6;
+    .user-list {
+      .user-load-more {
+        color: #8590a6;
         margin-top: 40px;
-        display:inline-block;
-        cursor:pointer;
-        &:hover{
+        display: inline-block;
+        cursor: pointer;
+        &:hover {
           color: $color-blue-deep;
         }
       }
     }
   }
-  .cont-right{
-    margin-left:15px;
-    width:300px;
+  .cont-right {
+    margin-left: 15px;
+    width: 300px;
     flex: 0 0 300px;
-    @media screen and ( max-width: 1005px ) {
-      width:220px;
+    @media screen and (max-width: 1005px) {
+      width: 220px;
       flex: 0 0 220px;
     }
-    .background-color{
+    .background-color {
       @include background();
-       margin-bottom: 16px;
+      margin-bottom: 16px;
     }
-    .category{
+    .category {
       margin-bottom: 0;
     }
   }
 }
-.empty-icon{
+.empty-icon {
   margin-right: 6px;
 }
 </style>

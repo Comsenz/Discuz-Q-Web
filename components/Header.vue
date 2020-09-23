@@ -33,7 +33,7 @@
           :round="true"
           :is-real="userInfo.isReal"
         />
-        <nuxt-link v-if="userInfo.username && userInfo.id" :to="`/profile?userId=${userInfo.id}`" class="menu-item user-name text-hidden">
+        <nuxt-link v-if="userInfo.username && userInfo.id" :to="`/profile/index?userId=${userInfo.id}`" class="menu-item user-name text-hidden">
           {{ userInfo.username }}
         </nuxt-link>
         <nuxt-link to="/my/notice" class="menu-item notice-btn">

@@ -1,12 +1,21 @@
 <template>
   <div class="invite-container">
     <template v-if="isShowDetail">
-      <header v-if="detail && detail.user" class="detail-header">
+      <header
+        v-if="detail && detail.user"
+        class="detail-header"
+      >
         <div class="title">{{ $t('invite.userDetail' ) }}</div>
         <div class="user">
-          <avatar :user="{ id: detail.user.id, username: detail.user.username, avatarUrl: detail.user.avatarUrl}" :size="50" />
+          <avatar
+            :user="{ id: detail.user.id, username: detail.user.username, avatarUrl: detail.user.avatarUrl}"
+            :size="50"
+          />
           <div class="user-info">
-            <nuxt-link :to="`/profile?userId=${detail.user.id}`" class="user-name">{{ detail.user.username }}</nuxt-link>
+            <nuxt-link
+              :to="`/profile/index?userId=${detail.user.id}`"
+              class="user-name"
+            >{{ detail.user.username }}</nuxt-link>
             <div class="create-at">{{ $t('invite.createdAt') + $t('discuzq.symbol.colon') }} {{ detail.created_at | formatDate }}</div>
           </div>
           <div class="total-money">
@@ -18,22 +27,47 @@
       <main>
         <div class="main">
           <!-- <div class="invite-total">{{ $t('invite.inviteTotal', { total }) }}</div> -->
-          <el-table v-loading="loading" :data="incomeDetailList" :default-sort="{prop: 'created_at', order: 'descending'}" @sort-change="sortChange">
+          <el-table
+            v-loading="loading"
+            :data="incomeDetailList"
+            :default-sort="{prop: 'created_at', order: 'descending'}"
+            @sort-change="sortChange"
+          >
             <el-table-column :label="$t('invite.inviteUserName')">
               <template slot-scope="scope">
-                <div v-if="scope.row.sourceUser" class="flex">
-                  <avatar :user="{ id: scope.row.sourceUser.id, username: scope.row.sourceUser.username, avatarUrl: scope.row.sourceUser.avatarUrl}" :size="30" :round="true" />
-                  <nuxt-link :to="`/profile?userId=${scope.row.sourceUser.id}`" class="user-name">{{ scope.row.sourceUser.username }}</nuxt-link>
+                <div
+                  v-if="scope.row.sourceUser"
+                  class="flex"
+                >
+                  <avatar
+                    :user="{ id: scope.row.sourceUser.id, username: scope.row.sourceUser.username, avatarUrl: scope.row.sourceUser.avatarUrl}"
+                    :size="30"
+                    :round="true"
+                  />
+                  <nuxt-link
+                    :to="`/profile/index?userId=${scope.row.sourceUser.id}`"
+                    class="user-name"
+                  >{{ scope.row.sourceUser.username }}</nuxt-link>
                 </div>
               </template>
             </el-table-column>
-            <el-table-column prop="created_at" :label="$t('invite.incomeAt')" sortable="custom">
+            <el-table-column
+              prop="created_at"
+              :label="$t('invite.incomeAt')"
+              sortable="custom"
+            >
               <template slot-scope="scope">
                 {{ scope.row.created_at | formatDate }}
               </template>
             </el-table-column>
-            <el-table-column :label="$t('invite.income')" width="100">
-              <div slot-scope="scope" class="last-table">
+            <el-table-column
+              :label="$t('invite.income')"
+              width="100"
+            >
+              <div
+                slot-scope="scope"
+                class="last-table"
+              >
                 {{ $t('post.yuanItem') + scope.row.change_available_amount }}
               </div>
             </el-table-column>
@@ -55,7 +89,10 @@
         </div>
       </main>
     </template>
-    <div v-else class="invite-cont">
+    <div
+      v-else
+      class="invite-cont"
+    >
       <header class="header flex">
         <div class="item">
           <div class="label">{{ $t('invite.inviteSuccessCount') }}</div>
@@ -68,8 +105,18 @@
       </header>
       <main>
         <el-tabs v-model="activeName">
-          <el-tab-pane :label="$t('invite.invitedUser')" name="invited"><invited @view-detail="viewDetail" /></el-tab-pane>
-          <el-tab-pane :label="$t('invite.incomeDetail')" name="income"><income /></el-tab-pane>
+          <el-tab-pane
+            :label="$t('invite.invitedUser')"
+            name="invited"
+          >
+            <invited @view-detail="viewDetail" />
+          </el-tab-pane>
+          <el-tab-pane
+            :label="$t('invite.incomeDetail')"
+            name="income"
+          >
+            <income />
+          </el-tab-pane>
         </el-tabs>
       </main>
     </div>
@@ -204,130 +251,131 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
-@import '@/assets/css/variable/color.scss';
-.invite-container{
-  .invite-cont{
+@import "@/assets/css/variable/color.scss";
+.invite-container {
+  .invite-cont {
     padding: 0 30px;
-    @media screen and ( max-width: 1005px ) {
+    @media screen and (max-width: 1005px) {
       padding: 0 15px;
     }
   }
-  .flex{
+  .flex {
     display: flex;
     align-items: center;
   }
-  .header{
-    .item{
+  .header {
+    .item {
       margin-right: 130px;
-      .label{
+      .label {
         font-size: 14px;
-        color: #6D6D6D;
+        color: #6d6d6d;
       }
-      .value{
+      .value {
         font-size: 20px;
         margin-top: 10px;
       }
     }
-    .item-invite{
-      text-align:right;
+    .item-invite {
+      text-align: right;
     }
   }
-  .el-tabs ::v-deep{
+  .el-tabs ::v-deep {
     margin-top: 40px;
-    .el-tabs__active-bar, .el-tabs__nav-wrap::after {
+    .el-tabs__active-bar,
+    .el-tabs__nav-wrap::after {
       height: 0;
     }
-    .el-tabs__nav-wrap{
-      border-bottom: 1px solid #E4E4E4;
-      padding-bottom:5px;
+    .el-tabs__nav-wrap {
+      border-bottom: 1px solid #e4e4e4;
+      padding-bottom: 5px;
     }
-    .el-tabs__item{
+    .el-tabs__item {
       font-size: 16px;
-      color: #B5B5B5;
-      &.is-active{
-        color:#000;
+      color: #b5b5b5;
+      &.is-active {
+        color: #000;
         font-size: 18px;
-        font-weight:bold;
+        font-weight: bold;
       }
     }
     .el-tabs__header .el-tabs__item:hover {
       color: $color-blue-deep;
     }
   }
-  .detail-header{
-    .title{
+  .detail-header {
+    .title {
       font-size: 18px;
       font-weight: bold;
       margin-bottom: 20px;
       padding-bottom: 13px;
       padding: 0 30px 13px;
       border-bottom: 1px solid $border-color-base;
-      @media screen and ( max-width: 1005px ) {
+      @media screen and (max-width: 1005px) {
         padding: 0 15px 13px;
       }
     }
-    .user{
+    .user {
       display: flex;
       align-items: center;
       padding: 0 30px;
-      @media screen and ( max-width: 1005px ) {
+      @media screen and (max-width: 1005px) {
         padding: 0 15px;
       }
-      .user-info{
+      .user-info {
         margin-left: 15px;
-        .user-name{
+        .user-name {
           font-size: 16px;
           font-weight: bold;
           margin-bottom: 5px;
           display: block;
         }
-        .create-at{
+        .create-at {
           color: $font-color-grey;
           font-size: 12px;
         }
       }
     }
-    .total-money{
+    .total-money {
       flex: 1;
       text-align: right;
-      .label{
+      .label {
         font-size: 14px;
-        color: #6D6D6D;
+        color: #6d6d6d;
       }
-      .value{
+      .value {
         font-size: 20px;
       }
     }
   }
-  .main{
+  .main {
     min-height: 500px;
     padding: 0 30px;
     margin-top: 30px;
-    @media screen and ( max-width: 1005px ) {
+    @media screen and (max-width: 1005px) {
       padding: 0 15px;
     }
-    .invite-total{
+    .invite-total {
       color: #777777;
-      @media screen and ( max-width: 1005px ) {
+      @media screen and (max-width: 1005px) {
         padding: 0 15px;
       }
     }
-    .el-table{
+    .el-table {
       margin-top: 15px;
       ::v-deep thead th {
         color: #303133;
         background-color: #fafafa;
-        &:nth-last-child(2){
+        &:nth-last-child(2) {
           text-align: right;
         }
       }
-      .last-table{
+      .last-table {
         text-align: right;
         color: #606266;
       }
-      .user-name{
+      .user-name {
         margin-left: 10px;
-        &:hover{
+        &:hover {
           color: $color-blue-base;
         }
       }
@@ -336,13 +384,12 @@ export default {
       text-align: right;
       padding-top: 20px;
       padding-bottom: 20px;
-      @media screen and ( max-width: 1005px ) {
-        ::v-deep .el-pagination__sizes{
+      @media screen and (max-width: 1005px) {
+        ::v-deep .el-pagination__sizes {
           display: none;
         }
       }
     }
   }
 }
-
 </style>
