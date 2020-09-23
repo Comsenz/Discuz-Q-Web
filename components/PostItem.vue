@@ -320,7 +320,7 @@ export default {
     .user-info {
       flex: 1;
       display: flex;
-      align-items: baseline;
+      align-items: center;
       .user-name {
         font-size: 16px;
         font-weight: bold;

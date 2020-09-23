@@ -172,7 +172,6 @@ table {
   cursor: pointer;
   margin: 20px;
   border-radius:2px;
-  transition: all 0.2s ease-in-out;
   &:hover{
     background: #E5F2FF;
     border:1px solid #1878F3;
@@ -182,7 +181,7 @@ table {
 .btn-primary-plain{
   color:  #1878F3;
   border:1px solid #1878F3;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.1s ease-in-out;
   &:hover{
     background: #E5F2FF;
     border:1px solid #D4E6FC;
@@ -191,7 +190,7 @@ table {
 .btn-primary{
   background: #1878F3;
   color: #fff;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.1s ease-in-out;
   &:hover{
     background: #006CD1;
   }
