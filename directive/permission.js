@@ -23,7 +23,9 @@ function callback(binding, vnode) {
       // 后期再处理
       if (process.client) {
         Message.error('请登录后再操作')
-        location.href = '/user/login'
+        window.setTimeout(() => {
+          location.href = '/user/login'
+        }, 1000)
       } else {
         console.log('请登录后再操作')
       }
