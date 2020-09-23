@@ -144,7 +144,6 @@ export default {
   },
   methods: {
     getThread() {
-      console.log(this.threadId, 'sdfsdfsdf')
       return this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include: threadInclude }}]).then(data => {
         if (data.isDeleted) return this.$router.push('/error')
         this.articleLoading = false
@@ -155,6 +154,10 @@ export default {
       }, e => this.handleError(e, 'thread'))
     },
     initData() {
+      console.log('thread.canEdit 编辑权限 => ', this.thread.canEdit)
+      console.log('thread.canHide 删除权限 => ', this.thread.canHide)
+      console.log('thread.canEssence 加精权限 => ', this.thread.canEssence)
+      console.log('thread.canSticky 置顶权限 => ', this.thread.canSticky)
       if (this.thread.user && this.thread.user.groups[0] && this.thread.user.groups[0].permissionWithoutCategories) {
         this.canRewardOrPaid = this.thread.user.groups[0].permissionWithoutCategories.filter(item => item.permission === 'createThreadPaid').length > 0
         if (this.thread.user.groups[0]._jv.id === '1') this.canRewardOrPaid = true

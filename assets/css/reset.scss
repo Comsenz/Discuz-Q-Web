@@ -225,7 +225,6 @@ $em: 16px;
 
 /* html */
 .content-html {
-  width: 100%;
   font-size: $em;
   line-height: 1.5 * $em;
   //user-select: none;
@@ -238,7 +237,7 @@ $em: 16px;
   .h6 { margin: 1.67 * $em 0; font-size: 0.83 * $em; }
   .h1, .h2, .h3, .h4, .h5, .h6, .b, .strong { font-weight: bolder; }
   div { margin: 0; padding: 0; display: block; word-break: break-word; }
-  p { line-height: 20px; font-size: $em; clear: both;  margin-bottom: $em; }
+  p { line-height: 24px; font-size: $em; clear: both;  margin-bottom: $em; &:last-child { margin-bottom: 0 } }
   i, cite, em, var, address { font-style: italic; }
   .spaceshow { white-space: pre; }
   pre, tt, code, kbd, samp { font-family: monospace; }

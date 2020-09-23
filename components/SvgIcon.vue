@@ -26,7 +26,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .svg-icon {
   width: 1em;
   height: 1em;

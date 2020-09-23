@@ -94,6 +94,7 @@ export default {
     emitValue(value) {
       this.$emit('selectedTopic', ' #' + value + '# ')
       this.searchValue = ''
+      this.searchList = []
       this.getTopics()
     }
   }
