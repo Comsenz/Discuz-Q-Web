@@ -21,8 +21,8 @@
       </el-select>
       <div class="content">
         <template v-if="!loading">
-          <template v-if="searchText">{{ $t('manage.find') }}<span class="text-bold">"{{ searchText }}"</span>{{ $t('manage.searchResult', { total }) }}</template>
-          <template v-else>{{ $t('manage.userTotal', { total }) }}</template>
+          <!-- <template v-if="searchText">{{ $t('manage.find') }}<span class="text-bold">"{{ searchText }}"</span>{{ $t('manage.searchResult', { total }) }}</template> -->
+          {{ $t('manage.userTotal', { total }) }}
         </template>
       </div>
       <!-- 搜索 -->
@@ -41,20 +41,27 @@
       </el-input>
       <!-- 批量操作 -->
       <el-select
+        v-if="forums && forums.other && forums.other.can_edit_user_group"
         v-model="handleValue"
         :placeholder="$t('manage.batchOperate')"
-        :disabled="forums && forums.other && !forums.other.can_edit_user_group"
         size="medium"
+        class="el-select-margin"
         @change="onChangeGroup"
       >
         <el-option
           v-for="item in groupInviteList"
           :key="item.value"
-          :disabled="item.value === '7'"
           :label="$t('manage.set') + item.label"
           :value="item.value"
         />
       </el-select>
+      <!-- 邀请链接 -->
+      <el-dropdown v-if="forums && forums.other && forums.other.can_create_invite" class="handle-dropdown" placement="bottom" trigger="click" @command="handleCommand">
+        <el-button type="primary" size="medium" class="create-url">{{ $t('manage.generateInvitationUrl') }}</el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item v-for="(item,index) in groupInviteList" :key="index" :command="item.value">{{ item.label + $t('manage.invitationUrl') }}</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </div>
     <el-table
       ref="multipleTable"
@@ -113,17 +120,13 @@
         <template slot-scope="scope">{{ scope.row.updatedAt | formatDate }}</template>
       </el-table-column>
       <el-table-column
+        v-if="forums && forums.other && (forums.other.can_edit_user_group || forums.other.can_edit_user_status)"
         fixed="right"
         :label="$t('manage.operate')"
         width="80"
       >
         <template slot-scope="scope">
-          <span
-            v-if="forums && forums.other && !forums.other.can_edit_user_group && userInfo && !userInfo.canEdit"
-            class="disable"
-          >{{ $t('manage.modifyRole') }}</span>
           <el-dropdown
-            v-else
             class="handle-dropdown"
             placement="bottom"
             trigger="click"
@@ -133,17 +136,19 @@
               {{ $t('manage.modifyRole') }}
             </span>
             <el-dropdown-menu slot="dropdown">
+              <template v-if="forums && forums.other && forums.other.can_edit_user_group">
+                <el-dropdown-item
+                  v-for="(item,index) in groupInviteList"
+                  :key="index"
+                  :command="{'userId':scope.row._jv.id, 'command':item.value}"
+                >{{ $t('manage.set') + item.label }}</el-dropdown-item>
+              </template>
               <el-dropdown-item
-                v-for="(item,index) in groupInviteList"
-                :key="index"
-                :command="{'userId':scope.row._jv.id, 'command':item.value}"
-              >{{ $t('manage.set') + item.label }}</el-dropdown-item>
-              <el-dropdown-item
-                v-if="userInfo && userInfo.canEdit && scope.row.status === 0"
+                v-if="forums && forums.other && forums.other.can_edit_user_status && scope.row.status === 0"
                 :command="{'userId':scope.row._jv.id, 'command':'disable'}"
               >{{ $t('manage.disable') }}</el-dropdown-item>
               <el-dropdown-item
-                v-else-if="userInfo && userInfo.canEdit && scope.row.status === 1"
+                v-else-if="forums && forums.other && forums.other.can_edit_user_status && scope.row.status === 1"
                 :command="{'userId':scope.row._jv.id, 'command':'normal'}"
               >{{ $t('manage.cancelDisable') }}</el-dropdown-item>
             </el-dropdown-menu>
@@ -183,13 +188,20 @@ export default {
     }
   },
   mixins: [handleError],
+  props: {
+    groupInviteList: {
+      type: Array,
+      default: () => {
+        return []
+      }
+    }
+  },
   data() {
     return {
       loading: false,
       selectedGroup: '', // 筛选项 选中的用户组
       groupId: [], // 用于接口的用户组数组
       groupList: [], // 用户组列表
-      groupInviteList: [], // 返回当前用户可见用户组（非管理员不返回游客、管理员用户组）
       handleValue: '',
       pageNum: 1,
       pageSize: 10,
@@ -213,23 +225,12 @@ export default {
   mounted() {
     this.getUserList()
     this.getGroupList()
-    this.getGroupList('invite')
   },
   methods: {
     // 获取用户组
-    getGroupList(type) {
-      const params = {
-        'filter[type]': type
-      }
-      this.$store.dispatch('jv/get', ['groups', { params }]).then(res => {
-        if (type) {
-          res.forEach(item => {
-            this.groupInviteList.push({
-              label: item.name,
-              value: item._jv.id
-            })
-          })
-        } else {
+    getGroupList() {
+      this.$store.dispatch('jv/get', ['groups', { }]).then(res => {
+        if (res && Array.isArray(res) && res.length > 0) {
           res.forEach(item => {
             this.groupList.push({
               label: item.name,
@@ -404,25 +405,32 @@ export default {
   align-items: center;
   .content {
     flex: 1;
-    margin-left: 10px;
+    margin-left: 30px;
+    @media screen and (max-width: 1005px) {
+      margin-left: 5px;
+      font-size: 12px;
+    }
     .text-bold {
       font-weight: bold;
     }
   }
   .el-select {
-    width: 140px;
+    width: 120px;
     @media screen and (max-width: 1005px) {
-      width: 120px;
+      width: 110px;
     }
+  }
+  .el-select-margin{
+    margin-left: 10px;
   }
   .el-input {
     width: 220px;
     @media screen and (max-width: 1005px) {
-      width: 140px;
+      width: 120px;
     }
   }
   .search {
-    margin-right: 10px;
+    margin-left: 10px;
   }
 }
 .red {
@@ -474,5 +482,9 @@ export default {
 .flex {
   display: flex;
   align-items: center;
+}
+.create-url{
+  padding:10px;
+  margin-left: 10px;
 }
 </style>

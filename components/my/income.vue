@@ -4,7 +4,8 @@
       <!-- 筛选 -->
       <div class="content">
         <template v-if="!loading">
-          <template>{{ $t('invite.incomeTotal', { totalMoney }) }}</template>
+          {{ $t('invite.incomeTotal') }}
+          <span class="bold">{{ $t('post.yuanItem') + totalMoney }}</span>
         </template>
       </div>
       <!-- 搜索 -->
@@ -151,13 +152,12 @@ export default {
         'sort': this.sort
       }
       this.$store.dispatch('jv/get', ['wallet/log', { params }]).then(res => {
-        if (res._jv) {
+        if (res && res._jv && res._jv.json && res._jv.json.meta) {
           this.totalMoney = res._jv.json.meta.sumChangeAvailableAmount
           this.total = res._jv.json.meta.total
           delete res._jv
         }
         this.incomeList = res
-        console.log('income,', res)
       }, e => {
         this.handleError(e)
       }).finally(() => {
@@ -236,6 +236,10 @@ export default {
     flex: 1;
     margin-left: 10px;
     color: #777777;
+    .bold{
+      color: #000;
+      font-weight: bold;
+    }
   }
   .el-select {
     width: 140px;

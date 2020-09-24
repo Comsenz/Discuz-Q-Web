@@ -994,6 +994,7 @@ export default {
   display: none;
 }
 .myprofile {
+  margin-top: 40px !important;
   .bgcolor {
     background: #fafbfc;
   }

@@ -183,6 +183,7 @@ export default {
 <style lang='scss' scoped>
 @import '@/assets/css/variable/color.scss';
 .site-info-container{
+  margin-top: 40px !important;
   margin-left:30px;
   padding-right:30px;
   padding-bottom: 30px;
@@ -242,7 +243,7 @@ export default {
 .site-detail{
   margin-top:30px;
   padding-bottom: 27.5px;
-  border-bottom: 1px solid $border-color-base;
+  border-bottom: 1px solid $line-color-base;
   .header{
     display: flex;
     justify-content: space-between;
@@ -253,9 +254,10 @@ export default {
     }
   }
   .content{
-    margin-top: 15px;
+    margin-top: 25px;
     color: #000;
-    padding-bottom: 12.5px;
+    padding-bottom: 10px;
+    line-height: 24px;
     ::v-deep.el-textarea__inner{
       font-family: inherit;
     }
@@ -268,19 +270,19 @@ export default {
   }
 }
 .circlemode{
-  margin-top: 22.5px;
+  margin-top: 30px;
   border-bottom: 1px solid $border-color-base;
   padding-bottom: 20px;
   .content{
-    margin-top: 12px;
+    margin-top: 25px;
     margin-left: 20px;
   }
 }
 .permission{
-  margin-top: 22.5px;
+  margin-top: 30px;
   .user-detail{
     display: flex;
-    margin-top: 12px;
+    margin-top: 25px;
     .avatar{
       flex:0 0 50px;
     }

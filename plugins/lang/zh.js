@@ -576,13 +576,14 @@ export default {
     incomeDetail: '收益明细',
     inviteSuccessCount: '成功邀请（人）',
     allIncome: '累计收益',
-    inviteTotal: '共邀请{total}人',
+    inviteTotal: '共邀请',
+    people: '人，',
     inviteUserName: '用户名',
     createdAt: '注册时间',
     incomeAt: '收益时间',
     viewDetail: '查看详细',
     userDetail: '受邀朋友收益',
-    incomeTotal: '当前列表涉及金额 ￥{totalMoney}',
+    incomeTotal: '当前列表涉及金额',
     searchPlaceholder: '请输入要搜索的用户名'
   },
   // 海报分享页

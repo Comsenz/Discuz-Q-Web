@@ -4,7 +4,11 @@
       <!-- 筛选 -->
       <div class="content">
         <template v-if="!loading">
-          <template>{{ $t('invite.inviteTotal', { total }) }}</template>
+          {{ $t('invite.inviteTotal') }}
+          <span class="bold">{{ inviteTotal }}</span>
+          {{ $t('invite.people') }}
+          {{ $t('invite.allIncome') }}
+          <span class="bold">{{ $t('post.yuanItem') + totalMoney }}</span>
         </template>
       </div>
       <!-- 搜索 -->
@@ -126,19 +130,53 @@ export default {
       pageSize: 10,
       searchText: '',
       sort: '-created_at',
+      inviteTotal: 0,
+      totalMoney: 0,
       total: 0,
       inviteList: [] // 邀请列表
     }
   },
   computed: {
+    userId() {
+      return this.$store.state.user.info.id
+    },
     forums() {
       return this.$store.state.site.info.attributes || {}
     }
   },
   mounted() {
+    this.getInvite()
+    this.getIncome()
     this.getInviteList()
   },
   methods: {
+    // 获取成功邀请人数统计
+    getInvite() {
+      const params = {
+        'page[number]': 1,
+        'page[limit]': 1
+      }
+      this.$store.dispatch('jv/get', ['invite/users', { params }]).then((res) => {
+        console.log('res', res)
+        if (res && res._jv && res._jv.json && res._jv.json.meta) {
+          this.inviteTotal = res._jv.json.meta.total
+        }
+      })
+    },
+    // 获取累计收益
+    getIncome() {
+      const params = {
+        'filter[user]': this.userId,
+        'filter[change_type]': '33, 62, 34',
+        'page[number]': 1,
+        'page[limit]': 1
+      }
+      this.$store.dispatch('jv/get', ['wallet/log', { params }]).then(res => {
+        if (res && res._jv && res._jv.json && res._jv.json.meta) {
+          this.totalMoney = res._jv.json.meta.sumChangeAvailableAmount
+        }
+      })
+    },
     // 获取邀请列表
     getInviteList() {
       this.loading = true
@@ -151,8 +189,10 @@ export default {
       this.$store.dispatch('jv/get', ['invite/users', { params }]).then((res) => {
         console.log('res', res)
         if (res) {
-          this.total = res._jv.json.meta.total
           this.inviteList = res
+          if (res._jv && res._jv.json && res._jv.json.meta) {
+            this.total = res._jv.json.meta.total
+          }
         }
       }, e => {
         this.handleError(e)
@@ -236,6 +276,10 @@ export default {
     flex: 1;
     margin-left: 10px;
     color: #777777;
+    .bold{
+      color: #000;
+      font-weight: bold;
+    }
   }
   .el-select {
     width: 140px;

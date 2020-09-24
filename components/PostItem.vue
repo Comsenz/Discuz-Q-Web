@@ -453,17 +453,19 @@ export default {
     }
     .location {
       display: inline-block;
-      background: #f7f7f7;
+      background: $background-color-grey;
       border-radius: 13px;
+      border: 1px solid $background-color-grey;
       font-size: 12px;
       color: #777777;
-      padding: 4px 10px;
+      padding: 3px 10px;
       line-height: 16px;
       margin-top: 10px;
       transition: all 0.1s ease-in-out;
       &:hover {
-        background-color: #e5f2ff;
-        color: $font-color-grey;
+        background-color: #fff;
+        color: $color-blue-base;
+        border-color: $color-blue-base;
       }
       .flex {
         display: flex;
