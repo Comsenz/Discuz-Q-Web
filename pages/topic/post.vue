@@ -45,16 +45,16 @@ export default {
       editResourceShow: { showUploadImg: false, showUploadVideo: false, showUploadAttached: false },
       typeInformation: {
         // 0 文字帖 1 帖子 2 视频 3 图片 4 评论
-        0: { type: 0, headerText: 'postText', textLimit: 450, showPayment: false, showTitle: false, showImage: false, showVideo: false,
+        0: { type: 0, headerText: 'postText', textLimit: 450, showPayment: false, showLocation: true, showTitle: false, showImage: false, showVideo: false,
           showAttached: false, showMarkdown: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
-        1: { type: 1, headerText: 'postPost', textLimit: 10000, showPayment: true, showTitle: true, showImage: true, showVideo: false,
+        1: { type: 1, headerText: 'postPost', textLimit: 10000, showPayment: true, showLocation: true, showTitle: true, showImage: true, showVideo: false,
           showAttached: true, showMarkdown: true, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
-        2: { type: 2, headerText: 'postVideo', textLimit: 450, showPayment: true, showTitle: false, showImage: false, showVideo: true,
+        2: { type: 2, headerText: 'postVideo', textLimit: 450, showPayment: true, showLocation: true, showTitle: false, showImage: false, showVideo: true,
           showAttached: false, showMarkdown: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
-        3: { type: 3, headerText: 'postImage', textLimit: 450, showPayment: true, showTitle: false, showImage: true, showVideo: false,
+        3: { type: 3, headerText: 'postImage', textLimit: 450, showPayment: true, showLocation: true, showTitle: false, showImage: true, showVideo: false,
           showAttached: false, showMarkdown: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' }
       },
       categorySelectedId: '',
@@ -97,15 +97,8 @@ export default {
       return this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include: threadInclude }}]).then(data => {
         if (data.isDeleted) return this.$router.push('/')
         this.isEditor = true
-        this.categorySelectedId = data.category._jv.id
-        this.post.title = data.title
-        this.post.text = data.firstPost.content
-        this.post.id = data.firstPost._jv.id
-        this.payment.price = parseFloat(data.price)
-        this.payment.freeWords = parseInt(data.freeWords)
-        this.payment.isPaid = parseFloat(data.price) > 0
-        // TODO 重置textarea 待优化
-        this.$nextTick(() => { this.textarea.style.height = this.textarea.scrollHeight + 'px' })
+        this.initData(data)
+        this.$nextTick(() => { this.textarea.style.height = this.textarea.scrollHeight + 'px' }) // TODO 重置textarea 待优
 
         if (data.firstPost.images.length > 0) {
           this.editResourceShow.showUploadImg = true
@@ -121,6 +114,18 @@ export default {
           this.post.videoList[0].videoPercent = 1
         }
       }, e => this.handleError(e))
+    },
+    initData(data) {
+      this.categorySelectedId = data.category._jv.id
+      this.post.title = data.title
+      this.post.text = data.firstPost.content
+      this.post.id = data.firstPost._jv.id
+      this.payment.price = parseFloat(data.price)
+      this.payment.freeWords = parseInt(data.freeWords)
+      this.payment.isPaid = parseFloat(data.price) > 0
+      this.location.location = data.location
+      this.location.latitude = data.latitude
+      this.location.longitude = data.longitude
     },
     initThreadResource(target, resource, key = '') {
       resource.forEach(item => {
@@ -166,13 +171,11 @@ export default {
         },
         content: this.post.text
       }
-      params.type = this.type
       this.post.title ? params.title = this.post.title : ''
-      if (this.payment.isPaid) {
-        params.price = this.payment.price
-        params.free_words = this.payment.freeWords
-      }
-      this.publishThreadResource(params, this.post)
+      params.type = this.type
+      params = this.publishPayment(params, this.payment)
+      params = this.publishLocation(params, this.location)
+      params = this.publishThreadResource(params, this.post)
       params = this.publishPostResource(params, this.post)
       if (this.forums.other.create_thread_with_captcha) {
         try {
@@ -216,8 +219,8 @@ export default {
       if (this.threadId) threadParams._jv.id = this.threadId
       this.post.title ? threadParams.title = this.post.title : ''
       threadParams.type = this.type
-      threadParams.price = this.payment.isPaid ? this.payment.price : 0
-      threadParams.free_words = this.payment.isPaid ? this.payment.freeWords : 0
+      threadParams = this.publishPayment(threadParams, this.payment)
+      threadParams = this.publishLocation(threadParams, this.location)
       threadParams = this.publishThreadResource(threadParams, this.post)
       if (this.forums.other.create_thread_with_captcha) {
         try {

@@ -25,6 +25,19 @@ module.exports = {
         params.file_name = this.post.videoList[0].name
       }
       return params
+    },
+    publishPayment(params, payment) {
+      params.price = payment.isPaid ? payment.price : 0
+      params.free_words = payment.isPaid ? payment.freeWords : 0
+      return params
+    },
+    publishLocation(params, location) {
+      if (location.location && location.latitude && location.longitude) {
+        params.location = location.location
+        params.latitude = location.latitude
+        params.longitude = location.longitude
+      }
+      return params
     }
   }
 }

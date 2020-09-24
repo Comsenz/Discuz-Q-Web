@@ -15,8 +15,12 @@
       :type="typeInformation && typeInformation.type"
       @paymentChange="e => onPaymentChange(e.key, e.value)"
     />
-    <div>
-      <el-button @click="getLocation">定位</el-button>
+    <div v-if="typeInformation && typeInformation.showLocation" class="location-picker">
+      <div class="location-title">地理位置:</div>
+      <div class="location-input" @click="getLocation">
+        <span>{{ location && location.location || '请选择位置' }}</span>
+        <svg-icon type="location" style="font-size: 17px" />
+      </div>
     </div>
     <div :class="['container-textarea', editorStyle]">
       <label>
@@ -279,7 +283,7 @@ export default {
         console.log('location', loc)
         const latitude = loc.latlng.lat
         const longitude = loc.latlng.lng
-        const location = loc.poiname
+        const location = loc.poiname === '我的位置' ? loc.poiaddress : loc.poiname
         this.pickingLocation = false
         this.$emit('update:location', { latitude, longitude, location })
       }
@@ -343,7 +347,7 @@ export default {
 
       > input {
         width: 100%;
-        background: $background-color-grey;
+        background: $background-color-editor;
       }
 
       > .input-title {
@@ -355,8 +359,8 @@ export default {
 
       > .input-text {
         font-family: inherit;
+        background: $background-color-editor;
         width: 100%;
-        background: $background-color-grey;
         border: none;
         display: block;
         position: relative;
@@ -372,6 +376,32 @@ export default {
         &.chat { min-height: 120px; background: #fff; overflow: auto; }
       }
 
+    }
+
+    > .location-picker {
+      margin-top: 10px;
+      min-width: 230px;
+      display: inline-block;
+      color: #6D6D6D;
+      font-size: 14px;
+      line-height: 20px;
+      > .location-input {
+        cursor: pointer;
+        margin-top: 10px;
+        width: 100%;
+        height: 35px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 15px;
+        border: 1px solid $border-color-base;
+        border-radius: 4px;
+        background: $background-color-editor;
+        > span {
+          margin-right: 10px;
+          white-space: nowrap;
+        }
+      }
     }
 
     > .container-textarea {

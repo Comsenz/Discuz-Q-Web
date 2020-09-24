@@ -101,7 +101,6 @@ export default {
 
 <style lang="scss" scoped>
   @import '@/assets/css/variable/color.scss';
-
   $font-color: #6D6D6D;
   $height: 35px;
   .global {
@@ -134,16 +133,16 @@ export default {
   }
 
   ::v-deep.el-input {
-    background: #F5F6F7;
+    background: $background-color-editor;
     > input {
-      background: #F5F6F7;
+      background: $background-color-editor;
     }
   }
 
   ::v-deep.el-select {
     > .el-input {
       > input {
-        background: #F5F6F7;
+        background: $background-color-editor;
       }
     }
   }

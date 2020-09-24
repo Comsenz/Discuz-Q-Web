@@ -52,7 +52,7 @@ export default {
       pageLimit: 5,
       onCommentPublish: false,
       comment: { text: '', imageList: [], attachedList: [] },
-      commentType: { type: 4, textLimit: 450, showPayment: false, showTitle: false, showImage: true, showVideo: false,
+      commentType: { type: 4, textLimit: 450, showPayment: false, showLocation: false, showTitle: false, showImage: true, showVideo: false,
         showAttached: false, showMarkdown: false, showEmoji: true, showTopic: false, showCaller: true, placeholder: '写下我的评论 ...' },
       loading: false
     }

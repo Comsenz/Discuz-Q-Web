@@ -268,7 +268,7 @@ export default {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    background: #F5F6F7;
+    background: $background-color-editor;
 
     > .container {
       height: 36px;

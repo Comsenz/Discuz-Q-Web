@@ -60,7 +60,7 @@ export default {
       loading: false,
       onChatPublish: false,
       chatContent: { text: '', imageList: [], attachedList: [] },
-      chatType: { type: 4, textLimit: 450, showPayment: false, showTitle: false, showImage: false, showVideo: false,
+      chatType: { type: 4, textLimit: 450, showPayment: false, showLocation: false, showTitle: false, showImage: false, showVideo: false,
         showAttached: false, showMarkdown: false, showEmoji: true, showTopic: false, showCaller: false, placeholder: '请输入 ...' },
       loadMoreMessage: false
     }
