@@ -134,8 +134,11 @@ export default {
     .delete{
       color: $font-color-grey;
       cursor: pointer;
+      flex: 2;
+      text-align: right;
       .svg-icon-delete{
         margin-right: 6px;
+        font-size: 14px;
       }
       &:hover{
         color: $color-blue-deep;

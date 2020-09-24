@@ -136,6 +136,7 @@ export default {
         padding-top: 20px;
         border-radius: 5px 0;
         width:150px;
+        border-right: 1px solid $line-color-base;
       }
       .padd {
         padding-left: 30px !important;
@@ -150,7 +151,7 @@ export default {
         }
       }
       .divided {
-        border-top: 1px solid $border-color-base;
+        border-top: 1px solid $line-color-base;
         margin-top: 15px;
         padding-top: 32px !important;
       }

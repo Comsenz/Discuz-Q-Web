@@ -357,8 +357,7 @@ export default {
       }
     }
     .list-top-item{
-      border-bottom: 1px solid #F5F5F5;
-      line-height: 21px;
+      border-bottom: 1px solid $line-color-base;
       padding: 10.5px 22px;
       display: flex;
       align-items: center;
@@ -376,22 +375,18 @@ export default {
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 1;
-        font-size: 16px !important;
+        font-size: 14px !important;
         max-height: 21px;
         ::v-deep p {
-          font-size: 16px !important;
+          font-size: 14px !important;
         }
 
         ::v-deep img {
-          height: 22px;
+          height: 19px;
         }
         @media screen and ( max-width: 1005px ) {
-          font-size:14px !important;
-          ::v-deep p {
-            font-size: 14px !important;
-          }
           ::v-deep img {
-            height: 20px;
+            height: 18px;
           }
         }
       }

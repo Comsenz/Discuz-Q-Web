@@ -60,13 +60,13 @@ export default {
       white-space: nowrap;
       // justify-content: space-between;
       > span {
-        margin-right: 15px;
+        margin-right: 5px;
         &:last-child {
           margin-right: 0;
         }
       }
       > .site {
-        margin-right: 15px;
+        margin-right: 5px;
         font-weight: bold;
         white-space: nowrap;
       }
