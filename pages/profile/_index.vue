@@ -505,6 +505,10 @@ export default {
       border-radius: 0px;
       margin-left: 5px;
       padding: 9px 0px;
+      &:hover{
+        background:#e5f2ff !important;
+        border-color: #d4e6fc !important;
+      }
     }
     .h-button2 {
       width: 70px;
@@ -536,6 +540,7 @@ export default {
     border-radius: 5px;
     ::v-deep.el-tabs__header {
       padding: 8px 20px 5px;
+      border-bottom: 1px solid #f5f5f5;
     }
   }
   .profile-cc {
@@ -632,7 +637,7 @@ export default {
     border: none;
     color: #b5b5b5;
     padding: 0 52px 0 0px;
-    font-size: 16px;
+    font-size: 14px;
     transition: none;
   }
   .el-tabs__content {
@@ -646,7 +651,7 @@ export default {
     background: transparent;
     border: none;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 16px;
   }
   .el-tabs__header .el-tabs__item:hover {
     color: $color-blue-deep;

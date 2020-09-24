@@ -406,7 +406,7 @@
         <div class="myprofile-top">
           <span class="sig">{{ $t('modify.realnametitle') }}</span>
         </div>
-        <div class="myprofile-btom2">{{ userInfo && userInfo.realname ?userInfo.realname +` (${userInfo.identity})`:'' }}</div>
+        <div class="myprofile-btom2 myprofile-btom3">{{ userInfo && userInfo.realname ?userInfo.realname +` (${userInfo.identity})`:'' }}</div>
       </div>
     </div>
   </div>
@@ -1008,7 +1008,7 @@ export default {
   padding-left: 30px;
   .profileborder{
     padding-bottom: 20px;
-    border-bottom: 1px solid #f5f5f5;
+    border-bottom: 1px solid $line-color-base;
   }
   .pmobile {
     font-size: 20px;
@@ -1026,7 +1026,7 @@ export default {
     display: block;
     margin-left: 15px;
     width: 300px;
-    background: #1878f3;
+    background: $color-blue-base;
     margin-bottom: 48px;
   }
   .sigbutton:hover {
@@ -1084,7 +1084,7 @@ export default {
   .myprofile-bottom {
     display: flex;
     margin-top: 14px;
-    border-bottom: 1px solid #f5f5f5;
+    border-bottom: 1px solid $line-color-base;
     .marglef {
       margin-left: 65px !important;
     }
@@ -1144,7 +1144,7 @@ export default {
   .ebutton {
     display: block;
     width: 300px;
-    background: #1878f3;
+    background: $color-blue-base;
     margin-bottom: 48px;
     margin-top: 10px;
   }
