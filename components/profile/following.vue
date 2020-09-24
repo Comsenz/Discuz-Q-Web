@@ -130,11 +130,11 @@ export default {
         label: this.$t('home.noLimit'),
         value: ''
       }, {
-        label: this.$t('home.sortCreatedAt'),
-        value: '-createdAt'
+        label: '关注时间',
+        value: 'createdAt'
       }, {
-        label: this.$t('home.sortUpdatedAt'),
-        value: '-updatedAt'
+        label: '用户创建时间',
+        value: 'users.createdAt'
       }]
     }
   },
@@ -148,7 +148,7 @@ export default {
       const params = {
         include: 'toUser,toUser.groups',
         'filter[type]': 1,
-        sort: this.sort,
+        'sort': this.sort,
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         'filter[user_id]': this.userId,
@@ -254,15 +254,16 @@ export default {
   ::v-deep.fselect {
     width: 130px;
     height: 32px;
-    visibility: hidden;
+    // visibility: hidden;
   }
   ::v-deep .el-input__inner {
     height: 32px;
+    color: #b5b5b5;
   }
 }
 .user-item-container {
   padding: 20px;
-  border-bottom: 1px solid #e4e4e4;
+  border-bottom: 1px solid $line-color-base;
   display: flex;
   &.simple {
     padding: 10px 0;
@@ -310,7 +311,7 @@ export default {
     }
   }
   .follow {
-    border: 1px solid #d0d4dc;
+    border: 1px solid #ededed;
     padding: 0 14px;
     font-size: 12px;
     height: 25px;
@@ -318,6 +319,9 @@ export default {
     border-radius: 18px;
     cursor: pointer;
     color: #8590a6;
+    &:hover{
+      color:#6d6d6d;
+    }
     .follow-icon {
       color: #ff8888;
       font-size: 13px;

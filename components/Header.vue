@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div ref="head" :class="headFixed ? 'header isFixed' : 'header'">
     <div class="header-container">
       <div class="flex">
         <div class="logo" @click="toIndex">
@@ -67,7 +67,9 @@ export default {
       code: '', // 邀请码
       canReg: false,
       siteClose: false,
-      userInfoTimer: null // 定时器
+      userInfoTimer: null, // 定时器
+      offsetTop: 0,
+      headFixed: false
     }
   },
   computed: {
@@ -104,6 +106,10 @@ export default {
     if (this.$route.path === '/site/close') {
       this.siteClose = true
     }
+    window.addEventListener('scroll', this.handleScroll)
+    // this.$nextTick(() => {
+    //   this.offsetTop = document.querySelector('.header').offsetTop
+    // })
   },
   destroyed() {
     if (process.client) {
@@ -111,6 +117,14 @@ export default {
     }
   },
   methods: {
+    handleScroll() {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+      if (scrollTop > this.$refs.head.getBoundingClientRect().top) {
+        this.headFixed = true
+      } else {
+        this.headFixed = false
+      }
+    },
     // 退出
     logout() {
       this.$store
@@ -294,6 +308,13 @@ export default {
       display: inline-block !important;
     }
   }
+}
+.isFixed{
+  position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 999;
 }
 .search-logo {
   width: 14px;
