@@ -32,11 +32,9 @@ module.exports = {
       return params
     },
     publishLocation(params, location) {
-      if (location.location && location.latitude && location.longitude) {
-        params.location = location.location
-        params.latitude = location.latitude
-        params.longitude = location.longitude
-      }
+      params.location = location.location ? location.location : ''
+      params.latitude = location.latitude ? location.latitude : ''
+      params.longitude = location.longitude ? location.longitude : ''
       return params
     }
   }

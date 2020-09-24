@@ -16,10 +16,13 @@
       @paymentChange="e => onPaymentChange(e.key, e.value)"
     />
     <div v-if="typeInformation && typeInformation.showLocation" class="location-picker">
-      <div class="location-title">地理位置:</div>
+      <div class="location-title">{{ $t('post.location') }}:</div>
       <div class="location-input" @click="getLocation">
-        <span>{{ location && location.location || '请选择位置' }}</span>
         <svg-icon type="location" style="font-size: 17px" />
+        <span class="value">{{ location && location.location || $t('post.pleaseSelectLocation') }}</span>
+        <span v-show="location.location" class="icon-close" @click.stop="$emit('update:location', { location: '', latitude: '', longitude: '' })">
+          <svg-icon type="close" style="font-size: 12px" />
+        </span>
       </div>
     </div>
     <div :class="['container-textarea', editorStyle]">
@@ -280,7 +283,6 @@ export default {
       const loc = event.data
       // 防止其他应用也会向该页面post信息，需判断module是否为'locationPicker'
       if (loc && loc.module === 'locationPicker') {
-        console.log('location', loc)
         const latitude = loc.latlng.lat
         const longitude = loc.latlng.lng
         const location = loc.poiname === '我的位置' ? loc.poiaddress : loc.poiname
@@ -397,9 +399,12 @@ export default {
         border: 1px solid $border-color-base;
         border-radius: 4px;
         background: $background-color-editor;
-        > span {
-          margin-right: 10px;
+        > .value {
           white-space: nowrap;
+          margin: 0 auto 0 10px;
+        }
+        > .icon-close {
+          margin-left: 10px;
         }
       }
     }

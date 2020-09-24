@@ -247,6 +247,8 @@ export default {
     pleaseInput: '请输入',
     paymentAmount: '付费金额',
     freeWordCount: '免费的查看字数',
+    location: '地理位置',
+    pleaseSelectLocation: '请选择位置',
     selectToViewFreeWordCount: '选择查看免费字数',
     chooseCategory: '选择分类',
     selectToViewPaymentAmount: '选择查看付费金额',
