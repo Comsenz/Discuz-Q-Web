@@ -75,12 +75,6 @@ export default {
   padding: 20px;
   border-bottom: 1px solid $border-color-base;
   display: flex;
-  &.simple {
-    padding: 10px 0;
-    .name {
-      max-width: 120px;
-    }
-  }
   .flex {
     display: flex;
     align-items: center;
@@ -93,7 +87,7 @@ export default {
   .info {
     margin-left: 10px;
     .count {
-      margin-top: 8px;
+      margin-top: 5px;
     }
     .name {
       font-size: 16px;
@@ -112,12 +106,20 @@ export default {
       margin-right: 20px;
       padding-right: 20px;
       border-right: 1px solid #efefef;
-      line-height: 1;
       &:last-child {
         margin-right: 0;
         padding-right: 0;
         border-right: none;
       }
+    }
+  }
+  &.simple {
+    padding: 10px 0;
+    .name {
+      max-width: 120px;
+    }
+    .info .count {
+      margin-top: 0;
     }
   }
   .follow {

@@ -92,8 +92,10 @@ export default {
       // 判断是否登录
       if (!this.userId) {
         this.$message.error(this.$t('core.not_authenticated'))
-        this.$router.push('/')
-        return
+        const _this = this
+        window.setTimeout(() => {
+          _this.$router.push('/')
+        }, 1000)
       }
     },
     currentInfo(index) {

@@ -10,9 +10,18 @@ function resolve(dir) {
 const API_URL = 'https://discuz.chat'
 const API_URL_DEV = 'https://dq.comsenz-service.com'
 
+const isProduction = process.env.NODE_ENV === 'production'
+
+const proxyConfig = {
+  '/api': {
+    target: process.env.VUE_APP_CONFIG_API_URL || API_URL_DEV, // 目标服务器
+    changeOrigin: true
+  }
+}
+
 export default {
   env: {
-    mobileDomain: process.env.NODE_ENV === 'production' ? API_URL : API_URL_DEV,
+    mobileDomain: isProduction ? API_URL : API_URL_DEV,
     baseURL: '/'
   },
   /*
@@ -102,14 +111,9 @@ export default {
 
   axios: {
     // proxyHeaders: false
-    proxy: true
+    proxy: !isProduction
   },
-  proxy: {
-    '/api': {
-      target: API_URL_DEV, // 目标服务器
-      changeOrigin: true
-    }
-  },
+  proxy: isProduction ? {} : proxyConfig, // 生产环境会一直运行
   /*
   ** Build configuration
   ** See https://nuxtjs.org/api/configuration-build/
@@ -117,7 +121,7 @@ export default {
   build: {
     // analyze: true,
     // 生产环境抽离css
-    extractCSS: process.env.NODE_ENV === 'production',
+    extractCSS: isProduction,
     optimization: {
       splitChunks: {
         cacheGroups: {

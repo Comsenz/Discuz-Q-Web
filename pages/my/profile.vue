@@ -8,6 +8,7 @@
       class="myprofile-c"
       style="padding-bottom:0px"
     >
+
       <div class="myprofile-top mtop">
         <Avatar
           :user="{ id: userInfo.id, username: userInfo.username, avatarUrl: avataruserInfo.avatarUrl}"
@@ -16,12 +17,11 @@
           class="avatar"
           :is-real="userInfo.isReal"
         />
-
         <div class="usr">
           <span class="usrname">{{ userInfo.username }}</span>
           <span class="usrid">{{ userInfo && userInfo.groupsName ? userInfo.groupsName : '' }}</span>
         </div>
-        <span
+        <div
           v-if="userInfo && userInfo.isReal"
           class="iden"
         >
@@ -30,8 +30,8 @@
             class="auth-icon"
           />
           <span class="real">已实名认证</span>
-        </span>
-        <span
+        </div>
+        <div
           v-else-if="userInfo && !userInfo.isReal && forums &&forums.qcloud && forums.qcloud.qcloud_faceid"
           class="iden"
         >
@@ -40,7 +40,7 @@
             type="warning"
           />
           <span class="nreal">未实名认证</span>
-        </span>
+        </div>
         <span
           class="setavatar"
           @click="setAvatar"
@@ -87,35 +87,37 @@
       v-if="userInfo"
       :class="isNameModify ? 'myprofile-c bgcolor': 'myprofile-c'"
     >
-      <div class="myprofile-top">
-        <span class="sig">{{ $t('profile.username') }}</span>
-        <span
-          v-show="userInfo && userInfo.canEditUsername"
-          class="setavatar"
-          @click="usernameModify"
-        >{{ (!isNameModify ? $t('profile.modify') : $t('profile.cancelModify')) }}</span>
-      </div>
-      <div
-        v-show="!isNameModify"
-        class="myprofile-btom2"
-      >{{ userInfo && userInfo.username ? userInfo.username:'' }}</div>
-      <div
-        v-show="isNameModify"
-        class="myprofile-btom"
-      >
-        <form>
-          <el-input
-            ref="username"
-            v-model="newName"
-            :placeholder="$t('modify.numbermodifitions')"
-            class="passbtom"
-          />
-          <el-button
-            type="primary"
-            class="ebutton"
-            @click="nameSub"
-          >确定修改</el-button>
-        </form>
+      <div class="profileborder">
+        <div class="myprofile-top">
+          <span class="sig">{{ $t('profile.username') }}</span>
+          <span
+            v-show="userInfo && userInfo.canEditUsername"
+            class="setavatar"
+            @click="usernameModify"
+          >{{ (!isNameModify ? $t('profile.modify') : $t('profile.cancelModify')) }}</span>
+        </div>
+        <div
+          v-show="!isNameModify"
+          class="myprofile-btom2"
+        >{{ userInfo && userInfo.username ? userInfo.username:'' }}</div>
+        <div
+          v-show="isNameModify"
+          class="myprofile-btom"
+        >
+          <form>
+            <el-input
+              ref="username"
+              v-model="newName"
+              :placeholder="$t('modify.numbermodifitions')"
+              class="passbtom"
+            />
+            <el-button
+              type="primary"
+              class="ebutton"
+              @click="nameSub"
+            >确定修改</el-button>
+          </form>
+        </div>
       </div>
     </div>
 
@@ -124,43 +126,37 @@
       v-if="userInfo"
       :class="isSignModify ? 'myprofile-c bgcolor': 'myprofile-c'"
     >
-      <div class="myprofile-top">
-        <span class="sig">{{ $t('modify.signaturetitle') }}</span>
-        <span
-          class="setavatar"
-          @click="signModify"
-        >{{ (!isSignModify ? $t('profile.modify') : $t('profile.cancelModify')) }}</span>
-      </div>
-      <div
-        v-show="!isSignModify"
-        :class="userInfo.signature !=='' ?'myprofile-btom-sign':'myprofile-btom-sign signcolor'"
-      >{{ userInfo.signature ? userInfo.signature : '暂无签名' }}</div>
-      <div
-        v-show="isSignModify"
-        class="text"
-      >
-        <!-- <textarea
-          ref="sign"
-          v-model="inputVal"
-          type="text"
-          placeholder="请输入签名内容"
-          class="textarea"
-          @input="fun"
-        /> -->
-        <el-input
-          ref="sign"
-          v-model="inputVal"
-          type="textarea"
-          :rows="5"
-          placeholder="请输入签名内容"
-          @input="fun"
-        />
-        <div class="cannum">{{ $t('modify.canalsoinput')+ `${num-wordnumber}` + $t('modify.wordnumber') }}</div>
-        <el-button
-          type="primary"
-          class="sigbutton"
-          @click="sigComfirm"
-        >确定修改</el-button>
+      <div class="profileborder">
+        <div class="myprofile-top">
+          <span class="sig">{{ $t('modify.signaturetitle') }}</span>
+          <span
+            class="setavatar"
+            @click="signModify"
+          >{{ (!isSignModify ? $t('profile.modify') : $t('profile.cancelModify')) }}</span>
+        </div>
+        <div
+          v-show="!isSignModify"
+          :class="userInfo.signature !=='' ?'myprofile-btom-sign':'myprofile-btom-sign signcolor'"
+        >{{ userInfo.signature ? userInfo.signature : '暂无签名' }}</div>
+        <div
+          v-show="isSignModify"
+          class="text"
+        >
+          <el-input
+            ref="sign"
+            v-model="inputVal"
+            type="textarea"
+            :rows="5"
+            placeholder="请输入签名内容"
+            @input="fun"
+          />
+          <div class="cannum">{{ $t('modify.canalsoinput')+ `${num-wordnumber}` + $t('modify.wordnumber') }}</div>
+          <el-button
+            type="primary"
+            class="sigbutton"
+            @click="sigComfirm"
+          >确定修改</el-button>
+        </div>
       </div>
     </div>
     <!-- 手机号 -->
@@ -169,98 +165,100 @@
       class="myprofile-c"
       :class="isMobileModify ? 'myprofile-c bgcolor': 'myprofile-c'"
     >
-      <div class="myprofile-top">
-        <span class="sig">{{ $t('profile.mobile') }}</span>
-        <span
-          class="setavatar"
-          @click="mobileModify"
-        >{{ (!isMobileModify ?!userInfo.mobile ? '绑定手机': $t('profile.modify') : $t('profile.cancelModify')) }}</span>
-      </div>
-      <div
-        v-show="!isMobileModify"
-        class="myprofile-btom2"
-      >
-        <div :class="userInfo.mobile ? 'pmobile' : ''">{{ userInfo.mobile ? userInfo.mobile : $t('modify.setphontitle') }}</div>
-      </div>
-      <!-- 修改手机号 -->
-      <div
-        v-show="(isMobileModify && userInfo.mobile)"
-        class="myprofile-btom"
-      >
-        <div class="pmobile">{{ userInfo.mobile }}</div>
-        <div>
-          <el-input
-            ref="oldphone"
-            v-model="oldVerifyCode"
-            placeholder="请输入已绑定手机验证码"
-            class="phone-input"
-          />
-
-          <el-button
-            class="count-b"
-            size="middle"
-            @click="sendsms2"
-          >{{ content }}</el-button>
-
-          <el-input
-            v-model="newphon"
-            placeholder="输入新手机号码"
-            :class="isChange ? 'passbtom phonechange': 'passbtom'"
-            @input="changeinput"
-          />
-          <el-input
-            v-model="newVerifyCode"
-            placeholder="请输入新手机验证码"
-            class="phone-input"
-          />
-          <el-button
-            class="count-b"
-            :class="{disabled: !canClick2}"
-            :disabled="!canClick2"
-            size="middle"
-            @click="sendsms"
-          >{{ content2 }}</el-button>
+      <div class="profileborder">
+        <div class="myprofile-top">
+          <span class="sig">{{ $t('profile.mobile') }}</span>
+          <span
+            class="setavatar"
+            @click="mobileModify"
+          >{{ (!isMobileModify ?!userInfo.mobile ? '绑定手机': $t('profile.modify') : $t('profile.cancelModify')) }}</span>
         </div>
-
-        <el-button
-          type="primary"
-          class="ebutton"
-          @click="mobileComfirm"
-        >提交修改</el-button>
-      </div>
-      <!-- 新用户绑定手机号 -->
-      <div
-        v-show="(isMobileModify && !userInfo.mobile)"
-        class="myprofile-btom"
-      >
-        <div>
-          <el-input
-            ref="oldphone"
-            v-model="newphon"
-            maxlength="11"
-            placeholder="请输入绑定的手机号"
-            :class="isChange ? 'passbtom phonechange': 'passbtom'"
-            @input="changeinput"
-          />
-          <el-input
-            v-model="setnum"
-            placeholder="请输入手机验证码"
-            class="phone-input"
-          />
-          <el-button
-            class="count-b"
-            :class="{disabled: !canClick}"
-            :disabled="!canClick"
-            size="middle"
-            @click="sendsms"
-          >{{ content }}</el-button>
+        <div
+          v-show="!isMobileModify"
+          class="myprofile-btom2"
+        >
+          <div :class="userInfo.mobile ? 'pmobile' : ''">{{ userInfo.mobile ? userInfo.mobile : $t('modify.setphontitle') }}</div>
         </div>
+        <!-- 修改手机号 -->
+        <div
+          v-show="(isMobileModify && userInfo.mobile)"
+          class="myprofile-btom"
+        >
+          <div class="pmobile">{{ userInfo.mobile }}</div>
+          <div>
+            <el-input
+              ref="oldphone"
+              v-model="oldVerifyCode"
+              placeholder="请输入已绑定手机验证码"
+              class="phone-input"
+            />
 
-        <el-button
-          type="primary"
-          class="ebutton"
-          @click="dingphon"
-        >提交修改</el-button>
+            <el-button
+              class="count-b"
+              size="middle"
+              @click="sendsms2"
+            >{{ content }}</el-button>
+
+            <el-input
+              v-model="newphon"
+              placeholder="输入新手机号码"
+              :class="isChange ? 'passbtom phonechange': 'passbtom'"
+              @input="changeinput"
+            />
+            <el-input
+              v-model="newVerifyCode"
+              placeholder="请输入新手机验证码"
+              class="phone-input"
+            />
+            <el-button
+              class="count-b"
+              :class="{disabled: !canClick2}"
+              :disabled="!canClick2"
+              size="middle"
+              @click="sendsms"
+            >{{ content2 }}</el-button>
+          </div>
+
+          <el-button
+            type="primary"
+            class="ebutton"
+            @click="mobileComfirm"
+          >提交修改</el-button>
+        </div>
+        <!-- 新用户绑定手机号 -->
+        <div
+          v-show="(isMobileModify && !userInfo.mobile)"
+          class="myprofile-btom"
+        >
+          <div>
+            <el-input
+              ref="oldphone"
+              v-model="newphon"
+              maxlength="11"
+              placeholder="请输入绑定的手机号"
+              :class="isChange ? 'passbtom phonechange': 'passbtom'"
+              @input="changeinput"
+            />
+            <el-input
+              v-model="setnum"
+              placeholder="请输入手机验证码"
+              class="phone-input"
+            />
+            <el-button
+              class="count-b"
+              :class="{disabled: !canClick}"
+              :disabled="!canClick"
+              size="middle"
+              @click="sendsms"
+            >{{ content }}</el-button>
+          </div>
+
+          <el-button
+            type="primary"
+            class="ebutton"
+            @click="dingphon"
+          >提交修改</el-button>
+        </div>
       </div>
     </div>
     <!-- 密码 -->
@@ -268,57 +266,59 @@
       v-if="userInfo"
       :class="isPassModify ? 'myprofile-c bgcolor': 'myprofile-c'"
     >
-      <div class="myprofile-top">
-        <span class="sig">{{ $t('profile.password') }}</span>
-        <span
-          class="setavatar"
-          @click="passModify"
-        >{{ (!isPassModify ? $t('profile.modify') : $t('profile.cancelModify')) }}</span>
-      </div>
-      <div
-        v-show="!isPassModify"
-        class="myprofile-btom2"
-      >{{ userInfo && userInfo.hasPassword ?'已设置':'未设置密码' }}</div>
-      <div
-        v-show="isPassModify"
-        class="myprofile-btom"
-      >
-        <form>
-          <el-input
-            ref="oldpass"
-            v-model="oldPassWord"
-            :placeholder="$t('modify.enterold')"
-            class="passbtom"
-            type="password"
-            show-password
-          />
-          <el-input
-            v-model="newPassWord"
-            :placeholder="$t('modify.enterNew')"
-            class="passbtom"
-            type="password"
-            show-password
-          />
-          <div :class="passerror ? 'rep passerr' : 'rep'">
+      <div class="profileborder">
+        <div class="myprofile-top">
+          <span class="sig">{{ $t('profile.password') }}</span>
+          <span
+            class="setavatar"
+            @click="passModify"
+          >{{ (!isPassModify ? $t('profile.modify') : $t('profile.cancelModify')) }}</span>
+        </div>
+        <div
+          v-show="!isPassModify"
+          class="myprofile-btom2"
+        >{{ userInfo && userInfo.hasPassword ?'已设置':'未设置密码' }}</div>
+        <div
+          v-show="isPassModify"
+          class="myprofile-btom"
+        >
+          <form>
             <el-input
-              v-model="renewPassword"
-              :placeholder="$t('modify.enterNewRepeat')"
-              :class="passerror ? 'passbtom inputerr':'passbtom'"
+              ref="oldpass"
+              v-model="oldPassWord"
+              :placeholder="$t('modify.enterold')"
+              class="passbtom"
               type="password"
               show-password
             />
-            <div
-              v-if="passerror"
-              class="passerror"
-            >{{ $t('modify.reenter') }}</div>
-          </div>
+            <el-input
+              v-model="newPassWord"
+              :placeholder="$t('modify.enterNew')"
+              class="passbtom"
+              type="password"
+              show-password
+            />
+            <div :class="passerror ? 'rep passerr' : 'rep'">
+              <el-input
+                v-model="renewPassword"
+                :placeholder="$t('modify.enterNewRepeat')"
+                :class="passerror ? 'passbtom inputerr':'passbtom'"
+                type="password"
+                show-password
+              />
+              <div
+                v-if="passerror"
+                class="passerror"
+              >{{ $t('modify.reenter') }}</div>
+            </div>
 
-          <el-button
-            type="primary"
-            class="ebutton"
-            @click="passSub"
-          >提交修改</el-button>
-        </form>
+            <el-button
+              type="primary"
+              class="ebutton"
+              @click="passSub"
+            >提交修改</el-button>
+          </form>
+        </div>
       </div>
     </div>
 
@@ -327,27 +327,29 @@
       v-if="userInfo"
       :class="isWechatModify ? 'myprofile-c bgcolor': 'myprofile-c'"
     >
-      <div class="myprofile-top">
-        <span class="sig">{{ $t('profile.wechat') }}</span>
+      <div class="profileborder">
+        <div class="myprofile-top">
+          <span class="sig">{{ $t('profile.wechat') }}</span>
         <!-- <span
           class="setavatar"
           @click="wechatModify"
         >{{ (!isWechatModify ? $t('profile.modify') : $t('profile.cancelModify')) }}</span> -->
-      </div>
-      <div
-        v-show="!isWechatModify"
-        class="myprofile-btom2"
-      >{{ userInfo && userInfo.wechat ?userInfo.wechat.nickname :'未绑定微信' }}</div>
-      <div
-        v-show="isWechatModify"
-        class="wehcat-bind"
-      >
-        <el-image
-          :src="wechatBind.base64_img"
-          class="qr-code"
-        />
-        <div>请用微信扫一扫</div>
-        <div>扫码上方二维码</div>
+        </div>
+        <div
+          v-show="!isWechatModify"
+          class="myprofile-btom2"
+        >{{ userInfo && userInfo.wechat ?userInfo.wechat.nickname :'未绑定微信' }}</div>
+        <div
+          v-show="isWechatModify"
+          class="wehcat-bind"
+        >
+          <el-image
+            :src="wechatBind.base64_img"
+            class="qr-code"
+          />
+          <div>请用微信扫一扫</div>
+          <div>扫码上方二维码</div>
+        </div>
       </div>
     </div>
 
@@ -358,50 +360,54 @@
       :class="isRealModify ? 'myprofile-c bgcolor': 'myprofile-c'"
       style="border-bottom:0px;"
     >
-      <div class="myprofile-top">
-        <span class="sig">{{ $t('modify.realnametitle') }}</span>
-        <span
-          class="setavatar"
-          @click="realModify"
-        >{{ (!isRealModify ? $t('profile.tocertification') : '暂不认证') }}</span>
-      </div>
-      <div
-        v-show="!isRealModify"
-        class="myprofile-btom2"
-      >{{ userInfo && userInfo.realname ?'已设置':'未实名认证' }}</div>
-      <div
-        v-show="isRealModify"
-        class="myprofile-btom"
-      >
-        <div>
-          <el-input
-            ref="realname"
-            v-model="realName"
-            :placeholder="$t('modify.realname')"
-            class="passbtom"
-          />
-          <el-input
-            v-model="idNumber"
-            :placeholder="$t('modify.enteridnumber')"
-            class="passbtom"
-          />
+      <div class="profileborder">
+        <div class="myprofile-top">
+          <span class="sig">{{ $t('modify.realnametitle') }}</span>
+          <span
+            class="setavatar"
+            @click="realModify"
+          >{{ (!isRealModify ? $t('profile.tocertification') : '暂不认证') }}</span>
         </div>
+        <div
+          v-show="!isRealModify"
+          class="myprofile-btom2 myprofile-btom3"
+        >{{ userInfo && userInfo.realname ?'已设置':'未实名认证' }}</div>
+        <div
+          v-show="isRealModify"
+          class="myprofile-btom"
+        >
+          <div>
+            <el-input
+              ref="realname"
+              v-model="realName"
+              :placeholder="$t('modify.realname')"
+              class="passbtom"
+            />
+            <el-input
+              v-model="idNumber"
+              :placeholder="$t('modify.enteridnumber')"
+              class="passbtom"
+            />
+          </div>
 
-        <el-button
-          type="primary"
-          class="ebutton"
-          @click="realSub"
-        >确定提交</el-button>
+          <el-button
+            type="primary"
+            class="ebutton"
+            @click="realSub"
+          >确定提交</el-button>
+        </div>
       </div>
     </div>
     <div
       v-if="userInfo && userInfo.realname && forums &&forums.qcloud && forums.qcloud.qcloud_faceid"
       class="myprofile-c"
     >
-      <div class="myprofile-top">
-        <span class="sig">{{ $t('modify.realnametitle') }}</span>
+      <div class="profileborder">
+        <div class="myprofile-top">
+          <span class="sig">{{ $t('modify.realnametitle') }}</span>
+        </div>
+        <div class="myprofile-btom2">{{ userInfo && userInfo.realname ?userInfo.realname +` (${userInfo.identity})`:'' }}</div>
       </div>
-      <div class="myprofile-btom2">{{ userInfo && userInfo.realname ?userInfo.realname +` (${userInfo.identity})`:'' }}</div>
     </div>
   </div>
 </template>
@@ -991,16 +997,19 @@ export default {
   .bgcolor {
     background: #fafbfc;
   }
+
 }
 .myprofile-c {
   display: flex;
   flex-direction: column;
-  border-bottom: 1px solid #e4e4e4;
-  padding-bottom: 20px;
   @media screen and (max-width: 1005px) {
     padding-left: 15px;
   }
   padding-left: 30px;
+  .profileborder{
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f5f5f5;
+  }
   .pmobile {
     font-size: 20px;
     font-weight: bold;
@@ -1054,7 +1063,7 @@ export default {
     .iden {
       margin-left: 5px;
       .nreal {
-        margin-left: 12px;
+        // margin-left: 12px;
         color: #fa5151;
       }
       .real {
@@ -1075,6 +1084,7 @@ export default {
   .myprofile-bottom {
     display: flex;
     margin-top: 14px;
+    border-bottom: 1px solid #f5f5f5;
     .marglef {
       margin-left: 65px !important;
     }
@@ -1127,6 +1137,9 @@ export default {
     margin-top: 15px;
     width: 460px;
     color: #8590a6;
+  }
+  .myprofile-btom3{
+    padding-bottom: 60px;
   }
   .ebutton {
     display: block;

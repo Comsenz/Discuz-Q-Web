@@ -156,10 +156,13 @@ export default {
     .top {
       .user-name {
         font-weight: bold;
+        display: inline-flex;
+        align-items: center;
         .text {
           font-size: 12px;
           color: $font-color-grey;
-          margin-left: 0;
+          margin-left: 5px;
+          font-weight: normal;
         }
       }
       .text {

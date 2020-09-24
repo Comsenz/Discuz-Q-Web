@@ -6,7 +6,9 @@ let baseURL = '/api'
 // SSR 服务端 baseURL 修正处理
 if (process.server === true) {
   if (process.env.NODE_ENV === 'production') {
-    baseURL = `${process.env.VUE_APP_CONFIG_API_URL}${baseURL}`
+    console.log('process.env.VUE_APP_CONFIG_API_URL =>', process.env.VUE_APP_CONFIG_API_URL)
+
+    baseURL = `${process.env.VUE_APP_CONFIG_API_URL || 'https://discuz.chat'}${baseURL}`
   } else {
     baseURL = `http://127.0.0.1:${process.env.npm_package_config_nuxt_port || 3000}${baseURL}`
   }

@@ -50,7 +50,7 @@ export default ({ app }) => {
         try {
           await store.dispatch('site/getSiteInfo')
         } catch (e) {
-          if (e) {
+          if (e && e.response && e.response.data && e.response.data.errors) {
             const { response: { data: { errors }}} = e
             // 站点关闭跳转
             if (errors[0].code === 'site_closed') {

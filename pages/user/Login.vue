@@ -187,7 +187,7 @@ export default {
     }
     // this.QRcode()
     // 获取配置优先的登录方式
-    this.activeName = this.forums ? this.forums.set_reg.register_type.toString() : ''
+    this.activeName = this.forums && this.forums.set_reg ? this.forums.set_reg.register_type.toString() : ''
     // 微信登录初始化
     if (this.activeName === '2' || this.forums && this.forums.qcloud && !this.forums.qcloud.qcloud_sms) {
       this.activeName = '0'

@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="index_loading" class="container">
+  <div class="container">
     <main class="cont-left">
       <index-filter @onChangeFilter="onChangeFilter" @onChangeType="onChangeType" @onChangeSort="onChangeSort" />
       <div v-if="threadsStickyData.length > 0" class="list-top">
@@ -118,26 +118,25 @@ export default {
       // console.log('ssr err', error)
 
       callback(null, {
-        // _error__abc: {
-        //   error_keys: Object.keys(error),
-        //   error: String(error),
-        //   errno: error.errno,
-        //   code: error.code,
-        //   syscall: error.syscall,
-        //   address: error.address,
-        //   port: error.port,
-        //   config: error.config,
-        //   request_domain: (error.request || {}).domain,
-        //   request_keys: Object.keys(error.request || {}),
-        //   response_keys: Object.keys(error.response || {})
-        // }
+        _error__abc: {
+          error_keys: Object.keys(error),
+          error: String(error),
+          errno: error.errno,
+          code: error.code,
+          syscall: error.syscall,
+          address: error.address,
+          port: error.port,
+          config: error.config,
+          request_domain: (error.request || {}).domain,
+          request_keys: Object.keys(error.request || {}),
+          response_keys: Object.keys(error.response || {})
+        }
       })
     }
   },
   data() {
     return {
       loading: false,
-      index_loading: false,
       threadsStickyData: [], // 置顶主题列表
       threadsData: [], // 主题列表
       categoryData: [], // 分类列表
@@ -171,7 +170,6 @@ export default {
       this.getThreadsSticky()
     }
     if (this.threadsData.length === 0) {
-      this.index_loading = true
       this.getThreadsList()
     } else {
       if (this.threadsData.length === this.pageSize) {
@@ -233,10 +231,12 @@ export default {
         } else {
           this.threadsData = [...this.threadsData, ...data]
         }
-        if (data._jv) {
-          this.hasMore = this.threadsData.length < data._jv.json.meta.threadCount
+        if (data && data._jv) {
+          const _threadCount = data._jv.json && data._jv.json.meta && data._jv.json.meta.threadCount || 0
+          this.hasMore = this.threadsData.length < _threadCount
+          this.threadCount = _threadCount
         }
-        this.threadCount = data._jv.json.meta.threadCount
+
         if (this.timer) {
           clearInterval(this.timer)
         }
@@ -247,7 +247,6 @@ export default {
         this.handleError(e)
       }).finally(() => {
         this.loading = false
-        this.index_loading = false
       })
     },
     loadMore() {
@@ -269,11 +268,14 @@ export default {
         'page[limit]': 1
       }
       this.$store.dispatch('jv/get', ['threads', { params }]).then(data => {
-        if (this.threadCount > 0) {
-          this.total = data._jv.json.meta.threadCount - this.threadCount
+        if (data && data._jv) {
+          const _threadCount = data._jv.json && data._jv.json.meta && data._jv.json.meta.threadCount || 0
+          if (this.threadCount > 0) {
+            this.total = _threadCount - this.threadCount > 0 ? _threadCount - this.threadCount : 0
+          }
+          this.threadCount = _threadCount
+          console.log('新主题数', this.total)
         }
-        this.threadCount = data._jv.json.meta.threadCount
-        console.log('新主题数', this.total)
       })
     },
     // 重新加载列表
