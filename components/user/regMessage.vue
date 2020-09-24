@@ -5,7 +5,7 @@
       <div class="container-title">
         <div class="title">{{ title }}</div>
         <svg-icon
-          style="font-size: 14px; cursor: pointer"
+          style="font-size: 14px; cursor: pointer; fill: #6d6d6d"
           type="close"
           @click="$emit('close')"
         />

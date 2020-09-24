@@ -5,7 +5,7 @@
         <div v-for="(username, index) in selectedFriends" :key="index" class="selectedCaller">
           <span>@ {{ username }}</span>
           <svg-icon
-            style="font-size: 14px; cursor: pointer"
+            style="font-size: 14px; cursor: pointer; fill: #6d6d6d"
             type="close"
             @click="selectedFriends.splice(selectedFriends.indexOf(username), 1)"
           />

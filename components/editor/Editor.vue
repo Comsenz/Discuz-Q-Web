@@ -15,6 +15,9 @@
       :type="typeInformation && typeInformation.type"
       @paymentChange="e => onPaymentChange(e.key, e.value)"
     />
+    <div>
+      <el-button @click="getLocation">定位</el-button>
+    </div>
     <div :class="['container-textarea', editorStyle]">
       <label>
         <textarea
@@ -87,6 +90,7 @@
         <caller v-if="showCaller" @close="showCaller = false" @selectedCaller="selectActions" />
       </div>
     </div>
+    <get-location v-if="pickingLocation" @close="pickingLocation = false" />
   </div>
 </template>
 
@@ -102,6 +106,10 @@ export default {
       default: () => {}
     },
     payment: {
+      type: Object,
+      default: () => {}
+    },
+    location: {
       type: Object,
       default: () => {}
     },
@@ -130,6 +138,7 @@ export default {
     return {
       selectionStart: 0,
       selectionEnd: 0,
+      pickingLocation: false,
       // 是否显示弹窗
       showEmoji: false,
       showCaller: false,
@@ -258,6 +267,22 @@ export default {
       this.showEmoji = false
       this.showTopic = false
       this.showCaller = false
+    },
+    getLocation() {
+      this.pickingLocation = true
+      window.addEventListener('message', this.onMessage, false)
+    },
+    onMessage(event) {
+      const loc = event.data
+      // 防止其他应用也会向该页面post信息，需判断module是否为'locationPicker'
+      if (loc && loc.module === 'locationPicker') {
+        console.log('location', loc)
+        const latitude = loc.latlng.lat
+        const longitude = loc.latlng.lng
+        const location = loc.poiname
+        this.pickingLocation = false
+        this.$emit('update:location', { latitude, longitude, location })
+      }
     },
     publish() {
       if (this.onUploadAttached) return this.$message.warning(this.$t('post.pleaseWaitForTheAttachedUploadToComplete'))

@@ -3,7 +3,7 @@
     <div class="header">
       <span class="name">{{ dialog.name }}</span>
       <span>{{ $t('chat.chatWithYou') }}</span>
-      <svg-icon class="icon-close" type="close" style="font-size: 16px" @click="$emit('close')" />
+      <svg-icon class="icon-close" type="close" style="font-size: 16px; fill: #6d6d6d" @click="$emit('close')" />
     </div>
     <div ref="chatContent" v-loading="loading" element-loading-background="rgba(0, 0, 0, 0)" class="chat-content">
       <div v-if="loadMoreMessage" class="load-tip">{{ noMore ? $t('chat.noMore') : $t('chat.loadRecord') }}</div>

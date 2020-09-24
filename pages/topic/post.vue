@@ -14,6 +14,7 @@
     <editor
       :type-information="typeInformation[type]"
       :post.sync="post"
+      :location.sync="location"
       :payment.sync="payment"
       :on-publish="onPublish"
       :edit-resource-show="editResourceShow"
@@ -40,6 +41,7 @@ export default {
       categoryList: [],
       post: { id: '', title: '', text: '', imageList: [], videoList: [], attachedList: [] },
       payment: { isPaid: false, price: 0, freeWords: 0 },
+      location: { latitude: '', location: '', longitude: '' },
       editResourceShow: { showUploadImg: false, showUploadVideo: false, showUploadAttached: false },
       typeInformation: {
         // 0 文字帖 1 帖子 2 视频 3 图片 4 评论

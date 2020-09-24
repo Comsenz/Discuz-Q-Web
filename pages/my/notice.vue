@@ -20,7 +20,7 @@
         <div v-for="(item, index) in noticeList" :key="index" class="notice-item">
           <notice-item :item="item" />
           <div class="delete" @click="handleDelete(item.id, index)">
-            <svg-icon type="close" />
+            <svg-icon style="fill: #6d6d6d" type="close" />
           </div>
         </div>
         <loading v-if="loading" />
