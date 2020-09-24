@@ -7,21 +7,21 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const API_URL = 'https://discuz.chat'
+// const API_URL = 'https://discuz.chat'
 const API_URL_DEV = 'https://dq.comsenz-service.com'
 
 const isProduction = process.env.NODE_ENV === 'production'
 
 const proxyConfig = {
   '/api': {
-    target: process.env.VUE_APP_CONFIG_API_URL || API_URL_DEV, // 目标服务器
+    target: API_URL_DEV, // 目标服务器
     changeOrigin: true
   }
 }
 
 export default {
   env: {
-    mobileDomain: isProduction ? API_URL : API_URL_DEV,
+    mobileDomain: process.env.VUE_APP_CONFIG_API_URL || API_URL_DEV,
     baseURL: '/'
   },
   /*

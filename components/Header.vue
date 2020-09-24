@@ -236,8 +236,9 @@ export default {
         width:14px;
         margin-right: 8px;
       }
-      @media screen and (max-width: 1005px) {
-        .el-input__icon {
+      .el-input__suffix{
+        line-height: 36px;
+        @media screen and (max-width: 1005px) {
           line-height: 30px;
         }
       }

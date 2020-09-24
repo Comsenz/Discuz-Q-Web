@@ -91,19 +91,19 @@ export default {
   }
   .recommend-user-title{
     color:#6D6D6D;
-    margin-bottom: 8px;
-    font-weight:bold;
+    margin-bottom: 15px;
   }
   .refresh{
     padding: 10px 0 0;
     color: #8590A6;
     cursor: pointer;
-    display: inline-block;
+    display: inline-flex;
     &:hover{
       color:$color-blue-base;
     }
     .icon{
       margin-right: 6px;
+      font-size: 20px;
     }
   }
 }
