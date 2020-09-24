@@ -25,6 +25,16 @@
         <div id="reply" class="container-reply">
           <comment-header v-if="replyList.length > 0" :comment-count="replyList.length" :is-positive-sort.sync="isPositiveSort" />
           <div v-else class="without-comment">{{ $t('topic.noComment') }}</div>
+          <editor
+            style="margin-top: 20px; margin-bottom: 20px"
+            editor-style="comment"
+            class="reply-editor"
+            selector="reply-editor"
+            :type-information="replyType"
+            :post.sync="replyPost"
+            :on-publish="onReplyPublish"
+            @publish="replyPublish(comment._jv.id)"
+          />
           <div v-loading="replyLoading">
             <reply-list :reply-list="replyList || []" @delete="deleteComment" @onLike="onLike" />
           </div>
@@ -39,14 +49,16 @@
 const threadInclude = 'posts.replyUser,user.groups,user,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers'
 const commentInclude = 'user,likedUsers,commentPosts,commentPosts.user,commentPosts.user.groups,commentPosts.replyUser,commentPosts.replyUser.groups,commentPosts.mentionUsers,commentPosts.images,images,attachments'
 const replyInclude = 'replyUser,user.groups,user,images'
+import publishResource from '@/mixin/publishResource'
+import postLegalityCheck from '@/mixin/postLegalityCheck'
 import handleError from '@/mixin/handleError'
 import timerDiff from '@/mixin/timerDiff'
-// import service from '@/api/request'
+import isLogin from '@/mixin/isLogin'
 
 export default {
   name: 'Comment',
   layout: 'custom_layout',
-  mixins: [timerDiff, handleError],
+  mixins: [timerDiff, handleError, isLogin, publishResource, postLegalityCheck],
   async asyncData({ store, query }) {
     const threadId = query.threadId
     const commentId = query.commentId
@@ -79,7 +91,11 @@ export default {
       isPositiveSort: true,
       replyList: [],
       replyLoading: false,
-      loading: false
+      loading: false,
+      onReplyPublish: false,
+      replyPost: { text: '', imageList: [], attachedList: [] },
+      replyType: { type: 4, textLimit: 450, showPayment: false, showLocation: false, showTitle: false, showImage: true, showVideo: false,
+        showAttached: false, showMarkdown: false, showEmoji: true, showTopic: false, showCaller: true, placeholder: '写下我的回复 ...' }
     }
   },
   computed: {
@@ -154,6 +170,30 @@ export default {
       return this.$store.dispatch('jv/patch', params).then(data => {
         this.$set(this.replyList, index, data)
       }, e => this.handleError(e))
+    },
+    replyPublish(id) {
+      if (!this.isLogin()) return
+      if (!this.replyPost.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
+      if (this.replyPost.text.length > this.replyType.textLimit) return this.$message.warning(this.$t('post.messageLengthCannotOver'))
+      this.onReplyPublish = true
+      const replyParams = {
+        _jv: {
+          type: `posts`,
+          relationships: {
+            thread: { data: { type: 'threads', id: this.thread?._jv?.id }}
+          }
+        },
+        isComment: true,
+        replyId: id,
+        content: this.replyPost.text
+      }
+      this.publishPostResource(replyParams, this.replyPost)
+      return this.$store.dispatch('jv/post', replyParams).then(response => {
+        this.replyPost.text = ''
+        this.replyPost.imageList = []
+        this.getReplyList()
+        this.postLegalityCheck(response, this.$t('topic.replyPublishSuccess'))
+      }, e => this.handleError(e)).finally(() => { this.onReplyPublish = false })
     }
   },
   head() {

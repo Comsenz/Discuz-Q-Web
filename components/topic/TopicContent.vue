@@ -324,6 +324,7 @@ export default {
       margin-right: 15px;
       margin-top: 35px;
       background: $background-color-grey;
+      border: 1px solid $background-color-grey;
       color: #777;
       font-size: 12px;
       &:hover {
@@ -341,7 +342,8 @@ export default {
       padding:4px 10px;
       line-height: 16px;
       margin-top: 10px;
-      transition: all 0.1s ease-in-out;
+      background: $background-color-grey;
+      border: 1px solid $background-color-grey;
       &:hover {
         color: $color-blue-base;
         background: #fff;
