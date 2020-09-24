@@ -169,11 +169,13 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
+@import "@/assets/css/variable/color.scss";
+
 .reportcontainer {
   margin: 40px 40px 0 40px;
   .reportselect {
     // margin: 40px 40px 0 40px;
-    border-bottom: 1px solid #e4e4e4;
+    border-bottom: 1px solid #f5f5f5;
     position: relative;
     .otherr {
       position: absolute;
@@ -191,6 +193,7 @@ export default {
       color: black;
       background: #f4f5f6;
       margin-top: 20px;
+      font-family: "Microsoft Ya Hei";
     }
   }
 }
@@ -207,6 +210,10 @@ export default {
     background: #1878f3;
     color: #ffffff;
     border-radius: 2px;
+    border: none;
+    &:hover{
+      background:$color-blue-deep;
+    }
   }
   .cancel {
     width: 70px;
