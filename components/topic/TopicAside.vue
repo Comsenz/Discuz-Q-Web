@@ -12,10 +12,9 @@
     <div v-loading="threeEssenceThread.length === 0" class="recommend block">
       <div class="title">{{ $t('topic.recommend') }}</div>
       <div v-for="(item, index) in threeEssenceThread" :key="index" class="container-post">
-        <div v-if="item.title && item.firstPost.summaryText" class="content-html">{{ item.title || item.firstPost.summaryText }}</div>
-        <div v-else class="content-html" v-html="item.firstPost.summary" />
+        <div v-if="item.title && item.firstPost.summaryText" class="content-html" @click="goToPage(item)"> {{ item.title || item.firstPost.summaryText }} </div>
+        <div v-else class="content-html" @click="goToPage(item)" v-html="item.firstPost.summary" />
         <span class="view-count">{{ item.viewCount }} {{ $t('topic.readAlready') }}</span>
-        <a target="_blank" :href="'/topic/index?id=' + item._jv.id">{{ $t('topic.toWatch') }}</a>
       </div>
     </div>
     <advertising style="margin-top: 15px;margin-bottom:3px;" />
@@ -110,6 +109,9 @@ export default {
         this.followLoading = false
         this.followStatus = 0
       })
+    },
+    goToPage(item) {
+      process.client && window.open(`/topic/index?id=${item._jv.id}`)
     }
   }
 }
@@ -149,6 +151,10 @@ export default {
           margin-top: 10px;
           margin-bottom: 10px;
           font-size: 16px;
+          cursor: pointer;
+          &:hover {
+            color: $color-blue-base
+          }
         }
 
         > .view-count {
@@ -156,17 +162,7 @@ export default {
           color: $font-color-grey;
           font-size: 12px;
         }
-
-        > a {
-          float: right;
-          font-size: 12px;
-          color: $color-blue-base;
-          &:hover {
-            color: $color-blue-deep
-          }
-        }
       }
-
     }
   }
 

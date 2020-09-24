@@ -416,6 +416,7 @@ export default {
       margin-top: 30px;
       &.reply { margin-top: 0; margin-left: 60px; }
       &.chat { margin-top: 0 }
+      &.comment { margin-top: 0 }
     }
 
     .resources-list {
@@ -435,7 +436,6 @@ export default {
       > .block {
         display: flex;
         padding: 0 10px;
-        border-left: 1px solid $border-color-base;
 
         &:first-child {
           border: 0;
@@ -453,6 +453,9 @@ export default {
 
       > .button-publish {
         margin-left: auto;
+        ::v-deep span {
+          font-size: 14px;
+        }
       }
     }
 

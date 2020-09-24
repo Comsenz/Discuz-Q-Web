@@ -327,7 +327,9 @@ export default {
       color: #777;
       font-size: 12px;
       &:hover {
-        background: #E5F2FF;
+        color: $color-blue-base;
+        background: #fff;
+        border: 1px solid $color-blue-base;
       }
     }
     .location{
@@ -340,9 +342,10 @@ export default {
       line-height: 16px;
       margin-top: 10px;
       transition: all 0.1s ease-in-out;
-      &:hover{
-        background-color: #E5F2FF;
-        color: $font-color-grey;
+      &:hover {
+        color: $color-blue-base;
+        background: #fff;
+        border: 1px solid $color-blue-base;
       }
       .flex{
         display: flex;

@@ -369,7 +369,7 @@ export default {
     aboutAuthor: '关于作者',
     activeAt: '活跃于',
     before: '前',
-    sendMessage: '发消息',
+    sendMessage: '发私信',
     recommend: '相关推荐',
     toWatch: '去看看',
     viewDetail: '查看详情',
