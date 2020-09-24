@@ -95,7 +95,6 @@ export default {
     box-shadow: 0 3px 3px rgba(0, 0, 0, 0.03);
     > .title {
       font-size: 16px;
-      font-weight: bolder;
       color: #6D6D6D;
     }
 
