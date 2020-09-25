@@ -39,12 +39,11 @@
 <script>
 import s9e from '@/utils/s9e'
 import handleError from '@/mixin/handleError'
-import scroll from '@/mixin/scroll'
 import env from '@/utils/env'
 export default {
   layout: 'custom_layout',
   name: 'Index',
-  mixins: [handleError, scroll],
+  mixins: [handleError],
   // 异步数据用法
   async asyncData({ params, store, query }, callback) {
     if (!env.isSpider) {
@@ -244,16 +243,8 @@ export default {
     },
     // 点击加载更多
     loadMore() {
-      if (this.hasMore) {
-        this.pageNum++
-        this.getThreadsList()
-      }
-    },
-    // 滚动加载更多，每5页停止滚动加载
-    scrollLoadMore() {
-      if (this.pageNum % 5 > 0 && !this.loading) {
-        this.loadMore()
-      }
+      this.pageNum++
+      this.getThreadsList()
     },
     // 轮询查看是否有新主题
     autoLoadThreads() {
