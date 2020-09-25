@@ -1,11 +1,11 @@
 <template>
-  <message-box
+  <message
     :title="$t('profile.editpaypassword')"
     @close="$emit('close')"
   >
     <div class="container">
       <div class="block show-amount">
-        <div class="title">{{ $t('modify.editphonecode')+userInfo.mobile+ $t('user.verification') }}</div>
+        <div class="title">{{ $t('modify.editphonecode')+mobile+$t('user.verification') }}</div>
         <div class="amount">
           <span>{{ $t('modify.editphonewordtip') }}</span>
         </div>
@@ -21,12 +21,18 @@
         >{{ $t('core.sms_verify_error') }}</div>
       </div>
     </div>
-  </message-box>
+  </message>
 </template>
 
 <script>
+import { status } from '@/library/jsonapi-vuex/index'
+import handleError from '@/mixin/handleError'
+import tencentCaptcha from '@/mixin/tencentCaptcha'
 export default {
-  name: 'SetNewpasword',
+  name: 'Phonecode',
+  mixins: [
+    tencentCaptcha, handleError
+  ],
   props: {
     price: {
       type: [Number, String],
@@ -35,6 +41,14 @@ export default {
     error: {
       type: Boolean,
       default: false
+    },
+    mobile: {
+      type: String,
+      default: ''
+    },
+    phonenum: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -42,9 +56,29 @@ export default {
       userId: this.$store.getters['session/get']('userId') // 获取当前登陆用户的ID
     }
   },
-  computed: {
-    userInfo() {
-      return this.$store.getters['jv/get'](`/users/${this.userId}`)
+  mounted() {
+    console.log(this.mobile)
+    console.log(this.phonenum)
+  },
+  methods: {
+    async sendCode() {
+      let params = {
+        _jv: { type: 'sms/send' },
+        mobile: this.phonenum,
+        type: 'reset_pay_pwd'
+      }
+      params = await this.checkCaptcha(params)
+      status.run(() => this.$store.dispatch('jv/post', params))
+        .then(res => {
+          // if (res.interval) this.countDown(res.interval)
+        }, e => {
+          const { response:
+            {
+              data: { errors }
+            }
+          } = e
+          if (errors[0]) return this.$message.error(errors[0].detail[0])
+        })
     }
   }
 }

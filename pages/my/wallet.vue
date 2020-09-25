@@ -1,5 +1,5 @@
 <template>
-  <div class="mywallet">
+  <div v-if="dataInfo" class="mywallet">
     <!-- 钱包信息 -->
     <div class="mywallet-top">
       <div class="mywallet-topitem">
@@ -67,6 +67,7 @@
           :error="passError"
           @close="showPasswordInput = false"
           @password="validatePass"
+          @findpaypwd="findPaypwd"
         />
         <set-newpassword
           v-if="showNewverify"
@@ -96,7 +97,9 @@
           @password="setPass2"
         />
       </div>
-
+      <!-- <phone-code v-if="issendcode" :mobile="dataInfo.user.mobile" :phonenum="dataInfo.user.originalMobile" @password="checkCode" @close="issendcode = false" /> -->
+      <find-paypwd v-if="isfindpwd" :mobile="dataInfo.user.mobile" :phonenum="dataInfo.user.originalMobile" @close="isfindpwd = false" />
+      <without-phone v-if="isWithoutphone" @close=" isWithoutphone = false" />
     </div>
     <el-tabs
       type="border-card"
@@ -152,6 +155,9 @@ export default {
       loadingType: '', // 读取状态
       dataInfo: '', // 钱包信息
       hasPassword: false,
+      issendcode: false,
+      isfindpwd: false,
+      isWithoutphone: false,
       userId: this.$store.getters['session/get']('userId') // 获取当前登陆用户的ID
     }
   },
@@ -285,6 +291,15 @@ export default {
           this.dataInfo = res
           this.hasPassword = res.user.canWalletPay
         }, e => this.handleError(e))
+    },
+    // 找回密码
+    findPaypwd() {
+      if (this.dataInfo.user.mobile) {
+        this.isfindpwd = true
+      } else {
+        this.isWithoutphone = true
+      }
+      console.log('hhhhhhhhhhhhh', this.dataInfo)
     }
   },
   head() {
@@ -300,7 +315,7 @@ export default {
 
 .mywallet {
   padding-left: 30px;
-  margin-top: 40px !important;
+   margin-top: 40px !important;
   @media screen and (max-width: 1005px) {
     padding-left: 0 15px;
   }
@@ -320,7 +335,7 @@ export default {
         width: 16px;
         height: 16px;
         margin-right: 5px;
-        vertical-align: text-top;
+        vertical-align: sub;
       }
       .amount {
         font-size: 20px;

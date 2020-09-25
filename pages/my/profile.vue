@@ -476,6 +476,8 @@ export default {
     }
   },
   mounted() {
+    const { phonebind } = this.$route.query
+    if (phonebind) this.isMobileModify = true
     this.userinfo()
   },
   methods: {
