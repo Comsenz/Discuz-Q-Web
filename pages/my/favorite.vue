@@ -90,6 +90,7 @@ export default {
         return this.$store.dispatch('jv/patch', params).then(data => {
           this.$message.success(this.$t('topic.cancelCollectionSuccess'))
           this.favoriteList.splice(index, 1)
+          this.total--
         }, e => {
           this.handleError(e)
         }).finally(() => {
@@ -134,8 +135,11 @@ export default {
     .delete{
       color: $font-color-grey;
       cursor: pointer;
+      flex: 2;
+      text-align: right;
       .svg-icon-delete{
         margin-right: 6px;
+        font-size: 14px;
       }
       &:hover{
         color: $color-blue-deep;

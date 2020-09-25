@@ -7,7 +7,7 @@
           <template v-for="(item,index) in menuList">
             <template v-if="item.index === '/manage/index'">
               <el-menu-item
-                v-if="forums && forums.other && (forums.other.can_view_user_list || forums.other.can_create_invite)"
+                v-if="forums && forums.other && ((forums.other.can_view_user_list && (forums.other.can_edit_user_group || forums.other.can_edit_user_status)) || forums.other.can_create_invite)"
                 :key="item.index"
                 :index="item.index"
                 :class="item.classname"
@@ -136,6 +136,7 @@ export default {
         padding-top: 20px;
         border-radius: 5px 0;
         width:150px;
+        border-right: 1px solid $line-color-base;
       }
       .padd {
         padding-left: 30px !important;
@@ -150,7 +151,7 @@ export default {
         }
       }
       .divided {
-        border-top: 1px solid $border-color-base;
+        border-top: 1px solid $line-color-base;
         margin-top: 15px;
         padding-top: 32px !important;
       }
@@ -201,7 +202,7 @@ export default {
       }
     }
       .my-main {
-        margin-top: 40px;
+        margin-top: 25px;
         width: 100%;
         min-height: 800px;
         flex: 1;

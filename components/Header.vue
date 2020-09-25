@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div ref="head" class="header isFixed">
     <div class="header-container">
       <div class="flex">
         <div class="logo" @click="toIndex">
@@ -67,7 +67,8 @@ export default {
       code: '', // 邀请码
       canReg: false,
       siteClose: false,
-      userInfoTimer: null // 定时器
+      userInfoTimer: null, // 定时器
+      offsetTop: 0
     }
   },
   computed: {
@@ -222,8 +223,9 @@ export default {
         width:14px;
         margin-right: 8px;
       }
-      @media screen and (max-width: 1005px) {
-        .el-input__icon {
+      .el-input__suffix{
+        line-height: 36px;
+        @media screen and (max-width: 1005px) {
           line-height: 30px;
         }
       }
@@ -294,6 +296,13 @@ export default {
       display: inline-block !important;
     }
   }
+}
+.isFixed{
+  position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 999;
 }
 .search-logo {
   width: 14px;

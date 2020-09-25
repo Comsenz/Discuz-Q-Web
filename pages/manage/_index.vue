@@ -1,36 +1,10 @@
 <template>
   <div class="user-manage-container">
-    <header v-if="forums" class="header flex">
-      <div class="item">
-        <div class="label">{{ $t('manage.userCount') }}</div>
-        <div class="value">{{ forums.other && forums.other.count_users }}</div>
-      </div>
-      <!-- <div class="item">
-        <div class="label">{{ $t('manage.disable') }}</div>
-        <div class="value">75</div>
-      </div>
-      <div class="item">
-        <div class="label">圈龄最高</div>
-        <div class="value">75</div>
-      </div>
-      <div class="item">
-        <div class="label">邀请加入率</div>
-        <div class="value">75</div>
-      </div> -->
-      <div v-if="forums && forums.other && forums.other.can_create_invite" class="item item-invite">
-        <div class="label">{{ $t('manage.inviteMembers') }}</div>
-        <el-dropdown class="handle-dropdown" placement="bottom" trigger="click" disabled @command="handleCommand">
-          <el-button type="text" size="medium" class="create-url">{{ $t('manage.generateInvitationUrl') }}</el-button>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-for="(item,index) in Object.keys(groupMap)" :key="index" :command="item">{{ groupMap[item] + $t('manage.invitationUrl') }}</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </div>
-    </header>
     <main>
-      <el-tabs v-model="activeName">
-        <el-tab-pane v-if="forums && forums.other && forums.other.can_view_user_list" :label="$t('manage.manageMembers')" name="manage"><users-manage /></el-tab-pane>
-        <el-tab-pane v-if="forums && forums.other && forums.other.can_create_invite" :label="$t('manage.inviteMembers')" name="invite"><invite-user v-if="activeName === 'invite'" :group-map="groupMap" /></el-tab-pane>
+      <el-tabs v-if="forums && forums.other" v-model="activeName">
+        <!-- 没有查看成员列表或有查看列表权限，但是没有编辑用户组和状态的权限，就隐藏 -->
+        <el-tab-pane v-if="forums.other.can_view_user_list && (forums.other.can_edit_user_group || forums.other.can_edit_user_status)" :label="$t('manage.manageMembers')" name="manage"><users-manage :group-invite-list="groupInviteList" /></el-tab-pane>
+        <el-tab-pane v-if="forums.other.can_create_invite" :label="$t('manage.inviteMembers')" name="invite"><invite-user :group-map="groupMap" /></el-tab-pane>
       </el-tabs>
     </main>
   </div>
@@ -45,7 +19,8 @@ export default {
     return {
       loading: false,
       activeName: 'manage',
-      groupMap: {}
+      groupMap: {},
+      groupInviteList: []
     }
   },
   computed: {
@@ -55,17 +30,15 @@ export default {
   },
   mounted() {
     this.getGroupList()
-    this.reloadForums()
+    // 没有查看成员列表或有查看列表权限，但是没有编辑用户组和状态的权限，就显示另一个tab
+    if (this.forums && this.forums.other) {
+      if (!this.forums.other.can_view_user_list || (this.forums.other.can_view_user_list && !this.forums.other.can_edit_user_group && !this.forums.other.can_edit_user_status)) {
+        this.activeName = 'invite'
+      }
+    }
   },
   methods: {
-    async reloadForums() {
-      try {
-        await this.$store.dispatch('site/getSiteInfo')
-      } catch (err) {
-        console.log('getuUserInfo err', err)
-      }
-    },
-    // 获取用户组
+    // 获取用户组 去除管理员和游客
     getGroupList() {
       const params = {
         'filter[type]': 'invite'
@@ -73,53 +46,19 @@ export default {
       this.$store.dispatch('jv/get', ['groups', { params }]).then(res => {
         if (res && res.length > 0) {
           const groupMap = {}
+          this.groupInviteList = []
           res.forEach(item => {
             groupMap[item._jv.id] = item.name
+            this.groupInviteList.push({
+              label: item.name,
+              value: item._jv.id
+            })
           })
           this.groupMap = groupMap
         }
       }, e => {
         this.handleError(e)
       })
-    },
-    handleCommand(command) {
-      this.createAdminInvite(command)
-    },
-    // 管理员创建邀请链接
-    createAdminInvite(groupId) {
-      if (this.loading) return
-      this.loading = true
-      const params = {
-        data: {
-          attributes: {
-            group_id: groupId
-          }
-        }
-      }
-      this.$store.dispatch('jv/post', [{ _jv: { type: 'invite' }}, { data: params }]).then((res) => {
-        this.$message.success(this.$t('discuzq.msgBox.createSuccess'))
-        if (res) {
-          this.copyLink(res.code)
-        }
-      }, e => {
-        this.handleError(e)
-      }).finally(() => {
-        this.loading = false
-      })
-    },
-    copyLink(code) {
-      const oInput = document.createElement('input')
-      if (process.client) {
-        oInput.value = window.location.host + '/site/partner-invite?code=' + code
-        oInput.id = 'copyInput'
-        document.body.appendChild(oInput)
-        oInput.select()
-        document.execCommand('Copy')
-      }
-      // this.$message.success(this.$t('discuzq.msgBox.copySuccess'))
-      setTimeout(() => {
-        oInput.remove()
-      }, 100)
     }
   },
   head() {
@@ -157,17 +96,17 @@ export default {
     }
   }
   .el-tabs ::v-deep{
-    margin-top: 40px;
     .el-tabs__active-bar, .el-tabs__nav-wrap::after {
       height: 0;
     }
     .el-tabs__nav-wrap{
-      border-bottom: 1px solid #E4E4E4;
+      border-bottom: 1px solid $line-color-base;
       padding-bottom:5px;
     }
     .el-tabs__item{
       font-size: 16px;
       color: #B5B5B5;
+      min-width: 92px;
       &.is-active{
         color:#000;
         font-size: 18px;
@@ -178,9 +117,5 @@ export default {
       color: $color-blue-deep;
     }
   }
-}
-::v-deep .el-dropdown-menu__item:not(.is-disabled):hover {
-  background-color: transparent;
-  color: $color-blue-base;
 }
 </style>

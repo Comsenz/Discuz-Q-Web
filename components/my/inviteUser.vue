@@ -19,22 +19,12 @@
           <template>{{ $t('manage.total', { total }) }}</template>
         </template>
       </div>
-      <el-dropdown class="handle-dropdown" placement="bottom" trigger="click" disabled @command="handleCommand">
+      <el-dropdown class="handle-dropdown" placement="bottom" trigger="click" @command="handleCommand">
         <el-button type="primary" size="medium" class="create-url">{{ $t('manage.generateInvitationUrl') }}</el-button>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item v-for="(item,index) in Object.keys(groupMap)" :key="index" :command="item">{{ groupMap[item] + $t('manage.invitationUrl') }}</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <!-- 批量操作 -->
-      <!-- <el-select v-model="handleValue" placeholder="批量操作" size="medium" @change="onChangeGroup">
-        <el-option
-          v-for="item in groupList"
-          :key="item.value"
-          :disabled="item.value === '7'"
-          :label="'设为' + item.label"
-          :value="item.value"
-        />
-      </el-select> -->
     </div>
     <el-table ref="multipleTable" v-loading="loading" :data="inviteList" @selection-change="handleSelectionChange">
       <!-- <el-table-column type="selection" width="35" /> -->
@@ -46,7 +36,7 @@
           <template v-else>{{ formatStatus(scope.row.status) }}</template>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('manage.operate')">
+      <el-table-column :label="$t('manage.operate')" width="130">
         <template slot-scope="scope">
           <el-button type="text" :disabled="scope.row.status !== 1" class="btn" @click="deleteInvite(scope.row._jv.id)">{{ $t('manage.setInvalid') }}</el-button>
           <el-button type="text" :disabled="scope.row.status !== 1" class="btn" @click="copyLink(scope.row.code)">{{ $t('manage.share') }}</el-button>
@@ -123,23 +113,6 @@ export default {
     this.getInviteList()
   },
   methods: {
-    // 获取用户组
-    getGroupList() {
-      const params = {
-        'filter[type]': 'invite'
-      }
-      this.$store.dispatch('jv/get', ['groups', { params }]).then(res => {
-        if (res && res.length > 0) {
-          const groupMap = {}
-          res.forEach(item => {
-            groupMap[item._jv.id] = item.name
-          })
-          this.groupMap = groupMap
-        }
-      }, e => {
-        this.handleError(e)
-      })
-    },
     // 获取邀请列表
     getInviteList() {
       this.loading = true
@@ -334,11 +307,6 @@ export default {
   margin-top: 40px;
 }
 .create-url{
-  background: $color-blue-base;
-  transition: all 0.2s ease-in-out;
-  &:hover{
-    background: $color-blue-deep;
-    border:1px solid $color-blue-deep;
-  }
+  padding: 10px;
 }
 </style>

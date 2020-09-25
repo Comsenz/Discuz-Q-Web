@@ -300,6 +300,7 @@ export default {
 
 .mywallet {
   padding-left: 30px;
+  margin-top: 40px !important;
   @media screen and (max-width: 1005px) {
     padding-left: 0 15px;
   }

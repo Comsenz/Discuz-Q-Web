@@ -73,7 +73,7 @@ export default {
 @import "@/assets/css/variable/color.scss";
 .user-item-container {
   padding: 20px;
-  border-bottom: 1px solid $border-color-base;
+  border-bottom: 1px solid $line-color-base;
   display: flex;
   .flex {
     display: flex;
@@ -90,11 +90,13 @@ export default {
       margin-top: 5px;
     }
     .name {
-      font-size: 16px;
       max-width: 150px;
       display: inline-block;
       @media screen and (max-width: 1005px) {
         max-width: 80px;
+      }
+      &:hover{
+        color: $color-blue-base;
       }
     }
     .role {

@@ -169,9 +169,7 @@
               </div>
             </share-popover>
           </div>
-          <!-- <slot name="bottom-right">
-            <div class="reply-btn" @click="toDetail">{{ $t('topic.reply') }}</div>
-          </slot> -->
+          <slot name="bottom-right" />
         </div>
       </template>
     </div>
@@ -296,13 +294,14 @@ export default {
   position: relative;
   display: flex;
   padding: 20.5px 20px 30px;
-  border-bottom: 1px solid $border-color-base;
+  border-bottom: 1px solid $line-color-base;
   &:hover {
     background: rgba(229, 242, 255, 0.3);
+    border-bottom: 1px solid #E7ECF2;
   }
   .essence {
     position: absolute;
-    top: -2px;
+    top: -5px;
     right: 20px;
     font-size: 22px;
   }
@@ -319,13 +318,12 @@ export default {
     }
     .user-info {
       flex: 1;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       .user-name {
         font-size: 16px;
-        font-weight: bold;
         display: flex;
-        max-width: 50%;
+        max-width: 250px;
         @include text-hidden();
         @media screen and (max-width: 1005px) {
           font-size: 14px;
@@ -343,48 +341,35 @@ export default {
     }
     .title {
       font-weight: bold;
-      font-size: 20px;
+      font-size: 16px;
       margin-bottom: 6px;
       @include text-hidden();
       flex: 0 0 60%;
-      @media screen and (max-width: 1005px) {
-        font-size: 18px;
-      }
     }
-    .content {
+    ::v-deep .content{
       @include text-hidden(4);
       line-height: 24px;
-      font-size: 16px !important;
+      font-size: 14px !important;
       color: #000;
       max-width: 585px;
       max-height: 96px;
-      ::v-deep p,
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6 {
-        font-size: 16px !important;
+      p,h1,h2,h3,h4,h5,h6 {
+        font-size: 14px !important;
       }
-      ::v-deep img {
+      img {
         height: 22px;
       }
-      ::v-deep a {
+      a {
         color: $color-blue-base;
         &:hover {
           border-bottom: 1px solid $color-blue-base;
         }
       }
       @media screen and (max-width: 1005px) {
-        font-size: 14px !important;
         max-height: 80px;
         line-height: 20px;
         max-width: 410px;
-        ::v-deep p {
-          font-size: 14px !important;
-        }
-        ::v-deep img {
+        img {
           height: 20px;
         }
       }
@@ -468,17 +453,19 @@ export default {
     }
     .location {
       display: inline-block;
-      background: #f7f7f7;
+      background: $background-color-grey;
       border-radius: 13px;
+      border: 1px solid $background-color-grey;
       font-size: 12px;
       color: #777777;
-      padding: 4px 10px;
+      padding: 3px 10px;
       line-height: 16px;
       margin-top: 10px;
       transition: all 0.1s ease-in-out;
       &:hover {
-        background-color: #e5f2ff;
-        color: $font-color-grey;
+        background-color: #fff;
+        color: $color-blue-base;
+        border-color: $color-blue-base;
       }
       .flex {
         display: flex;
@@ -493,13 +480,11 @@ export default {
       align-items: center;
       justify-content: space-between;
       margin-top: 26px;
-      @media screen and (max-width: 1005px) {
-        font-size: 12px;
-      }
+      font-size: 12px;
       .left {
         display: flex;
         align-items: center;
-        width: 100%;
+        flex: 1;
         justify-content: space-between;
         .btn {
           color: $font-color-grey;

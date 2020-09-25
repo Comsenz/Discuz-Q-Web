@@ -3,7 +3,7 @@
     <div class="ftop">
       <el-select
         v-model="value"
-        placeholder="目前接口不支持排序"
+        placeholder="排序"
         class="fselect"
         size="small"
         @change="confirm"
@@ -126,18 +126,16 @@ export default {
       currentLoginId: this.$store.getters['session/get']('userId'),
       loading: false,
       hasMore: false,
+      sort: '',
       options: [{
-        value: '',
-        label: '接口不支持排序'
+        label: this.$t('home.noLimit'),
+        value: ''
       }, {
-        value: '1',
-        label: '主题数'
+        label: '关注时间',
+        value: 'createdAt'
       }, {
-        value: '2',
-        label: '关注数'
-      }, {
-        value: '3',
-        label: '粉丝数'
+        label: '用户创建时间',
+        value: 'users.createdAt'
       }]
     }
   },
@@ -151,6 +149,7 @@ export default {
       const params = {
         include: ['fromUser', 'fromUser.groups'],
         'filter[type]': 2,
+        'sort': this.sort,
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         'filter[user_id]': this.userId,
@@ -230,7 +229,11 @@ export default {
       this.$router.push(`/profile/index?userId=${userId}`)
     },
     confirm(e) {
-
+      this.sort = e
+      this.pageNum = 1
+      this.followerList = []
+      this.getFollowerList('change')
+      console.log(e)
     },
     onClickSearch() {
       this.pageNum = 1
@@ -252,15 +255,16 @@ export default {
   ::v-deep.fselect {
     width: 130px;
     height: 32px;
-    visibility: hidden;
+    // visibility: hidden;
   }
   ::v-deep .el-input__inner {
     height: 32px;
+    color: #b5b5b5;
   }
 }
 .user-item-container {
   padding: 20px;
-  border-bottom: 1px solid #e4e4e4;
+  border-bottom: 1px solid $line-color-base;
   display: flex;
   &.simple {
     padding: 10px 0;
@@ -308,7 +312,7 @@ export default {
     }
   }
   .follow {
-    border: 1px solid #d0d4dc;
+    border: 1px solid #ededed;
     padding: 0 14px;
     font-size: 12px;
     height: 25px;
@@ -316,6 +320,9 @@ export default {
     border-radius: 18px;
     cursor: pointer;
     color: #8590a6;
+    &:hover{
+      color:#6d6d6d;
+    }
     .follow-icon {
       color: #ff8888;
       font-size: 13px;

@@ -1,5 +1,6 @@
 <template>
   <div class="invite-container">
+    <!-- 收益详情 -->
     <template v-if="isShowDetail">
       <header v-if="detail && detail.user" class="detail-header">
         <div class="title">{{ $t('invite.userDetail' ) }}</div>
@@ -17,7 +18,6 @@
       </header>
       <main>
         <div class="main">
-          <!-- <div class="invite-total">{{ $t('invite.inviteTotal', { total }) }}</div> -->
           <el-table v-loading="loading" :data="incomeDetailList" :default-sort="{prop: 'created_at', order: 'descending'}" @sort-change="sortChange">
             <el-table-column :label="$t('invite.inviteUserName')">
               <template slot-scope="scope">
@@ -56,16 +56,6 @@
       </main>
     </template>
     <div v-else class="invite-cont">
-      <header class="header flex">
-        <div class="item">
-          <div class="label">{{ $t('invite.inviteSuccessCount') }}</div>
-          <div class="value">{{ inviteTotal }}</div>
-        </div>
-        <div class="item">
-          <div class="label">{{ $t('invite.allIncome') }}</div>
-          <div class="value">{{ $t('post.yuanItem') + totalMoney }}</div>
-        </div>
-      </header>
       <main>
         <el-tabs v-model="activeName">
           <el-tab-pane :label="$t('invite.invitedUser')" name="invited"><invited @view-detail="viewDetail" /></el-tab-pane>
@@ -91,15 +81,13 @@ export default {
     return {
       loading: false,
       activeName: 'invited',
-      inviteTotal: 0,
-      totalMoney: 0,
       isShowDetail: false,
       detail: {}, // 用户详细收益
       pageNum: 1,
       pageSize: 10,
       total: 0,
-      detailUserId: '',
       detailTotalMoney: 0,
+      detailUserId: '',
       incomeDetailList: [] // 收益详情列表
     }
   },
@@ -109,41 +97,9 @@ export default {
     }
   },
   mounted() {
-    this.getInviteList()
-    this.getIncomeList()
   },
   methods: {
-    // 获取成功邀请人数
-    getInviteList() {
-      const params = {
-        'page[number]': 1,
-        'page[limit]': 10
-      }
-      this.$store.dispatch('jv/get', ['invite/users', { params }]).then((res) => {
-        console.log('res', res)
-        if (res && res._jv) {
-          this.inviteTotal = res._jv.json.meta.total
-          this.inviteList = res
-        }
-      })
-    },
-    // 获取累计收益
-    getIncomeList() {
-      const params = {
-        include: 'sourceUser',
-        'filter[user]': this.userId,
-        'filter[change_type]': '33, 62, 34',
-        'page[number]': 1,
-        'page[limit]': 10
-      }
-      this.$store.dispatch('jv/get', ['wallet/log', { params }]).then(res => {
-        if (res && res._jv) {
-          this.totalMoney = res._jv.json.meta.sumChangeAvailableAmount
-        }
-      })
-    },
     viewDetail(item) {
-      console.log('id', item)
       this.detail = item
       this.isShowDetail = true
       this.detailUserId = item.user_id
@@ -162,13 +118,12 @@ export default {
         'filter[source_user_id]': this.detailUserId
       }
       this.$store.dispatch('jv/get', ['wallet/log', { params }]).then(res => {
-        if (res._jv) {
+        if (res && res._jv && res._jv.json && res._jv.json.meta) {
           this.detailTotalMoney = res._jv.json.meta.sumChangeAvailableAmount
           this.total = res._jv.json.meta.total
           delete res._jv
         }
         this.incomeDetailList = res
-        console.log('incomeDetailList,', res)
       }, e => {
         this.handleError(e)
       }).finally(() => {
@@ -185,16 +140,16 @@ export default {
       } else {
         this.sort = ''
       }
-      this.getInviteList()
+      this.getIncomeDetailList()
     },
     handleSizeChange(val) {
       this.pageNum = 1
       this.pageSize = val
-      this.getInviteList()
+      this.getIncomeDetailList()
     },
     handleCurrentChange(val) {
       this.pageNum = val
-      this.getInviteList()
+      this.getIncomeDetailList()
     }
   },
   head() {
@@ -217,34 +172,18 @@ export default {
     display: flex;
     align-items: center;
   }
-  .header{
-    .item{
-      margin-right: 130px;
-      .label{
-        font-size: 14px;
-        color: #6D6D6D;
-      }
-      .value{
-        font-size: 20px;
-        margin-top: 10px;
-      }
-    }
-    .item-invite{
-      text-align:right;
-    }
-  }
   .el-tabs ::v-deep{
-    margin-top: 40px;
     .el-tabs__active-bar, .el-tabs__nav-wrap::after {
       height: 0;
     }
     .el-tabs__nav-wrap{
-      border-bottom: 1px solid #E4E4E4;
+      border-bottom: 1px solid  $line-color-base;
       padding-bottom:5px;
     }
     .el-tabs__item{
       font-size: 16px;
       color: #B5B5B5;
+      min-width: 92px;
       &.is-active{
         color:#000;
         font-size: 18px;
