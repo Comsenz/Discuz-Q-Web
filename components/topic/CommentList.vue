@@ -57,10 +57,8 @@
             <Avatar :user="reply.user || {}" size="30" />
             <div class="title-info">
               <span class="author-name">{{ reply.user ? reply.user.username : '' }}</span>
-              <!--              <span v-show="reply.user && reply.user.groups" class="group">（{{ reply.user.groups[0].name }}）</span>-->
               <span class="text reply">{{ $t('topic.reply') }}</span>
               <span class="text comment-author">{{ comment.user ? comment.user.username : '' }}   </span>
-              <!--              <span v-show="comment.user && comment.user.groups" class="group">（{{ comment.user.groups[0].name }}）</span>-->
               <span class="timer">{{ formatDate(reply.updatedAt) }}</span>
               <span v-if="reply.canHide" class="delete-reply" @click.stop="$emit('deleteComment', reply._jv.id)">{{ $t('topic.delete') }}</span>
             </div>
@@ -142,7 +140,7 @@ export default {
     formatSummary(comment) {
       let html
       if (comment.contentHtml !== comment.summary) {
-        html = comment.summary + `&nbsp&nbsp&nbsp<button style="font-size: 16px;color: #00479B; cursor: pointer" class="showAllComment">${this.$t('topic.all')}<button>`
+        html = comment.summary + `<button style="font-size: 14px;color: #00479B; cursor: pointer" class="showAllComment">${this.$t('topic.all')}<button>`
       } else {
         html = comment.contentHtml
       }
@@ -190,7 +188,7 @@ export default {
 
   .comment {
     padding-top: 20px;
-    border-top: 1px solid $border-color-base;
+    border-top: 1px solid $line-color-base;
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -204,7 +202,7 @@ export default {
       justify-content: space-between;
 
       > .management{
-        font-size: 16px;
+        font-size: 12px;
         display: flex;
         color: $color-blue-base;
         > .delete {
@@ -226,6 +224,10 @@ export default {
       > .content-html {
         word-break: break-all;
         margin-top: 10px;
+        font-size: 14px !important;
+        ::v-deep p {
+          font-size: 14px !important;
+        }
       }
 
       > .images {
@@ -240,6 +242,7 @@ export default {
         display: flex;
         justify-content: space-between;
         color: $font-color-grey;
+        font-size: 12px;
 
         > .left {
           > span {
@@ -336,7 +339,7 @@ export default {
 
         > .line {
           margin-left: 40px;
-          background: $border-color-base;
+          background: $line-color-base;
           height: 1px;
         }
       }

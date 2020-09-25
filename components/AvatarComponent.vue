@@ -37,20 +37,17 @@ export default {
   @import '@/assets/css/variable/color.scss';
   .global {
     display: flex;
-    align-items: center;
     > .title-info {
       margin-left: 15px;
-      margin-top: 5px;
 
       .author-name {
         font-size: 16px;
-        font-weight: bold;
         > .group {
           font-weight: normal;
           white-space: nowrap;
           font-size: 12px;
           line-height: 20px;
-          color: #AAAAAA;
+          color: #8590A6;
         }
       }
 

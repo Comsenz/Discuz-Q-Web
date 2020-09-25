@@ -997,6 +997,7 @@ export default {
   margin-top: 40px !important;
   .bgcolor {
     background: #fafbfc;
+    border-top: 1px solid #d0d4dc;
   }
 
 }
@@ -1066,6 +1067,7 @@ export default {
       .nreal {
         // margin-left: 12px;
         color: #fa5151;
+        line-height: 21px;
       }
       .real {
         margin-left: 2px;

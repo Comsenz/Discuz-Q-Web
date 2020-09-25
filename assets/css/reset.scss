@@ -196,18 +196,8 @@ table {
   }
 }
 //el-select 选中颜色
-.el-select-dropdown__item{
-  &.selected, &.hover, &:hover{
-    color: #1878F3 !important;
-    background-color: transparent !important;
-  }
-}
-// el-table 线条颜色
-.el-table--border::after, .el-table--group::after, .el-table::before{
-  background-color: #f5f5f5 !important;
-}
-.el-table td{
-  border-bottom: 1px solid #f5f5f5 !important;
+.el-select-dropdown__item.selected{
+  color: #1878F3 !important;
 }
 /*# sourceMappingURL=main.css.map */
 
