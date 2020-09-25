@@ -107,9 +107,9 @@ export default {
       this.siteClose = true
     }
     window.addEventListener('scroll', this.handleScroll)
-    // this.$nextTick(() => {
-    //   this.offsetTop = document.querySelector('.header').offsetTop
-    // })
+    this.$nextTick(() => {
+      this.offsetTop = document.querySelector('.header').offsetTop
+    })
   },
   destroyed() {
     if (process.client) {
@@ -119,11 +119,12 @@ export default {
   methods: {
     handleScroll() {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-      if (scrollTop > this.$refs.head.getBoundingClientRect().top) {
+      if (scrollTop >= this.offsetTop) {
         this.headFixed = true
       } else {
         this.headFixed = false
       }
+      // this.$refs.head.getBoundingClientRect().top
     },
     // 退出
     logout() {
