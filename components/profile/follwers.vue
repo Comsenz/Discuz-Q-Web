@@ -131,9 +131,6 @@ export default {
         label: this.$t('home.noLimit'),
         value: ''
       }, {
-        label: '关注时间',
-        value: 'createdAt'
-      }, {
         label: '用户创建时间',
         value: 'users.createdAt'
       }]
@@ -155,7 +152,6 @@ export default {
         'filter[user_id]': this.userId,
         'filter[username]': `${this.inputVal}`
       }
-      console.log('params', params)
       status
         .run(() => this.$store.dispatch('jv/get', ['follow', { params }]))
         .then(res => {

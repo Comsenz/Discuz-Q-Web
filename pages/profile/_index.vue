@@ -256,12 +256,14 @@ export default {
     this.userId = userId || ''
     this.current = current
     this.activeName = this.current ? this.current : this.activeName
-    this.getUserInfo(this.userId)
   },
   mounted() {
     this.getAuth()
+    this.getUserInfo(this.userId)
     window.addEventListener('scroll', this.handleScroll)
-    this.getShieldData()
+    if (this.currentLoginId) {
+      this.getShieldData()
+    }
     // this.$nextTick(() => {
     //   this.offsetTop = document.querySelector('.profile-h').offsetTop
     // })
@@ -272,9 +274,6 @@ export default {
   methods: {
     handleScroll() {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-      // const offsetTop = document.querySelector('.profile-h').offsetTop
-      // console.log(scrollTop)
-      // console.log(offsetTop)
       if (scrollTop > 220) {
         this.headFixed = true
       } else {
@@ -363,6 +362,11 @@ export default {
     },
     // 私信
     chat() {
+      if (process.client) {
+        if (!localStorage.getItem('access_token')) {
+          return
+        }
+      }
       this.chatting = true
     },
     // 当前登录用户已屏蔽用户
@@ -388,6 +392,11 @@ export default {
     },
     // 屏蔽用户
     handleShield() {
+      if (process.client) {
+        if (!localStorage.getItem('access_token')) {
+          return
+        }
+      }
       const params = {
         _jv: {
           type: `users/${this.userId}/deny`
@@ -400,6 +409,11 @@ export default {
     },
     // 解绑用户
     unbundlingUser() {
+      if (process.client) {
+        if (!localStorage.getItem('access_token')) {
+          return
+        }
+      }
       this.$store.dispatch('jv/delete', `users/${this.userId}/deny`).then(() => {
         console.log('解除屏蔽')
         this.$t('profile.unboundsucceed')
