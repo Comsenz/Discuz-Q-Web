@@ -15,7 +15,7 @@
       :type="typeInformation && typeInformation.type"
       @paymentChange="e => onPaymentChange(e.key, e.value)"
     />
-    <div v-if="typeInformation && typeInformation.showLocation" class="location-picker">
+    <div v-if="typeInformation && typeInformation.showLocation && lbs" class="location-picker">
       <div class="location-title">{{ $t('post.location') }}:</div>
       <div class="location-input" @click="getLocation">
         <svg-icon type="location" style="font-size: 17px" />
@@ -186,12 +186,16 @@ export default {
       }
       return ''
     },
+    lbs() {
+      const forums = this.$store.state.site.info.attributes || {}
+      return forums.lbs && forums.lbs.lbs
+    },
     textarea() {
       return process.client ? document.querySelector(`.${this.selector} #textarea`) : ''
     },
     canCreateThreadPaid() {
       const forums = this.$store.state.site.info.attributes
-      return forums ? forums.other.can_create_thread_paid : false
+      return forums.other ? forums.other.can_create_thread_paid : false
     }
   },
   watch: {
