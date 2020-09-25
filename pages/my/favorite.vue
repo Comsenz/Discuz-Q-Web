@@ -90,6 +90,7 @@ export default {
         return this.$store.dispatch('jv/patch', params).then(data => {
           this.$message.success(this.$t('topic.cancelCollectionSuccess'))
           this.favoriteList.splice(index, 1)
+          this.total--
         }, e => {
           this.handleError(e)
         }).finally(() => {

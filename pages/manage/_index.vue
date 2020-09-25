@@ -1,9 +1,10 @@
 <template>
   <div class="user-manage-container">
     <main>
-      <el-tabs v-model="activeName">
-        <el-tab-pane v-if="forums && forums.other && forums.other.can_view_user_list" :label="$t('manage.manageMembers')" name="manage"><users-manage :group-invite-list="groupInviteList" /></el-tab-pane>
-        <el-tab-pane v-if="forums && forums.other && forums.other.can_create_invite" :label="$t('manage.inviteMembers')" name="invite"><invite-user v-if="activeName === 'invite'" :group-map="groupMap" /></el-tab-pane>
+      <el-tabs v-if="forums && forums.other" v-model="activeName">
+        <!-- 没有查看成员列表或有查看列表权限，但是没有编辑用户组和状态的权限，就隐藏 -->
+        <el-tab-pane v-if="forums.other.can_view_user_list && (forums.other.can_edit_user_group || forums.other.can_edit_user_status)" :label="$t('manage.manageMembers')" name="manage"><users-manage :group-invite-list="groupInviteList" /></el-tab-pane>
+        <el-tab-pane v-if="forums.other.can_create_invite" :label="$t('manage.inviteMembers')" name="invite"><invite-user :group-map="groupMap" /></el-tab-pane>
       </el-tabs>
     </main>
   </div>
@@ -29,6 +30,12 @@ export default {
   },
   mounted() {
     this.getGroupList()
+    // 没有查看成员列表或有查看列表权限，但是没有编辑用户组和状态的权限，就显示另一个tab
+    if (this.forums && this.forums.other) {
+      if (!this.forums.other.can_view_user_list || (this.forums.other.can_view_user_list && !this.forums.other.can_edit_user_group && !this.forums.other.can_edit_user_status)) {
+        this.activeName = 'invite'
+      }
+    }
   },
   methods: {
     // 获取用户组 去除管理员和游客

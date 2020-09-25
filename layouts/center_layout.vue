@@ -7,7 +7,7 @@
           <template v-for="(item,index) in menuList">
             <template v-if="item.index === '/manage/index'">
               <el-menu-item
-                v-if="forums && forums.other && (forums.other.can_view_user_list || forums.other.can_create_invite)"
+                v-if="forums && forums.other && ((forums.other.can_view_user_list && (forums.other.can_edit_user_group || forums.other.can_edit_user_status)) || forums.other.can_create_invite)"
                 :key="item.index"
                 :index="item.index"
                 :class="item.classname"
