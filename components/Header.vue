@@ -116,6 +116,7 @@ export default {
   destroyed() {
     if (process.client) {
       clearInterval(this.userInfoTimer)
+      window.removeEventListener('scroll', this.handleScroll)
     }
   },
   methods: {
