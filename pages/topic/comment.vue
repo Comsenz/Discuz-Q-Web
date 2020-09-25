@@ -54,12 +54,17 @@ import postLegalityCheck from '@/mixin/postLegalityCheck'
 import handleError from '@/mixin/handleError'
 import timerDiff from '@/mixin/timerDiff'
 import isLogin from '@/mixin/isLogin'
+import env from '@/utils/env'
 
 export default {
   name: 'Comment',
   layout: 'custom_layout',
   mixins: [timerDiff, handleError, isLogin, publishResource, postLegalityCheck],
-  async asyncData({ store, query }) {
+  async asyncData({ store, query }, callback) {
+    if (!env.isSpider) {
+      callback(null, {})
+      return
+    }
     const threadId = query.threadId
     const commentId = query.commentId
     try {
