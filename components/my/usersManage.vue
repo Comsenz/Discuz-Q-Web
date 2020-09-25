@@ -369,8 +369,7 @@ export default {
     },
     // 修改用户状态
     modifyUserStatus(status, userId) {
-      console.log('this.userInfo.canEdit', this.userInfo.canEdit)
-      if (this.userInfo && !this.userInfo.canEdit) {
+      if (this.forums && this.forums.other && !this.forums.other.can_edit_user_status) {
         return this.$message.error(this.$t('core.permission_denied'))
       }
       const params = {
