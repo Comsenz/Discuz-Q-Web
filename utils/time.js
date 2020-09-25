@@ -16,7 +16,7 @@ export const time2MinuteOrHour = time => {
   }
   // 小时差小于16小时
   if (parseInt(parseInt(parseInt(result / 1000, 0) / 60, 0) / 60, 0) < 16) {
-    return `${Math.ceil(result / 1000 / 60 / 60) > 0 ? Math.ceil(result / 1000 / 60) : 0}小时前`
+    return `${Math.ceil(result / 1000 / 60 / 60) > 0 ? Math.ceil(result / 1000 / 60 / 60) : 0}小时前`
   }
   // 超过16个小时展示 年月日时分
   return time

@@ -317,7 +317,6 @@ export default {
       cursor: pointer;
     }
     .user-info {
-      flex: 1;
       display: inline-flex;
       align-items: center;
       .user-name {
