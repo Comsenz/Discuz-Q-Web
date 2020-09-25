@@ -324,10 +324,13 @@ export default {
       margin-right: 15px;
       margin-top: 35px;
       background: $background-color-grey;
+      border: 1px solid $background-color-grey;
       color: #777;
       font-size: 12px;
       &:hover {
-        background: #E5F2FF;
+        color: $color-blue-base;
+        background: #fff;
+        border: 1px solid $color-blue-base;
       }
     }
     .location{
@@ -339,10 +342,15 @@ export default {
       padding:4px 10px;
       line-height: 16px;
       margin-top: 10px;
-      transition: all 0.1s ease-in-out;
-      &:hover{
-        background-color: #E5F2FF;
-        color: $font-color-grey;
+      background: $background-color-grey;
+      border: 1px solid $background-color-grey;
+      &:hover {
+        color: $color-blue-base;
+        background: #fff;
+        border: 1px solid $color-blue-base;
+        .icon{
+          fill: $color-blue-base;
+        }
       }
       .flex{
         display: flex;
@@ -350,6 +358,7 @@ export default {
       }
       .icon{
         margin-right: 4px;
+        fill: #777;
       }
     }
 

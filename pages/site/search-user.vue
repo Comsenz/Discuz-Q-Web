@@ -9,20 +9,14 @@
       </div>
       <div class="user-list">
         <div class="user-flex">
-          <!-- <nuxt-link v-for="(item, index) in userList" :key="index" :to="`/profile?userId=${item.id}`" class="user-item">
-            <avatar :user="item" :size="45" />
-            <div class="info">
-              <div class="name text-hidden">{{ item.username }}</div>
-              <div v-if="item.fansCount > 0" class="fans">{{ $t('profile.followers') }}{{ item.fansCount }}</div>
-            </div>
-          </nuxt-link> -->
           <user-item v-for="(item, index) in userList" :key="index" :item="item" />
         </div>
-        <loading v-if="loading" />
+        <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="userList.length" :load-more-text="$t('topic.showMore') + $t('search.users')" @loadMore="loadMore" />
+        <!-- <loading v-if="loading" />
         <template v-else>
           <div v-if="hasMore" class="load-more" @click="loadMore">{{ $t('topic.showMore') }}{{ $t('search.users') }}</div>
           <div v-else class="no-more"><svg-icon v-if="userList.length === 0" type="empty" class="empty-icon" />{{ $t(userList.length > 0 ? 'discuzq.list.noMoreData' : 'discuzq.list.noData') }}</div>
-        </template>
+        </template> -->
       </div>
     </main>
     <aside class="cont-right">
@@ -125,10 +119,8 @@ export default {
     },
 
     loadMore() {
-      if (this.hasMore) {
-        this.pageNum += 1
-        this.getUserList()
-      }
+      this.pageNum += 1
+      this.getUserList()
     },
     // 重新加载列表
     reloadList() {

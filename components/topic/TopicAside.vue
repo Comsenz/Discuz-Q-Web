@@ -9,13 +9,12 @@
       @follow="follow"
       @unFollow="unFollow"
     />
-    <div v-loading="threeEssenceThread.length === 0" class="recommend block">
+    <div v-show="loading || threeEssenceThread.length > 0" v-loading="loading" class="recommend block">
       <div class="title">{{ $t('topic.recommend') }}</div>
       <div v-for="(item, index) in threeEssenceThread" :key="index" class="container-post">
-        <div v-if="item.title && item.firstPost.summaryText" class="content-html">{{ item.title || item.firstPost.summaryText }}</div>
-        <div v-else class="content-html" v-html="item.firstPost.summary" />
+        <div v-if="item.title && item.firstPost.summaryText" class="content-html" @click="goToPage(item)"> {{ item.title || item.firstPost.summaryText }} </div>
+        <div v-else class="content-html" @click="goToPage(item)" v-html="item.firstPost.summary" />
         <span class="view-count">{{ item.viewCount }} {{ $t('topic.readAlready') }}</span>
-        <a target="_blank" :href="'/topic/index?id=' + item._jv.id">{{ $t('topic.toWatch') }}</a>
       </div>
     </div>
     <advertising style="margin-top: 15px;margin-bottom:3px;" />
@@ -41,6 +40,7 @@ export default {
       EssenceThread: [],
       followStatus: 0,
       followLoading: false,
+      loading: true,
       billboard: [
         { key: 'threadCount', count: '', text: this.$t('home.thread') },
         { key: 'likedCount', count: '', text: this.$t('topic.getLike') },
@@ -76,6 +76,7 @@ export default {
   },
   methods: {
     getEssenceThread() {
+      this.loading = true
       return this.$store.dispatch('jv/get', [`threads`, {
         params: {
           'filter[isApproved]': 1,
@@ -84,12 +85,14 @@ export default {
         }
       }]).then(data => {
         this.EssenceThread = [...data]
-        while (this.threeEssenceThread.length < 3) {
+        if (this.EssenceThread.length === 0) return
+        const limit = this.EssenceThread.length > 3 ? 3 : this.EssenceThread.length
+        while (this.threeEssenceThread.length < limit) {
           const index = this.getRandom(this.EssenceThread.length)
           this.threeEssenceThread.push(this.EssenceThread[index])
-          this.EssenceThread.splice(index, 1)
+          this.EssenceThread.splice(index, 1) // 在原数据中除掉已进入推荐的，避免重复
         }
-      }, e => this.handleError(e))
+      }, e => this.handleError(e)).finally(() => { this.loading = false })
     },
     getRandom(length) {
       return Math.floor(Math.random() * length)
@@ -110,6 +113,9 @@ export default {
         this.followLoading = false
         this.followStatus = 0
       })
+    },
+    goToPage(item) {
+      process.client && window.open(`/topic/index?id=${item._jv.id}`)
     }
   }
 }
@@ -132,7 +138,10 @@ export default {
       box-shadow: 0 3px 3px rgba(0, 0, 0, 0.03);
       > .title {
         font-size: 16px;
-        font-weight: bolder;
+        color: #6D6D6D;
+        margin-bottom: 20px;
+      }
+      > .no-data {
         color: #6D6D6D;
       }
       > .container-post {
@@ -149,6 +158,10 @@ export default {
           margin-top: 10px;
           margin-bottom: 10px;
           font-size: 16px;
+          cursor: pointer;
+          &:hover {
+            color: $color-blue-base
+          }
         }
 
         > .view-count {
@@ -156,17 +169,7 @@ export default {
           color: $font-color-grey;
           font-size: 12px;
         }
-
-        > a {
-          float: right;
-          font-size: 12px;
-          color: $color-blue-base;
-          &:hover {
-            color: $color-blue-deep
-          }
-        }
       }
-
     }
   }
 
