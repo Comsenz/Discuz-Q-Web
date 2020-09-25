@@ -23,7 +23,7 @@
         <div class="actions">
           <div class="left">
             <span v-if="reply.canLike" class="like" @click="$emit('onLike', {reply, index})">
-              <svg-icon :type="reply.isLiked ? 'liked' : 'like'" style="font-size: 14px" />
+              <svg-icon :type="reply.isLiked ? 'liked' : 'like'" style="font-size: 18px" />
               <span class="text">{{ $t('topic.like') }} {{ reply.likeCount > 0 ? reply.likeCount : '' }}</span>
             </span>
           </div>

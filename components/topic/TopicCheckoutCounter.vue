@@ -93,7 +93,7 @@
       <el-button v-show="payWay === 'wxPay'" type="primary" class="checkout-button" @click="$emit('paying', { payWay, hideAvatar, rewardAmount: formatToFixed(rewardAmount) })">
         {{ $t('pay.scanPay') }}
       </el-button>
-      <el-button v-show="payWay === 'walletPay'" type="primary" class="checkout-button" @click="$emit('paying', { payWay, hideAvatar, rewardAmount: formatToFixed(rewardAmount) })">
+      <el-button v-show="payWay === 'walletPay'" disabled="enoughBalance" type="primary" class="checkout-button" @click="$emit('paying', { payWay, hideAvatar, rewardAmount: formatToFixed(rewardAmount) })">
         {{ $t('pay.surePay') }}
       </el-button>
     </div>

@@ -7,7 +7,7 @@
         <div class="user">
           <avatar :user="{ id: detail.user.id, username: detail.user.username, avatarUrl: detail.user.avatarUrl}" :size="50" />
           <div class="user-info">
-            <nuxt-link :to="`/profile?userId=${detail.user.id}`" class="user-name">{{ detail.user.username }}</nuxt-link>
+            <nuxt-link :to="`/profile/index?userId=${detail.user.id}`" class="user-name">{{ detail.user.username }}</nuxt-link>
             <div class="create-at">{{ $t('invite.createdAt') + $t('discuzq.symbol.colon') }} {{ detail.created_at | formatDate }}</div>
           </div>
           <div class="total-money">
@@ -23,7 +23,7 @@
               <template slot-scope="scope">
                 <div v-if="scope.row.sourceUser" class="flex">
                   <avatar :user="{ id: scope.row.sourceUser.id, username: scope.row.sourceUser.username, avatarUrl: scope.row.sourceUser.avatarUrl}" :size="30" :round="true" />
-                  <nuxt-link :to="`/profile?userId=${scope.row.sourceUser.id}`" class="user-name">{{ scope.row.sourceUser.username }}</nuxt-link>
+                  <nuxt-link :to="`/profile/index?userId=${scope.row.sourceUser.id}`" class="user-name">{{ scope.row.sourceUser.username }}</nuxt-link>
                 </div>
               </template>
             </el-table-column>

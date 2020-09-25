@@ -45,7 +45,7 @@ export default {
       display: flex;
       justify-content: space-between;
       color: #6D6D6D;
-      margin: 20px 20px 0;
+      margin: 25px 20px 0;
 
       > .title {
         font-size: 16px;

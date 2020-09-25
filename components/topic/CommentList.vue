@@ -26,11 +26,11 @@
         <div class="actions">
           <div class="left">
             <span v-if="comment.canLike" @click="$emit('like', {comment, index})">
-              <svg-icon :type="comment.isLiked ? 'liked' : 'like'" style="font-size: 14px" />
+              <svg-icon :type="comment.isLiked ? 'liked' : 'like'" style="font-size: 18px" />
               <span class="text">{{ $t('topic.like') }} {{ comment.likeCount > 0 ? comment.likeCount : '' }}</span>
             </span>
             <span @click=" showReplyEditorForIndex = showReplyEditorForIndex === index ? -1 : index">
-              <svg-icon type="comment" style="font-size: 14px" />
+              <svg-icon type="comment" style="font-size: 18px" />
               <span class="text">{{ $t('topic.replyTa') }}</span>
             </span>
             <span>
