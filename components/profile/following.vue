@@ -130,9 +130,6 @@ export default {
         label: this.$t('home.noLimit'),
         value: ''
       }, {
-        label: '关注时间',
-        value: 'createdAt'
-      }, {
         label: '用户创建时间',
         value: 'users.createdAt'
       }]

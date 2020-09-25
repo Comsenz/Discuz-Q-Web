@@ -92,7 +92,8 @@
             v-if="userInfo && userInfo.isReal"
             type="auth"
             class="auth-icon"
-          />{{ userInfo.groups && userInfo.groups[0] && userInfo.groups[0].isDisplay ? userInfo.groupsName : '' }}
+          />
+          <span class="groupname">{{ userInfo.groups && userInfo.groups[0] && userInfo.groups[0].isDisplay ? userInfo.groupsName : '' }}</span>
         </span>
         <p
           v-if="userInfo.signature"
@@ -256,12 +257,14 @@ export default {
     this.userId = userId || ''
     this.current = current
     this.activeName = this.current ? this.current : this.activeName
-    this.getUserInfo(this.userId)
   },
   mounted() {
     this.getAuth()
+    this.getUserInfo(this.userId)
     window.addEventListener('scroll', this.handleScroll)
-    this.getShieldData()
+    if (this.currentLoginId) {
+      this.getShieldData()
+    }
     // this.$nextTick(() => {
     //   this.offsetTop = document.querySelector('.profile-h').offsetTop
     // })
@@ -272,9 +275,6 @@ export default {
   methods: {
     handleScroll() {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-      // const offsetTop = document.querySelector('.profile-h').offsetTop
-      // console.log(scrollTop)
-      // console.log(offsetTop)
       if (scrollTop > 220) {
         this.headFixed = true
       } else {
@@ -363,6 +363,11 @@ export default {
     },
     // 私信
     chat() {
+      if (process.client) {
+        if (!localStorage.getItem('access_token')) {
+          return
+        }
+      }
       this.chatting = true
     },
     // 当前登录用户已屏蔽用户
@@ -388,6 +393,11 @@ export default {
     },
     // 屏蔽用户
     handleShield() {
+      if (process.client) {
+        if (!localStorage.getItem('access_token')) {
+          return
+        }
+      }
       const params = {
         _jv: {
           type: `users/${this.userId}/deny`
@@ -400,6 +410,11 @@ export default {
     },
     // 解绑用户
     unbundlingUser() {
+      if (process.client) {
+        if (!localStorage.getItem('access_token')) {
+          return
+        }
+      }
       this.$store.dispatch('jv/delete', `users/${this.userId}/deny`).then(() => {
         console.log('解除屏蔽')
         this.$t('profile.unboundsucceed')
@@ -446,7 +461,10 @@ export default {
         .auth-icon {
           width: 11px;
           height: 13px;
-          margin-right: 9px;
+          /* margin-right: 9px; */
+          vertical-align: unset;
+        }
+        .groupname{
           vertical-align: text-top;
         }
       }

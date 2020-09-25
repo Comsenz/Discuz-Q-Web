@@ -321,6 +321,7 @@ export default {
       display: inline-flex;
       align-items: center;
       .user-name {
+        font-weight: bold;
         font-size: 16px;
         display: flex;
         max-width: 250px;
