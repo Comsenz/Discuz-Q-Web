@@ -38,6 +38,6 @@ export default function(context) {
     }
 
     // const token = cookie.get('token', context.req.headers.cookie)
-    // axios.defaults.headers['authorization'] = token ? `Bearer ${token}` : ''
+    axios.defaults.headers['authorization'] = ''
   }
 }
