@@ -3,5 +3,6 @@ export default {
   isWeixinBrowser: /micromessenger/.test($ua),
   isMobile: /mobile|android|webos|iphone|blackberry/i.test($ua),
   isTablet: /(?:ipad|playbook)/.test($ua) || (/(?:android)/ && !/(?:mobile)/.test($ua)) || (/(?:firefox)/ && /(?:tablet)/.test($ua)),
-  isPC: ''
+  isPC: '',
+  isSpider: false
 }

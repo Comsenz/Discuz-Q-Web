@@ -40,12 +40,17 @@
 import s9e from '@/utils/s9e'
 import handleError from '@/mixin/handleError'
 import scroll from '@/mixin/scroll'
+import env from '@/utils/env'
 export default {
   layout: 'custom_layout',
   name: 'Index',
   mixins: [handleError, scroll],
   // 异步数据用法
   async asyncData({ params, store, query }, callback) {
+    if (!env.isSpider) {
+      callback(null, {})
+      return
+    }
     const threadsStickyParams = {
       'filter[isSticky]': 'yes',
       'filter[isApproved]': 1,
