@@ -318,12 +318,12 @@ export default {
     }
     .user-info {
       flex: 1;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       .user-name {
         font-size: 16px;
         display: flex;
-        max-width: 50%;
+        max-width: 250px;
         @include text-hidden();
         @media screen and (max-width: 1005px) {
           font-size: 14px;
