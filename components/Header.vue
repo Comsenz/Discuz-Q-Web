@@ -106,10 +106,12 @@ export default {
     if (this.$route.path === '/site/close') {
       this.siteClose = true
     }
-    window.addEventListener('scroll', this.handleScroll)
-    this.$nextTick(() => {
-      this.offsetTop = document.querySelector('.header').offsetTop
-    })
+    if (process.client) {
+      window.addEventListener('scroll', this.handleScroll)
+      this.$nextTick(() => {
+        this.offsetTop = document.querySelector('.header').offsetTop
+      })
+    }
   },
   destroyed() {
     if (process.client) {
