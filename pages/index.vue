@@ -18,11 +18,7 @@
       </div>
       <div class="post-list">
         <post-item v-for="(item, index) in threadsData" :key="index" :item="item" />
-        <loading v-if="loading" />
-        <template v-else>
-          <div v-if="hasMore && pageNum % 5 === 0" class="load-more" @click="loadMore">{{ $t('topic.showMore') }}</div>
-          <div v-else class="no-more"><svg-icon v-if="threadsData.length === 0" type="empty" class="empty-icon" />{{ threadsData.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noData') }}</div>
-        </template>
+        <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="threadsData.length" @loadMore="loadMore" />
       </div>
     </main>
     <aside class="cont-right">
