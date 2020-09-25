@@ -1,5 +1,5 @@
 
-// import axios from 'axios'
+import axios from 'axios'
 // import cookie from '../utils/parserCookie'
 import env from '../utils/env'
 export default function(context) {
