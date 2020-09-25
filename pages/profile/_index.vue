@@ -92,7 +92,8 @@
             v-if="userInfo && userInfo.isReal"
             type="auth"
             class="auth-icon"
-          />{{ userInfo.groups && userInfo.groups[0] && userInfo.groups[0].isDisplay ? userInfo.groupsName : '' }}
+          />
+          <span class="groupname">{{ userInfo.groups && userInfo.groups[0] && userInfo.groups[0].isDisplay ? userInfo.groupsName : '' }}</span>
         </span>
         <p
           v-if="userInfo.signature"
@@ -460,7 +461,10 @@ export default {
         .auth-icon {
           width: 11px;
           height: 13px;
-          margin-right: 9px;
+          /* margin-right: 9px; */
+          vertical-align: unset;
+        }
+        .groupname{
           vertical-align: text-top;
         }
       }
