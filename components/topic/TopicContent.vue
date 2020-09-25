@@ -348,6 +348,9 @@ export default {
         color: $color-blue-base;
         background: #fff;
         border: 1px solid $color-blue-base;
+        .icon{
+          fill: $color-blue-base;
+        }
       }
       .flex{
         display: flex;
@@ -355,6 +358,7 @@ export default {
       }
       .icon{
         margin-right: 4px;
+        fill: #777;
       }
     }
 
