@@ -112,13 +112,12 @@
           {{ scope.row.createdAt | formatDateDay }}
         </template>
       </el-table-column>
-      <!-- <el-table-column label="加入方式" /> -->
-      <el-table-column
+      <!-- <el-table-column
         :label="$t('manage.lastUpdateAt')"
         width="140"
       >
         <template slot-scope="scope">{{ scope.row.updatedAt | formatDate }}</template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column
         v-if="forums && forums.other && (forums.other.can_edit_user_group || forums.other.can_edit_user_status)"
         fixed="right"
