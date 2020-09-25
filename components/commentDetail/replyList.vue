@@ -74,7 +74,7 @@ export default {
       justify-content: space-between;
 
       > .checking {
-        font-size: 16px;
+        font-size: 12px;
         color: #FA5151;
       }
     }
@@ -86,6 +86,10 @@ export default {
         line-height: 24px;
         word-break: break-all;
         margin-top: 10px;
+        font-size: 14px;
+        ::v-deep p {
+          font-size: 14px;
+        }
       }
 
       > .images {
@@ -100,6 +104,7 @@ export default {
         display: flex;
         justify-content: space-between;
         color: $font-color-grey;
+        font-size: 12px;
 
         > .left {
           > span {

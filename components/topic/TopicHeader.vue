@@ -7,7 +7,7 @@
     </avatar-component>
     <div class="container-management">
       <el-dropdown
-        v-if="managementList.length > 0"
+        v-show="managementList.length > 0 && managementList.some(item => item.canOpera)"
         class="dropdown"
         placement="bottom"
         trigger="click"

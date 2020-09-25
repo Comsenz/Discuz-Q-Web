@@ -1,5 +1,5 @@
 
-// import axios from 'axios'
+import axios from 'axios'
 // import cookie from '../utils/parserCookie'
 import env from '../utils/env'
 export default function(context) {
@@ -38,6 +38,6 @@ export default function(context) {
     }
 
     // const token = cookie.get('token', context.req.headers.cookie)
-    // axios.defaults.headers['authorization'] = token ? `Bearer ${token}` : ''
+    axios.defaults.headers['authorization'] = ''
   }
 }

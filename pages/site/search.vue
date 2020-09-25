@@ -27,11 +27,7 @@
       <div class="count">{{ $t('home.invitation') }} {{ threadCount }} {{ $t('topic.item') }}</div>
       <div class="post-list">
         <post-item v-for="(item, index) in threadsList" :key="index" :item="item" />
-        <loading v-if="loading" />
-        <template v-else>
-          <div v-if="hasMore" class="load-more" @click="loadMore">{{ $t('topic.showMore') }}</div>
-          <div v-else class="no-more"><svg-icon v-if="threadsList.length === 0" type="empty" class="empty-icon" />{{ threadsList.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noData') }}</div>
-        </template>
+        <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="threadsList.length" @loadMore="loadMore" />
       </div>
     </main>
     <aside class="cont-right">
@@ -152,7 +148,6 @@ export default {
         if (res._jv) {
           this.hasMore = this.threadsList.length < res._jv.json.meta.threadCount
         }
-        console.log('threadsList', res)
       }, e => {
         this.handleError(e)
       }).finally(() => {
@@ -160,10 +155,8 @@ export default {
       })
     },
     loadMore() {
-      if (this.hasMore) {
-        this.pageNum += 1
-        this.getThreadsList()
-      }
+      this.pageNum += 1
+      this.getThreadsList()
     },
     // 重新加载列表
     reloadThreadsList() {

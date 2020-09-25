@@ -95,7 +95,6 @@ export default {
     box-shadow: 0 3px 3px rgba(0, 0, 0, 0.03);
     > .title {
       font-size: 16px;
-      font-weight: bolder;
       color: #6D6D6D;
     }
 
@@ -148,8 +147,14 @@ export default {
           color: white;
         }
 
-        &:nth-child(2) {
-          color: $font-color-grey;
+      }
+
+      ::v-deep.el-button--default {
+        color: $color-blue-base;
+        border: 1px solid $color-blue-base;
+        &:hover {
+          background: #E5F2FF !important;
+          border: 1px solid #D4E6FC;
         }
       }
 

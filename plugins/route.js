@@ -78,8 +78,10 @@ export default ({ app }) => {
       }
 
       // 暂时先在这里种一下cookie, 带给ssr服务，避免ssr渲染无状态
-      const token = localStorage.getItem('access_token')
-      token && cookie.set('token', token)
+      // const token = localStorage.getItem('access_token')
+      // token && cookie.set('token', token)
+
+      cookie.set('token', '')
       // 网站付费拦截
       if (freePath.includes(to.path)) return next()
       if (Object.keys(store.state.site.info).length === 0) return next()

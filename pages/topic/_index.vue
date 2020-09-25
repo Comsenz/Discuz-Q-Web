@@ -60,12 +60,18 @@
 <script>
 const threadInclude = 'posts.replyUser,user.groups,user,user.groups.permissionWithoutCategories,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers'
 import handleError from '@/mixin/handleError'
+import isLogin from '@/mixin/isLogin'
+import env from '@/utils/env'
 
 export default {
   name: 'Post',
   layout: 'custom_layout',
-  mixins: [handleError],
-  async asyncData({ query, store }) {
+  mixins: [handleError, isLogin],
+  async asyncData({ query, store }, callback) {
+    if (!env.isSpider) {
+      callback(null, {})
+      return
+    }
     try {
       const threadData = await store.dispatch('jv/get', [`threads/${query.id}`, { params: { include: threadInclude }}])
       console.log('thread =>', threadData)
@@ -154,6 +160,7 @@ export default {
       }, e => this.handleError(e, 'thread'))
     },
     initData() {
+      console.log('thread =>', this.thread)
       console.log('thread.canEdit 编辑权限 => ', this.thread.canEdit)
       console.log('thread.canHide 删除权限 => ', this.thread.canHide)
       console.log('thread.canEssence 加精权限 => ', this.thread.canEssence)
@@ -283,6 +290,7 @@ export default {
     },
     postCommand(item) {
       if (this.defaultLoading) return
+      if (!this.isLogin()) return
       this.defaultLoading = true
       const params = item.command === 'isLiked' ? { _jv: { type: `posts`, id: this.postId }} : { _jv: { type: `threads`, id: this.threadId }}
       params[item.command] = !item.isStatus
