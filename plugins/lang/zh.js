@@ -741,10 +741,12 @@ export default {
     },
     user: {
       view: '查看某个用户信息权限',
-      edit: '编辑用户状态',
       agreement: '注册登录表示您同意',
       agreementRegister: '注册协议',
-      agreementPrivacy: '隐私政策'
+      agreementPrivacy: '隐私政策',
+      edit: {
+        status: '编辑用户状态'
+      }
     },
     userFollow: {
       create: '关注用户'
