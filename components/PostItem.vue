@@ -39,7 +39,7 @@
               v-if="item.type === 1"
               class="title"
             >{{ item.title }}</div>
-            <div v-if="!item.title" class="content">
+            <div class="content">
               <div v-html="formatTopicHTML(item.firstPost.contentHtml)" />
             </div>
           </div>
@@ -324,7 +324,6 @@ export default {
         font-size: 16px;
         display: flex;
         max-width: 50%;
-        font-weight: bold;
         @include text-hidden();
         @media screen and (max-width: 1005px) {
           font-size: 14px;

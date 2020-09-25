@@ -91,7 +91,8 @@ export default {
   }
   .recommend-user-title{
     color:#6D6D6D;
-    margin-bottom: 15px;
+    margin-bottom: 8px;
+    font-size: 16px;
   }
   .refresh{
     padding: 10px 0 0;
