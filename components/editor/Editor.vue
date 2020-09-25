@@ -25,8 +25,8 @@
         </span>
       </div>
     </div>
-    <div id="vditor" style="margin-top: 20px" />
-    <div v-show="false" :class="['container-textarea', editorStyle]">
+    <!--    <div id="vditor" style="margin-top: 20px" />-->
+    <div :class="['container-textarea', editorStyle]">
       <label>
         <textarea
           id="textarea"
@@ -104,7 +104,7 @@
 
 <script>
 import handleError from '@/mixin/handleError'
-const Vditor = process.client ? require('vditor') : ''
+// const Vditor = process.client ? require('vditor') : ''
 
 export default {
   name: 'Editor',
@@ -215,28 +215,25 @@ export default {
     }
   },
   mounted() {
-    Vditor && this.initVditor()
-
+    // Vditor && this.initVditor()
     this.autoHeight()
-    // this.emojiListener()
+    this.emojiListener()
   },
-  // destroyed() {
-  //   this.contentEditor && this.contentEditor.destroy() // TODO 真的能删吗？
-  // },
   methods: {
-    initVditor() {
-      this.contentEditor = new Vditor('vditor', {
-        minHeight: 450,
-        placeholder: '请输入',
-        mode: 'wysiwyg',
-        toolbar: ['emoji', 'headings', 'bold', 'italic', 'strike', 'link', 'list', 'ordered-list', 'check', 'outdent', 'indent', 'quote', 'upload', 'line', 'code', 'inline-code', 'table', 'both', 'br', 'undo', 'redo'],
-        toolbarConfig: { pin: true },
-        cache: { enable: false },
-        after: () => {
-          // this.contentEditor.setValue('hello, Vditor + Vue!')
-        }
-      })
-    },
+    // TODO 等图文混排编辑器的需求
+    // initVditor() {
+    //   this.contentEditor = new Vditor('vditor', {
+    //     minHeight: 450,
+    //     placeholder: '请输入',
+    //     mode: 'wysiwyg',
+    //     toolbar: ['emoji', 'headings', 'bold', 'italic', 'strike', 'link', 'list', 'ordered-list', 'check', 'outdent', 'indent', 'quote', 'upload', 'line', 'code', 'inline-code', 'table', 'both', 'br', 'undo', 'redo'],
+    //     toolbarConfig: { pin: true },
+    //     cache: { enable: false },
+    //     after: () => {
+    //       // this.contentEditor.setValue('hello, Vditor + Vue!')
+    //     }
+    //   })
+    // },
     onPostContentChange(key, value) {
       this.$emit(`update:post`, _post)
       const _post = Object.assign({}, this.post)
