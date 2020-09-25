@@ -44,12 +44,10 @@ export default {
   methods: {
     // 显示and隐藏下拉菜单
     showAndHidePopover() {
-      console.log('forums', this.forums, this.userInfo)
       if (!this.visible) {
         const _other = this.forums.other
         const _userInfo = this.userInfo
         if (!_other) return
-        console.log('_other', _other)
         if (!_other.can_create_thread && !_other.can_create_thread_long && !_other.can_create_thread_video && !_other.can_create_thread_image) {
           this.$message.error(this.$t('home.noPostingPermission'))
           return
