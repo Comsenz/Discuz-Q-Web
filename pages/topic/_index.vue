@@ -61,12 +61,17 @@
 const threadInclude = 'posts.replyUser,user.groups,user,user.groups.permissionWithoutCategories,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers'
 import handleError from '@/mixin/handleError'
 import isLogin from '@/mixin/isLogin'
+import env from '@/utils/env'
 
 export default {
   name: 'Post',
   layout: 'custom_layout',
   mixins: [handleError, isLogin],
-  async asyncData({ query, store }) {
+  async asyncData({ query, store }, callback) {
+    if (!env.isSpider) {
+      callback(null, {})
+      return
+    }
     try {
       const threadData = await store.dispatch('jv/get', [`threads/${query.id}`, { params: { include: threadInclude }}])
       console.log('thread =>', threadData)
