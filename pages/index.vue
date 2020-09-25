@@ -20,7 +20,7 @@
         <post-item v-for="(item, index) in threadsData" :key="index" :item="item" />
         <loading v-if="loading" />
         <template v-else>
-          <div v-if="hasMore" class="load-more" @click="loadMore">{{ $t('topic.showMore') }}</div>
+          <div v-if="hasMore && pageNum % 5 === 0" class="load-more" @click="loadMore">{{ $t('topic.showMore') }}</div>
           <div v-else class="no-more"><svg-icon v-if="threadsData.length === 0" type="empty" class="empty-icon" />{{ threadsData.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noData') }}</div>
         </template>
       </div>
@@ -43,10 +43,11 @@
 <script>
 import s9e from '@/utils/s9e'
 import handleError from '@/mixin/handleError'
+import scroll from '@/mixin/scroll'
 export default {
   layout: 'custom_layout',
   name: 'Index',
-  mixins: [handleError],
+  mixins: [handleError, scroll],
   // 异步数据用法
   async asyncData({ params, store, query }, callback) {
     const threadsStickyParams = {
@@ -115,8 +116,6 @@ export default {
       }
       callback(null, resData)
     } catch (error) {
-      // console.log('ssr err', error)
-
       callback(null, {
         _error__abc: {
           error_keys: Object.keys(error),
@@ -163,9 +162,6 @@ export default {
     }
   },
   mounted() {
-    // this.threadsStickyData = []
-    // this.threadsData = []
-    // this.categoryData = []
     if (this.threadsStickyData.length === 0) {
       this.getThreadsSticky()
     }
@@ -220,11 +216,7 @@ export default {
       if (this.threadType !== null) {
         params['filter[type]'] = this.threadType
       }
-      // Object.keys(params).forEach(item => {
-      //   !params[item] && delete params[item]
-      // })
       this.$store.dispatch('jv/get', ['threads', { params }]).then(data => {
-        console.log('index data', data)
         this.hasMore = data.length === this.pageSize
         if (this.pageNum === 1) {
           this.threadsData = data
@@ -249,10 +241,17 @@ export default {
         this.loading = false
       })
     },
+    // 点击加载更多
     loadMore() {
       if (this.hasMore) {
-        this.pageNum += 1
+        this.pageNum++
         this.getThreadsList()
+      }
+    },
+    // 滚动加载更多，每5页停止滚动加载
+    scrollLoadMore() {
+      if (this.pageNum % 5 > 0 && !this.loading) {
+        this.loadMore()
       }
     },
     // 轮询查看是否有新主题
@@ -274,7 +273,6 @@ export default {
             this.total = _threadCount - this.threadCount > 0 ? _threadCount - this.threadCount : 0
           }
           this.threadCount = _threadCount
-          console.log('新主题数', this.total)
         }
       })
     },

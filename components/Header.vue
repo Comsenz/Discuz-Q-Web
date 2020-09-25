@@ -1,5 +1,5 @@
 <template>
-  <div ref="head" :class="headFixed ? 'header isFixed' : 'header'">
+  <div ref="head" class="header isFixed">
     <div class="header-container">
       <div class="flex">
         <div class="logo" @click="toIndex">
@@ -68,8 +68,7 @@ export default {
       canReg: false,
       siteClose: false,
       userInfoTimer: null, // 定时器
-      offsetTop: 0,
-      headFixed: false
+      offsetTop: 0
     }
   },
   computed: {
@@ -106,29 +105,13 @@ export default {
     if (this.$route.path === '/site/close') {
       this.siteClose = true
     }
-    if (process.client) {
-      window.addEventListener('scroll', this.handleScroll)
-      this.$nextTick(() => {
-        this.offsetTop = document.querySelector('.header').offsetTop
-      })
-    }
   },
   destroyed() {
     if (process.client) {
       clearInterval(this.userInfoTimer)
-      window.removeEventListener('scroll', this.handleScroll)
     }
   },
   methods: {
-    handleScroll() {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-      if (scrollTop >= this.offsetTop) {
-        this.headFixed = true
-      } else {
-        this.headFixed = false
-      }
-      // this.$refs.head.getBoundingClientRect().top
-    },
     // 退出
     logout() {
       this.$store
