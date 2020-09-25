@@ -148,7 +148,6 @@ export default {
         if (res._jv) {
           this.hasMore = this.threadsList.length < res._jv.json.meta.threadCount
         }
-        console.log('threadsList', res)
       }, e => {
         this.handleError(e)
       }).finally(() => {

@@ -9,11 +9,7 @@
           <svg-icon type="delete" />{{ $t('topic.delete') }}
         </div>
       </post-item>
-      <loading v-if="loading" />
-      <template v-else>
-        <div v-if="hasMore" class="load-more" @click="loadMore">{{ $t('topic.showMore') }}</div>
-        <div v-else class="no-more"><svg-icon v-if="favoriteList.length === 0" type="empty" class="empty-icon" />{{ favoriteList.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noData') }}</div>
-      </template>
+      <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="favoriteList.length" @loadMore="loadMore" />
     </div>
   </div>
 
@@ -146,8 +142,5 @@ export default {
       }
     }
   }
-}
-.no-more {
-  padding: 94px 0;
 }
 </style>

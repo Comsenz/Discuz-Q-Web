@@ -10,24 +10,16 @@
     <div class="notice-list">
       <template v-if="activeName === 'chat'">
         <chat-item v-for="(item, index) in dialog.list" :key="index" :user-id="userInfo.id" :item="item" @show-chat-box="showChatBox" />
-        <loading v-if="dialog.loading" />
-        <template v-else>
-          <div v-if="dialog.hasMore" class="load-more" @click="loadMoreDialog">{{ $t('notice.checkMore',{surplus}) }}</div>
-          <div v-else class="no-more"><svg-icon v-if="dialog.list.length === 0" type="empty" class="empty-icon" />{{ dialog.list.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noData') }}</div>
-        </template>
+        <list-load-more :loading="dialog.loading" :has-more="dialog.hasMore" :page-num="dialog.pageNum" :surplus="surplus" :length="dialog.list.length" @loadMore="loadMoreDialog" />
       </template>
       <template v-else>
         <div v-for="(item, index) in noticeList" :key="index" class="notice-item">
           <notice-item :item="item" />
           <div class="delete" @click="handleDelete(item.id, index)">
-            <svg-icon style="fill: #6d6d6d" type="close" />
+            <svg-icon type="close" />
           </div>
         </div>
-        <loading v-if="loading" />
-        <template v-else>
-          <div v-if="hasMore && surplus > 0" class="load-more" @click="loadMore">{{ $t('notice.checkMore',{surplus}) }}</div>
-          <div v-else class="no-more"><svg-icon v-if="noticeList.length === 0" type="empty" class="empty-icon" />{{ noticeList.length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noData') }}</div>
-        </template>
+        <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :surplus="surplus" :length="noticeList.length" @loadMore="loadMore" />
       </template>
     </div>
     <!-- 聊天框 -->
@@ -43,6 +35,7 @@ export default {
   data() {
     return {
       activeName: 'chat',
+      // 消息类型
       noticeTypeList: [
         {
           label: this.$t('notice.message'),
@@ -106,8 +99,10 @@ export default {
         } else {
           this.dialog.list = [...this.dialog.list, ...data]
         }
-        this.surplus = data._jv.json.meta.total - this.dialog.list.length
-        console.log('dialogList', data)
+        if (data._jv && data._jv.json && data._jv.json.meta) {
+          this.dialog.hasMore = this.dialog.list.length < data._jv.json.meta.total
+          this.surplus = data._jv.json.meta.total - this.dialog.list.length
+        }
       }, e => {
         this.handleError(e)
       }).finally(() => {
@@ -122,6 +117,7 @@ export default {
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize
       }
+      // 财务通知里面包括提现信息
       if (this.activeName === 'rewarded') {
         params['filter[type]'] = 'rewarded,withdrawal'
       }
@@ -132,13 +128,15 @@ export default {
         } else {
           this.noticeList = [...this.noticeList, ...data]
         }
-        this.surplus = data._jv.json.meta.total - this.noticeList.length
+        if (data._jv && data._jv.json && data._jv.json.meta) {
+          this.hasMore = this.noticeList.length < data._jv.json.meta.total
+          this.surplus = data._jv.json.meta.total - this.noticeList.length
+        }
         try {
           await this.$store.dispatch('user/getUserInfo', this.userInfo.id)
         } catch (err) {
           console.log('getuUserInfo err', err)
         }
-        console.log('noticeList', data)
       }, e => {
         this.handleError(e)
       }).finally(() => {
@@ -146,16 +144,12 @@ export default {
       })
     },
     loadMore() {
-      if (this.hasMore) {
-        this.pageNum += 1
-        this.getNoticeList()
-      }
+      this.pageNum += 1
+      this.getNoticeList()
     },
     loadMoreDialog() {
-      if (this.dialog.hasMore) {
-        this.dialog.pageNum += 1
-        this.getDialogList()
-      }
+      this.dialog.pageNum += 1
+      this.getDialogList()
     },
     // 删除
     handleDelete(id, index) {
@@ -254,6 +248,7 @@ export default {
         top:32px;
         right: 32px;
         cursor: pointer;
+        color: #6d6d6d;
       }
     }
   }
