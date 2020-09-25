@@ -9,7 +9,7 @@
       @follow="follow"
       @unFollow="unFollow"
     />
-    <div v-show="loading || threeEssenceThread.length > 0" v-loading="loading" class="recommend block">
+    <div v-show="threeEssenceThread.length > 0" v-loading="loading" class="recommend block">
       <div class="title">{{ $t('topic.recommend') }}</div>
       <div v-for="(item, index) in threeEssenceThread" :key="index" class="container-post">
         <div v-if="item.title && item.firstPost.summaryText" class="content-html" @click="goToPage(item)"> {{ item.title || item.firstPost.summaryText }} </div>
