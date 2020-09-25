@@ -3,7 +3,7 @@
     <iframe
       id="mapPage"
       class="map-page"
-      :src="`https://apis.map.qq.com/tools/locpicker?search=1&type=1&key=${this.key}&referer=discuzq`"
+      :src="`https://apis.map.qq.com/tools/locpicker?search=1&type=1&key=${key}&referer=discuzq`"
     />
     <svg-icon type="close" class="icon-cancel" @click="$emit('close')" />
     <Cover />
