@@ -6,7 +6,7 @@
         :key="index"
         :item="item"
       />
-      <list-load-mores :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="data.length" @loadMore="loadMore" />
+      <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="data.length" @loadMore="loadMore" />
 
       <!-- <loading v-if="loading" />
       <template v-else>
@@ -32,8 +32,10 @@
 
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
+import handleError from '@/mixin/handleError'
 
 export default {
+  mixins: [handleError],
   props: {
     userId: {
       type: String,
@@ -75,12 +77,18 @@ export default {
           if (res._jv) {
             this.hasMore = this.data.length < res._jv.json.meta.threadCount
           }
+          this.pageNum += 1
           console.log('当前主题数据', this.data)
+        }, e => {
+          this.handleError(e)
+        }).finally(() => {
+          this.loading = false
         })
     },
     loadMore() {
       if (this.hasMore) {
-        this.pageNum += 1
+        console.log('topicloadmore')
+        // this.pageNum += 1
         this.loadThreads()
       }
     }
@@ -89,6 +97,9 @@ export default {
 </script>
 <style lang='scss' scoped>
 @import "@/assets/css/variable/color.scss";
+.topic{
+  min-height: 820px;
+}
 .empty-icon {
   width: 20px;
   height: 18px;
