@@ -218,15 +218,15 @@ export default {
       }
       this.$store.dispatch('jv/get', ['threads', { params }]).then(data => {
         this.hasMore = data.length === this.pageSize
+        const _threadCount = data && data._jv && data._jv.json && data._jv.json.meta && data._jv.json.meta.threadCount || 0
         if (this.pageNum === 1) {
           this.threadsData = data
+          this.threadCount = _threadCount
         } else {
           this.threadsData = [...this.threadsData, ...data]
         }
         if (data && data._jv) {
-          const _threadCount = data._jv.json && data._jv.json.meta && data._jv.json.meta.threadCount || 0
           this.hasMore = this.threadsData.length < _threadCount
-          this.threadCount = _threadCount
         }
 
         if (this.timer) {
@@ -264,7 +264,6 @@ export default {
           if (this.threadCount > 0) {
             this.total = _threadCount - this.threadCount > 0 ? _threadCount - this.threadCount : 0
           }
-          this.threadCount = _threadCount
         }
       })
     },
