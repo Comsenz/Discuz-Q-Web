@@ -12,7 +12,7 @@ export default function(context) {
       // “Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)”
       // Mozilla/5.0 (compatible; Baiduspider-render/2.0; +http://www.baidu.com/search/spider.html)
       'Baiduspider', // baidu
-      // Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0);
+      'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)', // http://stool.chinaz.com/tools/robot.aspx
       // 360spider (http://webscan.360.cn)
       '360spider', // 360
       // Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)”

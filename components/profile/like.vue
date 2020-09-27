@@ -6,7 +6,9 @@
         :key="index"
         :item="item"
       />
-      <loading v-if="loading" />
+      <list-load-mores :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="data.length" @loadMore="loadMore" />
+
+      <!-- <loading v-if="loading" />
       <template v-else>
         <div
           v-if="hasMore"
@@ -23,7 +25,7 @@
             class="empty-icon"
           />{{ data.length > 0 ? '没有更多了' : '暂无信息' }}
         </div>
-      </template>
+      </template> -->
     </div>
   </div>
 </template>

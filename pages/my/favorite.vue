@@ -50,10 +50,10 @@ export default {
         } else {
           this.favoriteList = [...this.favoriteList, ...data]
         }
+        this.pageNum++
         if (data._jv) {
           this.hasMore = this.favoriteList.length < data._jv.json.meta.threadCount
         }
-        console.log('favoriteList', data)
       }, e => {
         this.handleError(e)
       }).finally(() => {
@@ -61,10 +61,7 @@ export default {
       })
     },
     loadMore() {
-      if (this.hasMore) {
-        this.pageNum += 1
-        this.getFavoriteList()
-      }
+      this.getFavoriteList()
     },
     handleFavorite(item, index) {
       if (this.loading) return
