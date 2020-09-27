@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="following">
     <div class="ftop">
       <el-select
         v-model="value"
@@ -82,7 +82,7 @@
         }}
       </el-button>
     </div>
-    <list-load-mores :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="followingList.length" @loadMore="loadMore" />
+    <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="followingList.length" @loadMore="loadMore" />
 
     <!-- <loading v-if="loading" />
     <template v-else>
@@ -106,9 +106,11 @@
 </template>
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
+import handleError from '@/mixin/handleError'
 
 export default {
   name: 'Following',
+  mixins: [handleError],
   props: {
     userId: {
       type: String,
@@ -167,6 +169,11 @@ export default {
           if (res._jv) {
             this.hasMore = this.followingList.length < res._jv.json.meta.total
           }
+          this.pageNum += 1
+        }, e => {
+          this.handleError(e)
+        }).finally(() => {
+          this.loading = false
         })
     },
     // 添加关注
@@ -218,7 +225,7 @@ export default {
     },
     loadMore() {
       if (this.hasMore) {
-        this.pageNum += 1
+        // this.pageNum += 1
         this.getFollowingList()
       }
     },
@@ -241,6 +248,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "@/assets/css/variable/color.scss";
+.following{
+  min-height: 820px;
+}
 .ftop {
   display: flex;
   justify-content: space-between;
