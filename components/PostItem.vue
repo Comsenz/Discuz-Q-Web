@@ -147,8 +147,8 @@
               {{ isLiked ? $t('topic.liked') : $t('topic.like') }} {{ likeCount > 0 ? likeCount : '' }}
             </div>
             <div
+              v-permission:toDetail="''"
               class="btn comment"
-              @click="toDetail"
             >
               <svg-icon
                 type="post-comment"
@@ -317,7 +317,6 @@ export default {
       cursor: pointer;
     }
     .user-info {
-      flex: 1;
       display: inline-flex;
       align-items: center;
       .user-name {

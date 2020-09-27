@@ -142,7 +142,7 @@ export default {
     right: 0;
     width: calc(100% - 30px);
     height: 1px;
-    background: #e4e4e4;
+    background: $line-color-base;
     @media screen and (max-width: 1005px) {
       width: calc(100% - 15px);
     }
