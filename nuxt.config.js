@@ -9,6 +9,7 @@ function resolve(dir) {
 
 // const API_URL = 'https://discuz.chat'
 const API_URL_DEV = 'https://dq.comsenz-service.com'
+// const API_URL_DEV = 'https://discuz.chat'
 
 const isProduction = process.env.NODE_ENV === 'production'
 

@@ -99,7 +99,7 @@ export default {
     }
 
     > .author-info {
-      margin-top: 10px;
+      margin-top: 20px;
     }
 
     > .signature {
@@ -111,7 +111,7 @@ export default {
 
     > .container-billBoard {
       margin-top: 20px;
-      padding: 20px 0;
+      padding-top: 20px;
       border-top: 1px solid $border-color-base;
       display: flex;
       justify-content: space-between;
@@ -134,6 +134,7 @@ export default {
     }
 
     > .buttons {
+      margin-top: 20px;
       display: flex;
       justify-content: space-between;
 

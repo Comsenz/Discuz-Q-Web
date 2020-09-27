@@ -19,7 +19,7 @@ export default {
       // 变量scrollHeight是滚动条的总高度
       var scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight
       // 滚动条到底部的条件
-      if (scrollTop + windowHeight === scrollHeight) {
+      if (scrollTop + windowHeight >= scrollHeight) {
         this.scrollLoadMore() // 加载的列表数据
       }
       this.scrollTop = scrollTop
