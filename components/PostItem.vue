@@ -1,14 +1,15 @@
 <template>
   <div class="post-container">
-    <div
-      v-if="item.isEssence"
-      class="essence"
-    >
+    <div v-if="item.isEssence" class="essence">
       <svg-icon type="index-essence" />
     </div>
     <avatar
       v-if="item.user"
-      :user="{ id: item.user.id, username: item.user.username, avatarUrl: item.user.avatarUrl}"
+      :user="{
+        id: item.user.id,
+        username: item.user.username,
+        avatarUrl: item.user.avatarUrl,
+      }"
       class="avatar"
     />
     <div class="main-cont">
@@ -20,25 +21,23 @@
         >
           <span class="user-name">{{ item.user.username }}</span>
           <span
-            v-if="item.user && item.user.groups && item.user.groups.length > 0 && item.user.groups[0].isDisplay"
+            v-if="
+              item.user &&
+                item.user.groups &&
+                item.user.groups.length > 0 &&
+                item.user.groups[0].isDisplay
+            "
             class="admin"
           >({{ item.user.groups[0].name }})</span>
         </nuxt-link>
-        <div
-          v-if="item.createdAt"
-          class="time"
-        >{{ $t('topic.publishAt') }} {{ item.createdAt | formatDate }}</div>
+        <div v-if="item.createdAt" class="time">
+          {{ $t("topic.publishAt") }} {{ item.createdAt | formatDate }}
+        </div>
       </div>
       <template v-if="item.firstPost">
-        <div
-          class="first-post"
-          @click.self="toDetail"
-        >
-          <div @click="toDetail">
-            <div
-              v-if="item.type === 1"
-              class="title"
-            >{{ item.title }}</div>
+        <div class="first-post" @click.self="toDetail">
+          <div @click="onClickContent">
+            <div v-if="item.type === 1" class="title">{{ item.title }}</div>
             <div class="content">
               <div v-html="formatTopicHTML(item.firstPost.contentHtml)" />
             </div>
@@ -46,7 +45,7 @@
           <!-- 图片 -->
           <div
             v-if="item.firstPost.images && item.firstPost.images.length > 0"
-            v-viewer="{url: 'data-source'}"
+            v-viewer="{ url: 'data-source' }"
             class="images"
             @click.self="toDetail"
           >
@@ -61,10 +60,7 @@
               lazy
               @click.self="onClickImage"
             >
-              <div
-                slot="placeholder"
-                class="image-slot"
-              >
+              <div slot="placeholder" class="image-slot">
                 <i class="el-icon-loading" />
               </div>
             </el-image>
@@ -73,7 +69,10 @@
             v-if="item.firstPost.images && item.firstPost.images.length > 3"
             class="image-count"
             @click="toDetail"
-          >{{ $t('home.total') }} {{ item.firstPost.images.length }} {{ $t('home.seeAllImage') }}</div>
+          >
+            {{ $t("home.total") }} {{ item.firstPost.images.length }}
+            {{ $t("home.seeAllImage") }}
+          </div>
           <!-- 视频 -->
           <div
             v-if="item.type === 2 && item.threadVideo"
@@ -88,14 +87,8 @@
               fit="cover"
               lazy
             />
-            <div
-              v-else
-              class="no-cover"
-            >{{ $t('home.noPoster') }}</div>
-            <svg-icon
-              type="video-play"
-              class="video-play"
-            />
+            <div v-else class="no-cover">{{ $t("home.noPoster") }}</div>
+            <svg-icon type="video-play" class="video-play" />
           </div>
           <video-pop
             v-if="showVideoPop"
@@ -105,16 +98,26 @@
           />
           <!-- 附件 -->
           <div
-            v-if="item.firstPost.attachments && item.firstPost.attachments.length > 0"
+            v-if="
+              item.firstPost.attachments &&
+                item.firstPost.attachments.length > 0
+            "
             class="attachment"
             @click="toDetail"
           >
-            <svg-icon :type="extensionValidate(item.firstPost.attachments[0].extension)" />
-            <div class="name text-hidden">{{ item.firstPost.attachments[0].fileName }}</div>
-            <div
-              v-if="item.firstPost.attachments.length > 1"
-              class="total"
-            >{{ $t('home.etc') + item.firstPost.attachments.length + $t('home.attachmentTotal') }}</div>
+            <svg-icon
+              :type="extensionValidate(item.firstPost.attachments[0].extension)"
+            />
+            <div class="name text-hidden">
+              {{ item.firstPost.attachments[0].fileName }}
+            </div>
+            <div v-if="item.firstPost.attachments.length > 1" class="total">
+              {{
+                $t("home.etc") +
+                  item.firstPost.attachments.length +
+                  $t("home.attachmentTotal")
+              }}
+            </div>
           </div>
         </div>
         <!-- 位置 -->
@@ -124,10 +127,7 @@
           class="location"
         >
           <span class="flex">
-            <svg-icon
-              type="location"
-              class="icon"
-            />
+            <svg-icon type="location" class="icon" />
             {{ item.location }}
           </span>
         </nuxt-link>
@@ -137,35 +137,24 @@
             <div
               v-permission:handleLike="''"
               class="btn like"
-              :class="{'liked': isLiked}"
+              :class="{ liked: isLiked }"
             >
-              <svg-icon
-                v-permission:handleLike="''"
-                type="like"
-                class="icon"
-              />
-              {{ isLiked ? $t('topic.liked') : $t('topic.like') }} {{ likeCount > 0 ? likeCount : '' }}
+              <svg-icon v-permission:handleLike="''" type="like" class="icon" />
+              {{ isLiked ? $t("topic.liked") : $t("topic.like") }}
+              {{ likeCount > 0 ? likeCount : "" }}
             </div>
-            <div
-              v-permission:toDetail="''"
-              class="btn comment"
-            >
-              <svg-icon
-                type="post-comment"
-                class="icon"
-              />
-              {{ $t('topic.comment') }} {{ item.postCount - 1 > 0 ? item.postCount - 1 : '' }}
+            <div v-permission:toDetail="''" class="btn comment">
+              <svg-icon type="post-comment" class="icon" />
+              {{ $t("topic.comment") }}
+              {{ item.postCount - 1 > 0 ? item.postCount - 1 : "" }}
             </div>
             <share-popover
               v-if="item._jv && item._jv.id && showShare"
               :threads-id="item._jv.id"
             >
               <div class="btn share">
-                <svg-icon
-                  type="link"
-                  class="icon"
-                />
-                {{ $t('topic.share') }}
+                <svg-icon type="link" class="icon" />
+                {{ $t("topic.share") }}
               </div>
             </share-popover>
           </div>
@@ -179,7 +168,28 @@
 import s9e from '@/utils/s9e'
 import { time2MinuteOrHour } from '@/utils/time'
 import handleError from '@/mixin/handleError'
-const extensionList = ['7Z', 'AI', 'APK', 'CAD', 'CDR', 'DOC', 'DOCX', 'EPS', 'EXE', 'IPA', 'MP3', 'MP4', 'PDF', 'PPT', 'PSD', 'RAR', 'TXT', 'XLS', 'XLSX', 'ZIP']
+const extensionList = [
+  '7Z',
+  'AI',
+  'APK',
+  'CAD',
+  'CDR',
+  'DOC',
+  'DOCX',
+  'EPS',
+  'EXE',
+  'IPA',
+  'MP3',
+  'MP4',
+  'PDF',
+  'PPT',
+  'PSD',
+  'RAR',
+  'TXT',
+  'XLS',
+  'XLSX',
+  'ZIP'
+]
 export default {
   filters: {
     formatDate(date) {
@@ -190,7 +200,7 @@ export default {
   props: {
     item: {
       type: Object,
-      default: () => { }
+      default: () => {}
     },
     showShare: {
       type: Boolean,
@@ -233,44 +243,71 @@ export default {
       const params = {
         _jv: {
           type: 'posts',
-          id: this.item.firstPost && this.item.firstPost._jv && this.item.firstPost._jv.id
+          id:
+            this.item.firstPost &&
+            this.item.firstPost._jv &&
+            this.item.firstPost._jv.id
         },
         isLiked: isLiked
       }
-      return this.$store.dispatch('jv/patch', params).then(data => {
-        this.$message.success(isLiked ? '点赞成功' : '取消点赞成功')
-        if (isLiked) {
-          this.likeCount++
-        } else {
-          this.likeCount--
-        }
-        this.isLiked = isLiked
-      }, e => {
-        this.handleError(e)
-      }).finally(() => {
-        this.loading = false
-      })
+      return this.$store
+        .dispatch('jv/patch', params)
+        .then(
+          (data) => {
+            this.$message.success(isLiked ? '点赞成功' : '取消点赞成功')
+            if (isLiked) {
+              this.likeCount++
+            } else {
+              this.likeCount--
+            }
+            this.isLiked = isLiked
+          },
+          (e) => {
+            this.handleError(e)
+          }
+        )
+        .finally(() => {
+          this.loading = false
+        })
     },
     // 跳转详情页
     toDetail() {
       if (!this.canViewPostsFn()) return
       // this.$router.push({ path: `/topic/${this.item._jv && this.item._jv.id}` })
-      window.open(`/topic/index?id=${this.item._jv && this.item._jv.id}`, '_blank')
+      window.open(
+        `/topic/index?id=${this.item._jv && this.item._jv.id}`,
+        '_blank'
+      )
     },
     // 点击图片 判断是否付费， 未付费跳转详情页
     onClickImage() {
       if (!this.unpaid || !this.canViewPostsFn()) return
-      window.open(`/topic/index?id=${this.item._jv && this.item._jv.id}`, '_blank')
+      window.open(
+        `/topic/index?id=${this.item._jv && this.item._jv.id}`,
+        '_blank'
+      )
     },
     // 点击视频 判断是否付费， 未付费跳转详情页
     openVideo() {
       if (!this.canViewPostsFn()) return
       if (this.unpaid) {
-        window.open(`/topic/index?id=${this.item._jv && this.item._jv.id}`, '_blank')
+        window.open(
+          `/topic/index?id=${this.item._jv && this.item._jv.id}`,
+          '_blank'
+        )
       } else {
         this.showVideoPop = true
       }
     },
+    // 点击正文，使用事件委托判断a标签
+    onClickContent(e) {
+      const event = e || window.event
+      const target = event.target || event.srcElement
+      if (target.nodeName.toLocaleLowerCase() !== 'a') {
+        this.toDetail()
+      }
+    },
+    // 是否有查看详情的权限
     canViewPostsFn() {
       if (!this.item.canViewPosts) {
         this.$message.error(this.$t('home.noPostingTopic'))
@@ -282,7 +319,9 @@ export default {
       return s9e.parse(html)
     },
     extensionValidate(extension) {
-      return extensionList.indexOf(extension.toUpperCase()) > 0 ? extension.toUpperCase() : 'UNKNOWN'
+      return extensionList.indexOf(extension.toUpperCase()) > 0
+        ? extension.toUpperCase()
+        : 'UNKNOWN'
     }
   }
 }
@@ -297,7 +336,7 @@ export default {
   border-bottom: 1px solid $line-color-base;
   &:hover {
     background: rgba(229, 242, 255, 0.3);
-    border-bottom: 1px solid #E7ECF2;
+    border-bottom: 1px solid #e7ecf2;
   }
   .essence {
     position: absolute;
@@ -346,14 +385,20 @@ export default {
       @include text-hidden();
       flex: 0 0 60%;
     }
-    ::v-deep .content{
+    ::v-deep .content {
       @include text-hidden(4);
       line-height: 24px;
       font-size: 14px !important;
       color: #000;
       max-width: 585px;
       max-height: 96px;
-      p,h1,h2,h3,h4,h5,h6 {
+      p,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
         font-size: 14px !important;
       }
       img {

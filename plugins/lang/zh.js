@@ -479,7 +479,9 @@ export default {
     etc: '等',
     attachmentTotal: '个附件',
     location: '位置信息',
-    threadCount: '附近共有 {total} 条内容'
+    threadCount: '附近共有 {total} 条内容',
+    topicCount: '共有 {total} 条内容',
+    topicViewCount: '热度'
   },
   // 站点管理页面
   manage: {

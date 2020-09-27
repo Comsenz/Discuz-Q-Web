@@ -48,7 +48,7 @@ export default {
   async asyncData({ params, store, query }, callback) {
     if (!env.isSpider) {
       callback(null, {})
-      return
+      return {}
     }
     const threadsStickyParams = {
       'filter[isSticky]': 'yes',

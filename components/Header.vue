@@ -79,7 +79,7 @@ export default {
       return this.$store.state.site.info.attributes || {}
     },
     userInfo() {
-      return process.client ? this.$store.state.user.info.attributes || {} : {}
+      return this.$store.state.user.info.attributes || {}
     }
   },
   watch: {
@@ -100,7 +100,7 @@ export default {
       this.inputVal = this.$route.query.q
     }
     if (process.client && this.$route.path !== '/site/close') {
-      this.reloadUserInfo()
+      window.setTimeout(this.reloadUserInfo(), 5000)
     }
     if (this.$route.path === '/site/close') {
       this.siteClose = true
@@ -108,7 +108,7 @@ export default {
   },
   destroyed() {
     if (process.client) {
-      clearInterval(this.userInfoTimer)
+      window.clearInterval(this.userInfoTimer)
     }
   },
   methods: {
@@ -117,17 +117,14 @@ export default {
       this.$store
         .dispatch('session/logout')
         .then(() => {
-          // this.$router.push('/')
-          // window.location.reload()
           location.href = `/`
         })
     },
     // 轮询获取用户信息，用于判断是否有新消息
     reloadUserInfo() {
       if (this.userInfo && this.userInfo.id) {
-        clearInterval(this.userInfoTimer)
-        const _this = this
-        this.userInfoTimer = setInterval(_this.getUserInfo, 60000)
+        window.clearInterval(this.userInfoTimer)
+        this.userInfoTimer = window.setInterval(this.getUserInfo, 60000)
       }
     },
     async getUserInfo() {
