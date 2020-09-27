@@ -42,12 +42,17 @@
 
 <script>
 import handleError from '@/mixin/handleError'
+import env from '@/utils/env'
 export default {
   layout: 'custom_layout',
   name: 'Index',
   mixins: [handleError],
   // 异步数据用法
   async asyncData({ params, store }, callback) {
+    if (!env.isSpider) {
+      callback(null, {})
+      return
+    }
     try {
       const resData = {}
       const categoryData = await store.dispatch('jv/get', ['categories', {}])
@@ -99,6 +104,7 @@ export default {
       if (this.$route.query.q) {
         this.q = this.$route.query.q
         this.getUserList()
+        this.pageNum = 1
         this.getThreadsList()
       }
     },
@@ -145,6 +151,7 @@ export default {
         } else {
           this.threadsList = [...this.threadsList, ...res]
         }
+        this.pageNum++
         if (res._jv) {
           this.hasMore = this.threadsList.length < res._jv.json.meta.threadCount
         }
@@ -155,7 +162,6 @@ export default {
       })
     },
     loadMore() {
-      this.pageNum += 1
       this.getThreadsList()
     },
     // 重新加载列表

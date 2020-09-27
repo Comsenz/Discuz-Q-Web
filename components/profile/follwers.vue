@@ -83,7 +83,9 @@
         }}
       </el-button>
     </div>
-    <loading v-if="loading" />
+    <list-load-mores :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="followerList.length" @loadMore="loadMore" />
+
+    <!-- <loading v-if="loading" />
     <template v-else>
       <div
         v-if="hasMore"
@@ -100,7 +102,7 @@
           class="empty-icon"
         />{{ followerList.length > 0 ? '没有更多了' : '暂无信息' }}
       </div>
-    </template>
+    </template> -->
   </div>
 </template>
 <script>

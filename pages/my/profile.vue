@@ -1170,15 +1170,19 @@ export default {
     margin-bottom: 10px;
     ::v-deep.el-input__inner {
       border-right: none;
+      border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
     }
   }
   .count-b {
     width: 90px;
     height: 40px;
     padding: 0;
-    margin-left: -4px;
+    margin-left: -4.5px;
     color: #606162;
     vertical-align: top;
+    border-bottom-left-radius: 0px;
+    border-top-left-radius: 0px;
   }
   .disabled {
     background-color: #ededed;

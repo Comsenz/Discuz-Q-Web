@@ -99,6 +99,7 @@ export default {
         } else {
           this.dialog.list = [...this.dialog.list, ...data]
         }
+        this.dialog.pageNum++
         if (data._jv && data._jv.json && data._jv.json.meta) {
           this.dialog.hasMore = this.dialog.list.length < data._jv.json.meta.total
           this.surplus = data._jv.json.meta.total - this.dialog.list.length
@@ -132,6 +133,7 @@ export default {
           this.hasMore = this.noticeList.length < data._jv.json.meta.total
           this.surplus = data._jv.json.meta.total - this.noticeList.length
         }
+        this.pageNum++
         try {
           await this.$store.dispatch('user/getUserInfo', this.userInfo.id)
         } catch (err) {
@@ -144,11 +146,9 @@ export default {
       })
     },
     loadMore() {
-      this.pageNum += 1
       this.getNoticeList()
     },
     loadMoreDialog() {
-      this.dialog.pageNum += 1
       this.getDialogList()
     },
     // 删除
