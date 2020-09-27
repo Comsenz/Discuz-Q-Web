@@ -12,11 +12,6 @@
           <user-item v-for="(item, index) in userList" :key="index" :item="item" />
         </div>
         <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="userList.length" :load-more-text="$t('topic.showMore') + $t('search.users')" @loadMore="loadMore" />
-        <!-- <loading v-if="loading" />
-        <template v-else>
-          <div v-if="hasMore" class="load-more" @click="loadMore">{{ $t('topic.showMore') }}{{ $t('search.users') }}</div>
-          <div v-else class="no-more"><svg-icon v-if="userList.length === 0" type="empty" class="empty-icon" />{{ $t(userList.length > 0 ? 'discuzq.list.noMoreData' : 'discuzq.list.noData') }}</div>
-        </template> -->
       </div>
     </main>
     <aside class="cont-right">
@@ -31,12 +26,17 @@
 
 <script>
 import handleError from '@/mixin/handleError'
+import env from '@/utils/env'
 export default {
   layout: 'custom_layout',
   name: 'Index',
   mixins: [handleError],
   // 异步数据用法
   async asyncData({ params, store }, callback) {
+    if (!env.isSpider) {
+      callback(null, {})
+      return
+    }
     try {
       const resData = {}
       const categoryData = await store.dispatch('jv/get', ['categories', {}])
@@ -108,6 +108,7 @@ export default {
         } else {
           this.userList = [...this.userList, ...res]
         }
+        this.pageNum++
         if (res._jv) {
           this.hasMore = this.userList.length < res._jv.json.meta.total
         }
@@ -119,7 +120,6 @@ export default {
     },
 
     loadMore() {
-      this.pageNum += 1
       this.getUserList()
     },
     // 重新加载列表

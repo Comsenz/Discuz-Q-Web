@@ -138,6 +138,7 @@ export default {
         } else {
           this.threadsData = [...this.threadsData, ...res]
         }
+        this.pageNum++
         if (res._jv) {
           this.hasMore = this.threadsData.length < res._jv.json.meta.threadCount
         }
@@ -149,7 +150,6 @@ export default {
       })
     },
     loadMore() {
-      this.pageNum += 1
       this.getThreadsList()
     }
   },
