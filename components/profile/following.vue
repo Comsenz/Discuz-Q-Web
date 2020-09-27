@@ -81,9 +81,10 @@
               : $t('profile.mutualfollow')
         }}
       </el-button>
-
     </div>
-    <loading v-if="loading" />
+    <list-load-mores :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="followingList.length" @loadMore="loadMore" />
+
+    <!-- <loading v-if="loading" />
     <template v-else>
       <div
         v-if="hasMore"
@@ -100,7 +101,7 @@
           class="empty-icon"
         />{{ followingList.length > 0 ? '没有更多了' : '暂无信息' }}
       </div>
-    </template>
+    </template> -->
   </div>
 </template>
 <script>

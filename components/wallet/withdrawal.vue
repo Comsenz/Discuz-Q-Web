@@ -35,7 +35,7 @@
         <div class="head">{{ $t('modify.actualamout') }}</div>
         <div class="body product-information">
           <span class="title3"> ￥ {{ contint || 0 }}</span>
-          <span class="title4"> {{ $t('modify.servicechaege') }}{{ procedures }}{{ $t('modify.percentage') }} ({{ percentage }}%)</span>
+          <span class="title4"> {{ $t('modify.servicechaege') }}{{ procedures }}{{ $t('modify.percentage') }} {{ percentage }}%)</span>
         </div>
       </div>
       <div class="row">
@@ -238,7 +238,7 @@ export default {
         _jv: {
           type: 'sms/send'
         },
-        mobile: this.novice,
+        mobile: this.userphon,
         type: 'verify',
         captcha_ticket: this.ticket,
         captcha_rand_str: this.randstr
@@ -290,7 +290,9 @@ export default {
           type: 'wallet/cash',
           include: ['user', 'userWallet']
         },
-        cash_apply_amount: this.canAmount
+        cash_apply_amount: this.canAmount,
+        cash_mobile: this.userphon,
+        cash_type: 0
       }
       const postcash = status.run(() => this.$store.dispatch('jv/post', params))
       postcash
@@ -316,10 +318,16 @@ export default {
               this.contint = ''
               this.procedures = 0
             } else if (errors[0].status === 500) {
-              this.$message.error(this.$t(`core.${errors[0].code}`))
-              this.canAmount = ''
-              this.contint = ''
-              this.procedures = 0
+              if (errors[0].code === 'unbind_wechat') {
+                this.$message.error(errors[0].detail)
+              } else if (errors[0].code === 'cash_mch_invalid') {
+                this.$message.error(errors[0].detail)
+              } else {
+                this.$message.error(this.$t(`core.${errors[0].code}`))
+                this.canAmount = ''
+                this.contint = ''
+                this.procedures = 0
+              }
             }
           }
         })

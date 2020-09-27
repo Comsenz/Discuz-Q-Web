@@ -191,6 +191,7 @@
             name="3"
           >
             <following
+              v-if="activeName === '3'"
               ref="following"
               :user-id="userId"
               @changeFollow="changeFollow"
@@ -201,6 +202,7 @@
             name="4"
           >
             <follwers
+              v-if="activeName === '4'"
               ref="followers"
               :user-id="userId"
               @changeFollow="changeFollow"
