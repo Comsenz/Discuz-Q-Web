@@ -72,7 +72,7 @@ export default {
 <style lang="scss" scoped>
   @import '@/assets/css/variable/color.scss';
   .actions {
-    margin: 20px auto 70px;
+    margin: 50px auto 40px;
     padding: 0 25px;
     display: flex;
     justify-content: space-between;

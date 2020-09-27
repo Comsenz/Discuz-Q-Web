@@ -157,7 +157,6 @@ export default {
         'page[limit]': 1
       }
       this.$store.dispatch('jv/get', ['invite/users', { params }]).then((res) => {
-        console.log('res', res)
         if (res && res._jv && res._jv.json && res._jv.json.meta) {
           this.inviteTotal = res._jv.json.meta.total
         }
@@ -187,7 +186,6 @@ export default {
         'sort': this.sort
       }
       this.$store.dispatch('jv/get', ['invite/users', { params }]).then((res) => {
-        console.log('res', res)
         if (res) {
           this.inviteList = res
           if (res._jv && res._jv.json && res._jv.json.meta) {

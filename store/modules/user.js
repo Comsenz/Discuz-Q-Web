@@ -22,7 +22,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       service.get(`/users/${userId}`).then(res => {
         if (res.status === 200 && res.data && res.data.data) {
-          console.log('store get user info =>', res.data.data)
           commit('SET_USER_INFO', res.data.data)
           resolve(res.data.data)
         } else {

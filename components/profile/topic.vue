@@ -78,7 +78,7 @@ export default {
             this.hasMore = this.data.length < res._jv.json.meta.threadCount
           }
           this.pageNum += 1
-          console.log('当前主题数据', this.data)
+          console.log('当前主题数据1', this.data)
         }, e => {
           this.handleError(e)
         }).finally(() => {

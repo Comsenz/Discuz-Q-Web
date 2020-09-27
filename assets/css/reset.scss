@@ -227,8 +227,17 @@ table {
 .el-message{
   min-width: 100px !important;
 }
-
-
+// el-images 去圆角
+.el-image {
+  border-radius: 0 !important;
+}
+// el-upload-picture-card 去圆角 
+.el-upload--picture-card {
+  border-radius: 0 !important;
+}
+.el-upload-list--picture-card .el-upload-list__item {
+  border-radius: 0 !important;
+}
 
 $em: 16px;
 

@@ -12,11 +12,11 @@ export const time2MinuteOrHour = time => {
   const result = now - pass
   // 分钟差小于60分钟
   if (parseInt(parseInt(result / 1000, 0) / 60, 0) < 60) {
-    return `${Math.ceil(result / 1000 / 60) > 0 ? Math.ceil(result / 1000 / 60) : 0}分钟前`
+    return `${Math.ceil(result / 1000 / 60) > 0 ? Math.ceil(result / 1000 / 60) : 1}分钟前`
   }
   // 小时差小于16小时
   if (parseInt(parseInt(parseInt(result / 1000, 0) / 60, 0) / 60, 0) < 16) {
-    return `${Math.ceil(result / 1000 / 60 / 60) > 0 ? Math.ceil(result / 1000 / 60) : 0}小时前`
+    return `${Math.ceil(result / 1000 / 60 / 60) > 0 ? Math.ceil(result / 1000 / 60 / 60) : 1}小时前`
   }
   // 超过16个小时展示 年月日时分
   return time

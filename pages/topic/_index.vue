@@ -132,7 +132,7 @@ export default {
       return this.$route.query.id
     },
     userId() {
-      return this.$store.getters['session/get']('userId')
+      return this.$store.getter['session/get']('userId')
     },
     currentUser() {
       return this.$store.state.user.info.attributes || {}
