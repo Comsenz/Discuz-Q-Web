@@ -161,7 +161,7 @@
     </div>
     <!-- 手机号 -->
     <div
-      v-if="userInfo"
+      v-if="userInfo && forums && forums.qcloud && forums.qcloud.qcloud_sms"
       class="myprofile-c"
       :class="isMobileModify ? 'myprofile-c bgcolor': 'myprofile-c'"
     >
