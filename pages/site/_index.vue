@@ -301,10 +301,11 @@ export default {
           font-size:12px;
           color: #777777;
           background-color: #F7F7F7;
-          padding:4px 10px;
+          padding:6.5px 10px;
           line-height: 1;
           margin-right:10px;
           margin-bottom:10px;
+          border-radius: 2px;
         }
       }
     }

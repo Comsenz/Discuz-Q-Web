@@ -39,11 +39,12 @@
 <script>
 import s9e from '@/utils/s9e'
 import handleError from '@/mixin/handleError'
+import scroll from '@/mixin/scroll'
 import env from '@/utils/env'
 export default {
   layout: 'custom_layout',
   name: 'Index',
-  mixins: [handleError],
+  mixins: [handleError, scroll],
   // 异步数据用法
   async asyncData({ params, store, query }, callback) {
     if (!env.isSpider) {
@@ -218,15 +219,15 @@ export default {
       }
       this.$store.dispatch('jv/get', ['threads', { params }]).then(data => {
         this.hasMore = data.length === this.pageSize
+        const _threadCount = data && data._jv && data._jv.json && data._jv.json.meta && data._jv.json.meta.threadCount || 0
         if (this.pageNum === 1) {
           this.threadsData = data
+          this.threadCount = _threadCount
         } else {
           this.threadsData = [...this.threadsData, ...data]
         }
         if (data && data._jv) {
-          const _threadCount = data._jv.json && data._jv.json.meta && data._jv.json.meta.threadCount || 0
           this.hasMore = this.threadsData.length < _threadCount
-          this.threadCount = _threadCount
         }
 
         if (this.timer) {
@@ -246,6 +247,12 @@ export default {
       this.pageNum++
       this.getThreadsList()
     },
+    // 滚动加载更多，每5页停止滚动加载
+    scrollLoadMore() {
+      if (this.pageNum % 5 > 0 && !this.loading && this.hasMore) {
+        this.loadMore()
+      }
+    },
     // 轮询查看是否有新主题
     autoLoadThreads() {
       const params = {
@@ -264,7 +271,6 @@ export default {
           if (this.threadCount > 0) {
             this.total = _threadCount - this.threadCount > 0 ? _threadCount - this.threadCount : 0
           }
-          this.threadCount = _threadCount
         }
       })
     },

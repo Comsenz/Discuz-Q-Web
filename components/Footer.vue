@@ -1,10 +1,8 @@
 <template>
   <div class="footer">
-    <span> Powered By &nbsp;  <a class="bold" href="https://discuz.com" target="_blank">Discuz! Q</a> &nbsp;    © {{ year }} &nbsp;&nbsp;分享&nbsp;&nbsp;/&nbsp;&nbsp;交流 &nbsp;&nbsp;/&nbsp;&nbsp;共融 </span>
-    <div>
-      <a class="site-record" href="https://beian.miit.gov.cn/" target="_blank">{{ forums.set_site ? forums.set_site.site_record : '' }}</a>
-      <a v-if="forums && forums.set_site && forums.set_site.site_record_code" :href="`http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=${forums && forums.set_site && forums.set_site.site_record_code.replace(/[^0-9]/ig,'')}`" target="_blank">{{ forums.set_site.site_record_code }}</a>
-    </div>
+    <span> Powered By &nbsp;  <a class="bold" href="https://discuz.com" target="_blank">Discuz! Q</a> &nbsp;© {{ year }} &nbsp;&nbsp;</span>
+    <a v-if="forums && forums.set_site && forums.set_site.site_record" class="site-record" href="https://beian.miit.gov.cn/" target="_blank">{{ forums.set_site.site_record }}</a>
+    <a v-if="forums && forums.set_site && forums.set_site.site_record_code" :href="`http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=${forums && forums.set_site && forums.set_site.site_record_code.replace(/[^0-9]/ig,'')}`" target="_blank">{{ forums.set_site.site_record_code }}</a>
   </div>
 </template>
 <script>
@@ -36,7 +34,7 @@ export default {
     font-weight: bold;
   }
   .site-record{
-    margin-right: 20px;
+    margin-right: 10px;
   }
   a:hover{
     color: #006CD1;
