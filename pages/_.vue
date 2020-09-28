@@ -1,7 +1,8 @@
 <template>
   <div class="container">
-    <svg-icon type="404" style="font-size: 180px" />
+    <svg-icon type="alert" style="font-size: 100px" />
     <h1 class="tip">{{ $t('core.page_not_found') }}</h1>
+    <span class="detail">{{ $t('core.page_not_found_detail') }}</span>
     <NuxtLink to="/">
       <button>
         {{ $t('core.back_home') }}
@@ -23,7 +24,15 @@ export default {
     text-align: center;
 
     h1 {
-      margin-top: 60px;
+      margin-top: 10px;
+    }
+    > .detail {
+      widows: 320px;
+      color: #AAAAAA;
+      line-height: 20px;
+      font-size: 16px;
+      display: block;
+      margin-top: 20px;
     }
     button {
       margin-top: 38px;

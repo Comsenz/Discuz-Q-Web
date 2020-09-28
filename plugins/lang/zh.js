@@ -131,7 +131,7 @@ export default {
     close: '点击关闭',
     user_deny: '对方设置了屏蔽，无法进行此操作',
     page_not_found: '页面没有找到',
-    page_not_found_detail: '您要访问的页面可能已被删除，已更改名称或者暂时不可用',
+    page_not_found_detail: '您要访问的页面可能已被删除、已更改名称或暂时不可用',
     not_install: '该站点未安装',
     postTypesDoNotMatch: '帖子类型不匹配，请重新进入本页面',
     cancel: '取消',
