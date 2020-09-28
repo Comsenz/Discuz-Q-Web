@@ -171,42 +171,44 @@
             :label="$t('profile.topic')+ ` (${userInfo.threadCount || 0})`"
             name="1"
           >
-            <!-- <topic
-              v-if="activeName === '1' "
+            <topic
               ref="topic"
               :user-id="userId"
-            /> -->
+              :thread-data="threadsData"
+            />
             <!-- 主题需要用到ssr -->
-            <div v-if="activeName === '1'" class="topic">
+            <!-- <div class="topic">
               <div class="post-list">
                 <post-item
                   v-for="(item, index) in threadsData"
                   :key="index"
                   :item="item"
+                  :lazy="false"
                 />
                 <list-load-more :loading="threadsloading" :has-more="threadshasMore" :page-num="threadspageNum" :length="threadsData.length" @loadMore="threadsloadMore" />
               </div>
-            </div>
+            </div> -->
           </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.likes')+ ` (${userInfo.likedCount || 0})`"
             name="2"
           >
-            <!-- <like
-              v-if="activeName === '2'"
+            <like
               ref="like"
               :user-id="userId"
-            /> -->
-            <div v-if="activeName === '2'" class="like">
+              :likethreads-data="likethreadsData"
+            />
+            <!-- <div class="like">
               <div class="post-list">
                 <post-item
                   v-for="(item, index) in likethreadsData"
                   :key="index"
                   :item="item"
+                  :lazy="false"
                 />
                 <list-load-more :loading="likethreadsloading" :has-more="likethreadshasMore" :page-num="likethreadspageNum" :length="likethreadsData.length" @loadMore="likethreadsloadMore" />
               </div>
-            </div>
+            </div> -->
           </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.following')+ ` (${userInfo.followCount || 0})`"
@@ -332,15 +334,7 @@ export default {
       offsetTop: 0,
       isShield: false,
       threadsData: [],
-      threadsloading: false,
-      threadshasMore: false,
-      threadspageSize: 10,
-      threadspageNum: 1, // 当前页数
       likethreadsData: [],
-      likethreadsloading: false,
-      likethreadshasMore: false,
-      likethreadspageSize: 10,
-      likethreadspageNum: 1, // 当前页数
       unbundlingArry: [], // 解绑用户组
       unbundUserData: [] // 已屏蔽用户组
     }
@@ -364,12 +358,6 @@ export default {
   mounted() {
     this.getAuth()
     this.getUserInfo(this.userId)
-    if (this.threadsData.length === 0) {
-      this.loadThreads()
-    }
-    if (this.likethreadsData.length === 0) {
-      this.loadlikes()
-    }
     window.addEventListener('scroll', this.handleScroll)
     if (this.currentLoginId) {
       this.getShieldData()
@@ -529,77 +517,7 @@ export default {
         this.$t('profile.unboundsucceed')
         this.getShieldData()
       })
-    },
-    // 加载当前主题数据
-    loadThreads(type) {
-      this.threadsloading = true
-      const params = {
-        'filter[isDeleted]': 'no',
-        sort: '-createdAt',
-        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
-        'page[number]': this.threadspageNum,
-        'page[limit]': this.threadspageSize,
-        'filter[isApproved]': 1,
-        'filter[userId]': this.userId
-      }
-      status
-        .run(() => this.$store.dispatch('jv/get', ['threads', { params }]))
-        .then(res => {
-          this.threadsloading = false
-          this.threadshasMore = res.length === this.pageSize
-          this.threadsData = [...this.threadsData, ...res]
-          if (res._jv) {
-            this.threadshasMore = this.threadsData.length < res._jv.json.meta.threadCount
-          }
-          this.threadspageNum += 1
-          console.log('当前主题数据12', this.threadsData)
-        }, e => {
-          this.handleError(e)
-        }).finally(() => {
-          this.threadsloading = false
-        })
-    },
-    threadsloadMore() {
-      if (this.threadshasMore) {
-        console.log('topicloadmore')
-        // this.pageNum += 1
-        this.loadThreads()
-      }
-    },
-    // 加载当前点赞数据
-    loadlikes(type) {
-      this.likethreadsloading = true
-      const params = {
-        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
-        'page[number]': this.likethreadspageNum,
-        'page[limit]': this.likethreadspageSize,
-        'filter[isApproved]': 1,
-        'filter[user_id]': this.userId
-      }
-      status
-        .run(() => this.$store.dispatch('jv/get', ['threads/likes', { params }]))
-        .then(res => {
-          console.log('点赞数据', res)
-          this.likethreadsloading = false
-          this.likethreadshasMore = res.length === this.pageSize
-          this.likethreadsData = [...this.likethreadsData, ...res]
-          if (res._jv) {
-            this.likethreadshasMore = this.likethreadsData.length < res._jv.json.meta.threadCount
-          }
-          this.likethreadspageNum += 1
-        }, e => {
-          this.handleError(e)
-        }).finally(() => {
-          this.likethreadsloading = false
-        })
-    },
-    likethreadsloadMore() {
-      if (this.likethreadshasMore) {
-        // this.pageNum += 1
-        this.loadlikes()
-      }
     }
-
   },
   head() {
     return {
@@ -824,7 +742,6 @@ export default {
     }
   }
 }
-
 ::v-deep.el-tabs {
   .el-tabs__header {
     background: transparent;

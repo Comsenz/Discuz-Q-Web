@@ -2,30 +2,12 @@
   <div class="topic">
     <div class="post-list">
       <post-item
-        v-for="(item, index) in data"
+        v-for="(item, index) in threadsData"
         :key="index"
         :item="item"
+        :lazy="false"
       />
-      <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="data.length" @loadMore="loadMore" />
-
-      <!-- <loading v-if="loading" />
-      <template v-else>
-        <div
-          v-if="hasMore"
-          class="load-more"
-          @click="loadMore"
-        >查看更多</div>
-        <div
-          v-else
-          :class="data.length === 0 ? 'no-more2':'no-more'"
-        >
-          <svg-icon
-            v-if="data.length === 0"
-            type="empty"
-            class="empty-icon"
-          />{{ data.length > 0 ? '没有更多了' : '暂无信息' }}
-        </div>
-      </template> -->
+      <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="threadsData.length" @loadMore="loadMore" />
     </div>
   </div>
 </template>
@@ -40,11 +22,15 @@ export default {
     userId: {
       type: String,
       default: ''
+    },
+    threadData: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
     return {
-      data: [],
+      threadsData: [],
       pageSize: 10,
       pageNum: 1, // 当前页数
       currentLoginId: this.$store.getters['session/get']('userId'),
@@ -53,7 +39,10 @@ export default {
     }
   },
   mounted() {
-    this.loadThreads()
+    this.threadsData = this.threadData
+    if (this.threadsData.length === 0) {
+      this.loadThreads()
+    }
   },
   methods: {
     // 加载当前主题数据
@@ -73,12 +62,12 @@ export default {
         .then(res => {
           this.loading = false
           this.hasMore = res.length === this.pageSize
-          this.data = [...this.data, ...res]
+          this.threadsData = [...this.threadsData, ...res]
           if (res._jv) {
-            this.hasMore = this.data.length < res._jv.json.meta.threadCount
+            this.hasMore = this.threadsData.length < res._jv.json.meta.threadCount
           }
           this.pageNum += 1
-          console.log('当前主题数据12', this.data)
+          console.log('当前主题数据12', this.threadsData)
         }, e => {
           this.handleError(e)
         }).finally(() => {
