@@ -3,11 +3,11 @@ module.exports = {
     return {
       errorCodeHandler: {
         'default': {
-          'model_not_found': () => this.$router.push('/error'),
+          'model_not_found': () => this.$router.replace('/error'),
           'not_authenticated': () => this.$router.push('/pages/user/login')
         },
         'thread': {
-          'permission_denied': () => this.$router.push('/error')
+          'permission_denied': () => this.$router.replace('/error')
         }
       }
     }

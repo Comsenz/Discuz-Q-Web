@@ -82,7 +82,7 @@ export default {
     }
   },
   mounted() {
-    if (['0', '1', '2', '3'].indexOf(this.type) < 0) return this.$router.push('/error')
+    if (['0', '1', '2', '3'].indexOf(this.type) < 0) return this.$router.replace('/error')
     this.getCategoryList()
     this.getThread()
   },
