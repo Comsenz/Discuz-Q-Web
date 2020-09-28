@@ -479,7 +479,9 @@ export default {
     etc: '等',
     attachmentTotal: '个附件',
     location: '位置信息',
-    threadCount: '附近共有 {total} 条内容'
+    threadCount: '附近共有 {total} 条内容',
+    topicCount: '共有 {total} 条内容',
+    topicViewCount: '热度'
   },
   // 站点管理页面
   manage: {
@@ -854,6 +856,11 @@ export default {
     reward: '打赏',
     paytheme: '付费主题',
     paygroup: '付费用户组',
+    codesend: '验证码将发送到',
+    phonesms: '的手机短信',
+    withoutbind: '您还未绑定手机请到',
+    tobindphone: '进行手机的绑定',
+    towithdrawal: '提现申请',
     withdrawalfreeze: '提现冻结',
     withdrawalsucceed: '提现成功',
     withdrawalunfreeze: '提现解冻',

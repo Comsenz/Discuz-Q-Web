@@ -155,13 +155,13 @@
             type="primary"
             class="sigbutton"
             @click="sigComfirm"
-          >确定修改</el-button>
+          >{{ $t('profile.confirmModify') }}</el-button>
         </div>
       </div>
     </div>
     <!-- 手机号 -->
     <div
-      v-if="userInfo"
+      v-if="userInfo && forums && forums.qcloud && forums.qcloud.qcloud_sms"
       class="myprofile-c"
       :class="isMobileModify ? 'myprofile-c bgcolor': 'myprofile-c'"
     >
@@ -171,7 +171,7 @@
           <span
             class="setavatar"
             @click="mobileModify"
-          >{{ (!isMobileModify ?!userInfo.mobile ? '绑定手机': $t('profile.modify') : $t('profile.cancelModify')) }}</span>
+          >{{ (!isMobileModify ?!userInfo.mobile ? $t('profile.bindingmobile'): $t('profile.modify') : $t('profile.cancelModify')) }}</span>
         </div>
         <div
           v-show="!isMobileModify"
@@ -223,7 +223,7 @@
             type="primary"
             class="ebutton"
             @click="mobileComfirm"
-          >提交修改</el-button>
+          >{{ $t('profile.submitchange') }}</el-button>
         </div>
         <!-- 新用户绑定手机号 -->
         <div
@@ -235,13 +235,13 @@
               ref="oldphone"
               v-model="newphon"
               maxlength="11"
-              placeholder="请输入绑定的手机号"
+              :placeholder="$t('modify.newphon')"
               :class="isChange ? 'passbtom phonechange': 'passbtom'"
               @input="changeinput"
             />
             <el-input
               v-model="setnum"
-              placeholder="请输入手机验证码"
+              :placeholder="$t('modify.newverifycode')"
               class="phone-input"
             />
             <el-button
@@ -257,7 +257,7 @@
             type="primary"
             class="ebutton"
             @click="dingphon"
-          >提交修改</el-button>
+          >{{ $t('profile.submitchange') }}</el-button>
         </div>
       </div>
     </div>
@@ -316,7 +316,7 @@
               type="primary"
               class="ebutton"
               @click="passSub"
-            >提交修改</el-button>
+            >{{ $t('profile.submitchange') }}</el-button>
           </form>
         </div>
       </div>

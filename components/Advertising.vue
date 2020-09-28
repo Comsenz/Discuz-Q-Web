@@ -17,15 +17,21 @@ export default {
   },
   mounted() {
     let path = process.env.mobileDomain
-    if (/\/topic\/[1-9]\d/igm.test(this.$route.path)) {
+    if (this.$route.path === '/topic/index') {
       // 主题详情
-      path = path + `/pages/topic/index?id=${this.$route.params.id}`
-    } else if (this.$route.path === '/profile') {
+      path = path + `/pages/topic/index?id=${this.$route.query.id}`
+    } else if (this.$route.path === '/profile/index') {
       // 个人主页
       path = path + `/pages/profile/index?userId=${this.$route.query.userId}`
-    } else if (this.$route.path === '/location') {
+    } else if (this.$route.path === '/topic/position') {
       // 位置详情页
       path = path + `/pages/topic/position?longitude=${this.$route.query.longitude}&latitude=${this.$route.query.latitude}`
+    } else if (this.$route.path === '/topic/content') {
+      // 话题详情页
+      path = path + `/pages/topic/content?id=${this.$route.query.id}`
+    } else if (this.$route.path === '/topic/list') {
+      // 话题列表页
+      path = path + `/pages/topic/list`
     }
     this.createQrcode(path)
   },

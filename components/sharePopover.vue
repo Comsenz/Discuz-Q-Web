@@ -48,7 +48,12 @@ export default {
     copyLink() {
       const oInput = document.createElement('input')
       if (process.client) {
-        oInput.value = window.location.host + '/topic/index?id=' + this.threadsId
+        if (this.$route.path === '/topic/content') {
+          // 话题详情
+          oInput.value = window.location.host + '/pages/topic/content?id=' + this.$route.query.id
+        } else {
+          oInput.value = window.location.host + '/topic/index?id=' + this.threadsId
+        }
         oInput.id = 'copyInput'
         document.body.appendChild(oInput)
         oInput.select()
@@ -60,7 +65,14 @@ export default {
       }, 100)
     },
     onShowPopover() {
-      this.createQrcode(process.env.mobileDomain + '/pages/topic/index?id=' + this.threadsId)
+      let path = process.env.mobileDomain
+      if (this.$route.path === '/topic/content') {
+        // 话题详情
+        path = path + `/pages/topic/content?id=${this.$route.query.id}`
+      } else {
+        path = path + `/pages/topic/index?id=${this.threadsId}`
+      }
+      this.createQrcode(path)
     },
     createQrcode(link) {
       if (process.client) {
