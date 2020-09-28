@@ -81,7 +81,7 @@ export default {
       this.chatting = true
     },
     toprofile(index) {
-      this.$router.push(`/profile/index?userId=${this.author._jv.id}&current=${index + 1}`)
+      this.$router.push(`/pages/profile/index?userId=${this.author._jv.id}&current=${index + 1}`)
     }
   }
 }

@@ -11,7 +11,7 @@ module.exports = {
         // 用户名模式 / 手机模式 / 腾讯验证码是否开启都是跳到同一个登录页面
         console.log('判断是否登陆')
 
-        this.$router.push(`/user/register?url=${url}&code=${code}`)
+        this.$router.push(`/pages/user/register?url=${url}&code=${code}`)
       }
     }
   }

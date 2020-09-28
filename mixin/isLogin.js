@@ -5,7 +5,7 @@ module.exports = {
       const userId = this.$store.state.user.info.id
       if (!userId) {
         this.$message.error(this.$t('user.pleaseLogin'))
-        this.$router.push('/user/login')
+        this.$router.push('/pages/user/login')
         return false
       }
       return true

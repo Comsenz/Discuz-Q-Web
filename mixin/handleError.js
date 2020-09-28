@@ -4,7 +4,7 @@ module.exports = {
       errorCodeHandler: {
         'default': {
           'model_not_found': () => this.$router.push('/error'),
-          'not_authenticated': () => this.$router.push('/user/login')
+          'not_authenticated': () => this.$router.push('/pages/user/login')
         },
         'thread': {
           'permission_denied': () => this.$router.push('/error')
@@ -31,7 +31,7 @@ module.exports = {
     async siteClose(errors) {
       try {
         await this.$store.dispatch('forum/setError', { code: errors[0].code, detail: errors[0].detail && errors[0].detail.length > 0 && errors[0].detail[0] })
-        await this.$router.push('/site/close')
+        await this.$router.push('/pages/site/close')
       } catch (e) {
         console.log(e)
       }

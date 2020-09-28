@@ -422,7 +422,10 @@ export default {
     payFail: '支付失败',
     payType: '支付方式',
     payPassword: '支付密码',
-    wechatIdentificationQRcode: '微信识别二维码'
+    wechatIdentificationQRcode: '微信识别二维码',
+    wechatTimeLimit: '二维码有效时长为5分钟, 请尽快支付',
+    wechatScan: '请使用微信扫一扫',
+    wechatScanPay: '扫描二维码支付'
   },
   auth: {
     userinfo: '获取头像和昵称'
