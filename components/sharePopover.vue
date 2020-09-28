@@ -48,11 +48,12 @@ export default {
     copyLink() {
       const oInput = document.createElement('input')
       if (process.client) {
-        if (this.$route.path === '/topic/content') {
+        const path = process.env.mobileDomain
+        if (this.$route.path === '/pages/topic/content') {
           // 话题详情
-          oInput.value = window.location.host + '/pages/topic/content?id=' + this.$route.query.id
+          oInput.value = path + `/pages/topic/content?id=${this.$route.query.id}`
         } else {
-          oInput.value = window.location.host + '/topic/index?id=' + this.threadsId
+          oInput.value = window.location.host + '/pages/topic/index?id=' + this.threadsId
         }
         oInput.id = 'copyInput'
         document.body.appendChild(oInput)
@@ -66,7 +67,7 @@ export default {
     },
     onShowPopover() {
       let path = process.env.mobileDomain
-      if (this.$route.path === '/topic/content') {
+      if (this.$route.path === '/pages/topic/content') {
         // 话题详情
         path = path + `/pages/topic/content?id=${this.$route.query.id}`
       } else {

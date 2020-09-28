@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     toUser() {
-      this.$router.push(`/profile/index?userId=${this.item.id}`)
+      this.$router.push(`/pages/profile/index?userId=${this.item.id}`)
     }
   }
 }

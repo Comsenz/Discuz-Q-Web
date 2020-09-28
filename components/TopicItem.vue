@@ -111,9 +111,9 @@ export default {
     // 跳转详情页
     toDetail() {
       if (!this.canViewPostsFn()) return
-      // this.$router.push({ path: `/topic/${this.item._jv && this.item._jv.id}` })
+      // this.$router.push({ path: `/pages/topic/${this.item._jv && this.item._jv.id}` })
       window.open(
-        `/topic/index?id=${this.item._jv && this.item._jv.id}`,
+        `/pages/topic/index?id=${this.item._jv && this.item._jv.id}`,
         '_blank'
       )
     },
@@ -121,7 +121,7 @@ export default {
     onClickImage() {
       if (!this.unpaid || !this.canViewPostsFn()) return
       window.open(
-        `/topic/index?id=${this.item._jv && this.item._jv.id}`,
+        `/pages/topic/index?id=${this.item._jv && this.item._jv.id}`,
         '_blank'
       )
     },
@@ -130,7 +130,7 @@ export default {
       if (!this.canViewPostsFn()) return
       if (this.unpaid) {
         window.open(
-          `/topic/index?id=${this.item._jv && this.item._jv.id}`,
+          `/pages/pages/topic/index?id=${this.item._jv && this.item._jv.id}`,
           '_blank'
         )
       } else {
