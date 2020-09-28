@@ -2,8 +2,8 @@
   <div class="load-more-container">
     <loading v-if="loading" />
     <template v-else>
-      <div v-if="hasMore && (pageNum - 1) % 5 === 0" class="load-more" @click="loadMore">{{ surplus > 0 ? $t('notice.checkMore',{surplus}) : loadMoreText }}</div>
-      <loading v-else-if="hasMore && (pageNum - 1) % 5 > 0" />
+      <div v-if="hasMore" class="load-more" @click="loadMore">{{ surplus > 0 ? $t('notice.checkMore',{surplus}) : loadMoreText }}</div>
+      <!-- <loading v-else-if="hasMore && (pageNum - 1) % 5 > 0" /> -->
       <div v-else class="no-more"><svg-icon v-if="length === 0" type="empty" class="empty-icon" />{{ length > 0 ? $t('discuzq.list.noMoreData') : $t('discuzq.list.noData') }}</div>
     </template>
   </div>
