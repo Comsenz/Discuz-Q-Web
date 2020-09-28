@@ -206,6 +206,10 @@ export default {
         color: #000000;
         width: 90px;
         border-left: 1px solid #dcdfe6;
+          &:hover{
+          color:#595959;
+          background-color:#e5f2ff;
+        }
       }
 
       > input {

@@ -45,7 +45,7 @@
       <button
         class="submit"
         @click="submit"
-      >设置新支付密码</button>
+      >{{ $t('modify.newPayPwdTitle') }}</button>
     </div>
   </message>
 </template>
