@@ -54,6 +54,7 @@
             plain
             size="small"
             class="h-button2"
+            :disabled="!currentLoginId"
             @click="userInfo.follow == 0 ? addFollow(userInfo) : deleteFollow(userInfo)"
           > {{
             userInfo.follow == 0
@@ -131,7 +132,7 @@
           plain
           size="small"
           class="h-button2"
-          :disabled="currentLoginId === '0'"
+          :disabled="!currentLoginId"
           @click="userInfo.follow == 0 ? addFollow(userInfo) : deleteFollow(userInfo)"
         > {{
           userInfo.follow == 0
