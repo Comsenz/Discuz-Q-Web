@@ -87,7 +87,7 @@ export default {
     },
     // 跳往发帖页
     toRouter(val) {
-      this.$router.push(`/topic/post?type=${val}`)
+      this.$router.push(`/pages/topic/post?type=${val}`)
     }
   }
 }

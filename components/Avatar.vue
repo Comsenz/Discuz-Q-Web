@@ -2,7 +2,7 @@
   <a
     v-if="user"
     class="avatar-a"
-    :href="preventJump ? 'javascript:void(0)' : ('/profile/index?userId=' + user.id)"
+    :href="preventJump ? 'javascript:void(0)' : ('/pages/profile/index?userId=' + user.id)"
     :class="[sizeClass]"
   >
     <img
