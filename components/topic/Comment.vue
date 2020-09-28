@@ -16,7 +16,7 @@
         <comment-list
           :thread-id="threadId"
           :comment-list="commentList"
-          @replyPublish="getComment()"
+          @replyPublish="getComment('commit')"
           @deleteComment="deleteComment"
           @editComment="onEditComment"
           @like="onLike"
