@@ -41,6 +41,10 @@ export default {
       type: String,
       default: ''
     },
+    isEdit: {
+      type: Boolean,
+      default: false
+    },
     header: {
       type: Object,
       default: () => {
@@ -107,8 +111,8 @@ export default {
       const index = _attachedList.indexOf(deleteAttached)
       _attachedList.splice(index, 1)
       this.$emit('attachedChange', { key: 'attachedList', value: _attachedList })
-      // TODO delete 请求报错
-      return this.$store.dispatch('jv/delete', [`/attachments/${id}`, {}]).catch(() => '')
+      // 编辑主题时，图片在延后到发布时删除，发布主题时图片立即删除
+      !this.isEdit && this.$store.dispatch('jv/delete', [`/attachments/${id}`, {}]).catch(() => '')
     },
     handleSuccess(response, file) {
       const _attachedList = [...this.attachedList]

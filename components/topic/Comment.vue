@@ -41,9 +41,10 @@
           class="edit-comment-editor"
           selector="edit-comment-editor"
           :edit-resource-show="editResourceShow"
+          :on-publish="onEditCommentPublish"
           :type-information="commentType"
           :post.sync="editCommentPost"
-          :on-publish="onEditCommentPublish"
+          :is-edit="true"
           @publish="postEditCommentPublish"
         />
       </div>
@@ -165,6 +166,7 @@ export default {
       }
       if (this.threadId) editCommentParams._jv.id = this.threadId
       editCommentParams = this.publishPostResource(editCommentParams, this.editCommentPost)
+      this.deleteAttachmentsAfterEdit(this.editComment.images, this.editCommentPost.imageList)
       this.$store.dispatch('jv/patch', [editCommentParams, { url: `/posts/${this.editComment._jv.id}` }]).then(response => {
         this.postLegalityCheck(response, this.$t('topic.commentPublishSuccess'))
         this.getComment('commit')
