@@ -134,7 +134,7 @@ export default {
   },
   data() {
     return {
-      host: process.env.mobileDomain,
+      host: process.env.domain,
       header: '',
       dialogVisible: true,
       cropImageFormVisible: false,

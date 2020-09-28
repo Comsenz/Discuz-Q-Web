@@ -48,10 +48,9 @@ export default {
     copyLink() {
       const oInput = document.createElement('input')
       if (process.client) {
-        const path = process.env.mobileDomain
         if (this.$route.path === '/pages/topic/content') {
           // 话题详情
-          oInput.value = path + `/pages/topic/content?id=${this.$route.query.id}`
+          oInput.value = window.location.href
         } else {
           oInput.value = window.location.host + '/pages/topic/index?id=' + this.threadsId
         }
@@ -66,12 +65,12 @@ export default {
       }, 100)
     },
     onShowPopover() {
-      let path = process.env.mobileDomain
+      let path = ''
       if (this.$route.path === '/pages/topic/content') {
         // 话题详情
-        path = path + `/pages/topic/content?id=${this.$route.query.id}`
+        path = window.location.href
       } else {
-        path = path + `/pages/topic/index?id=${this.threadsId}`
+        path = window.location.host + `/pages/topic/index?id=${this.threadsId}`
       }
       this.createQrcode(path)
     },

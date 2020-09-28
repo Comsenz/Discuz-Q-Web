@@ -188,7 +188,7 @@ export default {
     copyLink(code) {
       const oInput = document.createElement('input')
       if (process.client) {
-        oInput.value = window.location.host + '/site/partner-invite?code=' + code
+        oInput.value = window.location.host + '/pages/site/partner-invite?code=' + code
         oInput.id = 'copyInput'
         document.body.appendChild(oInput)
         oInput.select()

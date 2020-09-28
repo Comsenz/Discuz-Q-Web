@@ -21,7 +21,7 @@
         <template v-if="item.type !== 'system'">
           <nuxt-link
             v-if="item.user_name"
-            :to="`/profile/index?userId=${item.user_id}`"
+            :to="`/pages/profile/index?userId=${item.user_id}`"
             class="user-name"
           >{{ item.user_name }}
             <!-- <span v-if="item.thread_user_groups === '管理员'" class="text">({{ item.thread_user_groups }})</span> -->
@@ -44,13 +44,13 @@
       </div>
       <nuxt-link
         v-if="item.post_content"
-        :to="`/topic/comment?threadId=${item.thread_id}&commentId=${item.reply_post_id !== 0 ? item.reply_post_id : item.post_id}`"
+        :to="`/pages/topic/comment?threadId=${item.thread_id}&commentId=${item.reply_post_id !== 0 ? item.reply_post_id : item.post_id}`"
         class="post-content"
         v-html="item.post_content"
       />
       <nuxt-link
         v-if="(item.thread_title || item.content) && item.type !== 'system'"
-        :to="`/topic/index?id=${item.thread_id}`"
+        :to="`/pages/topic/index?id=${item.thread_id}`"
         class="thread"
         target="_blank"
       >

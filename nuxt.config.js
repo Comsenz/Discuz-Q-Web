@@ -9,7 +9,6 @@ function resolve(dir) {
 
 // const API_URL = 'https://discuz.chat'
 const API_URL_DEV = 'https://dq.comsenz-service.com'
-// const API_URL_DEV = 'https://discuz.chat'
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -33,7 +32,7 @@ if (isProduction) {
 }
 export default {
   env: {
-    mobileDomain: process.env.VUE_APP_CONFIG_API_URL || API_URL_DEV,
+    domain: process.env.VUE_APP_CONFIG_API_URL || API_URL_DEV,
     baseURL: '/'
   },
   /*
