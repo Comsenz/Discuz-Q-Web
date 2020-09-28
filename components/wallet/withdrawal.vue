@@ -333,7 +333,7 @@ export default {
         })
     },
     tomy() {
-      this.$router.push('/my/profile')
+      this.$router.push('/pages/my/profile')
     }
   }
 }

@@ -2,9 +2,7 @@
 // client执行顺序 => beforeEach - middleware - afterEach
 // server执行顺序 => beforeEach - afterEach - middleware
 import cookie from '../utils/parserCookie'
-// import env from '../utils/env.js'
-// import mobileRouter from '../utils/mobileRouter.js'
-const freePath = ['/pages/user/login', '/pages/user/register', '/pages/site/info', '/pages/user/warning', '/pages/user/agreement', '/pages/site/partner-invite']
+const freePath = ['/pages/user/login', '/pages/user/register', '/pages/site/info', '/pages/user/warning', '/pages/user/agreement', '/pages/user/agreement', '/pages/modify/findpwd', '/pages/site/partner-invite']
 export default ({ app }) => {
   const { store, router } = app
   router.beforeEach(async(to, from, next) => {
