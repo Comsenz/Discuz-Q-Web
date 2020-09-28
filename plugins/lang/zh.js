@@ -373,7 +373,8 @@ export default {
     recommend: '相关推荐',
     toWatch: '去看看',
     viewDetail: '查看详情',
-    allPost: '全部帖子（{total}）'
+    allPost: '全部帖子（{total}）',
+    topicCount: ' 个话题'
   },
   pay: {
     passwordError: '密码错误请重试',
@@ -457,7 +458,7 @@ export default {
     generatePoster: '生成海报',
     wxShare: '微信分享',
     word: '文字',
-    released: '发布了',
+    released: '发布了：',
     noPostingPermission: '当前没有发帖权限',
     noPostingTopic: '当前没有查看主题权限',
     ioschoicetitle: '受iOS限制，暂时无法提供服务',
@@ -481,7 +482,7 @@ export default {
     location: '位置信息',
     threadCount: '附近共有 {total} 条内容',
     topicCount: '共有 {total} 条内容',
-    topicViewCount: '热度'
+    topicViewCount: '热度 {total}°'
   },
   // 站点管理页面
   manage: {
