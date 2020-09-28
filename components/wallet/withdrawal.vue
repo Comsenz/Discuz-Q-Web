@@ -399,6 +399,9 @@ export default {
           border-top: none;
           border-right: none;
           border-bottom: none;
+          &:active{
+            border-color: #dcdfe6;
+          }
           .rinput {
             font-size: 16px;
             color: #000000;

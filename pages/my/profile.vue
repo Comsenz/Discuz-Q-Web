@@ -87,7 +87,7 @@
       v-if="userInfo"
       :class="isNameModify ? 'myprofile-c bgcolor': 'myprofile-c'"
     >
-      <div class="profileborder">
+      <div class="profileborder pborder">
         <div class="myprofile-top">
           <span class="sig">{{ $t('profile.username') }}</span>
           <span
@@ -161,7 +161,7 @@
     </div>
     <!-- 手机号 -->
     <div
-      v-if="userInfo"
+      v-if="userInfo && forums && forums.qcloud && forums.qcloud.qcloud_sms"
       class="myprofile-c"
       :class="isMobileModify ? 'myprofile-c bgcolor': 'myprofile-c'"
     >
@@ -1014,6 +1014,9 @@ export default {
     padding-bottom: 20px;
     border-bottom: 1px solid $line-color-base;
   }
+  .pborder{
+    border-top: 1px solid #f5f5f5;
+  }
   .pmobile {
     font-size: 20px;
     font-weight: bold;
@@ -1089,7 +1092,7 @@ export default {
   .myprofile-bottom {
     display: flex;
     margin-top: 14px;
-    border-bottom: 1px solid $line-color-base;
+    // border-bottom: 1px solid $line-color-base;
     .marglef {
       margin-left: 65px !important;
     }

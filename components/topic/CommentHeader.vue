@@ -1,7 +1,7 @@
 <template>
   <div class="comment-header">
     <div class="count">{{ commentCount + ' ' + $t('topic.item') + $t('topic.comment') }}</div>
-    <div class="sort" @click="$emit('update:isPositiveSort', !isPositiveSort)">
+    <div class="sort" @click="$emit('changeSort', !isPositiveSort)">
       <svg-icon type="sort" style="font-size: 14px" />
       <span>{{ isPositiveSort ? $t('topic.switchToNegativeSort') : $t('topic.switchToPositiveSort') }}</span>
     </div>

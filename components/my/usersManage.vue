@@ -252,12 +252,21 @@ export default {
         if (res) {
           this.total = res._jv.json.meta.total
           this.userList = res
+          this.reloadForums()
         }
       }, e => {
         this.handleError(e)
       }).finally(() => {
         this.loading = false
       })
+    },
+    // 刷新一下站点信息
+    async reloadForums() {
+      try {
+        await this.$store.dispatch('site/getSiteInfo')
+      } catch (err) {
+        console.log('getuUserInfo err', err)
+      }
     },
     onClickSearch() {
       this.reloadList()

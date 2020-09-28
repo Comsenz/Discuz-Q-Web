@@ -35,7 +35,7 @@
       </div>
       <topic-report v-if="isReport" :thread-id="thread._jv.id" :type="1" @close="isReport = false" />
       <div v-if="thread.isEssence" class="essence">
-        <svg-icon style="font-size: 50px;" type="essence" />
+        <svg-icon style="font-size: 25px;" type="essence" />
       </div>
     </div>
   </div>
@@ -106,7 +106,7 @@ export default {
       font-size: 12px;
       cursor: pointer;
       color: #d0d4dc;
-      margin-left: 20px;
+      margin-right: 20px;
       height: 16px;
       display: flex;
       align-items: center;
@@ -124,6 +124,7 @@ export default {
         display: flex;
         align-items: center;
         margin-top: 5px;
+        margin-right: 20px;
         font-size: 12px;
         cursor: pointer;
         color: $font-color-grey;
@@ -143,9 +144,6 @@ export default {
           }
         }
       }
-    }
-    > .essence {
-      transform: translate(10px, -20px);
     }
   }
 }
