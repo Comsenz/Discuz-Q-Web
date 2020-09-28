@@ -48,6 +48,7 @@ export default {
     copyLink() {
       const oInput = document.createElement('input')
       if (process.client) {
+        const path = process.env.mobileDomain
         if (this.$route.path === '/pages/topic/content') {
           // 话题详情
           oInput.value = path + `/pages/topic/content?id=${this.$route.query.id}`
