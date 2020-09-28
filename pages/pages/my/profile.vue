@@ -343,10 +343,10 @@
           v-show="isWechatModify"
           class="wehcat-bind"
         >
-          <el-image
+          <!-- <el-image
             :src="wechatBind.base64_img"
             class="qr-code"
-          />
+          /> -->
           <div>请用微信扫一扫</div>
           <div>扫码上方二维码</div>
         </div>
