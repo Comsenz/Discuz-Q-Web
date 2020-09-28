@@ -34,9 +34,6 @@ import tencentCaptcha from '@/mixin/tencentCaptcha'
 export default {
   name: 'Post',
   mixins: [tencentCaptcha, handleError, publishResource, isLogin],
-  validate({ query }) {
-    return parseFloat(query.type) < 4
-  },
   data() {
     return {
       editThread: {}, // 被编辑的主题
