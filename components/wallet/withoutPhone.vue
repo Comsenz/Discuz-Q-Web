@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     tobind() {
-      this.$router.push(`/my/profile?phonebind=true`)
+      this.$router.push(`/pages/my/profile?phonebind=true`)
     }
   }
 }
