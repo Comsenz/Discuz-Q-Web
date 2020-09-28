@@ -262,7 +262,7 @@ export default {
           this.$router.push('/')
         }
         if (this.site_mode === 'pay' && !this.isPaid) {
-          this.$router.push('/site/info')
+          this.$router.push('/pages/site/info')
         }
       })
     },
@@ -383,7 +383,7 @@ export default {
             res.data.errors[0].code === 'register_validate'
           ) {
             // this.$message.error('帐号审核中，请等管理员审核通过')
-            this.$router.push(`/user/warning?username=${this.userName}`)
+            this.$router.push(`/pages/user/warning?username=${this.userName}`)
             return
           }
           if (
@@ -475,7 +475,7 @@ export default {
               res.data.errors[0].code === 'register_validate'
             ) {
               // this.$message.error('帐号审核中，请等管理员审核通过')
-              this.$router.push(`/user/warning?username=${this.phoneNumber}`)
+              this.$router.push(`/pages/user/warning?username=${this.phoneNumber}`)
               return
             }
             if (
@@ -538,7 +538,7 @@ export default {
     jump2Login() {
       console.log('跳转到登录页面')
       this.$router.push(
-        `/user/login?&validate=${this.validate}`
+        `/pages/user/login?&validate=${this.validate}`
       )
     }
   },

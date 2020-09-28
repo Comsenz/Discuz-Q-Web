@@ -42,7 +42,7 @@
                   @click="toRegister"
                 > {{ $t('user.register') }}</span></span>
               <nuxt-link
-                to="/modify/findpwd"
+                to="/pages/modify/findpwd"
                 :class="['findpass',iscanReg()]"
               >{{ $t('modify.findpawdtitle') }}</nuxt-link>
             </div>
@@ -254,7 +254,7 @@ export default {
           this.$router.push('/')
         }
         if (this.site_mode === 'pay' && !this.isPaid) {
-          this.$router.push('/site/info')
+          this.$router.push('/pages/site/info')
         }
       })
     },
@@ -393,7 +393,7 @@ export default {
       })
     },
     toRegister() {
-      this.$router.push(`/user/register?code=${this.code}`)
+      this.$router.push(`/pages/user/register?code=${this.code}`)
     },
     iscanReg() {
       return [this.canReg ? '' : 'noreg']
