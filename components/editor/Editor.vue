@@ -41,10 +41,11 @@
         <div v-if="showUploadImg || showUploadVideo || showUploadAttached" class="resources-list">
           <image-upload
             v-if="showUploadImg"
-            :url="url"
-            :header="header"
-            :on-upload-image.sync="onUploadImage"
             :image-list="post && post.imageList"
+            :on-upload-image.sync="onUploadImage"
+            :header="header"
+            :is-edit="isEdit"
+            :url="url"
             @imageChange="e => onPostContentChange(e.key, e.value)"
           />
           <video-upload
@@ -55,10 +56,11 @@
           />
           <attached-upload
             v-if="showUploadAttached"
-            :url="url"
-            :header="header"
             :on-upload-attached.sync="onUploadAttached"
             :attached-list="post && post.attachedList"
+            :header="header"
+            :is-edit="isEdit"
+            :url="url"
             @attachedChange="e => onPostContentChange(e.key, e.value)"
           />
         </div>
@@ -129,6 +131,10 @@ export default {
     editResourceShow: {
       type: Object,
       default: () => {}
+    },
+    isEdit: {
+      type: Boolean,
+      default: false
     },
     onPublish: {
       type: Boolean,
