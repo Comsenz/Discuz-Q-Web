@@ -130,7 +130,7 @@ export default {
       if (!this.canViewPostsFn()) return
       if (this.unpaid) {
         window.open(
-          `/pages/pages/topic/index?id=${this.item._jv && this.item._jv.id}`,
+          `/pages/topic/index?id=${this.item._jv && this.item._jv.id}`,
           '_blank'
         )
       } else {

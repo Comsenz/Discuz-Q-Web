@@ -69,7 +69,7 @@
               <span
                 v-if="register"
                 @click="jump2Login"
-              >已有帐号，立即<nuxt-link to="/user/login">{{ $t('user.login') }}</nuxt-link> </span>
+              >已有帐号，立即<nuxt-link to="/pages/user/login">{{ $t('user.login') }}</nuxt-link> </span>
             </div> -->
           </div>
           <el-button
@@ -81,7 +81,7 @@
             <span
               v-if="register"
               @click="jump2Login"
-            >已有帐号，立即<nuxt-link to="/user/login">{{ $t('user.login') }}</nuxt-link> </span>
+            >已有帐号，立即<nuxt-link to="/pages/user/login">{{ $t('user.login') }}</nuxt-link> </span>
           </div>
         </form>
 
