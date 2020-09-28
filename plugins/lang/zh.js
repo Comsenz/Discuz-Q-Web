@@ -219,7 +219,8 @@ export default {
     post_not_fond: '未查询到该条回复',
     wechat_mobile_unbound: '微信未绑定手机号',
     unable_to_get_location: '无法获取地理位置',
-    '二维码已失效，扫码超时': '二维码已失效，扫码超时'
+    '二维码已失效，扫码超时': '二维码已失效，扫码超时',
+    no_edit_self: '不可编辑自己'
   },
   // 发布页
   post: {

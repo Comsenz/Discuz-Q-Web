@@ -107,9 +107,6 @@ export default {
       return this.$store.state.site.info.attributes || {}
     }
   },
-  watch: {
-    '$route': 'init'
-  },
   mounted() {
     this.getTopicList()
   },
@@ -125,7 +122,6 @@ export default {
       }
       this.$store.dispatch('jv/get', ['topics', { params }]).then(res => {
         this.hasMore = res.length === this.pageSize
-        console.log('res', res)
         if (this.pageNum === 1) {
           this.topicsData = res
         } else {
