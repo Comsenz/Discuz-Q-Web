@@ -219,7 +219,8 @@ export default {
     post_not_fond: '未查询到该条回复',
     wechat_mobile_unbound: '微信未绑定手机号',
     unable_to_get_location: '无法获取地理位置',
-    '二维码已失效，扫码超时': '二维码已失效，扫码超时'
+    '二维码已失效，扫码超时': '二维码已失效，扫码超时',
+    no_edit_self: '不可编辑自己'
   },
   // 发布页
   post: {
@@ -298,6 +299,7 @@ export default {
     like: '赞',
     liked: '已赞',
     share: '分享',
+    editComment: '编辑评论',
     writeComment: '写评论',
     writeComments: '写评论...',
     showMore: '查看更多',
@@ -373,7 +375,8 @@ export default {
     recommend: '相关推荐',
     toWatch: '去看看',
     viewDetail: '查看详情',
-    allPost: '全部帖子（{total}）'
+    allPost: '全部帖子（{total}）',
+    topicCount: ' 个话题'
   },
   pay: {
     passwordError: '密码错误请重试',
@@ -457,7 +460,7 @@ export default {
     generatePoster: '生成海报',
     wxShare: '微信分享',
     word: '文字',
-    released: '发布了',
+    released: '发布了：',
     noPostingPermission: '当前没有发帖权限',
     noPostingTopic: '当前没有查看主题权限',
     ioschoicetitle: '受iOS限制，暂时无法提供服务',
@@ -481,7 +484,7 @@ export default {
     location: '位置信息',
     threadCount: '附近共有 {total} 条内容',
     topicCount: '共有 {total} 条内容',
-    topicViewCount: '热度'
+    topicViewCount: '热度 {total}°'
   },
   // 站点管理页面
   manage: {

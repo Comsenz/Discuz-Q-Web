@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.12.1",
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "dayjs": "^1.8.32",
     "element-ui": "^2.13.2",
     "jsonpath-plus": "^3.0.0",

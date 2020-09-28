@@ -6,7 +6,8 @@
           {{ timerDiff(comment.updatedAt) + $t('topic.before') }}..
         </avatar-component>
         <div class="management">
-          <div v-if="comment.canHide" class="delete" @click="$emit('deleteComment', comment._jv.id)">{{ $t('topic.delete') }}</div>
+          <div v-if="comment.canEdit" class="manage-button" @click="$emit('editComment', comment)">{{ $t('topic.edit') }}</div>
+          <div v-if="comment.canHide" class="manage-button" @click="$emit('deleteComment', comment._jv.id)">{{ $t('topic.delete') }}</div>
           <div v-if="comment.isApproved === 0" class="checking">{{ $t('topic.inReview') }}</div>
         </div>
       </div>
@@ -205,14 +206,16 @@ export default {
         font-size: 12px;
         display: flex;
         color: $color-blue-base;
-        > .delete {
+        > div {
+          margin-left: 10px;
+        }
+        > .manage-button {
           cursor: pointer;
           &:hover {
             color: $color-blue-deep;
           }
         }
         > .checking {
-          margin-left: 10px;
           color: #FA5151;
         }
       }
@@ -302,7 +305,7 @@ export default {
 
             > .delete-reply {
               cursor: pointer;
-              font-size: 16px;
+              font-size: 12px;
               color: $color-blue-base;
               float: right;
               &:hover {

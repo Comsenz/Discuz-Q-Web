@@ -752,7 +752,7 @@ export default {
   height: 65px;
   background: rgba(255, 255, 255, 1);
   box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.03);
-  z-index: 999;
+  z-index: 8;
   .headcon {
     margin: 0 auto;
     padding: 15px 0;
