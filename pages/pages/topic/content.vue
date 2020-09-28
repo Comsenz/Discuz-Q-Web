@@ -7,7 +7,7 @@
           <div class="info">
             <div class="item">{{ $t('home.topicCount', {total: topic.thread_count}) }}</div>
             <div class="item">{{ $t('home.topicViewCount', {total: topic.view_count }) }}</div>
-            <share-popover>
+            <share-popover type="topic">
               <div class="item hover">
                 <svg-icon type="link" class="icon" />
                 {{ $t("topic.share") }}

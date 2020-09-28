@@ -37,18 +37,26 @@ export default {
     threadsId: {
       type: [String, Number],
       default: ''
+    },
+    type: {
+      type: String,
+      default: ''
     }
   },
   data() {
     return {
-      qrcode: null
+      qrcode: null,
+      currentType: ''
     }
+  },
+  mounted() {
+    console.log('this.threadsId', this.threadsId)
   },
   methods: {
     copyLink() {
       const oInput = document.createElement('input')
       if (process.client) {
-        if (this.$route.path === '/pages/topic/content') {
+        if (this.type === 'topic') {
           // 话题详情
           oInput.value = window.location.href
         } else {
@@ -64,9 +72,10 @@ export default {
         oInput.remove()
       }, 100)
     },
-    onShowPopover() {
+    onShowPopover(e) {
+      this.currentType = this.type
       let path = ''
-      if (this.$route.path === '/pages/topic/content') {
+      if (this.type === 'topic') {
         // 话题详情
         path = window.location.href
       } else {

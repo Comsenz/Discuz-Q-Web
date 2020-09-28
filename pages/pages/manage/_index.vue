@@ -4,7 +4,7 @@
       <el-tabs v-if="forums && forums.other" v-model="activeName">
         <!-- 没有查看成员列表或有查看列表权限，但是没有编辑用户组和状态的权限，就隐藏 -->
         <el-tab-pane v-if="forums.other.can_view_user_list && (forums.other.can_edit_user_group || forums.other.can_edit_user_status)" :label="$t('manage.manageMembers')" name="manage"><users-manage :group-invite-list="groupInviteList" /></el-tab-pane>
-        <el-tab-pane v-if="forums.other.can_create_invite" :label="$t('manage.inviteMembers')" name="invite"><invite-user :group-map="groupMap" /></el-tab-pane>
+        <el-tab-pane v-if="forums.other.can_create_invite" :label="$t('manage.inviteMembers')" name="invite"><invite-user v-if="activeName ==='invite'" :group-map="groupMap" /></el-tab-pane>
       </el-tabs>
     </main>
   </div>

@@ -56,7 +56,7 @@
         />
       </el-select>
       <!-- 邀请链接 -->
-      <el-dropdown v-if="forums && forums.other && forums.other.can_create_invite" class="handle-dropdown" placement="bottom" trigger="click" @command="handleCommand">
+      <el-dropdown v-if="forums && forums.other && forums.other.can_create_invite" class="handle-dropdown" placement="bottom" trigger="click" @command="handleCommandInvite">
         <el-button type="primary" size="medium" class="create-url">{{ $t('manage.generateInvitationUrl') }}</el-button>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item v-for="(item,index) in groupInviteList" :key="index" :command="item.value">{{ item.label + $t('manage.invitationUrl') }}</el-dropdown-item>
@@ -394,6 +394,39 @@ export default {
       }).finally(() => {
         this.loading = false
       })
+    },
+    // 生成邀请链接
+    handleCommandInvite(command) {
+      this.createAdminInvite(command)
+    },
+    // 管理员创建邀请链接
+    createAdminInvite(groupId) {
+      const params = {
+        data: {
+          attributes: {
+            group_id: groupId
+          }
+        }
+      }
+      this.$store.dispatch('jv/post', [{ _jv: { type: 'invite' }}, { data: params }]).then((res) => {
+        this.copyLink(res.code)
+      }, e => {
+        this.handleError(e)
+      })
+    },
+    copyLink(code) {
+      const oInput = document.createElement('input')
+      if (process.client) {
+        oInput.value = window.location.host + '/pages/site/partner-invite?code=' + code
+        oInput.id = 'copyInput'
+        document.body.appendChild(oInput)
+        oInput.select()
+        document.execCommand('Copy')
+      }
+      this.$message.success(this.$t('discuzq.msgBox.copySuccess'))
+      setTimeout(() => {
+        oInput.remove()
+      }, 100)
     }
   }
 }
