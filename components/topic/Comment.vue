@@ -29,10 +29,6 @@
         :page-num="pageLimit < growthFactor ? 1 : Math.floor(pageLimit / growthFactor)"
         @loadMore="getComment('scroll')"
       />
-      <!-- <div v-if="postCount > growthFactor" class="container-show-more"> -->
-      <!-- <button v-if="postCount !== commentList.length" class="show-more" @click="pageLimit += growthFactor">{{ $t('topic.showMore') }}</button> -->
-      <!-- <button v-else class="show-more" @click="pageLimit = growthFactor">{{ $t('topic.foldComment') }}</button> -->
-      <!-- </div> -->
     </template>
   </div>
 </template>
@@ -68,7 +64,7 @@ export default {
     }
   },
   created() {
-    this.getComment('commit')
+    this.getComment('scroll')
   },
   methods: {
     getComment(type) {
@@ -84,8 +80,8 @@ export default {
         include: postInclude
       }}]).then(data => {
         this.pageLimit += this.growthFactor
-        console.log(data)
         this.commentList = data
+        // TODO postCount 不包括审核中的回复
         this.postCount = data.length > 0 ? (data[0].thread.postCount - 1) : 0
       }, e => this.handleError(e)).finally(() => { this.commitLoading = this.scrollLoading = false })
     },

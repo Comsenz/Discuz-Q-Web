@@ -23,7 +23,7 @@
           <svg-icon v-if="thread && thread.isEssence" style="font-size: 50px;" type="essence-comment" class="essence" />
         </div>
         <div id="reply" class="container-reply">
-          <comment-header v-if="replyList.length > 0" :comment-count="replyList.length" :is-positive-sort.sync="isPositiveSort" />
+          <comment-header v-if="replyCount" :comment-count="replyCount" :is-positive-sort="isPositiveSort" @changeSort="changeSort" />
           <div v-else class="without-comment">{{ $t('topic.noComment') }}</div>
           <editor
             style="margin-top: 20px; margin-bottom: 20px"
@@ -38,6 +38,13 @@
           <div v-loading="replyLoading">
             <reply-list :reply-list="replyList || []" @delete="deleteComment" @onLike="onLike" />
           </div>
+          <list-load-more
+            :loading="scrollLoading"
+            :length="replyList.length"
+            :has-more="replyCount > replyList.length"
+            :page-num="pageLimit < growthFactor ? 1 : Math.floor(pageLimit / growthFactor)"
+            @loadMore="getReplyList('scroll')"
+          />
         </div>
       </div>
     </main>
@@ -60,10 +67,9 @@ export default {
   name: 'Comment',
   layout: 'custom_layout',
   mixins: [timerDiff, handleError, isLogin, publishResource, postLegalityCheck],
-  async asyncData({ store, query }, callback) {
+  async asyncData({ store, query }) {
     if (!env.isSpider) {
-      callback(null, {})
-      return
+      return {}
     }
     const threadId = query.threadId
     const commentId = query.commentId
@@ -93,9 +99,13 @@ export default {
     return {
       thread: {},
       comment: {},
+      pageLimit: 5,
+      growthFactor: 5,
+      replyCount: 0,
       isPositiveSort: true,
       replyList: [],
       replyLoading: false,
+      scrollLoading: false,
       loading: false,
       onReplyPublish: false,
       replyPost: { text: '', imageList: [], attachedList: [] },
@@ -111,15 +121,10 @@ export default {
       return this.$route.query.commentId
     }
   },
-  watch: {
-    isPositiveSort() {
-      this.getReplyList()
-    }
-  },
   mounted() {
     if (Object.keys(this.comment).length === 0) this.getComment().then(() => { this.loading = false })
     if (Object.keys(this.thread).length === 0) this.getThread()
-    this.getReplyList()
+    this.getReplyList('scroll')
   },
   methods: {
     getThread() {
@@ -131,24 +136,37 @@ export default {
     getComment() {
       return this.$store.dispatch('jv/get', [`posts/${this.commentId}`, { params: { include: commentInclude }}]).then(response => {
         if (response.isDeleted) return this.$router.push('/404')
+        // TODO replyCount 不包括审核中的评论
+        this.replyCount = response.replyCount
         this.comment = response
       }, e => this.handleError(e))
     },
-    getReplyList() {
+    getReplyList(type) {
       if (this.replyLoading) return
-      this.replyLoading = true
+      type === 'commit' ? this.replyLoading = true : this.scrollLoading = true
       return this.$store.dispatch('jv/get', [`posts`, {
         params: {
           'filter[thread]': this.threadId,
           'filter[reply]': this.commentId,
+          'page[number]': 1,
+          'page[limit]': this.pageLimit,
           'filter[isDeleted]': 'no',
-          sort: this.isPositiveSort ? '-createdAt' : 'createdAt',
           'filter[isComment]': 'yes',
+          sort: this.isPositiveSort ? '-createdAt' : 'createdAt',
           include: replyInclude
         }
       }]).then(response => {
+        console.log('replyList =>', response)
         this.replyList = response
-      }, e => this.handleError(e)).finally(() => { this.replyLoading = false })
+        this.pageLimit += this.growthFactor
+      }, e => this.handleError(e)).finally(() => { this.replyLoading = this.scrollLoading = false })
+    },
+    changeSort(value) {
+      this.scrollLoading = true
+      this.pageLimit = this.growthFactor
+      this.replyList = []
+      this.isPositiveSort = value
+      this.getReplyList('commit')
     },
     deleteComment({ id, type }) {
       const params = {
@@ -161,7 +179,8 @@ export default {
         type: 'warning'
       }).then(() => {
         return this.$store.dispatch('jv/patch', params).then(() => {
-          type === 'comment' ? this.$router.push(`/topic/index?id=${this.thread._jv.id}`) : this.getReplyList()
+          type === 'comment' ? this.$router.push(`/topic/index?id=${this.thread._jv.id}`) : this.getReplyList('commit')
+          this.replyCount -= 1
           this.$message.success(this.$t('topic.deleteSuccess'))
         }, e => this.handleError(e))
       }, () => console.log('取消删除'))
@@ -196,7 +215,8 @@ export default {
       return this.$store.dispatch('jv/post', replyParams).then(response => {
         this.replyPost.text = ''
         this.replyPost.imageList = []
-        this.getReplyList()
+        this.replyCount += 1
+        this.getReplyList('commit')
         this.postLegalityCheck(response, this.$t('topic.replyPublishSuccess'))
       }, e => this.handleError(e)).finally(() => { this.onReplyPublish = false })
     }
