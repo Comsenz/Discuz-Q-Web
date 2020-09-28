@@ -1,16 +1,22 @@
 <template>
-  <div v-loading="index_loading" class="location-container">
-    <header v-if="location || address" class="location-info">
-      <svg-icon type="location-map" class="icon" />
-      <div class="info">
-        <div class="location">{{ location }}</div>
-        <div class="address">{{ address }}</div>
-      </div>
-    </header>
+  <div class="topic-content-container">
     <div class="container">
       <main class="cont-left">
-        <div class="thread-count">{{ $t('home.threadCount',{total}) }}</div>
-        <div class="post-list">
+        <div class="topic-detail">
+          <div class="title">#<span class="topic-name">{{ topic.content }}</span># <svg-icon v-if="topic.recommended === 1" type="recommend" /></div>
+          <div class="info">
+            <div class="item">{{ $t('home.topicCount', {total: topic.thread_count}) }}</div>
+            <div class="item">{{ $t('home.topicViewCount', {total: topic.view_count }) }}</div>
+            <share-popover type="topic">
+              <div class="item hover">
+                <svg-icon type="link" class="icon" />
+                {{ $t("topic.share") }}
+              </div>
+            </share-popover>
+            <nuxt-link to="/pages/topic/list" class="item hover">{{ $t('topic.allTopics') }}</nuxt-link>
+          </div>
+        </div>
+        <div class="thread-list">
           <post-item v-for="(item, index) in threadsData" :key="index" :item="item" />
           <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="threadsData.length" @loadMore="loadMore" />
         </div>
@@ -30,19 +36,24 @@
 
 <script>
 import handleError from '@/mixin/handleError'
+import env from '@/utils/env'
 export default {
   layout: 'custom_layout',
-  name: 'Index',
+  name: 'TopicContent',
   mixins: [handleError],
   // 异步数据用法
   async asyncData({ params, store, query }, callback) {
+    if (!env.isSpider) {
+      callback(null, {})
+      return
+    }
     const threadsParams = {
       include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
       'filter[isSticky]': 'no',
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no',
       'page[limit]': 10,
-      'filter[location]': query.longitude + ',' + query.latitude
+      'filter[topicId]': query.id
     }
     const userParams = {
       include: 'groups',
@@ -50,15 +61,17 @@ export default {
     }
     try {
       const resData = {}
+      const topicData = await store.dispatch('jv/get', [`topics/${query.id}`, {}])
       const threadsData = await store.dispatch('jv/get', ['threads', { params: threadsParams }])
       const recommendUser = await store.dispatch('jv/get', ['users/recommended', { params: userParams }])
       // 处理一下data
+      resData.topic = { ...topicData }
       if (Array.isArray(threadsData)) {
         resData.threadsData = threadsData.slice(0, 10)
       } else if (threadsData && threadsData._jv && threadsData._jv.json) {
         var _threadsData = threadsData._jv.json.data || []
         _threadsData.forEach((item, index) => {
-          _threadsData[index] = { ...item, ...item.attributes, 'firstPost': item.relationships.firstPost.data, 'user': item.relationships.user.data, 'groups': item.relationships.groups.data, '_jv': { 'id': item.id }}
+          _threadsData[index] = { ...item, ...item.attributes, 'firstPost': item.relationships && item.relationships.firstPost && item.relationships.firstPost.data, 'user': item.relationships && item.relationships.user && item.relationships.user.data, 'groups': item.relationships && item.relationships.groups && item.relationships.groups.data, '_jv': { 'id': item.id }}
         })
         resData.threadsData = _threadsData
       }
@@ -80,17 +93,14 @@ export default {
   data() {
     return {
       loading: false,
-      index_loading: true,
       threadsData: [], // 主题列表
       total: 0,
       recommendUserData: [], // 推荐用户列表
       pageNum: 1, // 当前页码
       pageSize: 10, // 每页多少条数据
       hasMore: false,
-      longitude: '', // 经度
-      latitude: '', // 纬度
-      location: '', // 位置
-      address: '' // 详细地址
+      topicId: '',
+      topic: {} // 话题详情
     }
   },
   computed: {
@@ -107,11 +117,20 @@ export default {
   methods: {
     init() {
       this.threadsData = []
-      if (this.$route.query && this.$route.query.longitude && this.$route.query.latitude) {
-        this.longitude = this.$route.query.longitude
-        this.latitude = this.$route.query.latitude
+      if (this.$route.query && this.$route.query.id) {
+        this.topicId = this.$route.query.id
+        this.getTopicDetail(this.$route.query.id)
         this.getThreadsList()
       }
+    },
+    // 话题详情
+    getTopicDetail(id) {
+      this.$store.dispatch('jv/get', [`topics/${id}`, {}]).then(res => {
+        if (res) {
+          console.log('res', res)
+          this.topic = res
+        }
+      })
     },
     // 非置顶主题
     getThreadsList() {
@@ -122,7 +141,7 @@ export default {
         'filter[isDeleted]': 'no',
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
-        'filter[location]': `${this.longitude},${this.latitude}`
+        'filter[topicId]': `${this.topicId}`
       }
       this.$store.dispatch('jv/get', ['threads', { params }]).then(res => {
         this.hasMore = res.length === this.pageSize
@@ -138,6 +157,7 @@ export default {
         } else {
           this.threadsData = [...this.threadsData, ...res]
         }
+        this.pageNum++
         if (res._jv) {
           this.hasMore = this.threadsData.length < res._jv.json.meta.threadCount
         }
@@ -145,17 +165,15 @@ export default {
         this.handleError(e)
       }).finally(() => {
         this.loading = false
-        this.index_loading = false
       })
     },
     loadMore() {
-      this.pageNum += 1
       this.getThreadsList()
     }
   },
   head() {
     return {
-      title: this.$t('home.location')
+      title: this.topic.content
     }
   }
 }
@@ -163,53 +181,43 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/css/variable/color.scss';
-@mixin background(){
-  background: #fff;
-  border-radius: 5px;
-  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.03);
-}
+@import '@/assets/css/variable/mixin.scss';
 .app-cont{
   box-shadow: none;
 }
-.location-container{
+.topic-content-container{
   background: #F4F5F6;
   width: 100%;
   .container{
     display:flex;
     width: 100%;
   }
-  .location-info{
-    @include background();
-    display: flex;
-    margin-bottom: 15px;
-    padding: 22px 20px 25px;
-    .icon{
-      font-size:30px;
-      margin-right: 20px;
-    }
-    .location{
-      font-size: 18px;
-      font-weight: bold;
-      line-height: 24px;
-      @media screen and ( max-width: 1005px ) {
-        font-size: 16px;
-      }
-    }
-    .address{
-      margin-top: 10px;
-    }
-  }
   .cont-left{
     flex:auto;
-    @include background();
-    .thread-count{
-      font-size: 18px;
-      font-weight: bold;
-      padding: 20px 15px 16.5px;
-      border-bottom: 1px solid $border-color-base;
-      @media screen and ( max-width: 1005px ) {
-        font-size: 16px;
+
+    .topic-detail{
+      @include background();
+      margin-bottom: 15px;
+      padding: 22px 20.5px 24px;
+      .title{
+        font-size:18px;
+        font-weight: bold;
+        margin-bottom: 10px;
       }
+      .info{
+        color: $font-color-grey;
+        display:flex;
+        .item{
+          margin-right: 40px;
+          &.hover:hover{
+            color: $color-blue-base;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+    .thread-list{
+      @include background();
     }
   }
   .cont-right{

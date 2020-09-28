@@ -18,10 +18,21 @@ const proxyConfig = {
     changeOrigin: true
   }
 }
-
+const plugins = [
+  ['component',
+    {
+      'libraryName': 'element-ui',
+      'styleLibraryName': 'theme-chalk'
+    }
+  ]
+]
+//  生成环境清除log
+if (isProduction) {
+  plugins.push('transform-remove-console')
+}
 export default {
   env: {
-    mobileDomain: process.env.VUE_APP_CONFIG_API_URL || API_URL_DEV,
+    domain: process.env.VUE_APP_CONFIG_API_URL || API_URL_DEV,
     baseURL: '/'
   },
   /*
@@ -137,14 +148,7 @@ export default {
     // transpile: [/^element-ui/],
     // element 按需加载
     babel: {
-      plugins: [
-        ['component',
-          {
-            'libraryName': 'element-ui',
-            'styleLibraryName': 'theme-chalk'
-          }
-        ]
-      ],
+      plugins: plugins,
       presets({ isServer }) {
         const targets = isServer ? { node: '10' } : { ie: '11' }
         return [[require.resolve('@nuxt/babel-preset-app'), { targets }]]

@@ -9,13 +9,18 @@
     </el-tabs>
     <div class="notice-list">
       <template v-if="activeName === 'chat'">
-        <chat-item v-for="(item, index) in dialog.list" :key="index" :user-id="userInfo.id" :item="item" @show-chat-box="showChatBox" />
+        <div v-for="(item, index) in dialog.list" :key="index" class="notice-item">
+          <chat-item :user-id="userInfo.id" :item="item" @show-chat-box="showChatBox" />
+          <div class="delete" @click="handleDelete(item._jv && item._jv.id, index, 'chat')">
+            <svg-icon type="close" />
+          </div>
+        </div>
         <list-load-more :loading="dialog.loading" :has-more="dialog.hasMore" :page-num="dialog.pageNum" :surplus="surplus" :length="dialog.list.length" @loadMore="loadMoreDialog" />
       </template>
       <template v-else>
         <div v-for="(item, index) in noticeList" :key="index" class="notice-item">
           <notice-item :item="item" />
-          <div class="delete" @click="handleDelete(item.id, index)">
+          <div class="delete" @click="handleDelete(item.id, index, 'notice')">
             <svg-icon type="close" />
           </div>
         </div>
@@ -99,8 +104,9 @@ export default {
         } else {
           this.dialog.list = [...this.dialog.list, ...data]
         }
+        this.dialog.pageNum++
         if (data._jv && data._jv.json && data._jv.json.meta) {
-          this.dialog.hasMore = this.dialog.list.length < data._jv.json.meta.total
+          this.dialog.hasMore = this.dialog.list.length < data._jv.json.meta.total && this.dialog.list.length >= this.dialog.pageSize
           this.surplus = data._jv.json.meta.total - this.dialog.list.length
         }
       }, e => {
@@ -129,9 +135,10 @@ export default {
           this.noticeList = [...this.noticeList, ...data]
         }
         if (data._jv && data._jv.json && data._jv.json.meta) {
-          this.hasMore = this.noticeList.length < data._jv.json.meta.total
+          this.hasMore = this.noticeList.length < data._jv.json.meta.total && this.noticeList.length >= this.pageSize
           this.surplus = data._jv.json.meta.total - this.noticeList.length
         }
+        this.pageNum++
         try {
           await this.$store.dispatch('user/getUserInfo', this.userInfo.id)
         } catch (err) {
@@ -144,25 +151,32 @@ export default {
       })
     },
     loadMore() {
-      this.pageNum += 1
       this.getNoticeList()
     },
     loadMoreDialog() {
-      this.dialog.pageNum += 1
       this.getDialogList()
     },
     // 删除
-    handleDelete(id, index) {
+    handleDelete(id, index, type) {
       this.$confirm(this.$t('topic.confirmDelete'), this.$t('discuzq.msgBox.title'), {
         confirmButtonText: this.$t('discuzq.msgBox.confirm'),
         cancelButtonText: this.$t('discuzq.msgBox.cancel')
       }).then(_ => {
-        this.$store.dispatch('jv/delete', `notification/${id}`).then(res => {
-          if (res) {
-            this.$message.success(this.$t('topic.deleteSuccess'))
-            this.noticeList.splice(index, 1)
-          }
-        })
+        if (type === 'chat') {
+          this.$store.dispatch('jv/delete', `dialog/${id}`).then(res => {
+            if (res) {
+              this.$message.success(this.$t('topic.deleteSuccess'))
+              this.dialog.list.splice(index, 1)
+            }
+          })
+        } else {
+          this.$store.dispatch('jv/delete', `notification/${id}`).then(res => {
+            if (res) {
+              this.$message.success(this.$t('topic.deleteSuccess'))
+              this.noticeList.splice(index, 1)
+            }
+          })
+        }
       }).catch(_ => {})
     },
     handleClick(e) {

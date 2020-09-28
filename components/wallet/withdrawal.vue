@@ -1,6 +1,6 @@
 <template>
   <message
-    title="提现申请"
+    :title="$t('profile.towithdrawal')"
     @close="$emit('close')"
   >
     <div class="top">
@@ -35,7 +35,7 @@
         <div class="head">{{ $t('modify.actualamout') }}</div>
         <div class="body product-information">
           <span class="title3"> ￥ {{ contint || 0 }}</span>
-          <span class="title4"> {{ $t('modify.servicechaege') }}{{ procedures }}{{ $t('modify.percentage') }} ({{ percentage }}%)</span>
+          <span class="title4"> {{ $t('modify.servicechaege') }}{{ procedures }}{{ $t('modify.percentage') }} {{ percentage }}%)</span>
         </div>
       </div>
       <div class="row">
@@ -61,17 +61,17 @@
             class="phone"
             style="margin-left:20px;"
           >
-            验证码将发送到 <span style="font-weight:bold;color:#000000; ">{{ usertestphon }}</span> 的手机短信
+            {{ $t('profile.codesend') }}  <span style="font-weight:bold;color:#000000; ">{{ usertestphon }}</span> {{ $t('profile.phonesms') }}
           </span>
           <span
             v-else
             class="phone"
           >
-            您还未绑定手机请到<span
+            {{ $t('profile.withoutbind') }} <span
               style="font-weight:bold;color:#1878F3;cursor:pointer;"
               @click="tomy"
             > {{ $t('profile.personalhomepage') }} </span>
-            进行手机的绑定</span>
+            {{ $t('profile.tobindphone') }}</span>
         </div>
       </div>
     </div>
@@ -238,7 +238,7 @@ export default {
         _jv: {
           type: 'sms/send'
         },
-        mobile: this.novice,
+        mobile: this.userphon,
         type: 'verify',
         captcha_ticket: this.ticket,
         captcha_rand_str: this.randstr
@@ -290,7 +290,9 @@ export default {
           type: 'wallet/cash',
           include: ['user', 'userWallet']
         },
-        cash_apply_amount: this.canAmount
+        cash_apply_amount: this.canAmount,
+        cash_mobile: this.userphon,
+        cash_type: 0
       }
       const postcash = status.run(() => this.$store.dispatch('jv/post', params))
       postcash
@@ -316,16 +318,22 @@ export default {
               this.contint = ''
               this.procedures = 0
             } else if (errors[0].status === 500) {
-              this.$message.error(this.$t(`core.${errors[0].code}`))
-              this.canAmount = ''
-              this.contint = ''
-              this.procedures = 0
+              if (errors[0].code === 'unbind_wechat') {
+                this.$message.error(errors[0].detail)
+              } else if (errors[0].code === 'cash_mch_invalid') {
+                this.$message.error(errors[0].detail)
+              } else {
+                this.$message.error(this.$t(`core.${errors[0].code}`))
+                this.canAmount = ''
+                this.contint = ''
+                this.procedures = 0
+              }
             }
           }
         })
     },
     tomy() {
-      this.$router.push('/my/profile')
+      this.$router.push('/pages/my/profile')
     }
   }
 }
@@ -391,6 +399,10 @@ export default {
           border-top: none;
           border-right: none;
           border-bottom: none;
+          color:#000000;
+          &:active{
+            border-color: #dcdfe6;
+          }
           .rinput {
             font-size: 16px;
             color: #000000;

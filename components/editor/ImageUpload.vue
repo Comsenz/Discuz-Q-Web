@@ -46,6 +46,10 @@ export default {
       type: String,
       default: ''
     },
+    isEdit: {
+      type: Boolean,
+      default: false
+    },
     header: {
       type: Object,
       default: () => {
@@ -113,8 +117,8 @@ export default {
       const index = _imageList.indexOf(deleteImage)
       _imageList.splice(index, 1)
       this.$emit('imageChange', { key: 'imageList', value: _imageList })
-      // TODO delete 请求报错
-      return this.$store.dispatch('jv/delete', [`/attachments/${id}`, {}]).catch(() => '')
+      // 编辑主题时，图片在延后到发布时删除，发布主题时图片立即删除
+      !this.isEdit && this.$store.dispatch('jv/delete', [`/attachments/${id}`, {}]).catch(() => '')
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url

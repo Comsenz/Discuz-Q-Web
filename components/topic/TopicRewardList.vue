@@ -131,6 +131,7 @@ export default {
 
           > .container-avatar {
             margin-right: 3px;
+            margin-bottom: 5px;
 
             &:last-child {
               margin-right: 0;

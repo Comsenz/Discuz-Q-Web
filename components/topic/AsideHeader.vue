@@ -6,7 +6,7 @@
     </avatar-component>
     <div class="signature">{{ author.signature }}</div>
     <div class="container-billBoard">
-      <div v-for="(item, index) in billboard" :key="index" class="billBoard-item">
+      <div v-for="(item, index) in billboard" :key="index" class="billBoard-item" @click="toprofile(index)">
         <div class="text">{{ item.text }}</div>
         <div class="count">{{ item.count }}</div>
       </div>
@@ -79,6 +79,9 @@ export default {
     },
     openChatBox() {
       this.chatting = true
+    },
+    toprofile(index) {
+      this.$router.push(`/pages/profile/index?userId=${this.author._jv.id}&current=${index + 1}`)
     }
   }
 }
@@ -99,7 +102,7 @@ export default {
     }
 
     > .author-info {
-      margin-top: 10px;
+      margin-top: 20px;
     }
 
     > .signature {
@@ -111,7 +114,7 @@ export default {
 
     > .container-billBoard {
       margin-top: 20px;
-      padding: 20px 0;
+      padding-top: 20px;
       border-top: 1px solid $border-color-base;
       display: flex;
       justify-content: space-between;
@@ -119,6 +122,7 @@ export default {
       > .billBoard-item {
         flex: 1;
         text-align: center;
+        cursor:pointer;
 
         > .text {
           color: $font-color-grey;
@@ -134,6 +138,7 @@ export default {
     }
 
     > .buttons {
+      margin-top: 20px;
       display: flex;
       justify-content: space-between;
 

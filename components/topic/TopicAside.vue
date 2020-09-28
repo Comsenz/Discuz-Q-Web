@@ -44,8 +44,8 @@ export default {
       billboard: [
         { key: 'threadCount', count: '', text: this.$t('home.thread') },
         { key: 'likedCount', count: '', text: this.$t('topic.getLike') },
-        { key: 'fansCount', count: '', text: this.$t('profile.followers') },
-        { key: 'followCount', count: '', text: this.$t('home.followed') }
+        { key: 'followCount', count: '', text: this.$t('home.followed') },
+        { key: 'fansCount', count: '', text: this.$t('profile.followers') }
       ]
     }
   },
@@ -115,7 +115,7 @@ export default {
       })
     },
     goToPage(item) {
-      process.client && window.open(`/topic/index?id=${item._jv.id}`)
+      process.client && window.open(`/pages/topic/index?id=${item._jv.id}`)
     }
   }
 }

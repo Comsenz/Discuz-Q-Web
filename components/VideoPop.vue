@@ -6,6 +6,7 @@
       controlslist="nodownload"
       disablePictureInPicture
       preload="auto"
+      autoplay
       :src="url"
       :poster="coverUrl || ''"
       :playsinline="true"

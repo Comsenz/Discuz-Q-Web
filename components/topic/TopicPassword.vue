@@ -10,8 +10,8 @@
       </div>
       <div class="block input-password">
         <div class="title">{{ $t('pay.payPassword') }}</div>
-        <password-input :error="passwordError" @password="password => $emit('password', password)" />
-        <div v-show="passwordError" class="error-tip">{{ $t('pay.passwordError') }}</div>
+        <password-input :error="passwordError" @password="password => $emit('password', password)" @type="$emit('update:passwordError', false)" />
+        <div v-show="passwordError" class="error-tip">{{ passwordErrorTip ? passwordErrorTip : $t('pay.passwordError') }}</div>
       </div>
     </div>
   </message-box>
@@ -28,6 +28,10 @@ export default {
     passwordError: {
       type: Boolean,
       default: false
+    },
+    passwordErrorTip: {
+      type: String,
+      default: ''
     }
   }
 }
@@ -44,7 +48,7 @@ export default {
       > .error-tip {
         margin-top: 10px;
         color: #8590A6;
-        line-height: 16px;
+        font-size: 12px;
       }
       &.show-amount {
         > .title {

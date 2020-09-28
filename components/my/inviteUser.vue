@@ -189,25 +189,10 @@ export default {
       })
         .catch(_ => {})
     },
-    // 普通用户邀请
-    createUserInvite() {
-      const params = {
-        _jv: {
-          type: 'userInviteCode'
-        }
-      }
-      this.$store.dispatch('jv/get', params).then((res) => {
-        this.reloadList()
-      }, e => {
-        this.handleError(e)
-      }).finally(() => {
-        this.loading = false
-      })
-    },
     copyLink(code) {
       const oInput = document.createElement('input')
       if (process.client) {
-        oInput.value = window.location.host + '/site/partner-invite?code=' + code
+        oInput.value = window.location.host + '/pages/site/partner-invite?code=' + code
         oInput.id = 'copyInput'
         document.body.appendChild(oInput)
         oInput.select()

@@ -5,37 +5,27 @@
         v-for="(item, index) in data"
         :key="index"
         :item="item"
+        :lazy="false"
       />
-      <loading v-if="loading" />
-      <template v-else>
-        <div
-          v-if="hasMore"
-          class="load-more"
-          @click="loadMore"
-        >查看更多</div>
-        <div
-          v-else
-          :class="data.length === 0 ? 'no-more2':'no-more'"
-        >
-          <svg-icon
-            v-if="data.length === 0"
-            type="empty"
-            class="empty-icon"
-          />{{ data.length > 0 ? '没有更多了' : '暂无信息' }}
-        </div>
-      </template>
+      <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="data.length" @loadMore="loadMore" />
     </div>
   </div>
 </template>
 
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
+import handleError from '@/mixin/handleError'
 
 export default {
+  mixins: [handleError],
   props: {
     userId: {
       type: String,
       default: ''
+    },
+    likethreadsData: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -50,7 +40,10 @@ export default {
     }
   },
   mounted() {
-    this.loadlikes()
+    this.data = this.likethreadsData
+    if (this.data.length === 0) {
+      this.loadlikes()
+    }
   },
   methods: {
     // 加载当前点赞数据
@@ -73,11 +66,16 @@ export default {
           if (res._jv) {
             this.hasMore = this.data.length < res._jv.json.meta.threadCount
           }
+          this.pageNum += 1
+        }, e => {
+          this.handleError(e)
+        }).finally(() => {
+          this.loading = false
         })
     },
     loadMore() {
       if (this.hasMore) {
-        this.pageNum += 1
+        // this.pageNum += 1
         this.loadlikes()
       }
     }
@@ -86,6 +84,9 @@ export default {
 </script>
 <style lang='scss' scoped>
 @import "@/assets/css/variable/color.scss";
+.like{
+  min-height: 820px;
+}
 .empty-icon {
   width: 20px;
   height: 18px;

@@ -87,7 +87,7 @@
       v-if="userInfo"
       :class="isNameModify ? 'myprofile-c bgcolor': 'myprofile-c'"
     >
-      <div class="profileborder">
+      <div :class="{profileborder: true, pborder: !isNameModify}">
         <div class="myprofile-top">
           <span class="sig">{{ $t('profile.username') }}</span>
           <span
@@ -155,13 +155,13 @@
             type="primary"
             class="sigbutton"
             @click="sigComfirm"
-          >确定修改</el-button>
+          >{{ $t('profile.confirmModify') }}</el-button>
         </div>
       </div>
     </div>
     <!-- 手机号 -->
     <div
-      v-if="userInfo"
+      v-if="userInfo && forums && forums.qcloud && forums.qcloud.qcloud_sms"
       class="myprofile-c"
       :class="isMobileModify ? 'myprofile-c bgcolor': 'myprofile-c'"
     >
@@ -171,7 +171,7 @@
           <span
             class="setavatar"
             @click="mobileModify"
-          >{{ (!isMobileModify ?!userInfo.mobile ? '绑定手机': $t('profile.modify') : $t('profile.cancelModify')) }}</span>
+          >{{ (!isMobileModify ?!userInfo.mobile ? $t('profile.bindingmobile'): $t('profile.modify') : $t('profile.cancelModify')) }}</span>
         </div>
         <div
           v-show="!isMobileModify"
@@ -223,7 +223,7 @@
             type="primary"
             class="ebutton"
             @click="mobileComfirm"
-          >提交修改</el-button>
+          >{{ $t('profile.submitchange') }}</el-button>
         </div>
         <!-- 新用户绑定手机号 -->
         <div
@@ -235,13 +235,13 @@
               ref="oldphone"
               v-model="newphon"
               maxlength="11"
-              placeholder="请输入绑定的手机号"
+              :placeholder="$t('modify.newphon')"
               :class="isChange ? 'passbtom phonechange': 'passbtom'"
               @input="changeinput"
             />
             <el-input
               v-model="setnum"
-              placeholder="请输入手机验证码"
+              :placeholder="$t('modify.newverifycode')"
               class="phone-input"
             />
             <el-button
@@ -257,7 +257,7 @@
             type="primary"
             class="ebutton"
             @click="dingphon"
-          >提交修改</el-button>
+          >{{ $t('profile.submitchange') }}</el-button>
         </div>
       </div>
     </div>
@@ -316,7 +316,7 @@
               type="primary"
               class="ebutton"
               @click="passSub"
-            >提交修改</el-button>
+            >{{ $t('profile.submitchange') }}</el-button>
           </form>
         </div>
       </div>
@@ -970,16 +970,16 @@ export default {
       )
     },
     toTopic() {
-      this.$router.push(`/profile/index?userId=${this.userId}&current=1`)
+      this.$router.push(`/pages/profile/index?userId=${this.userId}&current=1`)
     },
     toFollowing() {
-      this.$router.push(`/profile/index?userId=${this.userId}&current=3`)
+      this.$router.push(`/pages/profile/index?userId=${this.userId}&current=3`)
     },
     toFollowers() {
-      this.$router.push(`/profile/index?userId=${this.userId}&current=4`)
+      this.$router.push(`/pages/profile/index?userId=${this.userId}&current=4`)
     },
     toLikes() {
-      this.$router.push(`/profile/index?userId=${this.userId}&current=2`)
+      this.$router.push(`/pages/profile/index?userId=${this.userId}&current=2`)
     }
   },
   head() {
@@ -1013,6 +1013,9 @@ export default {
   .profileborder{
     padding-bottom: 20px;
     border-bottom: 1px solid $line-color-base;
+  }
+  .pborder{
+    border-top: 1px solid #f5f5f5;
   }
   .pmobile {
     font-size: 20px;
@@ -1089,7 +1092,7 @@ export default {
   .myprofile-bottom {
     display: flex;
     margin-top: 14px;
-    border-bottom: 1px solid $line-color-base;
+    // border-bottom: 1px solid $line-color-base;
     .marglef {
       margin-left: 65px !important;
     }
@@ -1170,15 +1173,19 @@ export default {
     margin-bottom: 10px;
     ::v-deep.el-input__inner {
       border-right: none;
+      border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
     }
   }
   .count-b {
     width: 90px;
     height: 40px;
     padding: 0;
-    margin-left: -4px;
+    margin-left: -4.5px;
     color: #606162;
     vertical-align: top;
+    border-bottom-left-radius: 0px;
+    border-top-left-radius: 0px;
   }
   .disabled {
     background-color: #ededed;

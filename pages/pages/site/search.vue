@@ -10,7 +10,7 @@
       <div class="count">{{ $t('search.users') }} {{ userCount }} 名</div>
       <div class="user-list">
         <div class="user-flex">
-          <nuxt-link v-for="(item, index) in userList.slice(0, userPageSize)" :key="index" :to="`/profile/index?userId=${item.id}`" class="user-item">
+          <nuxt-link v-for="(item, index) in userList.slice(0, userPageSize)" :key="index" :to="`/pages/profile/index?userId=${item.id}`" class="user-item">
             <avatar :user="item" :size="45" />
             <div class="info">
               <div class="name text-hidden">{{ item.username }}</div>
@@ -42,12 +42,17 @@
 
 <script>
 import handleError from '@/mixin/handleError'
+import env from '@/utils/env'
 export default {
   layout: 'custom_layout',
   name: 'Index',
   mixins: [handleError],
   // 异步数据用法
   async asyncData({ params, store }, callback) {
+    if (!env.isSpider) {
+      callback(null, {})
+      return
+    }
     try {
       const resData = {}
       const categoryData = await store.dispatch('jv/get', ['categories', {}])
@@ -99,6 +104,7 @@ export default {
       if (this.$route.query.q) {
         this.q = this.$route.query.q
         this.getUserList()
+        this.pageNum = 1
         this.getThreadsList()
       }
     },
@@ -145,6 +151,7 @@ export default {
         } else {
           this.threadsList = [...this.threadsList, ...res]
         }
+        this.pageNum++
         if (res._jv) {
           this.hasMore = this.threadsList.length < res._jv.json.meta.threadCount
         }
@@ -155,7 +162,6 @@ export default {
       })
     },
     loadMore() {
-      this.pageNum += 1
       this.getThreadsList()
     },
     // 重新加载列表
@@ -171,7 +177,7 @@ export default {
     },
     toUserList() {
       if (this.$route.query.q) {
-        this.$router.push('/site/search-user?value=' + this.$route.query.q)
+        this.$router.push('/pages/site/search-user?value=' + this.$route.query.q)
       }
     }
   },

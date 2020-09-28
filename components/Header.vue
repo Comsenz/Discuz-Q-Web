@@ -33,10 +33,10 @@
           :round="true"
           :is-real="userInfo.isReal"
         />
-        <nuxt-link v-if="userInfo.username && userInfo.id" :to="`/profile/index?userId=${userInfo.id}`" class="menu-item user-name text-hidden">
+        <nuxt-link v-if="userInfo.username && userInfo.id" :to="`/pages/profile/index?userId=${userInfo.id}`" class="menu-item user-name text-hidden">
           {{ userInfo.username }}
         </nuxt-link>
-        <nuxt-link to="/my/notice" class="menu-item notice-btn">
+        <nuxt-link to="/pages/my/notice" class="menu-item notice-btn">
           <span class="flex">
             {{ $t('home.tabsNews') }}
             <span
@@ -45,7 +45,7 @@
             >{{ userInfo.unreadNotifications > 99 ? '99+' : userInfo.unreadNotifications }}</span>
           </span>
         </nuxt-link>
-        <nuxt-link to="/my/profile" class="menu-item">{{ $t('profile.personalhomepage') }}</nuxt-link>
+        <nuxt-link to="/pages/my/profile" class="menu-item">{{ $t('profile.personalhomepage') }}</nuxt-link>
         <div class="menu-item" @click="logout">{{ $t('user.logout') }}</div>
       </div>
     </div>
@@ -79,12 +79,12 @@ export default {
       return this.$store.state.site.info.attributes || {}
     },
     userInfo() {
-      return process.client ? this.$store.state.user.info.attributes || {} : {}
+      return this.$store.state.user.info.attributes || {}
     }
   },
   watch: {
     $route(to, from) {
-      if (to.path === 'site/close') {
+      if (to.path === '/pages/site/close') {
         this.siteClose = true
       } else {
         this.siteClose = false
@@ -99,16 +99,16 @@ export default {
     if (process.client && this.$route.query.q) {
       this.inputVal = this.$route.query.q
     }
-    if (process.client && this.$route.path !== '/site/close') {
-      this.reloadUserInfo()
+    if (process.client && this.$route.path !== '/pages/site/close') {
+      window.setTimeout(this.reloadUserInfo(), 5000)
     }
-    if (this.$route.path === '/site/close') {
+    if (this.$route.path === '/pages/site/close') {
       this.siteClose = true
     }
   },
   destroyed() {
     if (process.client) {
-      clearInterval(this.userInfoTimer)
+      window.clearInterval(this.userInfoTimer)
     }
   },
   methods: {
@@ -117,17 +117,14 @@ export default {
       this.$store
         .dispatch('session/logout')
         .then(() => {
-          // this.$router.push('/')
-          // window.location.reload()
           location.href = `/`
         })
     },
     // 轮询获取用户信息，用于判断是否有新消息
     reloadUserInfo() {
       if (this.userInfo && this.userInfo.id) {
-        clearInterval(this.userInfoTimer)
-        const _this = this
-        this.userInfoTimer = setInterval(_this.getUserInfo, 60000)
+        window.clearInterval(this.userInfoTimer)
+        this.userInfoTimer = window.setInterval(this.getUserInfo, 60000)
       }
     },
     async getUserInfo() {
@@ -139,15 +136,15 @@ export default {
     },
     register() {
       this.$router.push(
-        `/user/register?validate=${this.forums && this.forums.set_reg && this.forums.set_reg.register_validate}&code=${this.code}`
+        `/pages/user/register?validate=${this.forums && this.forums.set_reg && this.forums.set_reg.register_validate}&code=${this.code}`
       )
     },
     login() {
-      this.$router.push('/user/login')
+      this.$router.push('/pages/user/login')
     },
     onClickSearch() {
       if (this.inputVal) {
-        this.$router.push('/site/search?q=' + this.inputVal)
+        this.$router.push('/pages/site/search?q=' + this.inputVal)
       }
     },
     toIndex() {
@@ -302,7 +299,7 @@ export default {
     position: sticky;
     top: 0;
     width: 100%;
-    z-index: 999;
+    z-index: 8;
 }
 .search-logo {
   width: 14px;

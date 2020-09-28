@@ -5,7 +5,7 @@
       <div v-if="threadsStickyData.length > 0" class="list-top">
         <div v-for="(item, index) in threadsStickyData" :key="index" class="list-top-item">
           <div class="top-label">{{ $t('home.sticky') }}</div>
-          <nuxt-link :to="`/topic/index?id=${item._jv && item._jv.id}`" class="top-title">
+          <nuxt-link :to="`/pages/topic/index?id=${item._jv && item._jv.id}`" class="top-title">
             <template v-if="item.type === 1">
               {{ item.title }}
             </template>
@@ -39,17 +39,16 @@
 <script>
 import s9e from '@/utils/s9e'
 import handleError from '@/mixin/handleError'
-import scroll from '@/mixin/scroll'
 import env from '@/utils/env'
 export default {
   layout: 'custom_layout',
   name: 'Index',
-  mixins: [handleError, scroll],
+  mixins: [handleError],
   // 异步数据用法
   async asyncData({ params, store, query }, callback) {
     if (!env.isSpider) {
       callback(null, {})
-      return
+      return {}
     }
     const threadsStickyParams = {
       'filter[isSticky]': 'yes',
@@ -229,7 +228,8 @@ export default {
         if (data && data._jv) {
           this.hasMore = this.threadsData.length < _threadCount
         }
-
+        // 加载成功页码加1，为加载更多做准备
+        this.pageNum++
         if (this.timer) {
           clearInterval(this.timer)
         }
@@ -244,14 +244,9 @@ export default {
     },
     // 点击加载更多
     loadMore() {
-      this.pageNum++
+      // TODO: 在这里加1的话，遇到加载不成功的会不断加页码
+      //  this.pageNum++
       this.getThreadsList()
-    },
-    // 滚动加载更多，每5页停止滚动加载
-    scrollLoadMore() {
-      if (this.pageNum % 5 > 0 && !this.loading && this.hasMore) {
-        this.loadMore()
-      }
     },
     // 轮询查看是否有新主题
     autoLoadThreads() {

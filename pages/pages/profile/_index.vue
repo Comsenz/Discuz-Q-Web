@@ -54,6 +54,7 @@
             plain
             size="small"
             class="h-button2"
+            :disabled="!currentLoginId"
             @click="userInfo.follow == 0 ? addFollow(userInfo) : deleteFollow(userInfo)"
           > {{
             userInfo.follow == 0
@@ -131,7 +132,7 @@
           plain
           size="small"
           class="h-button2"
-          :disabled="currentLoginId === '0'"
+          :disabled="!currentLoginId"
           @click="userInfo.follow == 0 ? addFollow(userInfo) : deleteFollow(userInfo)"
         > {{
           userInfo.follow == 0
@@ -171,26 +172,50 @@
             name="1"
           >
             <topic
-              v-if="activeName === '1' "
               ref="topic"
               :user-id="userId"
+              :thread-data="threadsData"
             />
+            <!-- 主题需要用到ssr -->
+            <!-- <div class="topic">
+              <div class="post-list">
+                <post-item
+                  v-for="(item, index) in threadsData"
+                  :key="index"
+                  :item="item"
+                  :lazy="false"
+                />
+                <list-load-more :loading="threadsloading" :has-more="threadshasMore" :page-num="threadspageNum" :length="threadsData.length" @loadMore="threadsloadMore" />
+              </div>
+            </div> -->
           </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.likes')+ ` (${userInfo.likedCount || 0})`"
             name="2"
           >
             <like
-              v-if="activeName === '2'"
               ref="like"
               :user-id="userId"
+              :likethreads-data="likethreadsData"
             />
+            <!-- <div class="like">
+              <div class="post-list">
+                <post-item
+                  v-for="(item, index) in likethreadsData"
+                  :key="index"
+                  :item="item"
+                  :lazy="false"
+                />
+                <list-load-more :loading="likethreadsloading" :has-more="likethreadshasMore" :page-num="likethreadspageNum" :length="likethreadsData.length" @loadMore="likethreadsloadMore" />
+              </div>
+            </div> -->
           </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.following')+ ` (${userInfo.followCount || 0})`"
             name="3"
           >
             <following
+              v-if="activeName === '3'"
               ref="following"
               :user-id="userId"
               @changeFollow="changeFollow"
@@ -201,6 +226,7 @@
             name="4"
           >
             <follwers
+              v-if="activeName === '4'"
               ref="followers"
               :user-id="userId"
               @changeFollow="changeFollow"
@@ -220,10 +246,79 @@
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
 import handleError from '@/mixin/handleError'
+import env from '@/utils/env'
 
 export default {
   layout: 'custom_layout',
   mixins: [handleError],
+  // 异步数据用法
+  async asyncData({ params, store, query }, callback) {
+    if (!env.isSpider) {
+      callback(null, {})
+      return {}
+    }
+    const threadparams = {
+      'filter[isDeleted]': 'no',
+      sort: '-createdAt',
+      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
+      'page[number]': 1,
+      'page[limit]': 10,
+      'filter[isApproved]': 1,
+      'filter[userId]': query.userId
+    }
+    const likethreadsparams = {
+      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
+      'page[number]': 1,
+      'page[limit]': 10,
+      'filter[isApproved]': 1,
+      'filter[user_id]': query.userId
+    }
+    try {
+      const resData = {}
+      const threadsData = await store.dispatch('jv/get', ['threads', { params: threadparams }])
+      const likethreadsData = await store.dispatch('jv/get', ['threads/likes', { params: likethreadsparams }])
+      // console.log(threadsData)
+      console.log('likethreads', likethreadsData)
+
+      if (Array.isArray(threadsData)) {
+        resData.threadsData = threadsData
+      } else if (threadsData && threadsData._jv && threadsData._jv.json) {
+        var _threadsData = threadsData._jv.json.data || []
+        _threadsData.forEach((item, index) => {
+          _threadsData[index] = { ...item, ...item.attributes, 'firstPost': item.relationships.firstPost.data, 'user': item.relationships.user.data, '_jv': { 'id': item.id }}
+        })
+        resData.threadsData = _threadsData
+      }
+
+      if (Array.isArray(likethreadsData)) {
+        resData.likethreadsData = likethreadsData
+      } else if (likethreadsData && likethreadsData._jv && likethreadsData._jv.json) {
+        var _likethreadsData = likethreadsData._jv.json.data || []
+        _likethreadsData.forEach((item, index) => {
+          _likethreadsData[index] = { ...item, ...item.attributes, 'firstPost': item.relationships.firstPost.data, 'user': item.relationships.user.data, '_jv': { 'id': item.id }}
+        })
+        resData.likethreadsData = _likethreadsData
+      }
+      callback(null, resData)
+      // return { threadsData: threadsData }
+    } catch (error) {
+      callback(null, {
+        _error__abc: {
+          error_keys: Object.keys(error),
+          error: String(error),
+          errno: error.errno,
+          code: error.code,
+          syscall: error.syscall,
+          address: error.address,
+          port: error.port,
+          config: error.config,
+          request_domain: (error.request || {}).domain,
+          request_keys: Object.keys(error.request || {}),
+          response_keys: Object.keys(error.response || {})
+        }
+      })
+    }
+  },
   data() {
     return {
       userId: '', // 路由获取的用户id
@@ -238,6 +333,8 @@ export default {
       chatting: false,
       offsetTop: 0,
       isShield: false,
+      threadsData: [],
+      likethreadsData: [],
       unbundlingArry: [], // 解绑用户组
       unbundUserData: [] // 已屏蔽用户组
     }
@@ -421,7 +518,6 @@ export default {
         this.getShieldData()
       })
     }
-
   },
   head() {
     return {
@@ -574,7 +670,7 @@ export default {
   height: 65px;
   background: rgba(255, 255, 255, 1);
   box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.03);
-  z-index: 999;
+  z-index: 8;
   .headcon {
     margin: 0 auto;
     padding: 15px 0;
@@ -646,7 +742,6 @@ export default {
     }
   }
 }
-
 ::v-deep.el-tabs {
   .el-tabs__header {
     background: transparent;

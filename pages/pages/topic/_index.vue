@@ -42,6 +42,7 @@
           v-if="showPasswordInput"
           :price="parseInt(thread.price) === 0 ? payment.rewardAmount : (thread.price || 0)"
           :password-error.sync="passwordError"
+          :password-error-tip="passwordErrorTip"
           @close="showPasswordInput = passwordError = false"
           @password="payOrder"
         />
@@ -67,10 +68,9 @@ export default {
   name: 'Post',
   layout: 'custom_layout',
   mixins: [handleError, isLogin],
-  async asyncData({ query, store }, callback) {
+  async asyncData({ query, store }) {
     if (!env.isSpider) {
-      callback(null, {})
-      return
+      return {}
     }
     try {
       const threadData = await store.dispatch('jv/get', [`threads/${query.id}`, { params: { include: threadInclude }}])
@@ -124,7 +124,8 @@ export default {
       defaultLoading: false,
       articleLoading: false,
       canRewardOrPaid: false,
-      passwordError: false
+      passwordError: false,
+      passwordErrorTip: ''
     }
   },
   computed: {
@@ -132,7 +133,7 @@ export default {
       return this.$route.query.id
     },
     userId() {
-      return this.$store.getters['session/get']('userId')
+      return this.$store.getter['session/get']('userId')
     },
     currentUser() {
       return this.$store.state.user.info.attributes || {}
@@ -151,7 +152,7 @@ export default {
   methods: {
     getThread() {
       return this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include: threadInclude }}]).then(data => {
-        if (data.isDeleted) return this.$router.push('/error')
+        if (data.isDeleted) return this.$router.replace('/error')
         this.articleLoading = false
         this.thread = data
         this.article = data.firstPost
@@ -264,7 +265,11 @@ export default {
       }, e => {
         const { response: { data: { errors }}} = e
         if (errors[0].code === 'pay_password_failures_times_toplimit') this.showPasswordInput = false
-        if (errors[0].code === 'validation_error') this.passwordError = true
+        if (errors[0].code === 'validation_error') {
+          this.passwordError = true
+          this.passwordErrorTip = errors[0].detail[0]
+          return
+        }
         this.handleError(e)
       })
     },

@@ -154,7 +154,7 @@ export default {
         status.run(() => this.$store.dispatch('jv/post', params))
           .then(res => {
             if (process.client) window.localStorage.setItem('username', res.username)
-            this.$router.push('/modify/resetpwdsuccess')
+            this.$router.push('/pages/modify/resetpwdsuccess')
           }, e => this.handleError(e))
       }
     }
@@ -206,6 +206,10 @@ export default {
         color: #000000;
         width: 90px;
         border-left: 1px solid #dcdfe6;
+          &:hover{
+          color:#595959;
+          background-color:#e5f2ff;
+        }
       }
 
       > input {
