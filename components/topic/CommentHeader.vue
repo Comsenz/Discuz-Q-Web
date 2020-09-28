@@ -34,7 +34,6 @@ export default {
     color: #6D6D6D;
     > .count {
       font-size: 16px;
-      font-weight: bold;
     }
     > .sort {
       cursor: pointer;

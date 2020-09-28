@@ -42,6 +42,7 @@
           v-if="showPasswordInput"
           :price="parseInt(thread.price) === 0 ? payment.rewardAmount : (thread.price || 0)"
           :password-error.sync="passwordError"
+          :password-error-tip="passwordErrorTip"
           @close="showPasswordInput = passwordError = false"
           @password="payOrder"
         />
@@ -123,7 +124,8 @@ export default {
       defaultLoading: false,
       articleLoading: false,
       canRewardOrPaid: false,
-      passwordError: false
+      passwordError: false,
+      passwordErrorTip: ''
     }
   },
   computed: {
@@ -263,7 +265,11 @@ export default {
       }, e => {
         const { response: { data: { errors }}} = e
         if (errors[0].code === 'pay_password_failures_times_toplimit') this.showPasswordInput = false
-        if (errors[0].code === 'validation_error') this.passwordError = true
+        if (errors[0].code === 'validation_error') {
+          this.passwordError = true
+          this.passwordErrorTip = errors[0].detail[0]
+          return
+        }
         this.handleError(e)
       })
     },
