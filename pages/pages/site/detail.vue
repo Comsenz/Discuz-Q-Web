@@ -78,9 +78,6 @@ export default {
   layout: 'center_layout',
   name: 'SiteInfo',
   mixins: [handleError],
-  // meta: {
-  //   requiresAuth: true
-  // },
   data() {
     return {
       userId: this.$store.state.user.info.id, // 获取当前登陆用户的ID

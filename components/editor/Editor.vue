@@ -209,6 +209,7 @@ export default {
   watch: {
     editResourceShow: {
       handler(val) {
+        if (!val) return
         for (const key in val) this[key] = val[key]
       },
       deep: true,
@@ -216,6 +217,7 @@ export default {
     },
     typeInformation: {
       handler(val) {
+        if (!val) return
         this.actions[0].show = val.showEmoji
         this.actions[1].show = val.showCaller
         this.actions[2].show = val.showTopic
