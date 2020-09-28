@@ -67,10 +67,9 @@ export default {
   name: 'Post',
   layout: 'custom_layout',
   mixins: [handleError, isLogin],
-  async asyncData({ query, store }, callback) {
+  async asyncData({ query, store }) {
     if (!env.isSpider) {
-      callback(null, {})
-      return
+      return {}
     }
     try {
       const threadData = await store.dispatch('jv/get', [`threads/${query.id}`, { params: { include: threadInclude }}])
