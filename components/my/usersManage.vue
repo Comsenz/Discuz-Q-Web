@@ -368,8 +368,13 @@ export default {
     },
     // 修改用户状态
     modifyUserStatus(status, userId) {
+      // 是否有编辑用户的权限
       if (this.forums && this.forums.other && !this.forums.other.can_edit_user_status) {
         return this.$message.error(this.$t('core.permission_denied'))
+      }
+      // 不可以编辑自己
+      if (+this.userInfo.id === +userId) {
+        return this.$message.error(this.$t('core.no_edit_self'))
       }
       const params = {
         data: {
