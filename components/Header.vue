@@ -33,7 +33,7 @@
           :round="true"
           :is-real="userInfo.isReal"
         />
-        <nuxt-link v-if="userInfo.username && userInfo.id" :to="`/profile/index?userId=${userInfo.id}`" class="menu-item user-name text-hidden">
+        <nuxt-link v-if="userInfo.username && userInfo.id" :to="`/pages/profile/index?userId=${userInfo.id}`" class="menu-item user-name text-hidden">
           {{ userInfo.username }}
         </nuxt-link>
         <nuxt-link to="/pages/my/notice" class="menu-item notice-btn">
@@ -84,7 +84,7 @@ export default {
   },
   watch: {
     $route(to, from) {
-      if (to.path === 'site/close') {
+      if (to.path === '/pages/site/close') {
         this.siteClose = true
       } else {
         this.siteClose = false
@@ -136,7 +136,7 @@ export default {
     },
     register() {
       this.$router.push(
-        `/user/register?validate=${this.forums && this.forums.set_reg && this.forums.set_reg.register_validate}&code=${this.code}`
+        `/pages/user/register?validate=${this.forums && this.forums.set_reg && this.forums.set_reg.register_validate}&code=${this.code}`
       )
     },
     login() {
