@@ -1,19 +1,19 @@
 <template>
-  <div class="location-container">
+  <div class="topic-content-container">
     <div class="container">
       <main class="cont-left">
         <div class="topic-detail">
           <div class="title">#<span class="topic-name">{{ topic.content }}</span># <svg-icon v-if="topic.recommended === 1" type="recommend" /></div>
           <div class="info">
             <div class="item">{{ $t('home.topicCount', {total: topic.thread_count}) }}</div>
-            <div class="item">{{ $t('home.topicViewCount' ) + ' ' + (topic.view_count ? topic.view_count : 0) }}</div>
+            <div class="item">{{ $t('home.topicViewCount', {total: topic.view_count }) }}</div>
             <share-popover>
               <div class="item hover">
                 <svg-icon type="link" class="icon" />
                 {{ $t("topic.share") }}
               </div>
             </share-popover>
-            <nuxt-link to="/" class="item hover">{{ $t('topic.allTopics') }}</nuxt-link>
+            <nuxt-link to="/topic/list" class="item hover">{{ $t('topic.allTopics') }}</nuxt-link>
           </div>
         </div>
         <div class="thread-list">
@@ -39,7 +39,7 @@ import handleError from '@/mixin/handleError'
 import env from '@/utils/env'
 export default {
   layout: 'custom_layout',
-  name: 'Index',
+  name: 'TopicContent',
   mixins: [handleError],
   // 异步数据用法
   async asyncData({ params, store, query }, callback) {
@@ -185,7 +185,7 @@ export default {
 .app-cont{
   box-shadow: none;
 }
-.location-container{
+.topic-content-container{
   background: #F4F5F6;
   width: 100%;
   .container{

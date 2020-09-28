@@ -37,8 +37,8 @@
       <template v-if="item.firstPost">
         <div class="first-post" @click.self="toDetail">
           <div @click="onClickContent">
-            <div v-if="item.type === 1" class="title">{{ item.title }}</div>
-            <div class="content">
+            <div v-if="item.type === 1" class="title">{{ $t('home.released') }}<span class="blue">{{ item.title }}</span></div>
+            <div v-else class="content">
               <div v-html="formatTopicHTML(item.firstPost.contentHtml)" />
             </div>
           </div>
@@ -379,11 +379,13 @@ export default {
       font-size: 12px;
     }
     .title {
-      font-weight: bold;
       font-size: 16px;
       margin-bottom: 6px;
       @include text-hidden();
       flex: 0 0 60%;
+      .blue{
+        color: $color-blue-base;
+      }
     }
     ::v-deep .content {
       @include text-hidden(4);
