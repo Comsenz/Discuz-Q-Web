@@ -151,6 +151,7 @@ export default {
     post_not_found: '您访问的内容不存在或已被删除',
     noViewPermission: '没有查看权限，请点击返回上一级',
     route_not_found: '路由未找到',
+    unbind_wechat: '微信未绑定',
     no_bind_user: '未绑定用户',
     account_has_been_bound: '用户或微信已绑定',
     thread_count_fail: '主题数操作错误',

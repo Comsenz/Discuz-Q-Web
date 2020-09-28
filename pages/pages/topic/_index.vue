@@ -152,7 +152,7 @@ export default {
   methods: {
     getThread() {
       return this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include: threadInclude }}]).then(data => {
-        if (data.isDeleted) return this.$router.push('/error')
+        if (data.isDeleted) return this.$router.replace('/error')
         this.articleLoading = false
         this.thread = data
         this.article = data.firstPost

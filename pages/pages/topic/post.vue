@@ -34,9 +34,6 @@ import tencentCaptcha from '@/mixin/tencentCaptcha'
 export default {
   name: 'Post',
   mixins: [tencentCaptcha, handleError, publishResource, isLogin],
-  validate({ query }) {
-    return parseFloat(query.type) < 4
-  },
   data() {
     return {
       editThread: {}, // 被编辑的主题
@@ -82,7 +79,7 @@ export default {
     }
   },
   mounted() {
-    if (['0', '1', '2', '3'].indexOf(this.type) < 0) return this.$router.push('/error')
+    if (['0', '1', '2', '3'].indexOf(this.type) < 0) return this.$router.replace('/error')
     this.getCategoryList()
     this.getThread()
   },
