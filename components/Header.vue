@@ -299,7 +299,7 @@ export default {
     position: sticky;
     top: 0;
     width: 100%;
-    z-index: 999;
+    z-index: 8;
 }
 .search-logo {
   width: 14px;

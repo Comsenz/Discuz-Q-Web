@@ -298,6 +298,7 @@ export default {
     like: '赞',
     liked: '已赞',
     share: '分享',
+    editComment: '编辑评论',
     writeComment: '写评论',
     writeComments: '写评论...',
     showMore: '查看更多',

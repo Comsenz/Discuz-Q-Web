@@ -16,12 +16,12 @@
         <comment-list
           :thread-id="threadId"
           :comment-list="commentList"
-          @replyPublish="getComment()"
+          @replyPublish="getComment('commit')"
           @deleteComment="deleteComment"
+          @editComment="onEditComment"
           @like="onLike"
         />
       </div>
-
       <list-load-more
         :loading="scrollLoading"
         :length="commentList.length"
@@ -30,6 +30,24 @@
         @loadMore="getComment('scroll')"
       />
     </template>
+    <message-box v-if="Object.keys(editComment).length > 0" :title="$t('topic.editComment')" @close="closeEditPop">
+      <div class="edit-box">
+        <avatar-component :author="editComment.user" :size="50">
+          {{ $t('topic.publishAt') + ' ' + timerDiff(editComment.updatedAt) + $t('topic.before') }}..
+        </avatar-component>
+        <editor
+          style="margin-top: 20px;"
+          editor-style="comment"
+          class="edit-comment-editor"
+          selector="edit-comment-editor"
+          :edit-resource-show="editResourceShow"
+          :type-information="commentType"
+          :post.sync="editCommentPost"
+          :on-publish="onEditCommentPublish"
+          @publish="postEditCommentPublish"
+        />
+      </div>
+    </message-box>
   </div>
 </template>
 
@@ -38,10 +56,11 @@ const postInclude = 'user,replyUser,images,thread,user.groups,thread.category,th
 import publishResource from '@/mixin/publishResource'
 import postLegalityCheck from '@/mixin/postLegalityCheck'
 import handleError from '@/mixin/handleError'
+import timerDiff from '@/mixin/timerDiff'
 import isLogin from '@/mixin/isLogin'
 export default {
   name: 'Comment',
-  mixins: [handleError, publishResource, postLegalityCheck, isLogin],
+  mixins: [handleError, publishResource, postLegalityCheck, isLogin, timerDiff],
   props: {
     threadId: {
       type: String,
@@ -56,7 +75,11 @@ export default {
       growthFactor: 5,
       isPositiveSort: true,
       onCommentPublish: false,
+      onEditCommentPublish: false,
       comment: { text: '', imageList: [], attachedList: [] },
+      editResourceShow: { showUploadImg: false, showUploadVideo: false, showUploadAttached: false },
+      editCommentPost: { text: '', imageList: [], attachedList: [] },
+      editComment: {},
       commentType: { type: 4, textLimit: 450, showPayment: false, showLocation: false, showTitle: false, showImage: true, showVideo: false,
         showAttached: false, showMarkdown: false, showEmoji: true, showTopic: false, showCaller: true, placeholder: '写下我的评论 ...' },
       commitLoading: false,
@@ -118,8 +141,55 @@ export default {
         }, e => this.handleError(e))
       }, () => console.log('取消删除'))
     },
+    onEditComment(comment) {
+      console.log('edit comment =>', comment)
+      this.editComment = comment
+      this.editCommentPost.text = comment.content
+      if (comment.images.length > 0) {
+        this.initThreadResource(this.editCommentPost.imageList, comment.images)
+        this.editResourceShow.showUploadImg = true
+      }
+    },
+    postEditCommentPublish() {
+      if (!this.isLogin()) return
+      if (this.onEditCommentPublish) return
+      if (!this.editCommentPost.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
+      if (this.editCommentPost.text.length > this.commentType.textLimit) return this.$message.warning(this.$t('post.messageLengthCannotOver'))
+      this.onEditCommentPublish = true
+      let editCommentParams = {
+        _jv: {
+          type: `posts`,
+          relationships: {}
+        },
+        content: this.editCommentPost.text
+      }
+      if (this.threadId) editCommentParams._jv.id = this.threadId
+      editCommentParams = this.publishPostResource(editCommentParams, this.editCommentPost)
+      this.$store.dispatch('jv/patch', [editCommentParams, { url: `/posts/${this.editComment._jv.id}` }]).then(response => {
+        this.postLegalityCheck(response, this.$t('topic.commentPublishSuccess'))
+        this.getComment('commit')
+        this.closeEditPop()
+      }, e => this.handleError(e)).finally(() => { this.onEditCommentPublish = false })
+    },
+    closeEditPop() {
+      this.editComment = {}
+      this.editCommentPost.text = ''
+      this.editCommentPost.imageList = []
+      this.editResourceShow.showUploadImg = false
+    },
+    initThreadResource(target, resource) {
+      resource.forEach(item => {
+        const attached = {
+          name: item.fileName,
+          url: item.thumbUrl,
+          id: item._jv.id
+        }
+        target.push(attached)
+      })
+    },
     postCommentPublish() {
       if (!this.isLogin()) return
+      if (this.onCommentPublish) return
       if (!this.comment.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
       if (this.comment.text.length > this.commentType.textLimit) return this.$message.warning(this.$t('post.messageLengthCannotOver'))
       this.onCommentPublish = true
@@ -134,7 +204,6 @@ export default {
       }
       this.publishPostResource(commentParams, this.comment)
       return this.$store.dispatch('jv/post', commentParams).then(response => {
-        this.$emit('publish')
         this.comment.text = ''
         this.comment.imageList = []
         this.getComment('commit')
@@ -164,6 +233,9 @@ export default {
   .without-comment {
     color: $font-color-grey;
     text-align: center;
+  }
+  .edit-box {
+    padding: 20px;
   }
 
 </style>

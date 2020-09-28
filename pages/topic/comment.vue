@@ -6,7 +6,7 @@
           <avatar-component :author="comment.user || {}">
             {{ timerDiff(comment.updatedAt) + $t('topic.before') }}..
           </avatar-component>
-          <div class="delete-comment">
+          <div v-show="comment.canHide" class="delete-comment">
             <div class="wrapper" @click="deleteComment({ id: comment._jv.id, type: 'comment' })">
               <svg-icon type="trash" style="font-size: 16px" />
               <span>{{ $t('topic.delete') }}</span>
@@ -156,7 +156,6 @@ export default {
           include: replyInclude
         }
       }]).then(response => {
-        console.log('replyList =>', response)
         this.replyList = response
         this.pageLimit += this.growthFactor
       }, e => this.handleError(e)).finally(() => { this.replyLoading = this.scrollLoading = false })

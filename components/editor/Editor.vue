@@ -138,7 +138,7 @@ export default {
       type: String,
       default: 'post'
     },
-    selector: {
+    selector: { // 当页面出现多个编辑器时，必须传入 selector (对应的 class name) 作为唯一的选择器，保证 textarea 元素选择正确
       type: String,
       default: 'editor'
     }
@@ -195,7 +195,9 @@ export default {
     },
     canCreateThreadPaid() {
       const forums = this.$store.state.site.info.attributes
-      return forums.other ? forums.other.can_create_thread_paid : false
+      if (forums) {
+        return forums.other ? forums.other.can_create_thread_paid : false
+      } else return false
     }
   },
   watch: {
@@ -203,7 +205,8 @@ export default {
       handler(val) {
         for (const key in val) this[key] = val[key]
       },
-      deep: true
+      deep: true,
+      immediate: true
     },
     typeInformation: {
       handler(val) {
