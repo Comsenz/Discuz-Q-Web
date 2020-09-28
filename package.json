@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "nuxt",
+    "build:spa": "nuxt build --spa",
     "build": "VUE_APP_CONFIG_API_URL=https://discuz.chat nuxt build",
     "start": "VUE_APP_CONFIG_API_URL=https://discuz.chat nuxt start",
     "build_test": "VUE_APP_CONFIG_API_URL=https://discuz.dnspod.dev nuxt build",
