@@ -87,7 +87,7 @@
       v-if="userInfo"
       :class="isNameModify ? 'myprofile-c bgcolor': 'myprofile-c'"
     >
-      <div :class="{profileborder: true, pborder: isNameModify}">
+      <div :class="{profileborder: true, pborder: !isNameModify}">
         <div class="myprofile-top">
           <span class="sig">{{ $t('profile.username') }}</span>
           <span
