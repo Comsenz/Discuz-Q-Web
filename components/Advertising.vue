@@ -3,7 +3,7 @@
     <div ref="qrcode" class="qrcode" />
     <div class="adv-info">
       <div class="adv-title"> 扫一扫，访问移动端</div>
-      DISCUZ! Q，小众也有圈子
+      DISCUZ! Q
     </div>
   </div>
 </template>

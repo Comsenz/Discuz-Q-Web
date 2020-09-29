@@ -16,7 +16,7 @@
         >
           <el-upload
             ref="photoFile"
-            :action="`${host}/api/users/${userId}/avatar`"
+            :action="`${host}/users/${userId}/avatar`"
             :headers="header"
             accept="image/*"
             :data="{ type: 1,order:1}"
@@ -134,7 +134,7 @@ export default {
   },
   data() {
     return {
-      host: process.env.domain,
+      host: '',
       header: '',
       dialogVisible: true,
       cropImageFormVisible: false,
