@@ -26,7 +26,7 @@ const plugins = [
     }
   ]
 ]
-//  生成环境清除log
+//  生产环境清除log
 if (isProduction) {
   plugins.push('transform-remove-console')
 }
@@ -103,7 +103,9 @@ export default {
     'nuxt-i18n',
     '@nuxtjs/proxy'
   ],
-
+  generate: {
+    routes: ['/pages/invite/index', '/pages/manage/index', '/pages/site/index']
+  },
   i18n: {
     locales: ['en', 'zh'],
     defaultLocale: 'zh',

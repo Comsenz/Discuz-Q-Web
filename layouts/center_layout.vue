@@ -5,7 +5,7 @@
       <div class="app-cont">
         <el-menu :default-active="$route.path" :router="true">
           <template v-for="(item,index) in menuList">
-            <template v-if="item.index === '/pages/manage/list/'">
+            <template v-if="item.index === '/pages/manage/index/'">
               <el-menu-item
                 v-if="forums && forums.other && ((forums.other.can_view_user_list && (forums.other.can_edit_user_group || forums.other.can_edit_user_status)) || forums.other.can_create_invite)"
                 :key="item.index"
@@ -17,7 +17,7 @@
                 <span class="arrow"><i class="el-icon-arrow-right icon" /></span>
               </el-menu-item>
             </template>
-            <template v-else-if="item.index === '/pages/invite/list/'">
+            <template v-else-if="item.index === '/pages/invite/index/'">
               <el-menu-item
                 v-if="forums && forums.other && forums.other.can_invite_user_scale"
                 :key="item.index"
@@ -66,9 +66,9 @@ export default {
         { index: '/pages/my/favorite/', classname: 'padd', content: 'profile.myfavorite', hidden: false },
         { index: '/pages/my/shield/', classname: 'padd', content: 'profile.myshield', hidden: false },
         { index: '/pages/my/notice/', classname: 'padd', content: 'profile.notice', hidden: false },
-        { index: '/pages/site/detail/', classname: 'padd divided', content: 'manage.circleinfo', hidden: false },
-        { index: '/pages/manage/list/', classname: 'padd', content: 'manage.siteManagement', hidden: false },
-        { index: '/pages/invite/list/', classname: 'padd', content: 'invite.invite', hidden: false }
+        { index: '/pages/site/index/', classname: 'padd divided', content: 'manage.circleinfo', hidden: false },
+        { index: '/pages/manage/index/', classname: 'padd', content: 'manage.siteManagement', hidden: false },
+        { index: '/pages/invite/index/', classname: 'padd', content: 'invite.invite', hidden: false }
       ]
     }
   },
