@@ -3,7 +3,6 @@ import axios from 'axios'
 // import cookie from '../utils/parserCookie'
 import env from '../utils/env'
 export default function(context) {
-  console.log('header')
   if (context && context.req && context.req.headers) {
     // https://yq.aliyun.com/articles/655062
     const list = [
