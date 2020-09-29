@@ -82,7 +82,7 @@
         type="primary"
         class="border"
         @click="btncash"
-      >{{ $t('profile.comfirmwithdrawal') }}</el-button>
+      >{{ $t('profile.comfirmwithdrawal' ) }}</el-button>
     </div>
   </message>
 </template>
