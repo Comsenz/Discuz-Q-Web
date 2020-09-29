@@ -4,7 +4,7 @@
       <div class="flex">
         <div class="logo" @click="toIndex">
           <img
-            :src="forums && forums.set_site && forums.set_site.site_header_logo ? forums.set_site.site_header_logo : require('static/logo.png')"
+            :src="forums && forums.set_site && forums.set_site.site_header_logo ? forums.set_site.site_header_logo : require('@/assets/logo.png')"
             alt="头部logo"
           >
         </div>
