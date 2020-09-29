@@ -67,6 +67,7 @@
           v-if="showPasswordInput"
           ref="walletpass"
           :error="passError"
+          :password-error-tip="passwordErrorTip"
           @close="showPasswordInput = false"
           @password="validatePass"
           @findpaypwd="findPaypwd"
@@ -160,6 +161,7 @@ export default {
       issendcode: false,
       isfindpwd: false,
       isWithoutphone: false,
+      passwordErrorTip: '',
       userId: this.$store.getters['session/get']('userId') // 获取当前登陆用户的ID
     }
   },
@@ -212,9 +214,13 @@ export default {
           }
         })
         .catch(err => {
-          // this.$message.error(this.$t('modify.authenfailed'))
           this.$refs.walletpass.empty()
-          this.passError = true
+          const { response: { data: { errors }}} = err
+          if (errors[0].code === 'validation_error') {
+            this.passError = true
+            this.passwordErrorTip = errors[0].detail[0]
+            return
+          }
           this.handleError(err)
           console.log('error', err)
         })
@@ -222,10 +228,7 @@ export default {
     // 新密码
     checkpass(num) {
       if (num.length >= 6) {
-        console.log('hhhhhhh')
-
         this.inputpas = num
-        console.log('新密码', this.inputpas)
         this.showNewverify = false
         this.showNewverify2 = true
       }
@@ -236,12 +239,10 @@ export default {
         this.validateVerify(sum)
       }
     },
-
     // 获取初始化密码
     setPass(password) {
       if (password.length >= 6) {
         this.inputpas = password
-
         this.setPasswordInput = false
         this.repPasswordInput = true
       }
@@ -334,8 +335,6 @@ export default {
       text-align: center;
     }
     .mywallet-topitem {
-      // display: flex;
-      // flex-direction: column;
       flex: 1;
       color: #6d6d6d;
       .shield-icon {
@@ -376,18 +375,6 @@ export default {
     background: transparent;
     box-shadow: none;
     padding-right: 30px;
-    // @media screen and (max-width: 1005px) {
-    //   width: 100%;
-    //   max-width: 750px;
-    // }
-    // @media screen and (max-width: 900px) {
-    //   width: 100%;
-    //   max-width: 700px;
-    // }
-    // @media screen and (max-width: 850px) {
-    //   width: 100%;
-    //   max-width: 650px;
-    // }
   }
   .margleft {
     margin-left: 30px;

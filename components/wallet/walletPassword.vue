@@ -19,10 +19,10 @@
         <div
           v-if="error"
           class="amount"
-        >{{ $t('modify.passwordinputerro') }}</div>
+        >{{ passwordErrorTip ? passwordErrorTip : $t('modify.passwordinputerro') }}</div>
       </div>
       <div v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms" class="findpaypwd" @click="findpaypwd">
-        忘记支付密码？ 找回
+        {{ $t('modify.forgetpaypassword') }}
       </div>
     </div>
   </message>
@@ -39,6 +39,10 @@ export default {
     error: {
       type: Boolean,
       default: false
+    },
+    passwordErrorTip: {
+      type: String,
+      default: ''
     }
   },
   data() {
