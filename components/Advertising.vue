@@ -3,7 +3,7 @@
     <div ref="qrcode" class="qrcode" />
     <div class="adv-info">
       <div class="adv-title"> 扫一扫，访问移动端</div>
-      DISCUZ! Q，小众也有圈子
+      {{ forums && forums.set_site && forums.set_site.site_name ? forums.set_site.site_name : 'Discuz! Q' }}
     </div>
   </div>
 </template>
@@ -13,6 +13,11 @@ export default {
   data() {
     return {
       qrcode: null
+    }
+  },
+  computed: {
+    forums() {
+      return this.$store.state.site.info.attributes || {}
     }
   },
   mounted() {

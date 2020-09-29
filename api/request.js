@@ -65,6 +65,8 @@ service.interceptors.response.use(
             // token 无效 重新请求
             if (process.client) {
               localStorage.removeItem('access_token')
+              localStorage.removeItem('user_id')
+              window.location.reload()
             }
             // delete response.config.header.Authorization;
             break

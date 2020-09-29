@@ -5,7 +5,7 @@
     class="register"
   >
 
-    <h2 class="register-title">{{ $t('user.userregister') }}</h2>
+    <h2 class="register-title">{{ $t('user.register') }}{{ forums && forums.set_site && forums.set_site.site_name ? forums.set_site.site_name : '' }}</h2>
     <el-tabs
       v-model="activeName"
       type="border-card"
@@ -560,7 +560,7 @@ export default {
   margin-top: 62px;
   flex-direction: column;
   .register-title {
-    width: 130px;
+    // width: 130px;
     height: 35px;
     font-size: 26px;
   }
