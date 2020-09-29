@@ -261,6 +261,7 @@ export default {
       this.$emit(`update:payment`, _payment)
     },
     autoHeight() {
+      if (this.editorStyle === 'chat') return // 聊天框不需要自动高度
       this.textarea.onkeyup = function() {
         // textarea 自动高度，通过 scrollHeight 赋值给 height
         // 当行数减少是 scrollHeight 只增不减，所以需要先把 height = auto
@@ -409,7 +410,7 @@ export default {
         &.post { min-height: 200px; }
         &.comment { min-height: 120px; }
         &.reply { min-height: 80px; }
-        &.chat { min-height: 120px; background: #fff; overflow: auto; }
+        &.chat { height: 120px; background: #fff; overflow: auto; }
       }
 
     }
