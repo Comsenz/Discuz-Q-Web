@@ -10,7 +10,6 @@
           style="color:#1878F3;"
         >{{ `¥ ${dataInfo && dataInfo.available_amount || 0.0}` }}
           <span
-            v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms"
             class="availmount"
             @click="showWithdraw"
           >{{ $t('modify.withdratitle') }}</span>
@@ -20,7 +19,6 @@
           class="amount"
         >{{ `¥ ${dataInfo && dataInfo.available_amount || 0.0}` }}
           <span
-            v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms"
             class="availmount"
             @click="showWithdraw"
           >{{ $t('modify.withdratitle') }}</span>

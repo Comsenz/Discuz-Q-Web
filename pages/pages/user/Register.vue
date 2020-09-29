@@ -5,7 +5,7 @@
     class="register"
   >
 
-    <h2 class="register-title">{{$t('user.register')}}{{ forums && forums.set_site && forums.set_site.site_name ? forums.set_site.site_name : ''}}</h2>
+    <h2 class="register-title">{{ $t('user.register') }}{{ forums && forums.set_site && forums.set_site.site_name ? forums.set_site.site_name : '' }}</h2>
     <el-tabs
       v-model="activeName"
       type="border-card"
