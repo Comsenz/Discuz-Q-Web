@@ -137,7 +137,7 @@
         <div
           v-show="!isSignModify"
           :class="userInfo.signature !=='' ?'myprofile-btom-sign':'myprofile-btom-sign signcolor'"
-        >{{ userInfo.signature ? userInfo.signature : $t('profile.nosignature') }}</div>
+        >{{ userInfo.signature ? userInfo.signature : $t('modify.nosignature') }}</div>
         <div
           v-show="isSignModify"
           class="text"
@@ -147,7 +147,7 @@
             v-model="inputVal"
             type="textarea"
             :rows="5"
-            :placeholder="$t('profile.inputsignautre')"
+            :placeholder="$t('modify.inputsignautre')"
             @input="fun"
           />
           <div class="cannum">{{ $t('modify.canalsoinput')+ `${num-wordnumber}` + $t('modify.wordnumber') }}</div>
