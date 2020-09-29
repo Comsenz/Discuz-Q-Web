@@ -87,7 +87,7 @@
       v-if="userInfo"
       :class="isNameModify ? 'myprofile-c bgcolor': 'myprofile-c'"
     >
-      <div class="profileborder pborder">
+      <div :class="{profileborder: true, pborder: !isNameModify}">
         <div class="myprofile-top">
           <span class="sig">{{ $t('profile.username') }}</span>
           <span
@@ -155,7 +155,7 @@
             type="primary"
             class="sigbutton"
             @click="sigComfirm"
-          >确定修改</el-button>
+          >{{ $t('profile.confirmModify') }}</el-button>
         </div>
       </div>
     </div>
@@ -171,7 +171,7 @@
           <span
             class="setavatar"
             @click="mobileModify"
-          >{{ (!isMobileModify ?!userInfo.mobile ? '绑定手机': $t('profile.modify') : $t('profile.cancelModify')) }}</span>
+          >{{ (!isMobileModify ?!userInfo.mobile ? $t('profile.bindingmobile'): $t('profile.modify') : $t('profile.cancelModify')) }}</span>
         </div>
         <div
           v-show="!isMobileModify"
@@ -223,7 +223,7 @@
             type="primary"
             class="ebutton"
             @click="mobileComfirm"
-          >提交修改</el-button>
+          >{{ $t('profile.submitchange') }}</el-button>
         </div>
         <!-- 新用户绑定手机号 -->
         <div
@@ -235,13 +235,13 @@
               ref="oldphone"
               v-model="newphon"
               maxlength="11"
-              placeholder="请输入绑定的手机号"
+              :placeholder="$t('modify.newphon')"
               :class="isChange ? 'passbtom phonechange': 'passbtom'"
               @input="changeinput"
             />
             <el-input
               v-model="setnum"
-              placeholder="请输入手机验证码"
+              :placeholder="$t('modify.newverifycode')"
               class="phone-input"
             />
             <el-button
@@ -257,7 +257,7 @@
             type="primary"
             class="ebutton"
             @click="dingphon"
-          >提交修改</el-button>
+          >{{ $t('profile.submitchange') }}</el-button>
         </div>
       </div>
     </div>
@@ -316,7 +316,7 @@
               type="primary"
               class="ebutton"
               @click="passSub"
-            >提交修改</el-button>
+            >{{ $t('profile.submitchange') }}</el-button>
           </form>
         </div>
       </div>
@@ -343,10 +343,10 @@
           v-show="isWechatModify"
           class="wehcat-bind"
         >
-          <el-image
+          <!-- <el-image
             :src="wechatBind.base64_img"
             class="qr-code"
-          />
+          /> -->
           <div>请用微信扫一扫</div>
           <div>扫码上方二维码</div>
         </div>
@@ -970,16 +970,16 @@ export default {
       )
     },
     toTopic() {
-      this.$router.push(`/profile/index?userId=${this.userId}&current=1`)
+      this.$router.push(`/pages/profile/index?userId=${this.userId}&current=1`)
     },
     toFollowing() {
-      this.$router.push(`/profile/index?userId=${this.userId}&current=3`)
+      this.$router.push(`/pages/profile/index?userId=${this.userId}&current=3`)
     },
     toFollowers() {
-      this.$router.push(`/profile/index?userId=${this.userId}&current=4`)
+      this.$router.push(`/pages/profile/index?userId=${this.userId}&current=4`)
     },
     toLikes() {
-      this.$router.push(`/profile/index?userId=${this.userId}&current=2`)
+      this.$router.push(`/pages/profile/index?userId=${this.userId}&current=2`)
     }
   },
   head() {

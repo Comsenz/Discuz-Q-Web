@@ -22,7 +22,7 @@ function callback(binding, vnode) {
       if (process.client) {
         Message.error('请登录')
         window.setTimeout(() => {
-          location.href = '/user/login'
+          location.href = '/pages/user/login'
         }, 1000)
       } else {
         console.log('请登录')

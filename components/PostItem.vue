@@ -16,7 +16,7 @@
       <div class="top-flex">
         <nuxt-link
           v-if="item.user"
-          :to="`/profile/index?userId=${item.user.id}`"
+          :to="`/pages/profile/index?userId=${item.user.id}`"
           class="user-info"
         >
           <span class="user-name">{{ item.user.username }}</span>
@@ -37,8 +37,8 @@
       <template v-if="item.firstPost">
         <div class="first-post" @click.self="toDetail">
           <div @click="onClickContent">
-            <div v-if="item.type === 1" class="title">{{ item.title }}</div>
-            <div class="content">
+            <div v-if="item.type === 1" class="title">{{ $t('home.released') }}<span class="blue">{{ item.title }}</span></div>
+            <div v-else class="content">
               <div v-html="formatTopicHTML(item.firstPost.contentHtml)" />
             </div>
           </div>
@@ -57,7 +57,7 @@
               :data-source="unpaid ? '' : image.url"
               :alt="image.filename"
               fit="cover"
-              lazy
+              :lazy="lazy"
               @click.self="onClickImage"
             >
               <div slot="placeholder" class="image-slot">
@@ -85,7 +85,7 @@
               :src="item.threadVideo.cover_url"
               :alt="item.threadVideo.file_name"
               fit="cover"
-              lazy
+              :lazy="lazy"
             />
             <div v-else class="no-cover">{{ $t("home.noPoster") }}</div>
             <svg-icon type="video-play" class="video-play" />
@@ -123,7 +123,7 @@
         <!-- 位置 -->
         <nuxt-link
           v-if="item.location"
-          :to="`/topic/position?longitude=${item.longitude}&latitude=${item.latitude}`"
+          :to="`/pages/topic/position?longitude=${item.longitude}&latitude=${item.latitude}`"
           class="location"
         >
           <span class="flex">
@@ -205,6 +205,10 @@ export default {
     showShare: {
       type: Boolean,
       default: true
+    },
+    lazy: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -273,9 +277,9 @@ export default {
     // 跳转详情页
     toDetail() {
       if (!this.canViewPostsFn()) return
-      // this.$router.push({ path: `/topic/${this.item._jv && this.item._jv.id}` })
+      // this.$router.push({ path: `/pages/topic/${this.item._jv && this.item._jv.id}` })
       window.open(
-        `/topic/index?id=${this.item._jv && this.item._jv.id}`,
+        `/pages/topic/index?id=${this.item._jv && this.item._jv.id}`,
         '_blank'
       )
     },
@@ -283,7 +287,7 @@ export default {
     onClickImage() {
       if (!this.unpaid || !this.canViewPostsFn()) return
       window.open(
-        `/topic/index?id=${this.item._jv && this.item._jv.id}`,
+        `/pages/topic/index?id=${this.item._jv && this.item._jv.id}`,
         '_blank'
       )
     },
@@ -292,7 +296,7 @@ export default {
       if (!this.canViewPostsFn()) return
       if (this.unpaid) {
         window.open(
-          `/topic/index?id=${this.item._jv && this.item._jv.id}`,
+          `/pages/topic/index?id=${this.item._jv && this.item._jv.id}`,
           '_blank'
         )
       } else {
@@ -379,11 +383,13 @@ export default {
       font-size: 12px;
     }
     .title {
-      font-weight: bold;
       font-size: 16px;
       margin-bottom: 6px;
       @include text-hidden();
       flex: 0 0 60%;
+      .blue{
+        color: $color-blue-base;
+      }
     }
     ::v-deep .content {
       @include text-hidden(4);

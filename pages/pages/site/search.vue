@@ -10,7 +10,7 @@
       <div class="count">{{ $t('search.users') }} {{ userCount }} 名</div>
       <div class="user-list">
         <div class="user-flex">
-          <nuxt-link v-for="(item, index) in userList.slice(0, userPageSize)" :key="index" :to="`/profile/index?userId=${item.id}`" class="user-item">
+          <nuxt-link v-for="(item, index) in userList.slice(0, userPageSize)" :key="index" :to="`/pages/profile/index?userId=${item.id}`" class="user-item">
             <avatar :user="item" :size="45" />
             <div class="info">
               <div class="name text-hidden">{{ item.username }}</div>
@@ -177,7 +177,7 @@ export default {
     },
     toUserList() {
       if (this.$route.query.q) {
-        this.$router.push('/site/search-user?value=' + this.$route.query.q)
+        this.$router.push('/pages/site/search-user?value=' + this.$route.query.q)
       }
     }
   },

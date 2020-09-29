@@ -42,6 +42,9 @@ export default {
 
       .author-name {
         font-size: 16px;
+        > .username {
+          font-weight: bold;
+        }
         > .group {
           font-weight: normal;
           white-space: nowrap;

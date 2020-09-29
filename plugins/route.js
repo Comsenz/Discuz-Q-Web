@@ -2,49 +2,13 @@
 // client执行顺序 => beforeEach - middleware - afterEach
 // server执行顺序 => beforeEach - afterEach - middleware
 import cookie from '../utils/parserCookie'
-// import env from '../utils/env.js'
-// import mobileRouter from '../utils/mobileRouter.js'
-const freePath = ['/user/login', '/user/register', '/site/info', '/user/warning', '/user/agreement', '/site/partner-invite']
+const freePath = ['/pages/user/login', '/pages/user/register', '/pages/site/info', '/pages/user/warning', '/pages/user/agreement', '/pages/user/agreement', '/pages/modify/findpwd', '/pages/site/partner-invite']
 export default ({ app }) => {
   const { store, router } = app
   router.beforeEach(async(to, from, next) => {
-    // 根据ua跳转到移动端
-    // if (env.isMobile && !env.isTablet) {
-    //   let path = '/'
-    //   const _map = mobileRouter.map
-    //   if (to.matched && to.matched.length > 0) {
-    //     const _path = to.matched[to.matched.length - 1 ].path
-    //     switch (_path) {
-    //       case '/topic/:id?':
-    //         path = _map[_path] + to.params.id
-    //         break
-    //       case '/profile':
-    //         path = _map[_path] + to.query.userId
-    //         break
-    //       case '/topic/post/:type?':
-    //         path = _map[_path] + to.params.type
-    //         break
-    //       case '/topic/comment':
-    //         path = _map[_path] + `?threadId=${to.query.threadId}&commentId=${to.query.commentId}`
-    //         break
-    //       case '/search/user':
-    //         path = _map[_path] + to.query.q
-    //         break
-    //       case '/location':
-    //         path = _map[_path] + `?longitude=${to.query.longitude}&latitude=${to.query.latitude}`
-    //         break
-    //       case '/site/partner-invite':
-    //         path = _map[_path] + to.query.code
-    //         break
-    //       default:
-    //         path = _map[_path] || '/'
-    //     }
-    //   }
-    //   window.location.href = process.env.mobileDomain + path
-    // }
     if (process.client) {
       // 登录页不判断站点关闭
-      if (from.path === '/site/close' && to.path === '/user/login') return next()
+      if (from.path === '/pages/site/close' && to.path === '/pages/user/login') return next()
       // 获取站点信息
       if (!store.state.site.info.id) {
         try {
@@ -57,8 +21,8 @@ export default ({ app }) => {
               console.log(errors[0].code)
               await store
                 .dispatch('forum/setError', { code: errors[0].code, detail: errors[0].detail[0] })
-              if (to.path === '/site/close') return next()
-              next({ path: '/site/close' })
+              if (to.path === '/pages/site/close') return next()
+              next({ path: '/pages/site/close' })
               return
             }
           }
@@ -88,7 +52,7 @@ export default ({ app }) => {
       const { attributes: { set_site: site_info }} = store.state.site.info
       const { attributes: user_info } = store.state.user.info
       if (site_info.site_mode && site_info.site_mode === 'pay') {
-        if (!userId || (user_info && !user_info.paid)) return next({ path: '/site/info' })
+        if (!userId || (user_info && !user_info.paid)) return next({ path: '/pages/site/info' })
       }
       return next()
     }

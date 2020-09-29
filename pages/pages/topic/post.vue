@@ -13,11 +13,12 @@
     </div>
     <editor
       :type-information="typeInformation[type]"
-      :post.sync="post"
+      :edit-resource-show="editResourceShow"
       :location.sync="location"
       :payment.sync="payment"
       :on-publish="onPublish"
-      :edit-resource-show="editResourceShow"
+      :is-edit="isEditor"
+      :post.sync="post"
       @publish="publish"
     />
   </div>
@@ -33,18 +34,16 @@ import tencentCaptcha from '@/mixin/tencentCaptcha'
 export default {
   name: 'Post',
   mixins: [tencentCaptcha, handleError, publishResource, isLogin],
-  validate({ query }) {
-    return parseFloat(query.type) < 4
-  },
   data() {
     return {
+      editThread: {}, // 被编辑的主题
       categoryList: [],
       post: { id: '', title: '', text: '', imageList: [], videoList: [], attachedList: [] },
       payment: { isPaid: false, price: 0, freeWords: 0 },
       location: { latitude: '', location: '', longitude: '' },
       editResourceShow: { showUploadImg: false, showUploadVideo: false, showUploadAttached: false },
       typeInformation: {
-        // 0 文字帖 1 帖子 2 视频 3 图片 4 评论
+        // 0 文字帖 1 帖子 2 视频 3 图片
         0: { type: 0, headerText: 'postText', textLimit: 450, showPayment: false, showLocation: false, showTitle: false, showImage: false, showVideo: false,
           showAttached: false, showMarkdown: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
@@ -80,7 +79,7 @@ export default {
     }
   },
   mounted() {
-    if (['0', '1', '2', '3'].indexOf(this.type) < 0) return this.$router.push('/error')
+    if (['0', '1', '2', '3'].indexOf(this.type) < 0) return this.$router.replace('/error')
     this.getCategoryList()
     this.getThread()
   },
@@ -116,6 +115,7 @@ export default {
       }, e => this.handleError(e))
     },
     initData(data) {
+      this.editThread = data
       this.categorySelectedId = data.category._jv.id
       this.post.title = data.title
       this.post.text = data.firstPost.content
@@ -155,7 +155,7 @@ export default {
       this.onPublish = true
       if (this.isEditor) {
         return Promise.all([this.editThreadPublish(), this.editPostPublish()]).then(dataArray => {
-          this.$router.push(`/topic/index?id=${dataArray[0]._jv.id}`)
+          this.$router.push(`/pages/topic/index?id=${dataArray[0]._jv.id}`)
         }, e => this.handleError(e)).finally(() => {
           this.onPublish = false
         })
@@ -186,7 +186,7 @@ export default {
         }
       }
       return this.$store.dispatch('jv/post', params).then(data => {
-        this.$router.push(`/topic/index?id=${data._jv.id}`)
+        this.$router.push(`/pages/topic/index?id=${data._jv.id}`)
       }, e => this.handleError(e)).finally(() => {
         this.onPublish = false
       })
@@ -202,6 +202,8 @@ export default {
       }
       if (this.threadId) postParams._jv.id = this.threadId
       postParams = this.publishPostResource(postParams, this.post)
+      this.deleteAttachmentsAfterEdit(this.editThread.firstPost.images, this.post.imageList) // 编辑主题时删除的图片，在发布的时候删除
+      this.deleteAttachmentsAfterEdit(this.editThread.firstPost.attachments, this.post.attachedList) // 编辑主题时删除的附件，在发布的时候删除
       return this.$store.dispatch('jv/patch', [postParams, { url: `/posts/${this.post.id}` }])
     },
     async editThreadPublish() {

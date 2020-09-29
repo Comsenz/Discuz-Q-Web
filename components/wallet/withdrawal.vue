@@ -1,6 +1,6 @@
 <template>
   <message
-    title="提现申请"
+    :title="$t('profile.towithdrawal')"
     @close="$emit('close')"
   >
     <div class="top">
@@ -61,17 +61,17 @@
             class="phone"
             style="margin-left:20px;"
           >
-            验证码将发送到 <span style="font-weight:bold;color:#000000; ">{{ usertestphon }}</span> 的手机短信
+            {{ $t('profile.codesend') }}  <span style="font-weight:bold;color:#000000; ">{{ usertestphon }}</span> {{ $t('profile.phonesms') }}
           </span>
           <span
             v-else
             class="phone"
           >
-            您还未绑定手机请到<span
+            {{ $t('profile.withoutbind') }} <span
               style="font-weight:bold;color:#1878F3;cursor:pointer;"
               @click="tomy"
             > {{ $t('profile.personalhomepage') }} </span>
-            进行手机的绑定</span>
+            {{ $t('profile.tobindphone') }}</span>
         </div>
       </div>
     </div>
@@ -333,7 +333,7 @@ export default {
         })
     },
     tomy() {
-      this.$router.push('/my/profile')
+      this.$router.push('/pages/my/profile')
     }
   }
 }
@@ -399,6 +399,7 @@ export default {
           border-top: none;
           border-right: none;
           border-bottom: none;
+          color:#000000;
           &:active{
             border-color: #dcdfe6;
           }

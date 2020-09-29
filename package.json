@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "nuxt",
+    "build:spa": "nuxt build --spa",
     "build": "VUE_APP_CONFIG_API_URL=https://discuz.chat nuxt build",
     "start": "VUE_APP_CONFIG_API_URL=https://discuz.chat nuxt start",
     "build_test": "VUE_APP_CONFIG_API_URL=https://discuz.dnspod.dev nuxt build",
@@ -17,6 +18,7 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.12.1",
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "dayjs": "^1.8.32",
     "element-ui": "^2.13.2",
     "jsonpath-plus": "^3.0.0",

@@ -41,10 +41,11 @@
         <div v-if="showUploadImg || showUploadVideo || showUploadAttached" class="resources-list">
           <image-upload
             v-if="showUploadImg"
-            :url="url"
-            :header="header"
-            :on-upload-image.sync="onUploadImage"
             :image-list="post && post.imageList"
+            :on-upload-image.sync="onUploadImage"
+            :header="header"
+            :is-edit="isEdit"
+            :url="url"
             @imageChange="e => onPostContentChange(e.key, e.value)"
           />
           <video-upload
@@ -55,10 +56,11 @@
           />
           <attached-upload
             v-if="showUploadAttached"
-            :url="url"
-            :header="header"
             :on-upload-attached.sync="onUploadAttached"
             :attached-list="post && post.attachedList"
+            :header="header"
+            :is-edit="isEdit"
+            :url="url"
             @attachedChange="e => onPostContentChange(e.key, e.value)"
           />
         </div>
@@ -130,6 +132,10 @@ export default {
       type: Object,
       default: () => {}
     },
+    isEdit: {
+      type: Boolean,
+      default: false
+    },
     onPublish: {
       type: Boolean,
       default: false
@@ -138,7 +144,7 @@ export default {
       type: String,
       default: 'post'
     },
-    selector: {
+    selector: { // 当页面出现多个编辑器时，必须传入 selector (对应的 class name) 作为唯一的选择器，保证 textarea 元素选择正确
       type: String,
       default: 'editor'
     }
@@ -195,18 +201,23 @@ export default {
     },
     canCreateThreadPaid() {
       const forums = this.$store.state.site.info.attributes
-      return forums.other ? forums.other.can_create_thread_paid : false
+      if (forums) {
+        return forums.other ? forums.other.can_create_thread_paid : false
+      } else return false
     }
   },
   watch: {
     editResourceShow: {
       handler(val) {
+        if (!val) return
         for (const key in val) this[key] = val[key]
       },
-      deep: true
+      deep: true,
+      immediate: true
     },
     typeInformation: {
       handler(val) {
+        if (!val) return
         this.actions[0].show = val.showEmoji
         this.actions[1].show = val.showCaller
         this.actions[2].show = val.showTopic

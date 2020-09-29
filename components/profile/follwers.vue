@@ -231,7 +231,7 @@ export default {
       }
     },
     toUser(userId) {
-      this.$router.push(`/profile/index?userId=${userId}`)
+      this.$router.push(`/pages/profile/index?userId=${userId}`)
     },
     confirm(e) {
       this.sort = e

@@ -131,7 +131,7 @@ export default {
     close: '点击关闭',
     user_deny: '对方设置了屏蔽，无法进行此操作',
     page_not_found: '页面没有找到',
-    page_not_found_detail: '您要访问的页面可能已被删除，已更改名称或者暂时不可用',
+    page_not_found_detail: '您要访问的页面可能已被删除、已更改名称或暂时不可用',
     not_install: '该站点未安装',
     postTypesDoNotMatch: '帖子类型不匹配，请重新进入本页面',
     cancel: '取消',
@@ -151,6 +151,7 @@ export default {
     post_not_found: '您访问的内容不存在或已被删除',
     noViewPermission: '没有查看权限，请点击返回上一级',
     route_not_found: '路由未找到',
+    unbind_wechat: '微信未绑定',
     no_bind_user: '未绑定用户',
     account_has_been_bound: '用户或微信已绑定',
     thread_count_fail: '主题数操作错误',
@@ -219,7 +220,8 @@ export default {
     post_not_fond: '未查询到该条回复',
     wechat_mobile_unbound: '微信未绑定手机号',
     unable_to_get_location: '无法获取地理位置',
-    '二维码已失效，扫码超时': '二维码已失效，扫码超时'
+    '二维码已失效，扫码超时': '二维码已失效，扫码超时',
+    no_edit_self: '不可编辑自己'
   },
   // 发布页
   post: {
@@ -298,6 +300,7 @@ export default {
     like: '赞',
     liked: '已赞',
     share: '分享',
+    editComment: '编辑评论',
     writeComment: '写评论',
     writeComments: '写评论...',
     showMore: '查看更多',
@@ -373,7 +376,8 @@ export default {
     recommend: '相关推荐',
     toWatch: '去看看',
     viewDetail: '查看详情',
-    allPost: '全部帖子（{total}）'
+    allPost: '全部帖子（{total}）',
+    topicCount: ' 个话题'
   },
   pay: {
     passwordError: '密码错误请重试',
@@ -419,7 +423,10 @@ export default {
     payFail: '支付失败',
     payType: '支付方式',
     payPassword: '支付密码',
-    wechatIdentificationQRcode: '微信识别二维码'
+    wechatIdentificationQRcode: '微信识别二维码',
+    wechatTimeLimit: '二维码有效时长为5分钟, 请尽快支付',
+    wechatScan: '请使用微信扫一扫',
+    wechatScanPay: '扫描二维码支付'
   },
   auth: {
     userinfo: '获取头像和昵称'
@@ -457,7 +464,7 @@ export default {
     generatePoster: '生成海报',
     wxShare: '微信分享',
     word: '文字',
-    released: '发布了',
+    released: '发布了：',
     noPostingPermission: '当前没有发帖权限',
     noPostingTopic: '当前没有查看主题权限',
     ioschoicetitle: '受iOS限制，暂时无法提供服务',
@@ -481,7 +488,7 @@ export default {
     location: '位置信息',
     threadCount: '附近共有 {total} 条内容',
     topicCount: '共有 {total} 条内容',
-    topicViewCount: '热度'
+    topicViewCount: '热度 {total}°'
   },
   // 站点管理页面
   manage: {
@@ -856,6 +863,11 @@ export default {
     reward: '打赏',
     paytheme: '付费主题',
     paygroup: '付费用户组',
+    codesend: '验证码将发送到',
+    phonesms: '的手机短信',
+    withoutbind: '您还未绑定手机请到',
+    tobindphone: '进行手机的绑定',
+    towithdrawal: '提现申请',
     withdrawalfreeze: '提现冻结',
     withdrawalsucceed: '提现成功',
     withdrawalunfreeze: '提现解冻',

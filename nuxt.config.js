@@ -9,7 +9,6 @@ function resolve(dir) {
 
 // const API_URL = 'https://discuz.chat'
 const API_URL_DEV = 'https://dq.comsenz-service.com'
-// const API_URL_DEV = 'https://discuz.chat'
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -19,10 +18,21 @@ const proxyConfig = {
     changeOrigin: true
   }
 }
-
+const plugins = [
+  ['component',
+    {
+      'libraryName': 'element-ui',
+      'styleLibraryName': 'theme-chalk'
+    }
+  ]
+]
+//  生产环境清除log
+if (isProduction) {
+  plugins.push('transform-remove-console')
+}
 export default {
   env: {
-    mobileDomain: process.env.VUE_APP_CONFIG_API_URL || API_URL_DEV,
+    domain: process.env.VUE_APP_CONFIG_API_URL || API_URL_DEV,
     baseURL: '/'
   },
   /*
@@ -93,7 +103,9 @@ export default {
     'nuxt-i18n',
     '@nuxtjs/proxy'
   ],
-
+  generate: {
+    routes: ['/pages/invite/index', '/pages/manage/index', '/pages/site/index']
+  },
   i18n: {
     locales: ['en', 'zh'],
     defaultLocale: 'zh',
@@ -138,14 +150,7 @@ export default {
     // transpile: [/^element-ui/],
     // element 按需加载
     babel: {
-      plugins: [
-        ['component',
-          {
-            'libraryName': 'element-ui',
-            'styleLibraryName': 'theme-chalk'
-          }
-        ]
-      ],
+      plugins: plugins,
       presets({ isServer }) {
         const targets = isServer ? { node: '10' } : { ie: '11' }
         return [[require.resolve('@nuxt/babel-preset-app'), { targets }]]

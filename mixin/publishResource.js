@@ -36,6 +36,14 @@ module.exports = {
       params.latitude = location.latitude ? location.latitude : ''
       params.longitude = location.longitude ? location.longitude : ''
       return params
+    },
+    deleteAttachmentsAfterEdit(oldData, newData) {
+      const afterEditImageIds = newData.map(item => item.id)
+      const beforeEditImageIds = oldData.map(item => item._jv.id)
+      const deleteImageIds = beforeEditImageIds.filter(item => afterEditImageIds.indexOf(item) < 0)
+      deleteImageIds.forEach(id => {
+        this.$store.dispatch('jv/delete', [`/attachments/${id}`, {}]).catch(() => '')
+      })
     }
   }
 }

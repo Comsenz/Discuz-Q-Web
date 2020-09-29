@@ -37,22 +37,30 @@ export default {
     threadsId: {
       type: [String, Number],
       default: ''
+    },
+    type: {
+      type: String,
+      default: ''
     }
   },
   data() {
     return {
-      qrcode: null
+      qrcode: null,
+      currentType: ''
     }
+  },
+  mounted() {
+    console.log('this.threadsId', this.threadsId)
   },
   methods: {
     copyLink() {
       const oInput = document.createElement('input')
       if (process.client) {
-        if (this.$route.path === '/topic/content') {
+        if (this.type === 'topic') {
           // 话题详情
-          oInput.value = window.location.host + '/pages/topic/content?id=' + this.$route.query.id
+          oInput.value = window.location.href
         } else {
-          oInput.value = window.location.host + '/topic/index?id=' + this.threadsId
+          oInput.value = window.location.host + '/pages/topic/index?id=' + this.threadsId
         }
         oInput.id = 'copyInput'
         document.body.appendChild(oInput)
@@ -64,13 +72,14 @@ export default {
         oInput.remove()
       }, 100)
     },
-    onShowPopover() {
-      let path = process.env.mobileDomain
-      if (this.$route.path === '/topic/content') {
+    onShowPopover(e) {
+      this.currentType = this.type
+      let path = ''
+      if (this.type === 'topic') {
         // 话题详情
-        path = path + `/pages/topic/content?id=${this.$route.query.id}`
+        path = window.location.href
       } else {
-        path = path + `/pages/topic/index?id=${this.threadsId}`
+        path = window.location.host + `/pages/topic/index?id=${this.threadsId}`
       }
       this.createQrcode(path)
     },

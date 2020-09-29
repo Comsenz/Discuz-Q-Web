@@ -31,7 +31,7 @@
         <template v-if="+item.sender_user_id !== +userId">
           <nuxt-link
             v-if="item.sender && item.sender.username"
-            :to="`/profile/index?userId=${item.sender.id}`"
+            :to="`/pages/profile/index?userId=${item.sender.id}`"
             class="user-name"
           >{{ item.sender.username }}
             <span
@@ -44,7 +44,7 @@
         <template v-if=" +item.recipient_user_id !== +userId">
           <nuxt-link
             v-if="item.recipient && item.recipient.username"
-            :to="`/profile/index?userId=${item.recipient.id}`"
+            :to="`/pages/profile/index?userId=${item.recipient.id}`"
             class="user-name"
           >{{ item.recipient.username }}
             <span
