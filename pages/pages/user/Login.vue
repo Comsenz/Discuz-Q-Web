@@ -42,6 +42,7 @@
                   @click="toRegister"
                 > {{ $t('user.register') }}</span></span>
               <nuxt-link
+                v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms"
                 to="/pages/modify/findpwd"
                 :class="['findpass',iscanReg()]"
               >{{ $t('modify.findpawdtitle') }}</nuxt-link>
@@ -97,6 +98,7 @@
       <!-- <el-tab-pane
         :label="$t('user.quicklogin')"
         name="2"
+        v-if="forums && forums.passport && forums.passport.oplatform_close"
       >
         <div class="quick">
           <div class="quick-container">
