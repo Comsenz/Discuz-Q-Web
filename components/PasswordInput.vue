@@ -32,7 +32,8 @@ export default {
         this.password += e.key
         this.$emit('type')
       }
-      if (this.password.length >= 6) return this.$emit('password', this.password.substr(0, 6))
+      if (this.password.length === 6) return this.$emit('password', this.password)
+      if (this.password.length > 6) this.password = this.password.substring(0, 6)
       if (e.key === 'Backspace') this.password = this.password.substr(0, this.password.length - 1)
     }
   }
