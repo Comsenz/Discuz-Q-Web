@@ -46,7 +46,7 @@
         <div v-else class="content base-font-size grey-color">{{ $t('site.paymentmode') }} \ {{ $t('post.yuanItem') }}{{ forums.set_site.site_price }}（{{ $t('site.periodvalidity') + forums.set_site.site_expire + $t('site.day') }}）</div>
       </div>
       <div class="permission">
-        <div class="title base-font-size">{{ $t('manage.myRole') }}\{{ $t('site.permission') }}</div>
+        <div class="title base-font-size">{{ $t('manage.myRole') }} \ {{ $t('site.permission') }}</div>
         <div v-if="userInfo" class="user-detail">
           <div class="avatar">
             <avatar :user="{ id: userInfo.id, username: userInfo.username, avatarUrl: userInfo.avatarUrl}" :prevent-jump="true" :size="50" :round="true" />
