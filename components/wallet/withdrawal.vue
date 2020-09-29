@@ -76,13 +76,13 @@
       </div>
     </div>
     <div class="bottom">
-      <span style="font-size:14px">￥{{ contint || 0 }}{{ $t('pay.rmb') + '提现到' + '，' + name || '' }} {{ $t('pay.ofAccount') }}</span>
+      <span style="font-size:14px">￥{{ contint || 0 }}{{ $t('pay.rmb') + $t('profile.withdrawalto') + '，' + name || '' }} {{ $t('pay.ofAccount') }}</span>
       <el-button
         size="medium"
         type="primary"
         class="border"
         @click="btncash"
-      >确认提现</el-button>
+      >{{$t('profile.comfirmwithdrawal')}}</el-button>
     </div>
   </message>
 </template>
