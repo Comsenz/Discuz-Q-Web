@@ -703,6 +703,7 @@ export default {
     authenfailed: '身份验证失败',
     passwordinputerro: '密码输入错误',
     forgetmanypassword: '忘记密码？',
+    forgetpaypassword: '忘记支付密码？ 找回',
     nohasphon: '请先绑定手机号码',
     idtitl: '非法身份证号（长度、校验位等不正确）',
     nametitl2: '非法姓名（长度、格式等不正确）',
