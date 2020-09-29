@@ -82,7 +82,7 @@
         type="primary"
         class="border"
         @click="btncash"
-      >{{$t('profile.comfirmwithdrawal')}}</el-button>
+      >{{ $t('profile.comfirmwithdrawal' ) }}</el-button>
     </div>
   </message>
 </template>
@@ -292,7 +292,7 @@ export default {
         },
         cash_apply_amount: this.canAmount,
         cash_mobile: this.userphon,
-        cash_type: 0
+        cash_type: 1
       }
       const postcash = status.run(() => this.$store.dispatch('jv/post', params))
       postcash

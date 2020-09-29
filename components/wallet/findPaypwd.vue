@@ -60,14 +60,6 @@ export default {
     tencentCaptcha, handleError
   ],
   props: {
-    price: {
-      type: [Number, String],
-      default: ''
-    },
-    error: {
-      type: Boolean,
-      default: false
-    },
     mobile: {
       type: String,
       default: ''

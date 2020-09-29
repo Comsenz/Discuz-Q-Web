@@ -377,7 +377,8 @@ export default {
     toWatch: '去看看',
     viewDetail: '查看详情',
     allPost: '全部帖子（{total}）',
-    topicCount: ' 个话题'
+    topicCount: ' 个话题',
+    forgetPasswordFindIt: '忘记支付密码？ 找回'
   },
   pay: {
     passwordError: '密码错误请重试',
