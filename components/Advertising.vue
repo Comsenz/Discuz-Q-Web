@@ -3,7 +3,7 @@
     <div ref="qrcode" class="qrcode" />
     <div class="adv-info">
       <div class="adv-title"> 扫一扫，访问移动端</div>
-      {{ forums && forums.set_site && forums.set_site.site_name ? forums.set_site.site_name : 'Discuz! Q'}}
+      {{ forums && forums.set_site && forums.set_site.site_name ? forums.set_site.site_name : 'Discuz! Q' }}
     </div>
   </div>
 </template>
