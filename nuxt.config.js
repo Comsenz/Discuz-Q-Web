@@ -84,7 +84,8 @@ export default {
     '@/directive/permission',
     '@/plugins/route',
     { src: '@/plugins/cropper', ssr: false },
-    { src: '@/plugins/viewer', ssr: false }
+    { src: '@/plugins/viewer', ssr: false },
+    { src: '@/plugins/dzqjs', ssr: false }
   ],
   /*
   ** Auto import components
