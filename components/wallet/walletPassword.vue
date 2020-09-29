@@ -32,10 +32,6 @@
 export default {
   name: 'WalletPassword',
   props: {
-    price: {
-      type: [Number, String],
-      default: ''
-    },
     error: {
       type: Boolean,
       default: false
