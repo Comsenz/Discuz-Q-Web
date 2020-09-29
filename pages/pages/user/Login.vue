@@ -4,7 +4,7 @@
     v-loading="loading"
     class="register"
   >
-    <h2 class="register-title">{{ $t('user.userlogin') }}</h2>
+    <h2 class="register-title">{{$t('user.login')}}{{ forums && forums.set_site && forums.set_site.site_name ? forums.set_site.site_name : ''}}</h2>
     <el-tabs
       v-model="activeName"
       type="border-card"
