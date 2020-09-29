@@ -71,7 +71,7 @@ export default {
     },
     onShowPopover(e) {
       this.currentType = this.type
-      let path = ''
+      let path = window.location.href
       if (this.type === 'topic') {
         // 话题详情
         path = window.location.href
