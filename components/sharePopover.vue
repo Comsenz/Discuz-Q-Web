@@ -49,9 +49,6 @@ export default {
       currentType: ''
     }
   },
-  mounted() {
-    console.log('this.threadsId', this.threadsId)
-  },
   methods: {
     copyLink() {
       const oInput = document.createElement('input')

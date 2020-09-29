@@ -29,10 +29,6 @@
 export default {
   name: 'Repeatnewpassword',
   props: {
-    price: {
-      type: [Number, String],
-      default: ''
-    },
     error: {
       type: Boolean,
       default: false

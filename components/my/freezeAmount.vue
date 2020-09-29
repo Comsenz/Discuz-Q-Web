@@ -43,7 +43,7 @@
         />
         <el-table-column
           prop="change_desc"
-          label="记录描述"
+          :label="$t('profile.desc')"
         >
           <template slot-scope="scope">
             <span class="desc">{{ scope.row.change_desc }}</span>

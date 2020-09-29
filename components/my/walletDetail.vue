@@ -12,7 +12,7 @@
       />
       <el-select
         v-model="value"
-        placeholder="请选择"
+        :placeholder="$t('profile.pleaseselect')"
         @change="confirm2"
       >
         <el-option
@@ -44,7 +44,7 @@
         />
         <el-table-column
           prop="change_desc"
-          label="记录描述"
+          :label="$t('profile.desc')"
         >
           <template slot-scope="scope">
             <span class="desc">{{ scope.row.change_desc }}</span>

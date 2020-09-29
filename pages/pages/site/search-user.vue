@@ -35,7 +35,6 @@ export default {
   async asyncData({ params, store }, callback) {
     if (!env.isSpider) {
       callback(null, {})
-      return
     }
     try {
       const resData = {}

@@ -29,7 +29,7 @@
             type="auth"
             class="auth-icon"
           />
-          <span class="real">已实名认证</span>
+          <span class="real">{{ $t('modify.isrealname') }}</span>
         </div>
         <div
           v-else-if="userInfo && !userInfo.isReal && forums &&forums.qcloud && forums.qcloud.qcloud_faceid"
@@ -39,12 +39,12 @@
             class="auth-icon"
             type="warning"
           />
-          <span class="nreal">未实名认证</span>
+          <span class="nreal">{{ $t('modify.norealname') }}</span>
         </div>
         <span
           class="setavatar"
           @click="setAvatar"
-        >设置头像</span>
+        >{{ $t('modify.setavatar') }}</span>
         <show-avatar
           v-if="isShowAvatar"
           :user-id="userId"
@@ -115,7 +115,7 @@
               type="primary"
               class="ebutton"
               @click="nameSub"
-            >确定修改</el-button>
+            >{{ $t('profile.confirmModify') }}</el-button>
           </form>
         </div>
       </div>
@@ -137,7 +137,7 @@
         <div
           v-show="!isSignModify"
           :class="userInfo.signature !=='' ?'myprofile-btom-sign':'myprofile-btom-sign signcolor'"
-        >{{ userInfo.signature ? userInfo.signature : '暂无签名' }}</div>
+        >{{ userInfo.signature ? userInfo.signature : $t('modify.nosignature') }}</div>
         <div
           v-show="isSignModify"
           class="text"
@@ -147,7 +147,7 @@
             v-model="inputVal"
             type="textarea"
             :rows="5"
-            placeholder="请输入签名内容"
+            :placeholder="$t('modify.inputsignautre')"
             @input="fun"
           />
           <div class="cannum">{{ $t('modify.canalsoinput')+ `${num-wordnumber}` + $t('modify.wordnumber') }}</div>
@@ -189,7 +189,7 @@
             <el-input
               ref="oldphone"
               v-model="oldVerifyCode"
-              placeholder="请输入已绑定手机验证码"
+              :placeholder="$t('modify.oldverifycode')"
               class="phone-input"
             />
 
@@ -201,13 +201,13 @@
 
             <el-input
               v-model="newphon"
-              placeholder="输入新手机号码"
+              :placeholder="$t('modify.newphonnumber')"
               :class="isChange ? 'passbtom phonechange': 'passbtom'"
               @input="changeinput"
             />
             <el-input
               v-model="newVerifyCode"
-              placeholder="请输入新手机验证码"
+              :placeholder="$t('modify.inputnewverifycode')"
               class="phone-input"
             />
             <el-button
@@ -324,7 +324,7 @@
 
     <!-- 微信 -->
     <div
-      v-if="userInfo"
+      v-if="userInfo && forums && forums.passport && forums.passport.oplatform_close"
       :class="isWechatModify ? 'myprofile-c bgcolor': 'myprofile-c'"
     >
       <div class="profileborder">
@@ -338,15 +338,15 @@
         <div
           v-show="!isWechatModify"
           class="myprofile-btom2"
-        >{{ userInfo && userInfo.wechat ?userInfo.wechat.nickname :'未绑定微信' }}</div>
+        >{{ userInfo && userInfo.wechat ?userInfo.wechat.nickname : $t('profile.withoutbindwechat') }}</div>
         <div
           v-show="isWechatModify"
           class="wehcat-bind"
         >
-          <el-image
+          <!-- <el-image
             :src="wechatBind.base64_img"
             class="qr-code"
-          />
+          /> -->
           <div>请用微信扫一扫</div>
           <div>扫码上方二维码</div>
         </div>
@@ -366,12 +366,12 @@
           <span
             class="setavatar"
             @click="realModify"
-          >{{ (!isRealModify ? $t('profile.tocertification') : '暂不认证') }}</span>
+          >{{ (!isRealModify ? $t('profile.tocertification') : $t('profile.cancelcertification')) }}</span>
         </div>
         <div
           v-show="!isRealModify"
           class="myprofile-btom2 myprofile-btom3"
-        >{{ userInfo && userInfo.realname ?'已设置':'未实名认证' }}</div>
+        >{{ userInfo && userInfo.realname ?'已设置':$t('profile.withoutcertification') }}</div>
         <div
           v-show="isRealModify"
           class="myprofile-btom"
@@ -394,7 +394,7 @@
             type="primary"
             class="ebutton"
             @click="realSub"
-          >确定提交</el-button>
+          >{{ $t('profile.comfirmsubmit') }}</el-button>
         </div>
       </div>
     </div>

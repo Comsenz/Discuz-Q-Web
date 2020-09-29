@@ -2,7 +2,7 @@
   <div class="site-info-container">
     <div v-if="forums">
       <img
-        :src="forums.set_site && forums.set_site.site_logo ? forums.set_site.site_logo : require('static/logo.png')"
+        :src="forums.set_site && forums.set_site.site_logo ? forums.set_site.site_logo : require('@/assets/logo.png')"
         alt="logo"
         class="logo"
       >
@@ -78,9 +78,6 @@ export default {
   layout: 'center_layout',
   name: 'SiteInfo',
   mixins: [handleError],
-  // meta: {
-  //   requiresAuth: true
-  // },
   data() {
     return {
       userId: this.$store.state.user.info.id, // 获取当前登陆用户的ID

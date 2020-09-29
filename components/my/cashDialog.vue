@@ -12,7 +12,7 @@
       />
       <el-select
         v-model="value"
-        placeholder="请选择"
+        :placeholder="$t('profile.pleaseselect')"
         @change="confirm"
       >
         <el-option
@@ -45,7 +45,7 @@
         />
         <el-table-column
           prop="cash_status"
-          label="记录描述"
+          :label="$t('profile.desc')"
           :formatter="statusFormat2"
         >
           <template slot-scope="scope">

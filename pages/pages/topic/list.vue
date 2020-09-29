@@ -44,7 +44,6 @@ export default {
   async asyncData({ params, store, query }, callback) {
     if (!env.isSpider) {
       callback(null, {})
-      return
     }
     const topicsParams = {
       include: 'lastThread,lastThread.firstPost,lastThread.firstPost.images',

@@ -19,10 +19,10 @@
         <div
           v-if="error"
           class="amount"
-        >{{ $t('modify.passwordinputerro') }}</div>
+        >{{ passwordErrorTip ? passwordErrorTip : $t('modify.passwordinputerro') }}</div>
       </div>
-      <div class="findpaypwd" @click="findpaypwd">
-        忘记支付密码？ 找回
+      <div v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms" class="findpaypwd" @click="findpaypwd">
+        {{ $t('modify.forgetpaypassword') }}
       </div>
     </div>
   </message>
@@ -32,17 +32,22 @@
 export default {
   name: 'WalletPassword',
   props: {
-    price: {
-      type: [Number, String],
-      default: ''
-    },
     error: {
       type: Boolean,
       default: false
+    },
+    passwordErrorTip: {
+      type: String,
+      default: ''
     }
   },
   data() {
     return {
+    }
+  },
+  computed: {
+    forums() {
+      return this.$store.state.site.info.attributes || {}
     }
   },
   methods: {

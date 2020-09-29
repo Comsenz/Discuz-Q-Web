@@ -13,6 +13,7 @@
         <password-input :error="passwordError" @password="password => $emit('password', password)" @type="$emit('update:passwordError', false)" />
         <div v-show="passwordError" class="error-tip">{{ passwordErrorTip ? passwordErrorTip : $t('pay.passwordError') }}</div>
       </div>
+      <span class="forget-password" @click="$emit('findPassword')">{{ $t('topic.forgetPasswordFindIt') }}</span>
     </div>
   </message-box>
 </template>
@@ -40,6 +41,7 @@ export default {
 <style lang="scss" scoped>
   .container {
     height: 370px;
+    position: relative;
     > .block {
       display: flex;
       flex-direction: column;
@@ -69,6 +71,14 @@ export default {
           }
         }
       }
+    }
+    > .forget-password {
+      position: absolute;
+      color: #8590a6;
+      cursor: pointer;
+      font-size: 12px;
+      right: 20px;
+      bottom: 20px;
     }
   }
 

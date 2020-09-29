@@ -26,7 +26,7 @@ const plugins = [
     }
   ]
 ]
-//  生成环境清除log
+//  生产环境清除log
 if (isProduction) {
   plugins.push('transform-remove-console')
 }
@@ -84,7 +84,8 @@ export default {
     '@/directive/permission',
     '@/plugins/route',
     { src: '@/plugins/cropper', ssr: false },
-    { src: '@/plugins/viewer', ssr: false }
+    { src: '@/plugins/viewer', ssr: false },
+    { src: '@/plugins/dzqjs', ssr: false }
   ],
   /*
   ** Auto import components
@@ -103,7 +104,9 @@ export default {
     'nuxt-i18n',
     '@nuxtjs/proxy'
   ],
-
+  generate: {
+    routes: ['/pages/invite/index', '/pages/manage/index', '/pages/site/index']
+  },
   i18n: {
     locales: ['en', 'zh'],
     defaultLocale: 'zh',
@@ -160,6 +163,7 @@ export default {
       // if (context.isClient && !context.isDev) {
       // config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
       // }
+
       // Run ESLint on save
       if (context.isDev && context.isClient) {
         config.module.rules.push({

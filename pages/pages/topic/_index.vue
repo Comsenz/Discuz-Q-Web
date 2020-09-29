@@ -45,12 +45,17 @@
           :password-error-tip="passwordErrorTip"
           @close="showPasswordInput = passwordError = false"
           @password="payOrder"
+          @findPassword="onFindPassword"
         />
-        <topic-wx-pay
-          v-if="showWxPay"
-          :qr-code="payment.wechat_qrcode"
-          @close="showWxPay = false"
+        <topic-wx-pay v-if="showWxPay" :qr-code="payment.wechat_qrcode" @close="showWxPay = false" />
+        <find-paypwd
+          v-if="findPassword && currentUser.originalMobile"
+          :mobile="currentUser.mobile"
+          :phonenum="currentUser.originalMobile"
+          @close="findPassword = false"
         />
+        <!-- 找回密码，没绑定手机 -->
+        <without-phone v-if="findPassword && !currentUser.originalMobile" @close="findPassword = false" />
         <comment :thread-id="threadId" />
       </div>
     </main>
@@ -78,24 +83,7 @@ export default {
       return { thread: threadData, article: threadData.firstPost, postId: threadData.firstPost._jv.id }
     } catch (error) {
       // console.log('ssr err', error)
-
-      return {
-        articleLoading: true
-
-        // _error__abc: {
-        //   error_keys: Object.keys(error),
-        //   error: String(error),
-        //   errno: error.errno,
-        //   code: error.code,
-        //   syscall: error.syscall,
-        //   address: error.address,
-        //   port: error.port,
-        //   config: error.config,
-        //   request_domain: (error.request || {}).domain,
-        //   request_keys: Object.keys(error.request || {}),
-        //   response_keys: Object.keys(error.response || {})
-        // }
-      }
+      return { articleLoading: true }
     }
   },
   data() {
@@ -125,7 +113,8 @@ export default {
       articleLoading: false,
       canRewardOrPaid: false,
       passwordError: false,
-      passwordErrorTip: ''
+      passwordErrorTip: '',
+      findPassword: false
     }
   },
   computed: {
@@ -264,7 +253,11 @@ export default {
         }
       }, e => {
         const { response: { data: { errors }}} = e
-        if (errors[0].code === 'pay_password_failures_times_toplimit') this.showPasswordInput = false
+        if (errors[0].code === 'pay_password_failures_times_toplimit') {
+          this.passwordError = true
+          this.passwordErrorTip = this.$t('core.pay_password_failures_times_toplimit')
+          return
+        }
         if (errors[0].code === 'validation_error') {
           this.passwordError = true
           this.passwordErrorTip = errors[0].detail[0]
@@ -292,6 +285,11 @@ export default {
     getOrderStatus() {
       const params = { _jv: { type: `/orders/${this.payment.orderNo}` }, orderNo: this.payment.orderNo }
       return this.$store.dispatch('jv/get', params).then(data => { this.payment.status = data.status }, e => this.handleError(e))
+    },
+    onFindPassword() {
+      this.showPasswordInput = this.passwordError = false
+      this.passwordErrorTip = ''
+      this.findPassword = true
     },
     postCommand(item) {
       if (this.defaultLoading) return
