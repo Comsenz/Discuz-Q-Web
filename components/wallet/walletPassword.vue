@@ -21,7 +21,7 @@
           class="amount"
         >{{ $t('modify.passwordinputerro') }}</div>
       </div>
-      <div class="findpaypwd" @click="findpaypwd">
+      <div v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms" class="findpaypwd" @click="findpaypwd">
         忘记支付密码？ 找回
       </div>
     </div>
@@ -43,6 +43,11 @@ export default {
   },
   data() {
     return {
+    }
+  },
+  computed: {
+    forums() {
+      return this.$store.state.site.info.attributes || {}
     }
   },
   methods: {

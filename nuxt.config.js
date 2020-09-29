@@ -63,7 +63,8 @@ export default {
   },
   router: {
     middleware: 'header',
-    routeNameSplitter: '/'
+    routeNameSplitter: '/',
+    base: './'
   },
   /*
   ** Global CSS

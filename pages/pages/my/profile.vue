@@ -29,7 +29,7 @@
             type="auth"
             class="auth-icon"
           />
-          <span class="real">{{ $t('profile.isrealname') }}</span>
+          <span class="real">{{ $t('modify.isrealname') }}</span>
         </div>
         <div
           v-else-if="userInfo && !userInfo.isReal && forums &&forums.qcloud && forums.qcloud.qcloud_faceid"
@@ -39,7 +39,7 @@
             class="auth-icon"
             type="warning"
           />
-          <span class="nreal">{{ $t('profile.norealname') }}</span>
+          <span class="nreal">{{ $t('modify.norealname') }}</span>
         </div>
         <span
           class="setavatar"
@@ -324,7 +324,7 @@
 
     <!-- 微信 -->
     <div
-      v-if="userInfo"
+      v-if="userInfo && forums && forums.passport && forums.passport.oplatform_close"
       :class="isWechatModify ? 'myprofile-c bgcolor': 'myprofile-c'"
     >
       <div class="profileborder">
