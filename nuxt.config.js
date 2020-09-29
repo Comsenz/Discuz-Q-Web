@@ -63,8 +63,7 @@ export default {
   },
   router: {
     middleware: 'header',
-    routeNameSplitter: '/',
-    base: './'
+    routeNameSplitter: '/'
   },
   /*
   ** Global CSS
@@ -163,6 +162,7 @@ export default {
       // if (context.isClient && !context.isDev) {
       // config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
       // }
+
       // Run ESLint on save
       if (context.isDev && context.isClient) {
         config.module.rules.push({
