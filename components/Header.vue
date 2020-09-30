@@ -2,9 +2,10 @@
   <div ref="head" class="header isFixed">
     <div class="header-container">
       <div class="flex">
-        <div class="logo" @click="toIndex">
+        <div class="logo" @click="toIndex" >
           <img
-            :src="forums && forums.set_site && forums.set_site.site_header_logo ? forums.set_site.site_header_logo : require('@/assets/logo.png')"
+            v-if="forums && forums.set_site && forums.set_site.site_logo"
+            :src="forums && forums.set_site && forums.set_site.site_logo ? forums.set_site.site_logo : require('@/assets/logo.png')"
             alt="头部logo"
           >
         </div>
@@ -187,8 +188,9 @@ export default {
       height: 50px;
     }
     .logo {
-      max-width: 140px;
+      max-width: 280px;
       max-height: 35px;
+      height:25px;
       cursor: pointer;
       display: flex;
       @media screen and (max-width: 1005px) {
@@ -197,6 +199,7 @@ export default {
       }
       img {
         height: 100%;
+        width: 100%;
       }
     }
     ::v-deep.h-search {
