@@ -22,7 +22,7 @@
       </div>
       <!-- 未登录 -->
       <div v-if="!userId || siteClose">
-        <el-button size="small" class="h-button h-button1" @click="login">{{ $t('user.login') }}</el-button>
+        <el-button :disabled="siteClose" size="small" class="h-button h-button1" @click="login">{{ $t('user.login') }}</el-button>
         <el-button :disabled="(forums && forums.set_reg && !forums.set_reg.register_close) || siteClose" size="small" class="h-button h-button2" @click="register">{{ $t('user.register') }}</el-button>
       </div>
       <!-- 已登录 -->
