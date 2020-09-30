@@ -117,10 +117,11 @@ export default {
       }
       this.$store.dispatch('jv/get', ['users', { params }]).then(data => {
         const { _jv: { json: { meta }}} = data
-        const { _jv: { json: { links }}} = data
+        // const { _jv: { json: { links }}} = data
         this.loading = false
         this.searchTotal = meta.total
-        if (data.length > 0 && links.first.split('username')[1].split('%2A')[1] === this.searchValue) this.searchList.push(...data)
+        // data.length > 0 && links.first.split('username')[1].split('%2A')[1] === this.searchValue
+        if (data.length > 0) this.searchList.push(...data)
       }, e => this.handleError(e))
     },
     load() {

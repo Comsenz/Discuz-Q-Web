@@ -21,6 +21,7 @@
       </div>
       <div class="other">
         <el-input
+          v-if="isOther"
           v-model="otherReasonValue"
           type="textarea"
           :rows="5"
