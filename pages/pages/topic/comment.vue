@@ -102,7 +102,7 @@ export default {
       pageLimit: 5,
       growthFactor: 5,
       replyCount: 0,
-      isPositiveSort: true,
+      isPositiveSort: false,
       replyList: [],
       replyLoading: false,
       scrollLoading: false,
@@ -152,7 +152,7 @@ export default {
           'page[limit]': this.pageLimit,
           'filter[isDeleted]': 'no',
           'filter[isComment]': 'yes',
-          sort: this.isPositiveSort ? '-createdAt' : 'createdAt',
+          sort: this.isPositiveSort ? 'createdAt' : '-createdAt',
           include: replyInclude
         }
       }]).then(response => {

@@ -74,7 +74,7 @@ export default {
       postCount: 0,
       pageLimit: 5,
       growthFactor: 5,
-      isPositiveSort: true,
+      isPositiveSort: false,
       onCommentPublish: false,
       onEditCommentPublish: false,
       comment: { text: '', imageList: [], attachedList: [] },
@@ -100,7 +100,7 @@ export default {
         'filter[isComment]': 'no',
         'page[number]': 1,
         'page[limit]': this.pageLimit,
-        sort: this.isPositiveSort ? '-createdAt' : 'createdAt',
+        sort: this.isPositiveSort ? 'createdAt' : '-createdAt',
         include: postInclude
       }}]).then(data => {
         this.pageLimit += this.growthFactor
