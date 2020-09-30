@@ -4,7 +4,7 @@
       <div class="flex">
         <div class="logo" @click="toIndex" >
           <img
-            v-if="forums && forums.set_site && forums.set_site.site_logo"
+            v-show="forums && forums.set_site"
             :src="forums && forums.set_site && forums.set_site.site_logo ? forums.set_site.site_logo : require('@/assets/logo.png')"
             alt="头部logo"
           >
@@ -199,7 +199,7 @@ export default {
       }
       img {
         height: 100%;
-        width: 100%;
+        // width: 100%;
       }
     }
     ::v-deep.h-search {
