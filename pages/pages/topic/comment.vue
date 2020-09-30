@@ -152,7 +152,7 @@ export default {
           'page[limit]': this.pageLimit,
           'filter[isDeleted]': 'no',
           'filter[isComment]': 'yes',
-          sort: this.isPositiveSort ? '-createdAt' : 'createdAt',
+          sort: this.isPositiveSort ? 'createdAt' : '-createdAt',
           include: replyInclude
         }
       }]).then(response => {

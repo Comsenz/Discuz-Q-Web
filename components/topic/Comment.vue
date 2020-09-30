@@ -100,7 +100,7 @@ export default {
         'filter[isComment]': 'no',
         'page[number]': 1,
         'page[limit]': this.pageLimit,
-        sort: this.isPositiveSort ? '-createdAt' : 'createdAt',
+        sort: this.isPositiveSort ? 'createdAt' : '-createdAt',
         include: postInclude
       }}]).then(data => {
         this.pageLimit += this.growthFactor
