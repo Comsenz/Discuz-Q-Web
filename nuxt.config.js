@@ -108,14 +108,14 @@ export default {
     routes: ['/pages/invite/index', '/pages/manage/index', '/pages/site/index']
   },
   i18n: {
-    locales: ['en', 'zh'],
+    // locales: ['en', 'zh'],
     defaultLocale: 'zh',
     vueI18n: {
       fallbackLocale: 'zh',
       messages: {
-        en: {
-          ...enLocale
-        },
+        // en: {
+        //   ...enLocale
+        // },
         zh: {
           ...zhLocale
         }
