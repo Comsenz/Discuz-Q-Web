@@ -20,7 +20,8 @@
       </div>
       <button v-if="command[usersIndex].showButton && command[usersIndex].buttonText && canRewardOrPaid" @click="onClick(command, usersIndex)">
         <svg-icon style="font-size: 16px; fill: white; margin-right: 10px" :type="command[usersIndex].icon" />
-        <span>{{ $t(`topic.${command[usersIndex].buttonText}`) }}</span>
+        <span v-if="command[1].showButton && command[1].buttonText && canRewardOrPaid">{{ $t(`topic.${command[usersIndex].buttonText}`) }}</span>
+        <span v-if="command[0].showButton && command[0].buttonText && canRewardOrPaid">{{ '支付'+ `${paidInformation.price}` + $t(`topic.${command[usersIndex].buttonText}`) }}</span>
       </button>
     </div>
   </div>
