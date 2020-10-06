@@ -74,6 +74,8 @@ export default {
     margin-top: 50px;
     color: #6d6d6d;
     margin-bottom: 50px;
+    white-space: pre-line;
+    text-align: justify;
   }
 }
 </style>

@@ -136,7 +136,6 @@ import handleError from '@/mixin/handleError'
 import tencentCaptcha from '@/mixin/tencentCaptcha'
 
 export default {
-  name: 'Login',
   mixins: [handleError, tencentCaptcha],
   data() {
     return {

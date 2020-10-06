@@ -160,7 +160,6 @@ import { status } from '@/library/jsonapi-vuex/index'
 const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
 let QuickLogin = null
 export default {
-  name: 'Register',
   mixins: [
     handleError, tcaptchs
   ],

@@ -2,7 +2,7 @@
   <div ref="head" class="header isFixed">
     <div class="header-container">
       <div class="flex">
-        <div class="logo" @click="toIndex" >
+        <div class="logo" @click="toIndex">
           <img
             v-show="forums && forums.set_site"
             :src="forums && forums.set_site && forums.set_site.site_logo ? forums.set_site.site_logo : require('@/assets/logo.png')"
