@@ -55,6 +55,12 @@ export default {
       showVideoPop: false
     }
   },
+  computed: {
+    sizeLimit() {
+      const forums = this.$store.state.site.info.attributes || {}
+      return forums && forums.qcloud ? forums.qcloud.qcloud_vod_size : ''
+    }
+  },
   methods: {
     handleVideoRemove() {
       return this.$confirm(this.$t('topic.confirmDelete'), this.$t('discuzq.msgBox.title'), {
@@ -70,8 +76,8 @@ export default {
     },
     addVideo(file) {
       if (this.onUploadVideo) return
-      if (file.raw.size > 10485760) {
-        this.$message.error(this.$t('profile.filesizecannotexceed') + '10 MB')
+      if (this.sizeLimit && file.raw.size > this.sizeLimit * 1024 * 1024) {
+        this.$message.error(this.$t('profile.filesizecannotexceed') + this.sizeLimit + 'MB')
         this.$refs.upload.clearFiles()
         return
       }
