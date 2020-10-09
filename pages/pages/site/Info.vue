@@ -148,8 +148,8 @@ export default {
       const d = new Date(date)
       const year = d.getFullYear() + '年'
       console.log(typeof d.getMonth(), d.getMonth())
-      const month = d.getMonth() < 10 ? `${0}${d.getMonth() + 1}月` : d.getMonth() + 1 + '月'
-      const dated = d.getDate() < 10 ? 0`${0}${d.getDate()}日` : d.getDate() + '日'
+      const month = d.getMonth() < 10 ? `0${d.getMonth() + 1}月` : d.getMonth() + 1 + '月'
+      const dated = d.getDate() < 10 ? `0${d.getDate()}日` : d.getDate() + '日'
       return [year, month, dated].join('')
     },
     userinfo() {
