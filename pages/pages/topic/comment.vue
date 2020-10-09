@@ -271,6 +271,7 @@ export default {
           background: $background-color-grey;
           > .content-html {
             margin-top: 10px;
+            margin-bottom: 20px;
             word-break: break-all;
           }
           > .view-more {

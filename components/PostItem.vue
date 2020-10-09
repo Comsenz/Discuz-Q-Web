@@ -38,9 +38,12 @@
       <template v-if="item.firstPost">
         <div class="first-post" @click.self="toDetail">
           <div @click="onClickContent">
-            <div v-if="item.type === 1" class="title">{{ $t('home.released') }}<span class="blue">{{ item.title }}</span></div>
+            <div v-if="item.type === 1" class="title">{{ $t('home.released') }}
+              <svg-icon v-show="parseFloat(item.price) > 0" type="pay-yuan" class="blue" style="font-size: 17px; display: inline-block; margin-right: 5px;" />
+              <span class="blue ">{{ item.title }}</span></div>
             <div v-else class="content">
-              <div v-html="formatTopicHTML(item.firstPost.contentHtml)" />
+              <svg-icon v-show="payIconFormat(item.price) > 0" type="pay-yuan" class="icon-pay-yuan" />
+              <span v-html="payIconFormat(formatTopicHTML(item.firstPost.contentHtml), parseFloat(item.price) > 0)" />
             </div>
           </div>
           <!-- 图片 -->
@@ -237,6 +240,9 @@ export default {
   },
   methods: {
     // 点赞
+    payIconFormat(html, paid) {
+      return paid && html ? html.replace('<p>', '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;') : html
+    },
     handleLike() {
       if (this.loading) return
       if (!this.item.firstPost.canLike) {
@@ -384,6 +390,7 @@ export default {
       font-size: 12px;
     }
     .title {
+      display: inline-block;
       font-size: 16px;
       margin-bottom: 6px;
       @include text-hidden();
@@ -392,7 +399,16 @@ export default {
         color: $color-blue-base;
       }
     }
+    .icon-pay-yuan {
+      height: 24px;
+      font-size: 15px;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
     ::v-deep .content {
+      position: relative;
+      display: inline-block;
       @include text-hidden(4);
       line-height: 24px;
       font-size: 14px !important;
