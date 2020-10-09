@@ -11,11 +11,10 @@
 
       <div class="myprofile-top mtop">
         <Avatar
-          :user="{ id: userInfo.id, username: userInfo.username, avatarUrl: avataruserInfo.avatarUrl}"
+          :user="{ id: userInfo.id, username: userInfo.username, avatarUrl: avataruserInfo.avatarUrl, isReal: avataruserInfo.isReal}"
           :size="50"
           :round="true"
           class="avatar"
-          :is-real="userInfo.isReal"
         />
         <div class="usr">
           <span class="usrname">{{ userInfo.username }}</span>

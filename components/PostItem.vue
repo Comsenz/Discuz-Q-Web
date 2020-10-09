@@ -9,6 +9,7 @@
         id: item.user.id,
         username: item.user.username,
         avatarUrl: item.user.avatarUrl,
+        isReal: item.user.isReal
       }"
       class="avatar"
     />

@@ -5,7 +5,7 @@
       class="avatar"
     >
       <avatar
-        :user="{ id: item.sender.id,username: item.sender.username, avatarUrl: item.sender.avatarUrl}"
+        :user="{ id: item.sender.id,username: item.sender.username, avatarUrl: item.sender.avatarUrl, isReal: item.sender.isReal}"
         :size="50"
       />
       <div
@@ -18,7 +18,7 @@
       class="avatar"
     >
       <avatar
-        :user="{ id: item.recipient.id,username: item.recipient.username, avatarUrl: item.recipient.avatarUrl}"
+        :user="{ id: item.recipient.id,username: item.recipient.username, avatarUrl: item.recipient.avatarUrl, isReal: item.recipient.isReal}"
         :size="50"
       />
       <div

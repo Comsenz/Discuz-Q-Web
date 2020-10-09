@@ -29,10 +29,9 @@
       <!-- 已登录 -->
       <div v-if="userId && JSON.stringify(userInfo) !== '{}' && !siteClose" class="flex">
         <avatar
-          :user="{ id: userInfo.id, username: userInfo.username, avatarUrl: userInfo.avatarUrl}"
+          :user="{ id: userInfo.id, username: userInfo.username, avatarUrl: userInfo.avatarUrl, isReal: userInfo.isReal}"
           :size="35"
           :round="true"
-          :is-real="userInfo.isReal"
         />
         <nuxt-link v-if="userInfo.username && userInfo.id" :to="`/pages/profile/index?userId=${userInfo.id}`" class="menu-item user-name text-hidden">
           {{ userInfo.username }}

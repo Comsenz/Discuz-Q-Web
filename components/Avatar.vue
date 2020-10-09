@@ -1,30 +1,10 @@
 <template>
-  <a
-    v-if="user"
-    class="avatar-a"
-    :href="preventJump ? 'javascript:void(0)' : ('/pages/profile/index?userId=' + user.id)"
-    :class="[sizeClass]"
-  >
-    <img
-      v-if="avatarUrl && !errorUrl"
-      :src="user.avatarUrl"
-      class="img"
-      :class="[sizeClass, roundClass]"
-      :alt="user.username"
-      @error="error"
-    >
-    <span
-      v-else-if="styleText"
-      :class="['avatar', sizeClass, roundClass]"
-      :style="styleText"
-    >
+  <a v-if="user" class="avatar-a" :href="preventJump ? 'javascript:void(0)' : ('/pages/profile/index?userId=' + user.id)" :class="[sizeClass]">
+    <img v-if="avatarUrl && !errorUrl" :src="user.avatarUrl" class="img" :class="[sizeClass, roundClass]" :alt="user.username" @error="error">
+    <span v-else-if="styleText" :class="['avatar', sizeClass, roundClass]" :style="styleText">
       {{ usernameAt }}
     </span>
-    <svg-icon
-      v-if="isReal"
-      type="auth"
-      class="auth-icon"
-    />
+    <svg-icon v-if="user.isReal" type="auth" :class="{'auth-icon': true, 'auth-icon-round': round}" />
   </a>
 </template>
 
@@ -46,10 +26,6 @@ export default {
       default: false
     },
     preventJump: {
-      type: Boolean,
-      default: false
-    },
-    isReal: {
       type: Boolean,
       default: false
     }
@@ -160,11 +136,14 @@ export default {
 }
 .auth-icon {
   position: absolute;
-  right: 0;
-  bottom: 0px;
-  // z-index: 8;
+  right: -3px;
+  bottom: -3px;
   width: 11px;
   height: 13px;
+}
+.auth-icon-round {
+  right: 0;
+  bottom: 0;
 }
 .img{
   object-fit: cover;
