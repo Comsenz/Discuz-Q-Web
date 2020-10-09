@@ -162,8 +162,8 @@ export default {
     }
   },
   mounted() {
-    if (this.forums && this.forums.set_site && this.forums.set_site.site_name) {
-      this.htitle = this.forums.set_site.site_name
+    if (this.forums && this.forums.set_site) {
+      this.htitle = this.forums.set_site.site_name ? this.forums.set_site.site_name : 'Discuz! Q'
     }
     if (this.threadsStickyData.length === 0) {
       this.getThreadsSticky()
