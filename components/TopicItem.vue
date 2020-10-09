@@ -11,7 +11,7 @@
         <div class="first-post" @click.self="toDetail">
           <div @click="onClickContent">
             <div class="content">
-              <div v-html="formatTopicHTML(item.lastThread[0].firstPost.contentHtml)" />
+              <div v-html="formatTopicHTML(item.lastThread[0].firstPost.summary)" />
             </div>
           </div>
           <!-- 图片 -->
@@ -193,7 +193,7 @@ export default {
       font-size: 14px !important;
       color: #000;
       max-width: 585px;
-      max-height: 96px;
+      //max-height: 96px;
       p,
       h1,
       h2,

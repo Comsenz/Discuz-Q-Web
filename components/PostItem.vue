@@ -43,7 +43,7 @@
               <span class="blue ">{{ item.title }}</span></div>
             <div v-else class="content">
               <svg-icon v-show="payIconFormat(item.price) > 0" type="pay-yuan" class="icon-pay-yuan" />
-              <span v-html="payIconFormat(formatTopicHTML(item.firstPost.contentHtml), parseFloat(item.price) > 0)" />
+              <span v-html="payIconFormat(formatTopicHTML(item.firstPost.summary), parseFloat(item.price) > 0)" />
             </div>
           </div>
           <!-- 图片 -->
@@ -414,7 +414,7 @@ export default {
       font-size: 14px !important;
       color: #000;
       max-width: 585px;
-      max-height: 96px;
+      //max-height: 96px;
       p,
       h1,
       h2,
