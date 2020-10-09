@@ -93,30 +93,16 @@
       >{{ $t('site.joinnow') }}</el-button>
 
     </div>
-    <!-- <div
-      v-if="qrcodeShow"
-      class="qrco-overlay"
-    /> -->
     <topic-wx-pay
       v-if="qrcodeShow"
       :qr-code="codeUrl"
       @close="qrcodeShow = false"
     />
-    <!-- <el-dialog
-      :visible.sync="qrcodeShow"
-      width="320px"
-      class="model"
-      :show-close="false"
-    >
-      <img :src="codeUrl">
-    </el-dialog> -->
-
   </div>
 </template>
 
 <script>
 import handleError from '@/mixin/handleError'
-// import { time2YearMonthDay } from '@/utils/time'
 
 let payWechat = null
 export default {
