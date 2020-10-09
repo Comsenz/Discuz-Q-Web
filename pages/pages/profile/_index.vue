@@ -325,6 +325,7 @@ export default {
       userInfo: '',
       current: '', // 当前激活的tab
       activeName: '1', // 默认激活tab
+      profilename: '\u200E',
       can_create_dialog: false, // 创建私信权利
       headFixed: false,
       loading: false,
@@ -407,6 +408,7 @@ export default {
               this.loading = false
               this.dialog.id = res.dialog ? res.dialog._jv.id : 0
               this.dialog.name = res.username
+              this.profilename = `${this.dialog.name + this.$t('profile.myperson')}`
               this.userInfo = res
               this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
             }
@@ -520,7 +522,7 @@ export default {
   },
   head() {
     return {
-      title: this.$t('profile.myperson')
+      title: this.profilename
     }
   }
 }

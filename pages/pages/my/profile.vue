@@ -939,10 +939,12 @@ export default {
     },
     // 用户名提交
     nameSub() {
-      if (this.newName) {
-        this.changename()
-      } else {
+      if (!this.newName) {
         this.$message.error(this.$t('modify.emptyname'))
+      } else if (this.newName === this.userInfo.username) {
+        this.$message.error(this.$t('modify.repeatname'))
+      } else {
+        this.changename()
       }
     },
     changename() {

@@ -1,6 +1,6 @@
 <template>
   <message
-    title="举报"
+    :title="$t('report.reportTitle')"
     @close="$emit('close')"
   >
     <div class="reportcontainer">
@@ -9,14 +9,14 @@
           v-model="radio"
           @change="select"
         >
-          <el-radio label="advertisingRubbish">广告垃圾</el-radio>
-          <el-radio label="illegalContent">违规内容</el-radio>
-          <el-radio label="maliciousIrrigation">恶意灌水</el-radio>
-          <el-radio label="repeatPost">重复发帖</el-radio>
+          <el-radio label="advertisingRubbish">{{ this.$t('report.advertisingRubbish') }}</el-radio>
+          <el-radio label="illegalContent">{{ this.$t('report.illegalContent') }}</el-radio>
+          <el-radio label="maliciousIrrigation">{{ this.$t('report.maliciousIrrigation') }}</el-radio>
+          <el-radio label="repeatPost">{{ this.$t('report.repeatPost') }}</el-radio>
           <el-radio
             label="other"
             class="otherr"
-          >其他理由</el-radio>
+          >{{ this.$t('report.otherreason') }}</el-radio>
         </el-radio-group>
       </div>
       <div class="other">
@@ -26,7 +26,7 @@
           type="textarea"
           :rows="5"
           :disabled="!isOther"
-          placeholder="请输入举报理由"
+          :placeholder="$t('report.enterOtherReason')"
         />
       </div>
     </div>
@@ -36,12 +36,12 @@
           class="comfirm"
           type="small"
           @click="reportConfirmClick(type)"
-        >确认</el-button>
+        >{{ this.$t('report.confirm') }}</el-button>
         <el-button
           class="cancel"
           type="small"
           @click="reportCancelClick"
-        >取消</el-button>
+        >{{ this.$t('report.cancel') }}</el-button>
       </div>
     </div>
   </message>

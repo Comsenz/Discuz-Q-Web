@@ -640,6 +640,7 @@ export default {
     numbermodifitions: '用户名只可修改一次',
     submit: '提交',
     emptyname: '名字不能为空',
+    repeatname: '修改用户名不能与之前用户名一致',
     modifysucc: '名字修改成功',
     phonbound: '已绑定手机',
     placeEnterCode: '请输入短信验证码',
@@ -1019,6 +1020,11 @@ export default {
     confirm: '确认',
     cancel: '取消',
     enterOtherReason: '请输入其他理由',
-    reportSucceed: '举报成功'
+    reportSucceed: '举报成功',
+    advertisingRubbish: '广告垃圾',
+    illegalContent: '违规内容',
+    maliciousIrrigation: '恶意灌水',
+    repeatPost: '重复发帖',
+    otherreason: '其他理由'
   }
 }
