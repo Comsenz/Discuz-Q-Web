@@ -325,7 +325,7 @@ export default {
       userInfo: '',
       current: '', // 当前激活的tab
       activeName: '1', // 默认激活tab
-      profilename: '',
+      profilename: '\u200E',
       can_create_dialog: false, // 创建私信权利
       headFixed: false,
       loading: false,

@@ -150,7 +150,7 @@ export default {
       timer: null, // 轮询获取新主题 定时器
       threadCount: 0, // 主题总数
       total: 0, // 新的主题数，通过轮询获取
-      htitle: ''
+      htitle: '\u200E'
     }
   },
   computed: {
