@@ -197,7 +197,7 @@ export default {
         max-height: 30px;
       }
       img {
-        height: 100%;
+        height: 25px;
         // width: 100%;
       }
     }
