@@ -152,7 +152,6 @@ export default {
   data() {
     return {
       contentEditor: {},
-
       selectionStart: 0,
       selectionEnd: 0,
       pickingLocation: false,
@@ -262,6 +261,8 @@ export default {
     },
     autoHeight() {
       if (this.editorStyle === 'chat') return // 聊天框不需要自动高度
+      // 编辑评论时需要改变内容才会触发自动高度，这里判断评论字数超过一定数量时给textarea一个初始高度以防高度不变导致内容无法展示
+      if (this.post.text.length > 310) this.textarea.style.height = '180px'
       this.textarea.onkeyup = function() {
         // textarea 自动高度，通过 scrollHeight 赋值给 height
         // 当行数减少是 scrollHeight 只增不减，所以需要先把 height = auto
@@ -496,7 +497,8 @@ export default {
 
     .tip {
       position: absolute;
-      bottom: 50px;
+      // bottom: 50px;
+      bottom: 45px;
       right: 10px;
       color: #D0D4DC;
     }
