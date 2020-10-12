@@ -129,7 +129,7 @@
       >
         <div>
           <el-table
-            v-loading="loading"
+            v-loading="loading2"
             :data="userList"
             style="width:100%"
           >
@@ -181,8 +181,8 @@
             layout="total, sizes, prev, pager, next, jumper"
             :total="searchTotal"
             class="pagination"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
+            @size-change="handleSizeChange2"
+            @current-change="handleCurrentChange2"
           />
         </div>
       </div>
@@ -221,6 +221,7 @@ export default {
       pageNum: 1,
       pageSize: 10,
       loading: false,
+      loading2: false,
       hasMore: false,
       unbundlingArry: [], // 解绑用户组
       unbundUserData: [], // 已屏蔽用户组
@@ -251,6 +252,16 @@ export default {
     handleCurrentChange(val) {
       this.pageNum = val
       this.getShieldList()
+    },
+    handleSizeChange2(val) {
+      console.log(`当前页: ${val}`)
+      this.pageNum = 1
+      this.pageSize = val
+      this.getUserList(this.inputVal)
+    },
+    handleCurrentChange2(val) {
+      this.pageNum = val
+      this.getUserList(this.inputVal)
     },
     // 获取黑名单数据
     getShieldData() {
@@ -326,6 +337,7 @@ export default {
     },
     // 搜索用户列表
     getUserList(key) {
+      this.loading2 = true
       const params = {
         include: 'groups',
         sort: 'createdAt',
@@ -334,9 +346,6 @@ export default {
         'filter[username]': `*${key}*`
       }
       this.$store.dispatch('jv/get', ['users', { params }]).then(res => {
-        if (res._jv) {
-          delete res._jv
-        }
         console.log('用户搜索', res)
         res.forEach((v, i) => {
           res[i].groupName = v.groups[0] ? v.groups[0].name : ''
@@ -344,8 +353,8 @@ export default {
         // 过滤搜索用户中已屏蔽的用户和当前登录用户
         const data = res.filter(item => this.unbundUserData.indexOf(item.id) === -1)
         this.userList = data
-        this.searchTotal = this.userList.length
-      })
+        this.searchTotal = res._jv.json.meta.total
+      }, e => this.handleError(e)).finally(() => { this.loading2 = false })
     },
     // 屏蔽用户
     shieldUser(uid) {
@@ -489,6 +498,7 @@ export default {
 ::v-deep.el-table .cell {
   padding-left: 10px;
   font-weight: 400;
+  white-space: nowrap;
 }
 ::v-deep .el-table thead {
   color: #303133;
