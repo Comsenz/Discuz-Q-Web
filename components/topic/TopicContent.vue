@@ -316,10 +316,10 @@ export default {
 
     > .tag {
       height: 25px;
-      line-height: 25px;
-      text-align: center;
       padding: 0 8px;
-      display: inline-block;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
       border-radius: 12.5px;
       margin-right: 15px;
       margin-top: 35px;

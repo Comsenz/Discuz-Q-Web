@@ -12,7 +12,7 @@
     </template>
     <div v-show="previewImages.length < limit" class="upload" @click="onClick">
       <input id="upload" :accept="accept" type="file" multiple @input="onInput">
-      <svg-icon class="upload-icon" type="add" />
+      <svg-icon class="upload-icon" type="add" style="fill: #1878F3" />
     </div>
   </div>
 </template>

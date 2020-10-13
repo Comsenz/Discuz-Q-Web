@@ -405,7 +405,7 @@ export default {
       position: absolute;
       top: 0;
       left: 0;
-      color:#333333;
+      color: #8590A6;
     }
     ::v-deep .content {
       position: relative;

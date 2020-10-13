@@ -105,6 +105,7 @@ export default {
       }}]).then(data => {
         this.pageLimit += this.growthFactor
         this.commentList = data
+        console.log(data, 'dat')
         // TODO postCount 不包括审核中的回复
         this.postCount = data.length > 0 ? (data[0].thread.postCount - 1) : 0
       }, e => this.handleError(e)).finally(() => { this.commitLoading = this.scrollLoading = false })

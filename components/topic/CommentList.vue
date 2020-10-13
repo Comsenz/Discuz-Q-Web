@@ -24,9 +24,9 @@
             fit="cover"
           />
         </div>
-        <div class="actions">
+        <div v-show="comment.isApproved === 1" class="actions">
           <div class="left">
-            <span v-if="comment.canLike" @click="$emit('like', {comment, index})">
+            <span v-show="comment.canLike" @click="$emit('like', {comment, index})">
               <svg-icon :type="comment.isLiked ? 'liked' : 'like'" style="font-size: 18px" />
               <span class="text">{{ $t('topic.like') }} {{ comment.likeCount > 0 ? comment.likeCount : '' }}</span>
             </span>
@@ -228,6 +228,7 @@ export default {
         word-break: break-all;
         margin-top: 10px;
         font-size: 14px !important;
+        margin-bottom: 20px;
         ::v-deep p {
           font-size: 14px !important;
         }
@@ -239,7 +240,6 @@ export default {
       }
 
       > .actions {
-        margin-top: 20px;
         margin-bottom: 20px;
         width: 100%;
         display: flex;

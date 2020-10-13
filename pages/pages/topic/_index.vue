@@ -2,7 +2,9 @@
   <div v-loading.fullscreen="defaultLoading" element-loading-background="rgba(0, 0, 0, 0)" class="page-post">
     <main v-loading="articleLoading">
       <div class="container-post">
-        <div v-if="thread.isApproved === 0" class="checking">{{ $t('topic.examineTip') }}</div>
+        <div v-if="thread.isApproved === 0" class="checking">
+          {{ thread.threadVideo && thread.threadVideo.status === 0 ? $t('topic.VideoTranscoding') : $t('topic.examineTip') }}
+        </div>
         <topic-header
           :author="thread.user || {}"
           :thread="thread"
