@@ -45,12 +45,13 @@ export default {
     },
     sizeLimit: {
       type: Number,
-      default: 9999
+      default: 99999999999999999
     }
   },
   data() {
     return {
-      previewImages: []
+      previewImages: [],
+      onUpload: false
     }
   },
   computed: {
@@ -65,6 +66,7 @@ export default {
     onInput(e) {
       const files = e.target.files
       const fileArray = []
+      if (this.onUpload) return this.$message.warning('请等待上传中的图片完成上传')
       this.checkSizeLimit(files)
       if (!this.checkSizeLimit(files)) return this.$message.error(`图片不可大于 ${this.sizeLimit / 1024 / 1024} MB`)
       if (this.previewImages.length + files.length > this.limit) {
@@ -101,14 +103,21 @@ export default {
       return service.post(this.action, formData, config)
     },
     uploadFiles(promiseList) {
+      this.onUpload = true
       Promise.all(promiseList).then(resList => {
-        // TODO 失败的时候取消照片
         this.previewImages.map(item => { item.progress = 100 }) // 请求响应后，更新到 100%
         const files = resList.map(item => item.data.data)
         const _fileList = []
         files.forEach(item => _fileList.push({ id: item.id, name: item.attributes.fileName, url: item.attributes.url }))
         this.$emit('success', _fileList)
-      }, e => console.log(e, 'error'))
+        this.onUpload = false
+      }, e => {
+        // 失败的时候取消对应的预览照片
+        const length = promiseList.length
+        this.previewImages.splice(this.previeImages.length - length, length)
+        this.$message.error('图片上传失败, 请稍后再试')
+        console.log('error => ', e)
+      })
     },
     removeItem(index) {
       this.previewImages[index].deleted = true // 删除动画
@@ -149,7 +158,7 @@ export default {
 .container-upload {
   display: flex;
   flex-wrap: wrap;
-  max-width: 650px;
+  max-width: 660px;
 
   > .preview-item {
     position: relative;
