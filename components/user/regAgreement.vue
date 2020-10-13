@@ -20,15 +20,6 @@
       @click="open('privacy')"
     >{{ `《${this.$t('permission.user.agreementPrivacy')}》` }}
     </span>
-    <!-- <reg-message
-      v-if="showagree"
-      :title="popTitle"
-      :content="popDetail"
-      @close="showagree = false"
-    >
-      <div class="content">{{ popDetail }}</div>
-      <div class="moreheight">.</div>
-    </reg-message> -->
   </div>
 </template>
 
