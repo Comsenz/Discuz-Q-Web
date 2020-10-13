@@ -408,7 +408,7 @@ export default {
   color: #303133;
 }
 ::v-deep .el-pagination .btn-prev {
-  margin-left: 110px;
+  margin-left: 100px;
 }
 ::v-deep .el-pagination__jump {
   position: absolute;
