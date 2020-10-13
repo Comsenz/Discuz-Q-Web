@@ -204,7 +204,13 @@ export default {
         font-size: 14px !important;
       }
       img {
+        max-width: 100%;
+        max-height: 200px;
+        overflow: hidden;
+      }
+      .qq-emotion {
         height: 22px;
+        margin: 0
       }
       a {
         color: $color-blue-base;
@@ -216,8 +222,9 @@ export default {
         max-height: 80px;
         line-height: 20px;
         max-width: 410px;
-        img {
-          height: 20px;
+        .qq-emotion {
+          height: 22px;
+          margin: 0
         }
       }
     }
