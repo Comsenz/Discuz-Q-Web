@@ -308,7 +308,6 @@ export default {
   margin-top: 62px;
   flex-direction: column;
   .info-title {
-    // width: 130px;
     height: 35px;
     font-size: 26px;
   }
@@ -338,19 +337,15 @@ export default {
   }
   .paymoney {
     text-align: center;
-    // width: 90px;
     font-weight: bold;
     font-size: 16px;
   }
   .workdate {
-    // width: 130px;
     text-align: center;
     font-size: 16px;
     font-family: Microsoft YaHei;
   }
   .workdate2 {
-    // position: absolute;
-    // width: 326px;
     font-weight: 400;
     word-break: break-all;
     font-family: Microsoft YaHei;
@@ -359,8 +354,6 @@ export default {
     margin-left: 75px;
   }
   .workdate3 {
-    // position: absolute;
-    // width: 326px;
     font-weight: 400;
     word-break: break-all;
     font-family: Microsoft YaHei;
@@ -372,19 +365,15 @@ export default {
   }
   .content-info {
     margin-top: 34px;
-    // min-height: 330px;
     .img {
       width: 30px;
       height: 30px;
       border-radius: 50%;
-      // background: red;
       vertical-align: bottom;
       margin-right: 5px;
-      // border:1px soild #efefef;
       img {
         border-radius: 50%;
         width: 30px;
-        // height: 30px;
       }
     }
     .member-img {
@@ -393,7 +382,6 @@ export default {
   }
   .r-button {
     width: 300px;
-    // margin-left: 70px;
     margin-top: 20px;
     margin-bottom: 60px;
     background: #1878f3;
@@ -401,7 +389,6 @@ export default {
   .myauthority {
     margin-top: 15px;
     display: flex;
-
     .myauth-t {
       flex: 1;
       color: #909399;
@@ -415,7 +402,6 @@ export default {
       span {
         margin-right: 5px;
         background: #f7f7f7;
-        // margin-top: 5px;
         padding: 4.5px 10px;
       }
     }

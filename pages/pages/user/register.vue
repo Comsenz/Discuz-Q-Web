@@ -63,14 +63,7 @@
           </div>
 
           <div class="agreement">
-            <!-- <el-checkbox v-model="checked" /> -->
             <reg-agreement @check="check" />
-            <!-- <div class="logorreg">
-              <span
-                v-if="register"
-                @click="jump2Login"
-              >已有帐号，立即<nuxt-link to="/pages/user/login">{{ $t('user.login') }}</nuxt-link> </span>
-            </div> -->
           </div>
           <el-button
             type="primary"
@@ -84,7 +77,6 @@
             >已有帐号，立即<nuxt-link to="/pages/user/login">{{ $t('user.login') }}</nuxt-link> </span>
           </div>
         </form>
-
       </el-tab-pane>
       <!-- 手机号注册 -->
       <el-tab-pane
@@ -99,14 +91,12 @@
           class="phone-input"
           maxlength="11"
         />
-
         <el-button
           class="count-b"
           :class="{disabled: !canClick}"
           :disabled="!canClick"
           @click="phoneRegister"
         >{{ content }}</el-button>
-
         <span class="title">{{ $t('user.verification') }}</span>
         <el-input
           v-model="verifyCode"
@@ -115,7 +105,6 @@
           @keyup.enter.native="PhoneLogin"
         />
         <div class="agreement">
-          <!-- <el-checkbox v-model="checked" /> -->
           <reg-agreement @check="check" />
         </div>
         <el-button
@@ -610,8 +599,6 @@ export default {
       display: flex;
       flex-direction: row;
       align-content: space-between;
-      // justify-content: center;
-      // align-items: center;
       .quick-container {
         flex: 1;
         text-align: center;
@@ -626,7 +613,6 @@ export default {
       .quick-title {
         margin-top: 10px;
         font-size: 14px;
-        // text-align: left;
         span {
           margin-left: -10px;
           line-height: 25px;
@@ -661,9 +647,7 @@ export default {
     }
   }
   .agreement {
-    /* width: 310px; */
     margin-left: 70px;
-    /* margin-top: 5px; */
     font-size: 12px;
     a {
       color: #1878f3;
@@ -706,7 +690,6 @@ export default {
   .count-b {
     width: 90px;
     height: 40px;
-    // padding: 15.5px 10px;
     color: #000000;
     padding: 0;
     margin-left: -4px;
@@ -749,32 +732,10 @@ export default {
   }
   .el-input__inner {
     border-radius: 2px;
-    // border-right: none;
   }
   .el-button {
     border-radius: 2px;
   }
-  // .el-input__inner:focus {
-  //   border-color: #dcdfe6;
-  // }
-  // .el-input__inner:hover {
-  //   border-color: #dcdfe6;
-  // }
-  //  .el-button:focus{
-  //   background: #FFF;
-  //   border: 1px solid #DCDFE6;
-  //   color: #606266;
-  // }
-  //  .el-button:hover{
-  //   background: #FFF;
-  //   border: 1px solid #DCDFE6;
-  //   color: #606266;
-  // }
-  //  .el-button:active{
-  //   background: #FFF;
-  //   border: 1px solid #DCDFE6;
-  //   color: #606266;
-  // }
 }
 ::v-deep .el-tabs--border-card > .el-tabs__content {
   margin-top: 7px;

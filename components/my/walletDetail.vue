@@ -33,10 +33,6 @@
         v-loading="loading"
         :data="dataList2"
       >
-        <!-- <el-table-column
-        type="selection"
-        width="40"
-      /> -->
         <el-table-column
           prop="id"
           label="ID"

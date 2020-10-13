@@ -1,31 +1,5 @@
 <template>
   <div class="freezeAmount">
-    <!-- <div class="selector">
-      <el-date-picker
-        v-model="date3"
-        type="month"
-        placeholder="选择月"
-        suffix-icon="el-icon-arrow"
-        format="yyyy 年 MM 月 "
-        value-format="yyyy-MM"
-        @change="bindDateChange3"
-      />
-      <el-select
-        v-model="value"
-        placeholder="请选择"
-        @change="confirm3"
-      >
-        <el-option
-          v-for="item in options2"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        />
-      </el-select>
-      <span class="margleft">
-        {{ $t('profile.total') }}{{ total3 }}{{ $t('profile.records') }},{{ $t('profile.amountinvolved') }}￥{{ walletFreeze }}
-      </span>
-    </div> -->
     <div v-if="total3 > 0">
       <!-- 冻结金额。表格 -->
       <el-table
@@ -55,12 +29,6 @@
           prop="created_at"
           :formatter="dateFormat"
         />
-        <!-- <el-table-column
-            prop="cash_status"
-            label="状态"
-            width="97"
-            :formatter="statusFormat"
-          /> -->
         <el-table-column
           :label="$t('pay.sumOfMoney')"
           width="113"
@@ -207,7 +175,6 @@ export default {
     confirm3(e) {
       console.log('冻结金额状态筛选类型', e)
       this.filterSelected3 = e
-      // console.log(this.filterSelected)
       this.getFreezelist('filter')
     },
     // 钱包状态格式化
@@ -346,9 +313,6 @@ export default {
     border-color: #dcdfe6;
   }
 }
-// ::v-deep .el-table {
-//   margin-top: 15px;
-// }
 ::v-deep.el-table .cell {
   padding-left: 0px;
   font-weight: 400;

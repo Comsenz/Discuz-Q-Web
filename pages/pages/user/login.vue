@@ -451,7 +451,6 @@ export default {
   margin-top: 62px;
   flex-direction: column;
   .register-title {
-    // width: 130px;
     height: 35px;
     font-size: 26px;
   }
@@ -470,8 +469,6 @@ export default {
     }
     .title2 {
       margin-right: 10px;
-      // margin-right: 15px;
-      // margin-left: 15px;
       color: #606266;
     }
     .title3 {
@@ -490,8 +487,6 @@ export default {
       display: flex;
       flex-direction: row;
       align-content: space-between;
-      // justify-content: center;
-      // align-items: center;
       .quick-container {
         flex: 1;
         text-align: center;
@@ -506,7 +501,6 @@ export default {
       .quick-title {
         margin-top: 10px;
         font-size: 14px;
-        // text-align: left;
         span {
           margin-left: -10px;
           line-height: 25px;
@@ -540,9 +534,7 @@ export default {
     }
   }
   .agreement {
-    // width: 310px;
     margin-left: 70px;
-    // margin-top: 5px;
     font-size: 12px;
     .findpass {
       margin-left: 105px;
@@ -571,7 +563,6 @@ export default {
   }
   .r-button {
     width: 300px;
-    // margin-left: 90px;
     margin-left: 70px;
     margin-top: 15px;
     background: $color-blue-base;
@@ -594,12 +585,9 @@ export default {
   .count-b {
     width: 90px;
     height: 40px;
-    // padding: 15.5px 10px;
     color: #000000;
-
     padding: 0;
     margin-left: -4px;
-    // font-size: 10px;
   }
   .disabled {
     background-color: #ededed;
@@ -642,31 +630,7 @@ export default {
   .el-button {
     border-radius: 2px;
   }
-  // .el-input__inner:focus {
-  //   border-color: #dcdfe6;
-  // }
-  // .el-input__inner:hover {
-  //   border-color: #dcdfe6;
-  // }
-  // .el-button:focus {
-  //   background: #fff;
-  //   border: 1px solid #dcdfe6;
-  //   color: #606266;
-  // }
-  // .el-button:hover {
-  //   background: #fff;
-  //   border: 1px solid #dcdfe6;
-  //   color: #606266;
-  // }
-  // .el-button:active {
-  //   background: #fff;
-  //   border: 1px solid #dcdfe6;
-  //   color: #606266;
-  // }
 }
-// ::v-deep .el-tabs__content {
-//   padding: 15px 5px;
-// }
 ::v-deep .el-tabs--border-card > .el-tabs__content {
   margin-top: 7px;
 }

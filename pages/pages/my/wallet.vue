@@ -98,7 +98,6 @@
           @password="setPass2"
         />
       </div>
-      <!-- <phone-code v-if="issendcode" :mobile="dataInfo.user.mobile" :phonenum="dataInfo.user.originalMobile" @password="checkCode" @close="issendcode = false" /> -->
       <find-paypwd v-if="isfindpwd" :mobile="dataInfo.user.mobile" :phonenum="dataInfo.user.originalMobile" @close="isfindpwd = false" />
       <without-phone v-if="isWithoutphone" @close=" isWithoutphone = false" />
     </div>
@@ -128,12 +127,10 @@
       @close="updateWithdraw"
     />
   </div>
-
 </template>
 
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
-
 import handleError from '@/mixin/handleError'
 
 export default {

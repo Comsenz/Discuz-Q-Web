@@ -176,18 +176,6 @@
               :user-id="userId"
               :thread-data="threadsData"
             />
-            <!-- 主题需要用到ssr -->
-            <!-- <div class="topic">
-              <div class="post-list">
-                <post-item
-                  v-for="(item, index) in threadsData"
-                  :key="index"
-                  :item="item"
-                  :lazy="false"
-                />
-                <list-load-more :loading="threadsloading" :has-more="threadshasMore" :page-num="threadspageNum" :length="threadsData.length" @loadMore="threadsloadMore" />
-              </div>
-            </div> -->
           </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.likes')+ ` (${userInfo.likedCount || 0})`"
@@ -198,17 +186,6 @@
               :user-id="userId"
               :likethreads-data="likethreadsData"
             />
-            <!-- <div class="like">
-              <div class="post-list">
-                <post-item
-                  v-for="(item, index) in likethreadsData"
-                  :key="index"
-                  :item="item"
-                  :lazy="false"
-                />
-                <list-load-more :loading="likethreadsloading" :has-more="likethreadshasMore" :page-num="likethreadspageNum" :length="likethreadsData.length" @loadMore="likethreadsloadMore" />
-              </div>
-            </div> -->
           </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.following')+ ` (${userInfo.followCount || 0})`"

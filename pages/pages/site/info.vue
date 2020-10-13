@@ -300,12 +300,10 @@ export default {
   }
   .paymoney {
     text-align: center;
-    // width: 90px;
     font-weight: bold;
     font-size: 16px;
   }
   .workdate {
-    // width: 130px;
     text-align: center;
     font-size: 16px;
     font-family: Microsoft YaHei;
@@ -317,29 +315,23 @@ export default {
     line-height: 30px;
   }
   .workdate2 {
-    // position: absolute;
     width: 326px;
     word-break: break-all;
-    // font-family: Microsoft YaHei;
     color: #6d6d6d;
     font-size: 14px;
     margin-left: 75px;
   }
   .content-info {
     margin-top: 16px;
-    // min-height: 330px;
     .img {
       width: 30px;
       height: 30px;
       border-radius: 50%;
-      // background: red;
       vertical-align: bottom;
       margin-right: 5px;
-      // border:1px soild #efefef;
       img {
         border-radius: 50%;
         width: 30px;
-        // height: 30px;
       }
     }
     .member-img {
@@ -348,7 +340,6 @@ export default {
   }
   .r-button {
     width: 300px;
-    // margin-left: 70px;
     margin-top: 20px;
     margin-bottom: 60px;
     background: #1878f3;
