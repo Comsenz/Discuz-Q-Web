@@ -153,7 +153,7 @@
             </el-table-column>
             <el-table-column
               :label="$t('manage.identity')"
-              width="140"
+              min-width="100"
             >
               <template slot-scope="scope">
                 {{ scope.row.groupName }}
