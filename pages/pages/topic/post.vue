@@ -84,7 +84,6 @@ export default {
     this.getThread()
   },
   methods: {
-    // TODO 未登录
     getCategoryList() {
       this.$store.dispatch('jv/get', ['categories', {}]).then(res => {
         this.categoryList = res
@@ -132,7 +131,8 @@ export default {
         const attached = {
           name: key === 'videoList' ? item.file_name : item.fileName,
           url: key === 'videoList' ? item.media_url : item.thumbUrl,
-          id: key === 'videoList' ? item.file_id : item._jv.id
+          id: key === 'videoList' ? item.file_id : item._jv.id,
+          deleted: false // 用于图片 upload 组件的样式
         }
         target.push(attached)
       })
@@ -202,7 +202,7 @@ export default {
       }
       if (this.threadId) postParams._jv.id = this.threadId
       postParams = this.publishPostResource(postParams, this.post)
-      this.deleteAttachmentsAfterEdit(this.editThread.firstPost.images, this.post.imageList) // 编辑主题时删除的图片，在发布的时候删除
+      // this.deleteAttachmentsAfterEdit(this.editThread.firstPost.images, this.post.imageList) // 编辑主题时删除的图片，在发布的时候删除
       this.deleteAttachmentsAfterEdit(this.editThread.firstPost.attachments, this.post.attachedList) // 编辑主题时删除的附件，在发布的时候删除
       return this.$store.dispatch('jv/patch', [postParams, { url: `/posts/${this.post.id}` }])
     },

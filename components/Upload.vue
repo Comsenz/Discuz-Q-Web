@@ -46,17 +46,32 @@ export default {
     sizeLimit: {
       type: Number,
       default: 99999999999999999
+    },
+    onUploadImage: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      previewImages: [],
-      onUpload: false
+      previewImages: []
     }
   },
   computed: {
     input() {
       return process.client ? document.getElementById('upload') : ''
+    }
+  },
+  watch: {
+    fileList: {
+      handler() {
+        if (this.fileList.length > this.previewImages.length && this.previewImages.length === 0) { // 初始试，回显
+          this.previewImages.push(...this.fileList)
+          this.previewImages.map(item => { item.progress = 100 }) // 增加 deleted progress 属性
+        }
+      },
+      deep: true,
+      immediate: true
     }
   },
   methods: {
@@ -66,14 +81,9 @@ export default {
     onInput(e) {
       const files = e.target.files
       const fileArray = []
-      if (this.onUpload) return this.$message.warning('请等待上传中的图片完成上传')
-      this.checkSizeLimit(files)
-      if (!this.checkSizeLimit(files)) return this.$message.error(`图片不可大于 ${this.sizeLimit / 1024 / 1024} MB`)
-      if (this.previewImages.length + files.length > this.limit) {
-        this.$message.warning(`图片最多上传${this.limit}张`)
-        this.$emit('exceed', files)
-        return
-      }
+      if (this.onUploadImage) return this.$message.warning('请等待上传中的图片完成上传')
+      if (!this.checkSizeLimit(files)) return // 文件大小检查
+      if (!this.checkLengthLimit(files)) return // 文件数量检查
       for (let i = 0; i < files.length; i++) {
         // eslint-disable-next-line no-undef
         const url = this.getObjectURL(files[i])
@@ -103,14 +113,14 @@ export default {
       return service.post(this.action, formData, config)
     },
     uploadFiles(promiseList) {
-      this.onUpload = true
+      this.$emit('update:onUploadImage', true)
       Promise.all(promiseList).then(resList => {
         this.previewImages.map(item => { item.progress = 100 }) // 请求响应后，更新到 100%
         const files = resList.map(item => item.data.data)
-        const _fileList = []
+        const _fileList = [...this.fileList]
         files.forEach(item => _fileList.push({ id: item.id, name: item.attributes.fileName, url: item.attributes.url }))
         this.$emit('success', _fileList)
-        this.onUpload = false
+        this.$emit('update:onUploadImage', false)
       }, e => {
         // 失败的时候取消对应的预览照片
         const length = promiseList.length
@@ -121,9 +131,11 @@ export default {
     },
     removeItem(index) {
       this.previewImages[index].deleted = true // 删除动画
+      const _fileList = [...this.fileList]
+      _fileList.splice(index, 1)
+      this.$emit('remove', _fileList) // 避免和回显冲突，先修改 fileList
       setTimeout(() => {
         this.previewImages.splice(index, 1)
-        this.$emit('remove', [...this.fileList].splice(index, 1))
         this.$message.success('删除成功')
       }, 900)
       // return service.delete(this.action + '/' + this.fileList[index].id).then(() => { 不需要从后台删除
@@ -135,7 +147,17 @@ export default {
       for (let i = 0; i < files.length; i++) {
         if (files[i].size > this.sizeLimit) pass = false
       }
+      if (!pass) this.$message.error(`图片不可大于 ${this.sizeLimit / 1024 / 1024} MB`)
       return pass
+    },
+    checkLengthLimit(files) {
+      if (this.previewImages.length + files.length > this.limit) {
+        this.$message.warning(`图片最多上传${this.limit}张`)
+        this.$emit('exceed', files)
+        return false
+      } else {
+        return true
+      }
     },
     getObjectURL(file) {
       let url = null

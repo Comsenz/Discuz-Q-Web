@@ -184,7 +184,8 @@ export default {
         const attached = {
           name: item.fileName,
           url: item.thumbUrl,
-          id: item._jv.id
+          id: item._jv.id,
+          deleted: false // 用于图片 upload 的样式
         }
         target.push(attached)
       })

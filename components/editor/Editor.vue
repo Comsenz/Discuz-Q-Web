@@ -39,14 +39,25 @@
       </label>
       <div>
         <div v-if="showUploadImg || showUploadVideo || showUploadAttached" class="resources-list">
-          <image-upload
+          <!--          <image-upload-->
+          <!--            v-if="showUploadImg"-->
+          <!--            :image-list="post && post.imageList"-->
+          <!--            :on-upload-image.sync="onUploadImage"-->
+          <!--            :header="header"-->
+          <!--            :is-edit="isEdit"-->
+          <!--            :url="url"-->
+          <!--            @imageChange="e => onPostContentChange(e.key, e.value)"-->
+          <!--          />-->
+          <Upload
             v-if="showUploadImg"
-            :image-list="post && post.imageList"
+            :file-list="post && post.imageList"
             :on-upload-image.sync="onUploadImage"
-            :header="header"
-            :is-edit="isEdit"
-            :url="url"
-            @imageChange="e => onPostContentChange(e.key, e.value)"
+            action="/attachments"
+            accept="image/*"
+            :limit="9"
+            :size-limit="attachedSizeLimit"
+            @success="imageList => onPostContentChange('imageList', imageList)"
+            @remove="imageList => onPostContentChange('imageList', imageList)"
           />
           <video-upload
             v-if="showUploadVideo"
@@ -203,6 +214,15 @@ export default {
       if (forums) {
         return forums.other ? forums.other.can_create_thread_paid : false
       } else return false
+    },
+    forums() {
+      return this.$store.state.site.info.attributes || {}
+    },
+    attachedSizeLimit() {
+      if (this.forums.set_attach) {
+        return this.forums.set_attach.support_max_size * 1024 * 1024
+      }
+      return 10485760
     }
   },
   watch: {
@@ -249,9 +269,9 @@ export default {
     //   })
     // },
     onPostContentChange(key, value) {
-      this.$emit(`update:post`, _post)
       const _post = Object.assign({}, this.post)
       _post[key] = value
+      console.log(_post, 'post')
       this.$emit(`update:post`, _post)
     },
     onPaymentChange(key, value) {
