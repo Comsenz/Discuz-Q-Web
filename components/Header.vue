@@ -9,6 +9,7 @@
             alt="头部logo"
           >
         </div>
+        <!-- <div v-show="forums && forums.set_site" class="logo2" @click="toIndex" :style="forums && forums.set_site && forums.set_site.site_logo ? `background-image: url('${forums.set_site.site_logo}')`: `background-image: url('${imgurl}')`" /> -->
         <el-input
           v-model="inputVal"
           autocomplete="off"
@@ -68,7 +69,8 @@ export default {
       canReg: false,
       siteClose: false,
       userInfoTimer: null, // 定时器
-      offsetTop: 0
+      offsetTop: 0,
+      imgurl: require('@/assets/logo.png')
     }
   },
   computed: {
@@ -189,7 +191,7 @@ export default {
     .logo {
       max-width: 280px;
       max-height: 35px;
-      height:25px;
+      height: 24px;
       cursor: pointer;
       display: flex;
       @media screen and (max-width: 1005px) {
@@ -200,6 +202,15 @@ export default {
         height: 24px;
         // width: 100%;
       }
+    }
+    .logo2 {
+      background-position: center center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      height: 24px;
+      width: 100%;
+      max-width: 100%;
+      cursor: pointer;
     }
     ::v-deep.h-search {
       margin-left: 30px;
