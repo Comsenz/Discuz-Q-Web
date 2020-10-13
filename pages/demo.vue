@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div>
-      <div v-for="(item, index) in attr" :key="index">
-        <p :class="{ red: item.isSelect }">{{ item.text }}</p>
-        <el-button @click="selectFn(index)">点我</el-button>
-      </div>
-    </div>
+    <!--    <div>-->
+    <!--      <div v-for="(item, index) in attr" :key="index">-->
+    <!--        <p :class="{ red: item.isSelect }">{{ item.text }}</p>-->
+    <!--        <el-button @click="selectFn(index)">点我</el-button>-->
+    <!--      </div>-->
+    <!--    </div>-->
     <el-button>默认按钮</el-button>
     <el-button type="primary" @click="getData">获取数据</el-button>
     <el-button type="success">成功按钮</el-button>
@@ -21,7 +21,7 @@
     <p>store commit</p>
     <el-button type="primary" @click="storeCommit">store commit</el-button>
     <div style="margin-top: 100px">
-      <Upload accept="image/*" :file-list="imageList" action="/attachments" />
+      <Upload accept="image/*" action="/attachments" :file-list="imageList" :size-limit="1048576" :limit="9" @success="onSuccess" @remove="onRemove" />
     </div>
   </div>
 </template>
@@ -73,6 +73,12 @@ export default {
       // _attr[index].text = '!_attr[index].isSelect'
       // _attr[index].isSelect = !_attr[index].isSelect
       // this.attr = _attr
+    },
+    onSuccess(fileList) {
+      this.imageList = fileList
+    },
+    onRemove(fileList) {
+      this.imageList = fileList
     },
     getData() {
       const params = {

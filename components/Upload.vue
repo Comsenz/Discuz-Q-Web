@@ -1,18 +1,16 @@
 <template>
-  <div class="container-upload">
-    <div class="preview-images">
-      <div v-for="(image, index) in previewImages" :key="index" class="preview-item">
+  <div v-viewer class="container-upload">
+    <template>
+      <div v-for="(image, index) in previewImages" :key="index" :class="{ 'preview-item': true, 'deleted': image.deleted }">
         <img :src="image.url" alt="">
-        <el-progress
-          v-show="image.progress < 1"
-          :percentage="image.progress"
-          color="red"
-          :show-text="false"
-          class="progress"
-        />
+        <el-progress v-show="image.progress < 100" :percentage="image.progress" color="#25A9F6" :show-text="false" class="progress" />
+        <div v-show="image.progress < 100" class="cover">图片上传中...</div>
+        <div :class="{ 'upload-delete': true, 'show-delete': image.progress === 100}" @click="removeItem(index)">
+          <svg-icon type="delete" style="font-size: 14px; fill: white" />
+        </div>
       </div>
-    </div>
-    <div class="upload" @click="onClick">
+    </template>
+    <div v-show="previewImages.length < limit" class="upload" @click="onClick">
       <input id="upload" :accept="accept" type="file" multiple @input="onInput">
       <svg-icon class="upload-icon" type="add" />
     </div>
@@ -22,6 +20,7 @@
 <script>
 import handleError from '@/mixin/handleError'
 import service from '@/api/request'
+
 export default {
   name: 'Upload',
   mixins: [handleError],
@@ -39,12 +38,19 @@ export default {
     accept: {
       type: String,
       default: ''
+    },
+    limit: {
+      type: Number,
+      default: 9999
+    },
+    sizeLimit: {
+      type: Number,
+      default: 9999
     }
   },
   data() {
     return {
-      previewImages: [],
-      oldLength: 0
+      previewImages: []
     }
   },
   computed: {
@@ -53,32 +59,40 @@ export default {
     }
   },
   methods: {
-    // TODO image 验证
     onClick() {
       this.input.dispatchEvent(new MouseEvent('click'))
     },
     onInput(e) {
       const files = e.target.files
-      console.log(e, 'event')
       const fileArray = []
+      this.checkSizeLimit(files)
+      if (!this.checkSizeLimit(files)) return this.$message.error(`图片不可大于 ${this.sizeLimit / 1024 / 1024} MB`)
+      if (this.previewImages.length + files.length > this.limit) {
+        this.$message.warning(`图片最多上传${this.limit}张`)
+        this.$emit('exceed', files)
+        return
+      }
       for (let i = 0; i < files.length; i++) {
         // eslint-disable-next-line no-undef
         const url = this.getObjectURL(files[i])
-        this.oldLength = this.previewImages.length === 0 ? 0 : this.previewImages.length - 1
-        this.previewImages.push({ url, progress: 0 })
+        this.previewImages.push({ url, progress: 0, deleted: false })
         fileArray.push(files[i])
       }
-      const promiseList = fileArray.reduce((result, file, index) => {
-        result.push(this.uploadFile(file, index))
+      const promiseList = fileArray.reduce((result, file, index, array) => {
+        result.push(this.uploadFile(file, index, array.length))
         return result
       }, [])
       this.uploadFiles(promiseList)
     },
-    uploadFile(file, index) {
-      console.log(index + this.oldLength, 'index')
+    uploadFile(file, index, length) {
       const config = {
         onUploadProgress: progressEvent => {
-          this.previewImages[index + this.oldLength].progress = parseInt(Math.round((progressEvent.loaded / progressEvent.total) * 100))
+          if (!progressEvent.lengthComputable) { // 当进度不可估量,直接等于 100
+            this.previewImages[this.previewImages.length - length + index].progress = 100
+            return
+          }
+          // processEvent 的进度条不准确，先进行到 80%， 等 upload 请求响应后再 100%
+          this.previewImages[this.previewImages.length - length + index].progress = parseInt(Math.round((progressEvent.loaded / progressEvent.total) * 100).toString()) * 0.9
         }
       }
       const formData = new FormData()
@@ -88,10 +102,31 @@ export default {
     },
     uploadFiles(promiseList) {
       Promise.all(promiseList).then(resList => {
+        // TODO 失败的时候取消照片
+        this.previewImages.map(item => { item.progress = 100 }) // 请求响应后，更新到 100%
         const files = resList.map(item => item.data.data)
-        files.forEach(item => this.fileList.push({ id: item.id, name: item.attributes.fileName, url: item.attributes.url }))
-        console.log(this.fileList, 'fileList')
+        const _fileList = []
+        files.forEach(item => _fileList.push({ id: item.id, name: item.attributes.fileName, url: item.attributes.url }))
+        this.$emit('success', _fileList)
       }, e => console.log(e, 'error'))
+    },
+    removeItem(index) {
+      this.previewImages[index].deleted = true // 删除动画
+      setTimeout(() => {
+        this.previewImages.splice(index, 1)
+        this.$emit('remove', [...this.fileList].splice(index, 1))
+        this.$message.success('删除成功')
+      }, 900)
+      // return service.delete(this.action + '/' + this.fileList[index].id).then(() => { 不需要从后台删除
+      //   console.log('后台删除成功')
+      // }, e => this.handleError(e))
+    },
+    checkSizeLimit(files) {
+      let pass = true
+      for (let i = 0; i < files.length; i++) {
+        if (files[i].size > this.sizeLimit) pass = false
+      }
+      return pass
     },
     getObjectURL(file) {
       let url = null
@@ -109,50 +144,98 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/css/variable/color.scss';
-  .container-upload {
-    > .preview-images {
-      > .preview-item {
-        position: relative;
-        border-radius: 5px;
-        border: 1px solid $border-color-base;
-        margin-right: 10px;
-        margin-bottom: 10px;
-        width: 100px;
-        height: 100px;
-        > img {
-          border-radius: 5px;
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-        > .progress {
-          position: absolute;
-          top: 80px;
-          left: 10px;
-          width: 80px;
-          height: 2px;
-        }
-      }
+@import '@/assets/css/variable/color.scss';
+
+.container-upload {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 650px;
+
+  > .preview-item {
+    position: relative;
+    border-radius: 5px;
+    border: 1px solid $border-color-base;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    width: 100px;
+    height: 100px;
+
+    &.deleted {
+      transition: 1s all;
+      transform: translateY(-100%);
+      opacity: 0;
     }
-    > .upload {
+
+    > img {
       cursor: pointer;
-      width: 100px;
-      height: 100px;
       border-radius: 5px;
-      border: 1px dashed $color-blue-base;
-      position: relative;
-      > #upload {
-        cursor: pointer;
-        display: none;
-      }
-      > .upload-icon {
-        font-size: 30px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    > .progress {
+      position: absolute;
+      top: 80px;
+      left: 10px;
+      width: 80px;
+      height: 1px;
+    }
+
+    > .cover {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      color: #6D6D6D;
+      background: rgba(255, 255, 255, 0.5);
+      font-size: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    > .upload-delete {
+      cursor: pointer;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: 20px;
+      width: 100%;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0,0 ,0.3);
+    }
+
+    &:hover {
+      .upload-delete.show-delete {
+        display: flex;
       }
     }
   }
+
+  > .upload {
+    cursor: pointer;
+    width: 100px;
+    height: 100px;
+    border-radius: 5px;
+    border: 1px dashed $color-blue-base;
+    position: relative;
+
+    > #upload {
+      cursor: pointer;
+      display: none;
+    }
+
+    > .upload-icon {
+      font-size: 30px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+}
 </style>
