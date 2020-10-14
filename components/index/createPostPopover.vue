@@ -39,17 +39,18 @@ export default {
     },
     forums() {
       return this.$store.state.site.info.attributes || {}
+    },
+    categoryId() {
+      return this.$route.query.categoryId
     }
   },
   methods: {
     // 显示and隐藏下拉菜单
     showAndHidePopover() {
-      console.log('forums', this.forums, this.userInfo)
       if (!this.visible) {
         const _other = this.forums.other
         const _userInfo = this.userInfo
         if (!_other) return
-        console.log('_other', _other)
         if (!_other.can_create_thread && !_other.can_create_thread_long && !_other.can_create_thread_video && !_other.can_create_thread_image) {
           this.$message.error(this.$t('home.noPostingPermission'))
           return
@@ -66,8 +67,15 @@ export default {
         }
         // 判断至少在某个分类下有发帖权限
         if (!_other.can_create_thread_in_category) {
-          this.$message.error(this.$t('home.noPostingPermission'))
+          this.$message.error(this.$t('home.noPostingCategory'))
           return
+        }
+        // 当前分类是否有发帖权限
+        if (this.categoryId) {
+          const category = this.$store.getters['jv/get'](`categories/${this.categoryId}`)
+          if (!category.canCreateThread) {
+            this.$message.error(this.$t('home.noPostingCategory'))
+          }
         }
         if (!_other.can_create_thread) {
           this.can_create_thread = false
@@ -87,7 +95,7 @@ export default {
     },
     // 跳往发帖页
     toRouter(val) {
-      this.$router.push(`/pages/topic/post?type=${val}`)
+      this.$router.push(`/pages/topic/post?type=${val}${this.categoryId ? '&categoryId=' + this.categoryId : ''}`)
     }
   }
 }
