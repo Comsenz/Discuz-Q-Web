@@ -165,6 +165,9 @@ export default {
     if (this.forums && this.forums.set_site) {
       this.htitle = this.forums.set_site.site_name ? this.forums.set_site.site_name : 'Discuz! Q'
     }
+    if (this.$route.query.categoryId) {
+      this.categoryId = this.$route.query.categoryId
+    }
     if (this.threadsStickyData.length === 0) {
       this.getThreadsSticky()
     }
@@ -231,7 +234,7 @@ export default {
         if (data && data._jv) {
           this.hasMore = this.threadsData.length < _threadCount
         }
-        // 加载成功页码加1，为加载更多做准备
+        // 加载成功 页码加1，为加载更多做准备
         this.pageNum++
         if (this.timer) {
           clearInterval(this.timer)
@@ -247,7 +250,7 @@ export default {
     },
     // 点击加载更多
     loadMore() {
-      // TODO: 在这里加1的话，遇到加载不成功的会不断加页码
+      // 在这里加1的话，遇到加载不成功的会不断加页码
       //  this.pageNum++
       this.getThreadsList()
     },

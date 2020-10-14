@@ -100,6 +100,9 @@ export default {
   },
   methods: {
     init() {
+      if (this.$route.query.categoryId) {
+        this.categoryId = this.$route.query.categoryId
+      }
       if (this.$route.query.q) {
         this.q = this.$route.query.q
         this.getUserList()

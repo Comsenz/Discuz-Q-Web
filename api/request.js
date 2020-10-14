@@ -33,7 +33,7 @@ service.interceptors.request.use(
       oConfig.headers['authorization'] = `Bearer ${localStorage.getItem('access_token')}`
     }
 
-    // TODO: 由于腾讯的网络环境不能发PATCH请求，所有的PATCH请求要改一下，改成用POST，然后在header里加 x-http-method-override: patch
+    // 由于腾讯的网络环境不能发PATCH请求，所有的PATCH请求要改一下，改成用POST，然后在header里加 x-http-method-override: patch
     if (oConfig.method === 'patch') {
       oConfig.method = 'post'
       oConfig.headers['x-http-method-override'] = 'patch'

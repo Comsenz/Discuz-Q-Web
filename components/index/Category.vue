@@ -55,7 +55,7 @@ export default {
       this.categoryList = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), thread_count: thread_count }, ...this.list]
     }
     if (this.$route.query.categoryId) {
-      this.onChange(this.$route.query.categoryId)
+      this.selectId = this.$route.query.categoryId
     }
   },
   methods: {

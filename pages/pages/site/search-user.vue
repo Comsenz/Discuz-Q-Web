@@ -80,6 +80,9 @@ export default {
   },
   methods: {
     init() {
+      if (this.$route.query.categoryId) {
+        this.categoryId = this.$route.query.categoryId
+      }
       if (this.$route.query.value) {
         this.value = this.$route.query.value
         this.reloadList()
