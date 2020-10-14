@@ -91,7 +91,7 @@ npm run build
 |-- nuxt.config.js            nuxt 自定义配置
 |-- package.json              项目配置信息，定义项目所需模块
 |-- README.md                 项目说明文件
-
+```
 
 ## 依赖
 1. [nuxt.js](https://nuxtjs.org//)：基于vue的开发框架
