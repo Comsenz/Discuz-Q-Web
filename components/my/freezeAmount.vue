@@ -46,12 +46,13 @@
       <!-- 分页器 -->
       <el-pagination
         background
+        :pager-count="5"
         :current-page="pageNum3"
         :page-sizes="[10, 20, 30, 40]"
         :page-size="pageSize3"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total3"
-        style="margin-top:15px;"
+        class="pagination"
         @size-change="handleSizeChange3"
         @current-change="handleCurrentChange3"
       />
@@ -270,48 +271,19 @@ export default {
   .desc:hover {
     color: #1878f3;
   }
+  .pagination {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    text-align: right;
+    @media screen and (max-width: 1005px) {
+      ::v-deep .el-pagination__sizes {
+        display: none;
+      }
+    }
+  }
 }
 .no-more {
   padding: 94px 0;
-}
-::v-deep.el-tabs {
-  .el-tabs__header {
-    background: transparent;
-  }
-  .el-tabs__header .el-tabs__item {
-    border: none;
-    color: #b5b5b5;
-    padding: 0 52px 0 0px;
-    font-size: 16px;
-  }
-  .el-tabs__content {
-    padding: 10px 0;
-  }
-  .el-tabs__header .el-tabs__item:nth-child(2) {
-    padding-left: 0px;
-  }
-  .el-tabs__header .el-tabs__item.is-active {
-    color: black;
-    background: transparent;
-    border: none;
-    font-weight: bold;
-    font-size: 18px;
-  }
-  .el-tabs__nav-wrap {
-    margin-bottom: 0px;
-  }
-  .el-input__inner {
-    border-radius: 0px;
-  }
-  .el-button {
-    border-radius: 0px;
-  }
-  .el-input__inner:focus {
-    border-color: #dcdfe6;
-  }
-  .el-input__inner:hover {
-    border-color: #dcdfe6;
-  }
 }
 ::v-deep.el-table .cell {
   padding-left: 0px;
@@ -328,11 +300,11 @@ export default {
 ::v-deep .el-table thead {
   color: #303133;
 }
-::v-deep .el-pagination .btn-prev {
-  margin-left: 100px;
-}
-::v-deep .el-pagination__jump {
-  position: absolute;
-  right: 10px;
-}
+// ::v-deep .el-pagination .btn-prev {
+//   margin-left: 65px;
+// }
+// ::v-deep .el-pagination__jump {
+//   position: absolute;
+//   right: 10px;
+// }
 </style>

@@ -175,6 +175,7 @@
           <!-- 分页器 -->
           <el-pagination
             background
+            :pager-count="5"
             :current-page="pageNum"
             :page-sizes="[10, 20, 30, 40]"
             :page-size="pageSize"
@@ -469,6 +470,12 @@ export default {
     .pagination {
       margin-top: 15px;
       margin-bottom: 15px;
+      text-align: right;
+      @media screen and (max-width: 1005px) {
+        ::v-deep .el-pagination__sizes {
+          display: none;
+        }
+      }
     }
   }
   .post-list {
@@ -507,13 +514,13 @@ export default {
 .el-table tr {
   background-color: #fafafa !important;
 }
-::v-deep .el-pagination .btn-prev {
-  margin-left: 100px;
-}
-::v-deep .el-pagination__jump {
-  position: absolute;
-  right: 35px;
-}
+// ::v-deep .el-pagination .btn-prev {
+//   margin-left: 65px;
+// }
+// ::v-deep .el-pagination__jump {
+//   position: absolute;
+//   right: 35px;
+// }
 ::v-deep .el-button {
   color: #606266;
 }
