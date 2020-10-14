@@ -119,6 +119,7 @@ export default {
         const files = resList.map(item => item.data.data)
         const _fileList = [...this.fileList]
         files.forEach(item => _fileList.push({ id: item.id, name: item.attributes.fileName, url: item.attributes.url }))
+        this.input.value = ''
         this.$emit('success', _fileList)
         this.$emit('update:onUploadImage', false)
       }, e => {
@@ -130,17 +131,23 @@ export default {
       })
     },
     removeItem(index) {
-      this.previewImages[index].deleted = true // 删除动画
-      const _fileList = [...this.fileList]
-      _fileList.splice(index, 1)
-      this.$emit('remove', _fileList) // 避免和回显冲突，先修改 fileList
-      setTimeout(() => {
-        this.previewImages.splice(index, 1)
-        this.$message.success('删除成功')
-      }, 900)
-      // return service.delete(this.action + '/' + this.fileList[index].id).then(() => { 不需要从后台删除
-      //   console.log('后台删除成功')
-      // }, e => this.handleError(e))
+      this.$confirm(this.$t('topic.confirmDelete'), this.$t('discuzq.msgBox.title'), {
+        confirmButtonText: this.$t('discuzq.msgBox.confirm'),
+        cancelButtonText: this.$t('discuzq.msgBox.cancel'),
+        type: 'warning'
+      }).then(() => {
+        this.previewImages[index].deleted = true // 删除动画
+        const _fileList = [...this.fileList]
+        _fileList.splice(index, 1)
+        this.$emit('remove', _fileList) // 避免和回显冲突，先修改 fileList
+        setTimeout(() => {
+          this.previewImages.splice(index, 1)
+          this.$message.success('删除成功')
+        }, 900)
+        // return service.delete(this.action + '/' + this.fileList[index].id).then(() => { 不需要从后台删除
+        //   console.log('后台删除成功')
+        // }, e => this.handleError(e))
+      }, () => console.log('取消删除'))
     },
     checkSizeLimit(files) {
       let pass = true
