@@ -1,4 +1,5 @@
 /* eslint-disable */
+// <p>&lt;p&gt;111&lt;/p&gt;</p>
 
 const tags = {
   topic: text => {
@@ -18,6 +19,26 @@ const tags = {
       return match.replace(regexp, (content, value, text) => {
         const href = `/pages/profile/index?userId=${value}`;
         return `<a href="${href}" class="content-member a-blue">${text}</a> `;
+      });
+    });
+  },
+  parseHtml1: text => { // 恢复 <
+    if (!text) return;
+    const regexp = /&lt;/gimu;
+    return text.replace(regexp, match => {
+      return match.replace(regexp, (content, value, text) => {
+        // const href = `/pages/topic/content?id=${value}`;
+        return `<`;
+      });
+    });
+  },
+  parseHtml2: text => {  // 恢复 >
+    if (!text) return;
+    const regexp = /&gt;/gimu;
+    return text.replace(regexp, match => {
+      return match.replace(regexp, (content, value, text) => {
+        // const href = `/pages/topic/content?id=${value}`;
+        return `>`;
       });
     });
   }
