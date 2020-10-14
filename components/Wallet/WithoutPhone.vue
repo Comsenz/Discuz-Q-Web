@@ -1,25 +1,15 @@
 <template>
   <message
-    :title="$t('profile.editpaypassword')"
+    :title="`${$t('modify.forgetPassword') +'/'+ $t('modify.retrievePassword')} `"
     @close="$emit('close')"
   >
     <div class="container">
       <div class="block show-amount">
-        <div class="title">{{ $t('modify.enterpaymentagin') }}</div>
+        <div class="title">{{ $t('modify.nohasphon') }}</div>
         <div class="amount">
-          <span>{{ $t('modify.repeatpasstip') }}</span>
+          <span>{{ $t('modify.forgetPassword') +'/'+ $t('modify.retrievePassword') + ','+ '需要您先绑定常用手机号码' }}</span>
         </div>
-      </div>
-      <div class="block input-password">
-        <wallet-password-input
-          ref="walletinput"
-          :error="error"
-          @password="password => $emit('password', password)"
-        />
-        <div
-          v-if="error"
-          class="amount"
-        >{{ $t('modify.masstext') }}</div>
+        <el-button type="primary" class="btn" @click="tobind">前去绑定</el-button>
       </div>
     </div>
   </message>
@@ -27,29 +17,32 @@
 
 <script>
 export default {
-  name: 'SetNewpasword',
-  props: {
-    error: {
-      type: Boolean,
-      default: false
-    }
-  },
+  name: 'WalletPassword',
   data() {
     return {
-
     }
   },
   methods: {
-    empty() {
-      this.$refs.walletinput.deleat()
+    tobind() {
+      this.$router.push(`/pages/my/profile?phonebind=true`)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/css/variable/color.scss";
+
 .container {
-  height: 370px;
+  height: 315px;
+  .btn{
+    width:300px;
+    margin-top: 60px;
+    &:hover {
+      border: 1px solid $color-blue-deep;
+      background: $color-blue-deep;
+    }
+  }
   > .block {
     display: flex;
     flex-direction: column;
@@ -74,6 +67,14 @@ export default {
         }
       }
     }
+  }
+  .findpaypwd{
+    font-size:12px;
+    color:#8590a6;
+    position: absolute;
+    right: 22px;
+    bottom: 21px;
+    cursor: pointer;
   }
 }
 </style>

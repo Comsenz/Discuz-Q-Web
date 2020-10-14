@@ -11,7 +11,7 @@
         </div>
       </div>
       <div class="block input-password">
-        <walletpass-input
+        <wallet-password-input
           :error="error"
           @password="password => $emit('password', password)"
         />
