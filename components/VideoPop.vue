@@ -1,22 +1,14 @@
 <template>
   <div id="video-pop" class="video-pop">
     <Cover />
-    <video
-      controls
-      controlslist="nodownload"
-      disablePictureInPicture
-      preload="auto"
-      autoplay
-      :src="url"
-      :poster="coverUrl || ''"
-      :playsinline="true"
-      auto-pause-if-open-native="true"
-      auto-pause-if-navigate="true"
-    />
+    <video ref="videoPlayer" class="video-js" controls width="800px" height="600px" preload="auto" data-setup="{}">
+      <source :src="url" type="video/webm">
+    </video>
   </div>
 </template>
 
 <script>
+import videoJs from 'video.js'
 export default {
   name: 'VideoPop',
   props: {
@@ -29,10 +21,31 @@ export default {
       default: ''
     }
   },
+  data() {
+    return {
+      options: {
+        autoplay: true,
+        controls: true
+      },
+      player: null
+    }
+  },
   mounted() {
     document.addEventListener('click', this.removeVideoPop)
+    this.initVideoJs()
   },
   methods: {
+    initVideoJs() {
+      const self = this
+      this.player = videoJs(this.$refs.videoPlayer, this.options, function onPlayerReady() {
+        videoJs.log('Your player is ready!')
+        this.play()
+        this.on('error', () => {
+          this.errorDisplay.close()
+          this.createModal(self.$t('core.videoError'))
+        })
+      })
+    },
     removeVideoPop(e) {
       let pass = true
       const path = e.path || (e.composedPath && e.composedPath())
@@ -42,6 +55,7 @@ export default {
       })
       if (!pass) return
       this.$emit('remove')
+      this.player.dispose()
       document.removeEventListener('click', this.removeVideoPop)
     }
   }
@@ -57,12 +71,7 @@ export default {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    max-width: 760px;
-    max-height: 600px;
-
-    > video {
-      max-width: 730px;
-      max-height: 570px;
-    }
+    max-width: 830px;
+    max-height: 630px;
   }
 </style>

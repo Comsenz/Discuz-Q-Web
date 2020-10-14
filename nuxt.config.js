@@ -72,7 +72,8 @@ export default {
     'element-ui/lib/theme-chalk/index.css',
     '@/assets/css/reset.scss',
     'vditor/src/assets/scss/index.scss',
-    'viewerjs/dist/viewer.css'
+    'viewerjs/dist/viewer.css',
+    'video.js/src/css/video-js.scss'
   ],
   /*
   ** Plugins to load before mounting the App

@@ -118,6 +118,7 @@ export default {
     videoUploading: '视频上传中...'
   },
   core: {
+    videoError: '视频正在转码中，请发布后观看',
     register_close: '站点禁止注册',
     regcode: '为加强站内人员管理，站点开启了人工验证注册用户，请耐心等待审核通过。',
     bind_error: '绑定错误',
