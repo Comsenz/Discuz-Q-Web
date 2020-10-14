@@ -19,7 +19,7 @@ export default {
       // 变量scrollHeight是滚动条的总高度
       var scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight
       // 滚动条到底部的条件
-      // TODO 部分设备scrollTop + windowHeight 的值会出现小数点，所以不能直接等于
+      // 部分设备scrollTop + windowHeight 的值会出现小数点，所以不能直接等于
       // scrollTop + windowHeight 的值可能一直小于scrollHeiht导致scrollLoadMore不执行给他加大下数值
       if (Math.ceil(scrollTop + windowHeight + 10) >= scrollHeight) {
         this.scrollLoadMore() // 加载的列表数据
