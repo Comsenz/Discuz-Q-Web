@@ -20,7 +20,7 @@ function callback(binding, vnode) {
     }
     if (!token) {
       if (process.client) {
-        Message.error('请登录')
+        Message.info('请登录')
         window.setTimeout(() => {
           location.href = '/pages/user/login'
         }, 1000)

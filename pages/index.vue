@@ -284,7 +284,7 @@ export default {
     },
     // 点击分类
     onChangeCategory(id) {
-      this.$router.push({ url: '/', query: { categoryId: id !== 0 ? id : '' }})
+      this.$router.push({ url: '/', query: id !== 0 ? { categoryId: id } : {}})
       this.categoryId = id
       this.reloadThreadsList()
       this.threadsStickyData = []
