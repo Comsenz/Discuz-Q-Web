@@ -3,7 +3,7 @@
     <main class="cont-left">
       <div class="search-header">
         <div class="result-count">
-          为您找到 <span v-if="q" class="keyword">"{{ q }}"</span>的相关用户搜索结果 {{ userCount }} {{ $t('topic.item') }}
+          {{ $t('search.find') }} <span v-if="value" class="keyword">"{{ value }}"</span>{{ $t('search.searchuserresult') }} {{ userCount }} {{ $t('topic.item') }}
         </div>
         <create-post-popover />
       </div>
@@ -60,7 +60,7 @@ export default {
       pageNum: 1, // 当前页码
       pageSize: 10, // 每页多少条数据
       categoryId: 0, // 分类id 0全部
-      q: '',
+      value: '',
       hasMore: false,
       userCount: 0,
       userList: []
