@@ -568,6 +568,8 @@ export default {
     margin-bottom: 20px;
     ::v-deep.el-input__inner {
       border-right: none;
+      border-bottom-right-radius: 0px;
+      border-top-right-radius: 0px;
     }
     ::v-deep.el-input__inner:focus {
       border-color: #dcdfe6;
@@ -579,6 +581,8 @@ export default {
     color: #000000;
     padding: 0;
     margin-left: -4px;
+    border-bottom-left-radius: 0px !important;
+    border-top-left-radius: 0px !important;
   }
   .disabled {
     background-color: #ededed;
