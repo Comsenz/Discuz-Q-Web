@@ -25,7 +25,6 @@ export default {
   },
   destroyed() {
     this.qrcode = null
-    // this.$refs.qrcode.innerHTML = ''
   },
   methods: {
     createQrcode(link) {
@@ -36,9 +35,6 @@ export default {
             width: 70,
             height: 70, // 高度
             text: link // 二维码内容
-            // render: 'canvas' ,   // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
-            // background: '#f0f',   // 背景色
-            // foreground: '#ff0'    // 前景色
           })
         })
       }

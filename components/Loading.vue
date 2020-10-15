@@ -1,7 +1,6 @@
 <template>
   <div class="loading-container">
     {{ $t('discuzq.list.loading') }}...
-    <!-- <i class="el-icon-loading" :style="`font-size: ${fontSize}px`" /> -->
   </div>
 </template>
 <script>

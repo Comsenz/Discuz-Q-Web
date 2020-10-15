@@ -86,9 +86,6 @@ export default {
   @media screen and ( max-width: 1005px ) {
     padding: 14px;
   }
-  // .recommend-user-list{
-  //   min-height: 250px;
-  // }
   .recommend-user-title{
     color:#6D6D6D;
     margin-bottom: 8px;

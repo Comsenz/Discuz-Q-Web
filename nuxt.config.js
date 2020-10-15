@@ -160,11 +160,6 @@ export default {
     },
     // svg处理
     extend(config, context) {
-      // 生成环境清除log
-      // if (context.isClient && !context.isDev) {
-      // config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
-      // }
-
       // Run ESLint on save
       if (context.isDev && context.isClient) {
         config.module.rules.push({

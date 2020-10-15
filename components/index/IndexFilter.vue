@@ -25,7 +25,6 @@
       </el-dropdown>
     </div>
     <create-post-popover />
-    <!-- <nuxt-link to="/" class="new-post">+{{ $t('profile.post') }}</nuxt-link> -->
   </div>
 </template>
 <script>

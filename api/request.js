@@ -62,22 +62,13 @@ service.interceptors.response.use(
             // delete response.config.header.Authorization;
             break
           case 'model_not_found':
-            // app.$store.dispatch('forum/setError', {
-            //   code: 'type_404',
-            //   status: 500,
-            // });
+            console.log('模型未找到')
             break
           case 'permission_denied':
-            // app.$store.dispatch('forum/setError', {
-            //   code: 'type_401',
-            //   status: 500,
-            // });
+            console.log('没有查看权限')
             break
           case 'site_closed':
-            // uni.showToast({
-            //   icon: 'none',
-            //   title: i18n.t(`core.${error.code}`),
-            // });
+            console.log('site_closed')
             break
           case 'not_install':
           case 'ban_user':
