@@ -973,7 +973,11 @@ export default {
     noFollowers: '暂无关注用户，请搜索',
     themes: '主题',
     searchmorethemes: '搜索更多主题',
-    norelatedthemesfound: '没有找到相关主题'
+    norelatedthemesfound: '没有找到相关主题',
+    find: '为您找到',
+    searchresult: '的相关搜索结果',
+    searchuserresult: '的相关用户搜索结果',
+    usercount: '名'
   },
   // 登录注册
   user: {
