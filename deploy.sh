@@ -6,6 +6,10 @@
 
 originFile="Discuz-Q-Web"
 
+echo "生成 dits :)"
+
+yarn generate
+
 echo "删除 node_modules :("
 
 rm -rf node_modules

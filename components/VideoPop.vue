@@ -1,7 +1,8 @@
 <template>
   <div id="video-pop" class="video-pop">
     <Cover />
-    <video ref="videoPlayer" class="video-js" controls width="800px" height="600px" preload="auto" data-setup="{}">
+    <video id="videoPlayer" class="video-js" controls width="800px" height="600px" preload="auto" data-setup="{}">
+      <source :src="url">
       <source :src="url" type="video/webm">
     </video>
   </div>
@@ -37,7 +38,7 @@ export default {
   methods: {
     initVideoJs() {
       const self = this
-      this.player = videoJs(this.$refs.videoPlayer, this.options, function onPlayerReady() {
+      this.player = videoJs('videoPlayer', this.options, function onPlayerReady() {
         videoJs.log('Your player is ready!')
         this.play()
         this.on('error', () => {
