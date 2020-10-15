@@ -72,7 +72,7 @@ npm run build
 | |-- default.vue             默认布局文件
 | |-- error_layout.vue        错误页等没有头部底部布局文件
 |-- library                   存放一些第三方依赖库等
-|-- middleware                存放中间件文件
+|-- middleware                存放应用的中间件
 |-- mixin                     存放mixin文件
 |-- pages                   
 | |-- pages                   项目的开发目录
@@ -80,7 +80,7 @@ npm run build
 | |--index.vue                首页
 |-- plugins                   插件存放目录
 | |-- lang                    国际化设置目录（语言设置）
-|-- static                    静态文件存放目录
+|-- static                    用于存放应用的静态文件，此类文件不会被 Nuxt.js 调用 Webpack 进行构建编译处理。服务器启动的时候，该目录下的文件会映射至应用的根路径 / 下
 |-- store                     数据状态管理目录
 |-- utils                     常用函数存放目录
 | |-- modules
@@ -88,13 +88,13 @@ npm run build
 |-- .editorconfig             编辑器配置推荐
 |-- .eslintrc.js              eslint 配置文件
 |-- .gitignore                git 提交忽略文件
-|-- nuxt.config.js            nuxt 自定义配置
-|-- package.json              项目配置信息，定义项目所需模块
+|-- nuxt.config.js            用于组织 Nuxt.js 应用的个性化配置，以便覆盖默认配置
+|-- package.json              用于描述应用的依赖关系和对外暴露的脚本接口
 |-- README.md                 项目说明文件
 ```
 
 ## 依赖
-1. [nuxt.js](https://nuxtjs.org//)：基于vue的开发框架
+1. [nuxt.js](https://nuxtjs.org/)：基于vue的开发框架
 2. [vue](https://cn.vuejs.org/index.html)：JavaScript 渐进式框架
 3. [vuex](https://vuex.vuejs.org/zh/)：状态管理
 4. [vue-i18n](https://kazupon.github.io/vue-i18n/zh/)：国际化

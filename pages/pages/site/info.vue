@@ -125,7 +125,6 @@ export default {
     }
   },
   mounted() {
-    // console.log(time2YearMonthDay(this.forums.set_site.site_install))
     this.userinfo()
     this.site_price = this.forums && this.forums.set_site && this.forums.set_site.site_price ? (1 * this.forums.set_site.site_price).toFixed(2) : 0
   },
@@ -133,7 +132,6 @@ export default {
     time2YearMonthDay(date) {
       const d = new Date(date)
       const year = d.getFullYear() + '年'
-      console.log(typeof d.getMonth(), d.getMonth())
       const month = d.getMonth() < 10 ? `0${d.getMonth() + 1}月` : d.getMonth() + 1 + '月'
       const dated = d.getDate() < 10 ? `0${d.getDate()}日` : d.getDate() + '日'
       return [year, month, dated].join('')
@@ -144,7 +142,6 @@ export default {
       }
       this.$store.dispatch('jv/get', [`users/${this.userId}`, { params }]).then(res => {
         if (res.paid) {
-          console.log('是否已付费', res)
           this.$router.push('/')
         }
       })
@@ -154,7 +151,6 @@ export default {
     },
     // 支付方式选择完成点击确定时
     paysureShow() {
-      console.log('站点信息', this.forums)
       this.creatOrder(this.forums.set_site.site_price, 1, this.value)
     },
     // 创建订单
@@ -167,7 +163,6 @@ export default {
         amount
       }
       this.$store.dispatch('jv/post', params).then(res => {
-        console.log('---order info ---', res)
         this.orderSn = res.order_sn
         this.orderPay(10, value, this.orderSn, '3') // pc浏览器
       }, e => this.handleError(e))

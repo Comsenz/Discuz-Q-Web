@@ -212,12 +212,10 @@ export default {
       status
         .run(() => this.$store.dispatch('jv/get', ['wallet/cash', { params }]))
         .then(res => {
-          console.log('提现数据', res)
           // 处理钱
           this.sumMoney = this.handlemoney(res)
           this.dataList = res
           this.total = res._jv.json.meta.total
-          console.log('提现数据', this.dataList)
         }, e => {
           this.handleError(e)
         }).finally(() => {
@@ -227,18 +225,13 @@ export default {
     // 提现日期选中
     bindDateChange(e) {
       this.date = e
-      console.log('提现日期选中', this.date)
       if (this.date !== null) {
         this.getList('filter')
-      } else {
-        console.log('日期已经为空')
       }
     },
     // 提现确认筛选类型
     confirm(e) {
-      console.log('提现确认筛选类型', e)
       this.filterSelected = e
-      // console.log(this.filterSelected)
       this.getList('filter')
     },
     handleSelectionChange(val) {
@@ -289,14 +282,12 @@ export default {
     },
     // 提现分页
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
       this.pageNum = 1
       this.pageSize = val
       this.getList()
     },
     // 提现分页
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
       this.pageNum = val
       this.getList()
     }

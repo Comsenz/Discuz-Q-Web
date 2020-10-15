@@ -119,13 +119,6 @@ export default {
   &:hover {
     background: #fafbfc;
   }
-  // .delete{
-  //   display: none;
-  //   position: absolute;
-  //   top:32px;
-  //   right: 32px;
-  //   cursor: pointer;
-  // }
   .avatar {
     position: relative;
     margin-right: 15px;

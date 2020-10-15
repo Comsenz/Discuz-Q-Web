@@ -1,7 +1,7 @@
 <template>
   <div v-if="forums && forums.other && forums.other.can_view_user_list" v-loading="loading" class="recommend-user-container">
     <div class="recommend-user-title">{{ $t('home.recommentUser') }}</div>
-    <div class="recommend-user-list">
+    <div v-show="!loading" class="recommend-user-list">
       <user-item v-for="(item, index) in userList" :key="index" :item="item" show="simple" />
       <div v-if="userList.length === 0" class="no-more">{{ $t('discuzq.list.noData') }}</div>
     </div>
@@ -86,9 +86,6 @@ export default {
   @media screen and ( max-width: 1005px ) {
     padding: 14px;
   }
-  // .recommend-user-list{
-  //   min-height: 250px;
-  // }
   .recommend-user-title{
     color:#6D6D6D;
     margin-bottom: 8px;

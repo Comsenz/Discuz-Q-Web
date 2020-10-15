@@ -46,7 +46,6 @@ export default {
       }
       this.$store.dispatch('jv/get', [`forum`, { params }]).then(res => {
         this.forums = res
-        console.log('agreement', this.forums)
       })
     },
     open(type) {

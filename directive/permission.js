@@ -24,8 +24,6 @@ function callback(binding, vnode) {
         window.setTimeout(() => {
           location.href = '/pages/user/login'
         }, 1000)
-      } else {
-        console.log('请登录')
       }
     } else {
       const that = vnode.context

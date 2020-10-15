@@ -21,7 +21,6 @@
       </el-select>
       <div class="content">
         <template v-if="!loading">
-          <!-- <template v-if="searchText">{{ $t('manage.find') }}<span class="text-bold">"{{ searchText }}"</span>{{ $t('manage.searchResult', { total }) }}</template> -->
           {{ $t('manage.userTotal', { total }) }}
         </template>
       </div>
@@ -155,9 +154,6 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- <div v-if="!loading && userList.length <= 0" class="no-more">
-      <svg-icon type="empty" class="empty-icon" />{{ $t('discuzq.list.noData') }}
-    </div> -->
     <div class="pagination">
       <el-pagination
         background
@@ -265,7 +261,7 @@ export default {
       try {
         await this.$store.dispatch('site/getSiteInfo')
       } catch (err) {
-        console.log('getuUserInfo err', err)
+        console.log('getUserInfo err', err)
       }
     },
     onClickSearch() {

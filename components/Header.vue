@@ -9,7 +9,6 @@
             alt="头部logo"
           >
         </div>
-        <!-- <div v-show="forums && forums.set_site" class="logo2" @click="toIndex" :style="forums && forums.set_site && forums.set_site.site_logo ? `background-image: url('${forums.set_site.site_logo}')`: `background-image: url('${imgurl}')`" /> -->
         <el-input
           v-model="inputVal"
           autocomplete="off"

@@ -110,13 +110,11 @@ export default {
   },
   methods: {
     select(val) {
-      console.log('select', val)
       this.currentReport = val
       this.isOther = this.currentReport === 'other'
     },
     // 确认举报
     reportConfirmClick(type) {
-      console.log('type', typeof type)
       if (!this.currentReport) {
         this.$message.error(
           this.$t('report.pleaseClickReasons')

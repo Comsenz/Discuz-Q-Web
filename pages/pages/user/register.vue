@@ -195,7 +195,6 @@ export default {
     if (code !== 'undefined') {
       this.code = code
     }
-    console.log('----this.forums-----', this.forums)
     if (this.forums && this.forums.set_reg && this.forums.set_reg.register_captcha) {
       this.register_captcha = this.forums.set_reg.register_captcha
     }
@@ -234,7 +233,6 @@ export default {
     logind() {
       const userId = this.$store.getters['session/get']('userId')
       if (!userId) return
-      console.log('hhhhhhhhhh')
       const params = {
         include: 'groups,wechat'
       }
@@ -245,7 +243,6 @@ export default {
         if (this.user && this.user.paid) {
           this.isPaid = this.user.paid
         }
-        console.log('----this.user-----', this.user)
         if (this.site_mode !== 'pay' || this.isPaid) {
           this.$router.push('/')
         }
@@ -257,7 +254,6 @@ export default {
     // tab激活
     changeactive(tab) {
       this.passWord = ''
-      console.log('tab', this.passWord)
       this.activeName = this.forums ? this.forums.set_reg.register_type.toString() : ''
       if (this.activeName === '2' || this.forums && this.forums.qcloud && !this.forums.qcloud.qcloud_sms) {
         this.activeName = '0'
@@ -309,11 +305,9 @@ export default {
 
     // 验证码
     toTCaptcha() {
-      console.log('---------验证码-------')
       if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha_app_id) {
         // eslint-disable-next-line no-undef
         this.captcha = new TencentCaptcha(this.forums.qcloud.qcloud_captcha_app_id, res => {
-          console.log('h5验证码', res)
           if (res.ret === 0) {
             this.ticket = res.ticket
             this.randstr = res.randstr
@@ -339,7 +333,6 @@ export default {
           }
         }
       }
-      console.log(params)
       if (this.register_captcha && this.validate) {
         params.data.attributes.register_reason = this.Reason
         params.data.attributes.captcha_ticket = this.ticket
@@ -360,7 +353,6 @@ export default {
         .then(res => {
           this.loading = false
           if (res && res.data && res.data.data && res.data.data.id) {
-            console.log('注册成功', res)
             this.logind()
             this.$message.success(this.$t('user.registerSuccess'))
           }
@@ -382,7 +374,6 @@ export default {
           ) {
             const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code
             const errorText = res.data.errors[0].detail ? res.data.errors[0].detail[0] : this.$t(`core.${error}`)
-            console.log('error', errorText)
             this.$message.error(errorText)
           }
         })
@@ -450,9 +441,7 @@ export default {
           .dispatch('session/verificationCodeh5Login', params)
           .then(res => {
             this.loading = false
-            console.log('手机号验证成功', res)
             if (res && res.data && res.data.data && res.data.data.id) {
-              console.log('注册成功', res)
               this.logind()
               this.$message.success(this.$t('user.registerSuccess'))
             }
@@ -474,7 +463,6 @@ export default {
             ) {
               const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code
               const errorText = res.data.errors[0].detail ? res.data.errors[0].detail[0] : this.$t(`core.${error}`)
-              console.log('error', error)
               this.$message.error(errorText)
             }
           })
@@ -492,11 +480,9 @@ export default {
         }
       }
       this.$store.dispatch('jv/get', _params).then(data => {
-        // console.log('user data => ', data)
         if (data) {
           this.info = data
           this.scene_str = data.scene_str
-          console.log(this.scene_str)
           QuickLogin = setInterval(() => {
             if (this.loginStatus) {
               clearInterval(QuickLogin)
@@ -509,22 +495,13 @@ export default {
     },
     // 微信扫码登录状态
     getLoginStatus(scene_str) {
-      const params = {
-        _jv: {
-          type: `oauth/wechat/web/user/search`
-        },
-        scene_str: scene_str
-      }
-      console.log(params)
       this.$store.dispatch('jv/get', `/oauth/wechat/web/user/search?scene_str=${scene_str}`).then(data => {
-        console.log('user data => ', data)
         if (data.id) {
           this.loginStatus = true
         }
       })
     },
     jump2Login() {
-      console.log('跳转到登录页面')
       this.$router.push(
         `/pages/user/login?&validate=${this.validate}`
       )

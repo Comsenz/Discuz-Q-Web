@@ -3,7 +3,7 @@
     <div ref="qrcode" class="qrcode" />
     <div class="adv-info">
       <div class="adv-title"> 扫一扫，访问移动端</div>
-      {{ forums && forums.set_site && forums.set_site.site_name ? forums.set_site.site_name : 'Discuz! Q' }}
+      {{ site_name }}
     </div>
   </div>
 </template>
@@ -12,7 +12,8 @@ const QRCode = process.client && require('qrcodejs2')
 export default {
   data() {
     return {
-      qrcode: null
+      qrcode: null,
+      site_name: ''
     }
   },
   computed: {
@@ -21,11 +22,11 @@ export default {
     }
   },
   mounted() {
+    this.site_name = this.forums && this.forums.set_site && this.forums.set_site.site_name ? this.forums.set_site.site_name : 'Discuz! Q'
     this.createQrcode(window.location.href)
   },
   destroyed() {
     this.qrcode = null
-    // this.$refs.qrcode.innerHTML = ''
   },
   methods: {
     createQrcode(link) {
@@ -36,9 +37,6 @@ export default {
             width: 70,
             height: 70, // 高度
             text: link // 二维码内容
-            // render: 'canvas' ,   // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
-            // background: '#f0f',   // 背景色
-            // foreground: '#ff0'    // 前景色
           })
         })
       }

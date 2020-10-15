@@ -253,8 +253,6 @@ export default {
       const resData = {}
       const threadsData = await store.dispatch('jv/get', ['threads', { params: threadparams }])
       const likethreadsData = await store.dispatch('jv/get', ['threads/likes', { params: likethreadsparams }])
-      // console.log(threadsData)
-      console.log('likethreads', likethreadsData)
 
       if (Array.isArray(threadsData)) {
         resData.threadsData = threadsData
@@ -361,7 +359,6 @@ export default {
     // 私信权限判断
     getAuth() {
       // 用户组等改变会改变私信权限
-      console.log('用户信息', this.forums)
       if (this.forums.other && this.forums.other.can_create_dialog) {
         this.can_create_dialog = true
       } else {
@@ -378,7 +375,6 @@ export default {
         .run(() => this.$store
           .dispatch('jv/get', [`users/${userId}`, { params }])
           .then(res => {
-            console.log('关注与取消关注用户信息重新获取', res)
             if (res.isDeleted) {
               this.$message.error('用户不存在')
             } else {
@@ -426,9 +422,7 @@ export default {
           return
         }
       }
-      console.log('取消关注')
       this.$store.dispatch('jv/delete', `follow/${userInfo.id}/1`).then(() => {
-        console.log('取消关注2')
         this.getUserInfo(this.userId)
         if (this.$refs.followers) this.$refs.followers.getFollowerList('change')
       })
@@ -462,8 +456,6 @@ export default {
           return item.id.toString() === this.userId
         })
         this.isShield = data.length > 0
-        console.log('当前查看用户是否已经被屏蔽', data)
-        console.log('和名单数据', res)
       }, e => this.handleError(e)).finally(() => { this.loading = false })
     },
     // 屏蔽用户
@@ -479,7 +471,6 @@ export default {
         }
       }
       this.$store.dispatch('jv/post', params).then(() => {
-        console.log('屏蔽')
         this.getShieldData()
       })
     },
@@ -491,7 +482,6 @@ export default {
         }
       }
       this.$store.dispatch('jv/delete', `users/${this.userId}/deny`).then(() => {
-        console.log('解除屏蔽')
         this.$t('profile.unboundsucceed')
         this.getShieldData()
       })

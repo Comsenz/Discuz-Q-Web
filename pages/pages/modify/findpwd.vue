@@ -80,7 +80,6 @@ export default {
   },
   mounted() {
     const { validate, register, code } = this.$route.query
-    console.log('query', this.$route.query)
     if (validate) {
       this.validate = JSON.parse(validate)
     }
@@ -90,8 +89,6 @@ export default {
     if (code !== 'undefined') {
       this.code = code
     }
-    console.log('----this.forums-----', this.forums)
-
     if (this.forums && this.forums.set_site && this.forums.set_site.site_mode) {
       this.site_mode = this.forums.set_site.site_mode
     }
