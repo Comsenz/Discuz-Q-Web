@@ -143,7 +143,6 @@ export default {
       }, () => console.log('取消删除'))
     },
     onEditComment(comment) {
-      console.log('edit comment =>', comment)
       this.editComment = comment
       this.editCommentPost.text = comment.content
       if (comment.images.length > 0) {
@@ -184,7 +183,8 @@ export default {
         const attached = {
           name: item.fileName,
           url: item.thumbUrl,
-          id: item._jv.id
+          id: item._jv.id,
+          deleted: false // 用于图片 upload 的样式
         }
         target.push(attached)
       })

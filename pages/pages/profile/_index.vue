@@ -176,18 +176,6 @@
               :user-id="userId"
               :thread-data="threadsData"
             />
-            <!-- 主题需要用到ssr -->
-            <!-- <div class="topic">
-              <div class="post-list">
-                <post-item
-                  v-for="(item, index) in threadsData"
-                  :key="index"
-                  :item="item"
-                  :lazy="false"
-                />
-                <list-load-more :loading="threadsloading" :has-more="threadshasMore" :page-num="threadspageNum" :length="threadsData.length" @loadMore="threadsloadMore" />
-              </div>
-            </div> -->
           </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.likes')+ ` (${userInfo.likedCount || 0})`"
@@ -198,17 +186,6 @@
               :user-id="userId"
               :likethreads-data="likethreadsData"
             />
-            <!-- <div class="like">
-              <div class="post-list">
-                <post-item
-                  v-for="(item, index) in likethreadsData"
-                  :key="index"
-                  :item="item"
-                  :lazy="false"
-                />
-                <list-load-more :loading="likethreadsloading" :has-more="likethreadshasMore" :page-num="likethreadspageNum" :length="likethreadsData.length" @loadMore="likethreadsloadMore" />
-              </div>
-            </div> -->
           </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.following')+ ` (${userInfo.followCount || 0})`"
@@ -276,8 +253,6 @@ export default {
       const resData = {}
       const threadsData = await store.dispatch('jv/get', ['threads', { params: threadparams }])
       const likethreadsData = await store.dispatch('jv/get', ['threads/likes', { params: likethreadsparams }])
-      // console.log(threadsData)
-      console.log('likethreads', likethreadsData)
 
       if (Array.isArray(threadsData)) {
         resData.threadsData = threadsData
@@ -325,6 +300,7 @@ export default {
       userInfo: '',
       current: '', // 当前激活的tab
       activeName: '1', // 默认激活tab
+      profilename: '\u200E',
       can_create_dialog: false, // 创建私信权利
       headFixed: false,
       loading: false,
@@ -383,7 +359,6 @@ export default {
     // 私信权限判断
     getAuth() {
       // 用户组等改变会改变私信权限
-      console.log('用户信息', this.forums)
       if (this.forums.other && this.forums.other.can_create_dialog) {
         this.can_create_dialog = true
       } else {
@@ -400,13 +375,13 @@ export default {
         .run(() => this.$store
           .dispatch('jv/get', [`users/${userId}`, { params }])
           .then(res => {
-            console.log('关注与取消关注用户信息重新获取', res)
             if (res.isDeleted) {
               this.$message.error('用户不存在')
             } else {
               this.loading = false
               this.dialog.id = res.dialog ? res.dialog._jv.id : 0
               this.dialog.name = res.username
+              this.profilename = `${this.dialog.name + this.$t('profile.myperson')}`
               this.userInfo = res
               this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
             }
@@ -447,9 +422,7 @@ export default {
           return
         }
       }
-      console.log('取消关注')
       this.$store.dispatch('jv/delete', `follow/${userInfo.id}/1`).then(() => {
-        console.log('取消关注2')
         this.getUserInfo(this.userId)
         if (this.$refs.followers) this.$refs.followers.getFollowerList('change')
       })
@@ -483,8 +456,6 @@ export default {
           return item.id.toString() === this.userId
         })
         this.isShield = data.length > 0
-        console.log('当前查看用户是否已经被屏蔽', data)
-        console.log('和名单数据', res)
       }, e => this.handleError(e)).finally(() => { this.loading = false })
     },
     // 屏蔽用户
@@ -500,7 +471,6 @@ export default {
         }
       }
       this.$store.dispatch('jv/post', params).then(() => {
-        console.log('屏蔽')
         this.getShieldData()
       })
     },
@@ -512,7 +482,6 @@ export default {
         }
       }
       this.$store.dispatch('jv/delete', `users/${this.userId}/deny`).then(() => {
-        console.log('解除屏蔽')
         this.$t('profile.unboundsucceed')
         this.getShieldData()
       })
@@ -520,7 +489,7 @@ export default {
   },
   head() {
     return {
-      title: this.$t('profile.myperson')
+      title: this.profilename
     }
   }
 }

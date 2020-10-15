@@ -4,7 +4,8 @@
       <div class="flex">
         <div class="logo" @click="toIndex">
           <img
-            :src="forums && forums.set_site && forums.set_site.site_header_logo ? forums.set_site.site_header_logo : require('@/assets/logo.png')"
+            v-show="forums && forums.set_site"
+            :src="forums && forums.set_site && forums.set_site.site_logo ? forums.set_site.site_logo : require('@/assets/logo.png')"
             alt="头部logo"
           >
         </div>
@@ -21,17 +22,16 @@
         </el-input>
       </div>
       <!-- 未登录 -->
-      <div v-if="!userId || siteClose">
-        <el-button :disabled="siteClose" size="small" class="h-button h-button1" @click="login">{{ $t('user.login') }}</el-button>
-        <el-button :disabled="(forums && forums.set_reg && !forums.set_reg.register_close) || siteClose" size="small" class="h-button h-button2" @click="register">{{ $t('user.register') }}</el-button>
+      <div v-if="siteClose || !islogin ">
+        <el-button v-if="siteClose || !userId" :disabled="siteClose" size="small" class="h-button h-button1" @click="login">{{ $t('user.login') }}</el-button>
+        <el-button v-if="siteClose || !userId" :disabled="(forums && forums.set_reg && !forums.set_reg.register_close) || siteClose" size="small" class="h-button h-button2" @click="register">{{ $t('user.register') }}</el-button>
       </div>
       <!-- 已登录 -->
       <div v-if="userId && JSON.stringify(userInfo) !== '{}' && !siteClose" class="flex">
         <avatar
-          :user="{ id: userInfo.id, username: userInfo.username, avatarUrl: userInfo.avatarUrl}"
+          :user="{ id: userInfo.id, username: userInfo.username, avatarUrl: userInfo.avatarUrl, isReal: userInfo.isReal}"
           :size="35"
           :round="true"
-          :is-real="userInfo.isReal"
         />
         <nuxt-link v-if="userInfo.username && userInfo.id" :to="`/pages/profile/index?userId=${userInfo.id}`" class="menu-item user-name text-hidden">
           {{ userInfo.username }}
@@ -68,7 +68,9 @@ export default {
       canReg: false,
       siteClose: false,
       userInfoTimer: null, // 定时器
-      offsetTop: 0
+      offsetTop: 0,
+      imgurl: require('@/assets/logo.png'),
+      islogin: true
     }
   },
   computed: {
@@ -105,6 +107,10 @@ export default {
     if (this.$route.path === '/pages/site/close') {
       this.siteClose = true
     }
+    this.$nextTick(() => {
+      const id = localStorage.getItem('user_id')
+      this.islogin = id
+    })
   },
   destroyed() {
     if (process.client) {
@@ -187,8 +193,9 @@ export default {
       height: 50px;
     }
     .logo {
-      max-width: 140px;
+      max-width: 280px;
       max-height: 35px;
+      height: 24px;
       cursor: pointer;
       display: flex;
       @media screen and (max-width: 1005px) {
@@ -196,8 +203,18 @@ export default {
         max-height: 30px;
       }
       img {
-        height: 100%;
+        height: 24px;
+        // width: 100%;
       }
+    }
+    .logo2 {
+      background-position: center center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      height: 24px;
+      width: 100%;
+      max-width: 100%;
+      cursor: pointer;
     }
     ::v-deep.h-search {
       margin-left: 30px;

@@ -108,7 +108,7 @@ export default {
       try {
         await this.$store.dispatch('site/getSiteInfo')
       } catch (err) {
-        console.log('getuUserInfo err', err)
+        console.log('getUserInfo err', err)
       }
     },
     handleModify() {
@@ -153,9 +153,6 @@ export default {
             this.permissionList = item.permission
           }
         })
-        console.log('当前用户所属用户组', groupsId)
-        console.log('用户组列表', res)
-        console.log('用户权限', this.permissionList)
       })
     },
     handleExpiredAt(date) {

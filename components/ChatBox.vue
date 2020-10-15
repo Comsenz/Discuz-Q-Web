@@ -10,7 +10,7 @@
       <div v-for="(item, index) in recordList" :key="index" class="record">
         <div v-if="item.user_id === parseInt(userId)" class="record-item mine">
           <div class="message">
-            <div class="message-box" v-html="item.message_text_html" />
+            <div class="message-box" v-html="$xss(item.message_text_html)" />
             <div class="created-at">{{ formatDate(item.updated_at) }}</div>
           </div>
           <Avatar :user="item.user" :size="50" />
@@ -19,7 +19,7 @@
           <Avatar :user="item.user" :size="50" />
           <div class="message">
             <div class="message-box">
-              <div class="message-box" v-html="item.message_text_html" />
+              <div class="message-box" v-html="$xss(item.message_text_html)" />
             </div>
             <div class="created-at">{{ formatDate(item.updated_at) }}</div>
           </div>

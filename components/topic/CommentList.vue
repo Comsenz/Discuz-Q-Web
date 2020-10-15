@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="container-detail">
-        <div class="content-html" @click="showAll($event, comment)" v-html="formatSummary(comment)" />
+        <div class="content-html" @click="showAll($event, comment)" v-html="$xss(formatSummary(comment))" />
         <div v-if="comment.images && comment.images.length > 0" v-viewer="{url: 'data-source'}" class="images">
           <el-image
             v-for="(image, imageIndex) in comment.images"
@@ -24,9 +24,9 @@
             fit="cover"
           />
         </div>
-        <div class="actions">
+        <div v-show="comment.isApproved === 1" class="actions">
           <div class="left">
-            <span v-if="comment.canLike" @click="$emit('like', {comment, index})">
+            <span v-show="comment.canLike" @click="$emit('like', {comment, index})">
               <svg-icon :type="comment.isLiked ? 'liked' : 'like'" style="font-size: 18px" />
               <span class="text">{{ $t('topic.like') }} {{ comment.likeCount > 0 ? comment.likeCount : '' }}</span>
             </span>
@@ -64,7 +64,7 @@
               <span v-if="reply.canHide" class="delete-reply" @click.stop="$emit('deleteComment', reply._jv.id)">{{ $t('topic.delete') }}</span>
             </div>
           </div>
-          <div class="content-html" @click="showAll($event, replyIndex, replyList)" v-html="formatSummary(reply)" />
+          <div class="content-html" @click="showAll($event, replyIndex, replyList)" v-html="$xss(formatSummary(reply))" />
           <div v-if="reply.images && reply.images.length > 0" v-viewer="{url: 'data-source'}" class="images" @click.stop="() => {}">
             <el-image
               v-for="(image, imageIndex) in reply.images"
@@ -228,6 +228,7 @@ export default {
         word-break: break-all;
         margin-top: 10px;
         font-size: 14px !important;
+        margin-bottom: 20px;
         ::v-deep p {
           font-size: 14px !important;
         }
@@ -239,7 +240,6 @@ export default {
       }
 
       > .actions {
-        margin-top: 20px;
         margin-bottom: 20px;
         width: 100%;
         display: flex;

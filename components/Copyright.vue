@@ -5,7 +5,6 @@
       <a class="site" href="https://discuz.com" target="_blank">Discuz! Q</a>
       <span class="block">© {{ year }}</span>
     </div>
-    <!-- <div>分享 / 交流 / 共融</div> -->
     <div v-if="forums && forums.set_site && (forums.set_site.site_record || forums.set_site.site_record_code)" class="id">
       <div class="site-record-code">
         <a href="https://beian.miit.gov.cn/" target="_blank">{{ forums.set_site ? forums.set_site.site_record : '' }}</a>
@@ -13,8 +12,6 @@
       <div v-if="forums && forums.set_site && forums.set_site.site_record_code" class="site-record-code">
         <a :href="`http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=${forums && forums.set_site && forums.set_site.site_record_code.replace(/[^0-9]/ig,'')}`" target="_blank">{{ forums.set_site.site_record_code }}</a>
       </div>
-      <!-- <span>{{ $t('home.theme') }}: {{ forums.other ? forums.other.count_users : '' }}</span>
-      <span>{{ $t('home.invitation') }}: {{ forums.other ? forums.other.count_threads : '' }}</span> -->
     </div>
   </div>
 </template>
@@ -58,7 +55,6 @@ export default {
       width: 100%;
       display: flex;
       white-space: nowrap;
-      // justify-content: space-between;
       > span {
         margin-right: 5px;
         &:last-child {

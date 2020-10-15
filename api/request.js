@@ -6,8 +6,6 @@ let baseURL = '/api'
 // SSR 服务端 baseURL 修正处理
 if (process.server === true) {
   if (process.env.NODE_ENV === 'production') {
-    console.log('process.env.VUE_APP_CONFIG_API_URL =>', process.env.VUE_APP_CONFIG_API_URL)
-
     baseURL = `${process.env.VUE_APP_CONFIG_API_URL || 'https://discuz.chat'}${baseURL}`
   } else {
     baseURL = `http://127.0.0.1:${process.env.npm_package_config_nuxt_port || 3000}${baseURL}`
@@ -33,7 +31,7 @@ service.interceptors.request.use(
       oConfig.headers['authorization'] = `Bearer ${localStorage.getItem('access_token')}`
     }
 
-    // TODO: 由于腾讯的网络环境不能发PATCH请求，所有的PATCH请求要改一下，改成用POST，然后在header里加 x-http-method-override: patch
+    // 由于腾讯的网络环境不能发PATCH请求，所有的PATCH请求要改一下，改成用POST，然后在header里加 x-http-method-override: patch
     if (oConfig.method === 'patch') {
       oConfig.method = 'post'
       oConfig.headers['x-http-method-override'] = 'patch'
@@ -42,26 +40,19 @@ service.interceptors.request.use(
     return oConfig
   },
   oError => {
-    console.log('Request Error => ', oError)
-
     return Promise.reject(oError)
   }
 )
 // Respone 拦截器
 service.interceptors.response.use(
   oRes => {
-    // console.log('Response => ', oRes)
-
     return oRes
   },
   oError => {
-    console.log('Response Error => ', oError)
-
     if (oError.response && oError.response.data && oError.response.data.errors) {
       oError.response.data.errors.forEach(error => {
         switch (error.code) {
           case 'access_denied':
-            console.log('token 无效 重新请求')
             // token 无效 重新请求
             if (process.client) {
               localStorage.removeItem('access_token')
@@ -72,24 +63,12 @@ service.interceptors.response.use(
             break
           case 'model_not_found':
             console.log('模型未找到')
-            // app.$store.dispatch('forum/setError', {
-            //   code: 'type_404',
-            //   status: 500,
-            // });
             break
           case 'permission_denied':
             console.log('没有查看权限')
-            // app.$store.dispatch('forum/setError', {
-            //   code: 'type_401',
-            //   status: 500,
-            // });
             break
           case 'site_closed':
             console.log('site_closed')
-            // uni.showToast({
-            //   icon: 'none',
-            //   title: i18n.t(`core.${error.code}`),
-            // });
             break
           case 'not_install':
           case 'ban_user':

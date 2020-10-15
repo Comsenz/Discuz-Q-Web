@@ -39,14 +39,25 @@
       </label>
       <div>
         <div v-if="showUploadImg || showUploadVideo || showUploadAttached" class="resources-list">
-          <image-upload
+          <!--          <image-upload-->
+          <!--            v-if="showUploadImg"-->
+          <!--            :image-list="post && post.imageList"-->
+          <!--            :on-upload-image.sync="onUploadImage"-->
+          <!--            :header="header"-->
+          <!--            :is-edit="isEdit"-->
+          <!--            :url="url"-->
+          <!--            @imageChange="e => onPostContentChange(e.key, e.value)"-->
+          <!--          />-->
+          <Upload
             v-if="showUploadImg"
-            :image-list="post && post.imageList"
+            :file-list="post && post.imageList"
             :on-upload-image.sync="onUploadImage"
-            :header="header"
-            :is-edit="isEdit"
-            :url="url"
-            @imageChange="e => onPostContentChange(e.key, e.value)"
+            action="/attachments"
+            accept="image/*"
+            :limit="9"
+            :size-limit="attachedSizeLimit"
+            @success="imageList => onPostContentChange('imageList', imageList)"
+            @remove="imageList => onPostContentChange('imageList', imageList)"
           />
           <video-upload
             v-if="showUploadVideo"
@@ -152,7 +163,6 @@ export default {
   data() {
     return {
       contentEditor: {},
-
       selectionStart: 0,
       selectionEnd: 0,
       pickingLocation: false,
@@ -204,6 +214,15 @@ export default {
       if (forums) {
         return forums.other ? forums.other.can_create_thread_paid : false
       } else return false
+    },
+    forums() {
+      return this.$store.state.site.info.attributes || {}
+    },
+    attachedSizeLimit() {
+      if (this.forums.set_attach) {
+        return this.forums.set_attach.support_max_size * 1024 * 1024
+      }
+      return 10485760
     }
   },
   watch: {
@@ -250,7 +269,6 @@ export default {
     //   })
     // },
     onPostContentChange(key, value) {
-      this.$emit(`update:post`, _post)
       const _post = Object.assign({}, this.post)
       _post[key] = value
       this.$emit(`update:post`, _post)
@@ -262,6 +280,8 @@ export default {
     },
     autoHeight() {
       if (this.editorStyle === 'chat') return // 聊天框不需要自动高度
+      // 编辑评论时需要改变内容才会触发自动高度，这里判断评论字数超过一定数量时给textarea一个初始高度以防高度不变导致内容无法展示
+      if (this.post.text.length > 310) this.textarea.style.height = '180px'
       this.textarea.onkeyup = function() {
         // textarea 自动高度，通过 scrollHeight 赋值给 height
         // 当行数减少是 scrollHeight 只增不减，所以需要先把 height = auto
@@ -496,7 +516,8 @@ export default {
 
     .tip {
       position: absolute;
-      bottom: 50px;
+      // bottom: 50px;
+      bottom: 45px;
       right: 10px;
       color: #D0D4DC;
     }

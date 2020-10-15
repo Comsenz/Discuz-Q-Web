@@ -77,8 +77,7 @@ export default {
         resData.recommendUserData = _recommendUser
       }
       callback(null, resData)
-    } catch (error) {
-      console.log('ssr err')
+    } catch (e) {
       callback(null, {})
     }
   },

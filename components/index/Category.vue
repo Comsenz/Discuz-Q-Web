@@ -55,7 +55,7 @@ export default {
       this.categoryList = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), thread_count: thread_count }, ...this.list]
     }
     if (this.$route.query.categoryId) {
-      this.onChange(this.$route.query.categoryId)
+      this.selectId = this.$route.query.categoryId
     }
   },
   methods: {
@@ -85,11 +85,8 @@ export default {
 .category-container{
   padding: 5px 20px;
   margin-bottom: 16px;
-  // max-height: 490px;
-  // overflow-y: auto;
   @media screen and ( max-width: 1005px ) {
     padding: 0 14px;
-    // max-height: 470px;
   }
   .category-item{
     position: relative;

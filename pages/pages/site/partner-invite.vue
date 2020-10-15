@@ -146,7 +146,6 @@ export default {
     const { code } = this.$route.query
     this.inviteCode = code
     this.getInviteInfo(this.inviteCode)
-    console.log('路由参数', this.inviteCode)
   },
   methods: {
     handleClose(done) {
@@ -160,7 +159,6 @@ export default {
       status
         .run(() => this.$store.dispatch('jv/get', `invite/${code}`)
           .then(res => {
-            console.log('邀请信息', res)
             this.inviteData = res
             this.check2()
             const permission = res.group.permission.slice(0, 3)
@@ -184,9 +182,7 @@ export default {
         return
       }
       // 处理邀请码状态 status 0 失效  1 未使用  2 已使用 3 已过期
-      const statusVal =
-        this.inviteData.status || this.inviteData.status === 0 ? this.inviteData.status : 'error'
-      console.log(this.inviteData.status)
+      const statusVal = this.inviteData.status || this.inviteData.status === 0 ? this.inviteData.status : 'error'
       switch (statusVal) {
         case 0: {
           this.codeTips = this.$t('site.codeinvalid')
@@ -234,9 +230,7 @@ export default {
         }
         return
       }
-      const statusVal =
-        this.inviteData.status || this.inviteData.status === 0 ? this.inviteData.status : 'error'
-      console.log(this.inviteData.status)
+      const statusVal = this.inviteData.status || this.inviteData.status === 0 ? this.inviteData.status : 'error'
       switch (statusVal) {
         case 0: {
           this.codeTitle = this.$t('site.codeinvalid2')
@@ -244,7 +238,6 @@ export default {
           break
         }
         case 1: {
-          console.log('check2')
           this.codeTitle = this.$t('manage.payJoin')
           this.codeTips = this.$t('manage.inviteInfoTitle')
           this.normal = true
@@ -278,7 +271,6 @@ export default {
       // 未登陆的情况
       if (!this.$store.getters['session/get']('isLogin')) {
         // 需要引入mixins loginauth.js
-        console.log('未登录进入付费圈子', this.inviteCode)
         this.handleLogin('/', this.inviteCode)
       } else {
         // 已经登陆的情况
@@ -308,7 +300,6 @@ export default {
   margin-top: 62px;
   flex-direction: column;
   .info-title {
-    // width: 130px;
     height: 35px;
     font-size: 26px;
   }
@@ -338,19 +329,15 @@ export default {
   }
   .paymoney {
     text-align: center;
-    // width: 90px;
     font-weight: bold;
     font-size: 16px;
   }
   .workdate {
-    // width: 130px;
     text-align: center;
     font-size: 16px;
     font-family: Microsoft YaHei;
   }
   .workdate2 {
-    // position: absolute;
-    // width: 326px;
     font-weight: 400;
     word-break: break-all;
     font-family: Microsoft YaHei;
@@ -359,8 +346,6 @@ export default {
     margin-left: 75px;
   }
   .workdate3 {
-    // position: absolute;
-    // width: 326px;
     font-weight: 400;
     word-break: break-all;
     font-family: Microsoft YaHei;
@@ -372,19 +357,15 @@ export default {
   }
   .content-info {
     margin-top: 34px;
-    // min-height: 330px;
     .img {
       width: 30px;
       height: 30px;
       border-radius: 50%;
-      // background: red;
       vertical-align: bottom;
       margin-right: 5px;
-      // border:1px soild #efefef;
       img {
         border-radius: 50%;
         width: 30px;
-        // height: 30px;
       }
     }
     .member-img {
@@ -393,7 +374,6 @@ export default {
   }
   .r-button {
     width: 300px;
-    // margin-left: 70px;
     margin-top: 20px;
     margin-bottom: 60px;
     background: #1878f3;
@@ -401,7 +381,6 @@ export default {
   .myauthority {
     margin-top: 15px;
     display: flex;
-
     .myauth-t {
       flex: 1;
       color: #909399;
@@ -415,7 +394,6 @@ export default {
       span {
         margin-right: 5px;
         background: #f7f7f7;
-        // margin-top: 5px;
         padding: 4.5px 10px;
       }
     }

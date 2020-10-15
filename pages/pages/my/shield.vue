@@ -129,7 +129,7 @@
       >
         <div>
           <el-table
-            v-loading="loading"
+            v-loading="loading2"
             :data="userList"
             style="width:100%"
           >
@@ -153,7 +153,7 @@
             </el-table-column>
             <el-table-column
               :label="$t('manage.identity')"
-              width="140"
+              min-width="100"
             >
               <template slot-scope="scope">
                 {{ scope.row.groupName }}
@@ -175,14 +175,15 @@
           <!-- 分页器 -->
           <el-pagination
             background
+            :pager-count="5"
             :current-page="pageNum"
             :page-sizes="[10, 20, 30, 40]"
             :page-size="pageSize"
             layout="total, sizes, prev, pager, next, jumper"
             :total="searchTotal"
             class="pagination"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
+            @size-change="handleSizeChange2"
+            @current-change="handleCurrentChange2"
           />
         </div>
       </div>
@@ -221,6 +222,7 @@ export default {
       pageNum: 1,
       pageSize: 10,
       loading: false,
+      loading2: false,
       hasMore: false,
       unbundlingArry: [], // 解绑用户组
       unbundUserData: [], // 已屏蔽用户组
@@ -243,7 +245,6 @@ export default {
   },
   methods: {
     handleSizeChange(val) {
-      console.log(`当前页: ${val}`)
       this.pageNum = 1
       this.pageSize = val
       this.getShieldList()
@@ -251,6 +252,15 @@ export default {
     handleCurrentChange(val) {
       this.pageNum = val
       this.getShieldList()
+    },
+    handleSizeChange2(val) {
+      this.pageNum = 1
+      this.pageSize = val
+      this.getUserList(this.inputVal)
+    },
+    handleCurrentChange2(val) {
+      this.pageNum = val
+      this.getUserList(this.inputVal)
     },
     // 获取黑名单数据
     getShieldData() {
@@ -264,7 +274,6 @@ export default {
         res.forEach((v, i) => {
           this.unbundUserData.push(res[i].id)
         })
-        console.log('和名单数据', res)
         this.shieldTotal = res.length
       }, e => this.handleError(e)).finally(() => { this.loading = false })
     },
@@ -279,7 +288,6 @@ export default {
         if (res._jv) {
           delete res._jv
         }
-        console.log('获取黑名单', res)
         this.shieldList = res
       }, e => this.handleError(e)).finally(() => { this.loading = false })
     },
@@ -290,7 +298,6 @@ export default {
         type: 'warning'
       }).then(() => {
         this.unbundlingUser(uid)
-        console.log(uid)
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -326,6 +333,7 @@ export default {
     },
     // 搜索用户列表
     getUserList(key) {
+      this.loading2 = true
       const params = {
         include: 'groups',
         sort: 'createdAt',
@@ -334,18 +342,14 @@ export default {
         'filter[username]': `*${key}*`
       }
       this.$store.dispatch('jv/get', ['users', { params }]).then(res => {
-        if (res._jv) {
-          delete res._jv
-        }
-        console.log('用户搜索', res)
         res.forEach((v, i) => {
           res[i].groupName = v.groups[0] ? v.groups[0].name : ''
         })
         // 过滤搜索用户中已屏蔽的用户和当前登录用户
         const data = res.filter(item => this.unbundUserData.indexOf(item.id) === -1)
         this.userList = data
-        this.searchTotal = this.userList.length
-      })
+        this.searchTotal = res._jv.json.meta.total
+      }, e => this.handleError(e)).finally(() => { this.loading2 = false })
     },
     // 屏蔽用户
     shieldUser(uid) {
@@ -356,7 +360,6 @@ export default {
         type: 'warning'
       }).then(() => {
         this.handleShield()
-        console.log(uid)
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -460,6 +463,12 @@ export default {
     .pagination {
       margin-top: 15px;
       margin-bottom: 15px;
+      text-align: right;
+      @media screen and (max-width: 1005px) {
+        ::v-deep .el-pagination__sizes {
+          display: none;
+        }
+      }
     }
   }
   .post-list {
@@ -489,6 +498,7 @@ export default {
 ::v-deep.el-table .cell {
   padding-left: 10px;
   font-weight: 400;
+  white-space: nowrap;
 }
 ::v-deep .el-table thead {
   color: #303133;
@@ -497,13 +507,13 @@ export default {
 .el-table tr {
   background-color: #fafafa !important;
 }
-::v-deep .el-pagination .btn-prev {
-  margin-left: 110px;
-}
-::v-deep .el-pagination__jump {
-  position: absolute;
-  right: 35px;
-}
+// ::v-deep .el-pagination .btn-prev {
+//   margin-left: 65px;
+// }
+// ::v-deep .el-pagination__jump {
+//   position: absolute;
+//   right: 35px;
+// }
 ::v-deep .el-button {
   color: #606266;
 }

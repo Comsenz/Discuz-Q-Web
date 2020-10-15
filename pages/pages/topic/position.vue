@@ -77,7 +77,6 @@ export default {
       }
       callback(null, resData)
     } catch (error) {
-      console.log('ssr err')
       callback(null, {})
     }
   },

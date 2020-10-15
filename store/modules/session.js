@@ -1,8 +1,6 @@
 /* eslint no-underscore-dangle: ["error", { "allow": ["_jv"] }] */
-// import { Message } from 'element-ui'
 import service from '@/api/request'
 import { utils } from '@/library/jsonapi-vuex/index'
-// import { DISCUZ_REQUEST_HOST } from '@/common/const'
 import {
   SET_USER_ID,
   CHECK_SESSION,
@@ -53,7 +51,6 @@ const actions = {
   },
 
   verificationCodeh5Login: (context, payload = {}) => {
-    console.log('payload', payload)
     return new Promise(resolve => {
       return service
         .post('sms/verify', payload)
@@ -68,10 +65,7 @@ const actions = {
   },
 
   h5Login: (context, payload = {}) => {
-    console.log('context', context)
-    console.log('payload', payload)
     return new Promise(resolve => {
-      // console.log('http--hhhhhhhh', http)
       return service
         .post('login', payload)
         .then(results => {
@@ -86,7 +80,6 @@ const actions = {
 
   h5Register: (context, payload = {}) => {
     // const options = { custom: { showTost: false }}
-    console.log('payload', payload)
     return new Promise(resolve => {
       return service
         .post('register', payload)

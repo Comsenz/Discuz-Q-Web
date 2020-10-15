@@ -20,8 +20,7 @@
       </div>
       <button v-if="command[usersIndex].showButton && command[usersIndex].buttonText && canRewardOrPaid" @click="onClick(command, usersIndex)">
         <svg-icon style="font-size: 16px; fill: white; margin-right: 10px" :type="command[usersIndex].icon" />
-        <span v-if="command[1].showButton && command[1].buttonText && canRewardOrPaid">{{ $t(`topic.${command[usersIndex].buttonText}`) }}</span>
-        <span v-if="command[0].showButton && command[0].buttonText && canRewardOrPaid">{{ '支付'+ `${paidInformation.price}` + $t(`topic.${command[usersIndex].buttonText}`) }}</span>
+        <span>{{ command[usersIndex].buttonText }}</span>
       </button>
     </div>
   </div>
@@ -57,18 +56,18 @@ export default {
   },
   data() {
     return {
-      payButtonText: ['', 'paymentViewRemainingContent', 'paymentViewVideo', 'paymentViewPicture'],
+      payButtonText: ['', this.$t('topic.paymentViewRemainingContent'), this.$t('topic.paymentViewVideo'), this.$t('topic.paymentViewPicture')],
       command: [
         {
           value: 24,
           title: 'pay',
-          buttonText: 'pay',
+          buttonText: this.$t('topic.pay'),
           icon: 'pay'
         },
         {
           value: 24,
           title: 'reward',
-          buttonText: 'reward',
+          buttonText: this.$t('topic.reward'),
           icon: 'heart'
         },
         {
@@ -86,7 +85,7 @@ export default {
       deep: true
     },
     threadType(val) {
-      this.command[0].buttonText = this.payButtonText[val]
+      this.command[0].buttonText = this.$t('topic.pay') + this.paidInformation.price + this.payButtonText[val]
     }
   },
   methods: {

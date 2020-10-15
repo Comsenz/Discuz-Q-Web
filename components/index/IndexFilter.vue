@@ -25,7 +25,6 @@
       </el-dropdown>
     </div>
     <create-post-popover />
-    <!-- <nuxt-link to="/" class="new-post">+{{ $t('profile.post') }}</nuxt-link> -->
   </div>
 </template>
 <script>
@@ -85,8 +84,6 @@ export default {
       if (val === 'followed' && (!this.userId || +this.userId === 0)) {
         if (process.client) {
           this.$message.error(this.$t('core.not_authenticated'))
-        } else {
-          console.log('请登录后再操作')
         }
         return
       }

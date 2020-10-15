@@ -147,9 +147,9 @@ export default {
     },
     enoughBalance() {
       if (this.rewardOrPay === 'reward') {
-        return parseFloat(this.rewardAmount || '0') < parseFloat(this.userWallet.walletBalance)
+        return parseFloat(this.rewardAmount || '0') <= parseFloat(this.userWallet.walletBalance)
       } else {
-        return parseFloat(this.amount) < parseFloat(this.userWallet.walletBalance)
+        return parseFloat(this.amount) <= parseFloat(this.userWallet.walletBalance)
       }
     }
   },

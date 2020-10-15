@@ -30,12 +30,10 @@ export default {
       }
       this.$store.dispatch('jv/get', [`forum`, { params }]).then(res => {
         this.forums = res
-        console.log('agreement', this.forums)
         this.open(this.type)
       })
     },
     open(type) {
-      console.log(type)
       if (type === 'register') {
         this.popTitle = this.$t('permission.user.agreementRegister')
         this.popDetail = this.forums.agreement.register_content
@@ -74,6 +72,8 @@ export default {
     margin-top: 50px;
     color: #6d6d6d;
     margin-bottom: 50px;
+    white-space: pre-line;
+    text-align: justify;
   }
 }
 </style>

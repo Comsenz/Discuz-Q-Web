@@ -3,7 +3,7 @@
     <main class="cont-left">
       <div class="search-header">
         <div class="result-count">
-          为您找到 <span v-if="q" class="keyword">"{{ q }}"</span>的相关用户搜索结果 {{ userCount }} {{ $t('topic.item') }}
+          {{ $t('search.find') }} <span v-if="value" class="keyword">"{{ value }}"</span>{{ $t('search.searchuserresult') }} {{ userCount }} {{ $t('topic.item') }}
         </div>
         <create-post-popover />
       </div>
@@ -50,7 +50,6 @@ export default {
       }
       callback(null, resData)
     } catch (error) {
-      console.log('ssr err')
       callback(null, {})
     }
   },
@@ -61,7 +60,7 @@ export default {
       pageNum: 1, // 当前页码
       pageSize: 10, // 每页多少条数据
       categoryId: 0, // 分类id 0全部
-      q: '',
+      value: '',
       hasMore: false,
       userCount: 0,
       userList: []
@@ -80,6 +79,9 @@ export default {
   },
   methods: {
     init() {
+      if (this.$route.query.categoryId) {
+        this.categoryId = this.$route.query.categoryId
+      }
       if (this.$route.query.value) {
         this.value = this.$route.query.value
         this.reloadList()
@@ -96,7 +98,6 @@ export default {
         'filter[username]': `*${this.value}*`
       }
       this.$store.dispatch('jv/get', ['users', { params }]).then(res => {
-        console.log('userlist', res)
         res.forEach((v, i) => {
           res[i].groupName = v.groups[0] ? v.groups[0].name : ''
         })

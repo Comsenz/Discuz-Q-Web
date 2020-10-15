@@ -11,7 +11,7 @@
         <div class="first-post" @click.self="toDetail">
           <div @click="onClickContent">
             <div class="content">
-              <div v-html="formatTopicHTML(item.lastThread[0].firstPost.contentHtml)" />
+              <div v-html="$xss(formatTopicHTML(item.lastThread[0].firstPost.summary))" />
             </div>
           </div>
           <!-- 图片 -->
@@ -193,7 +193,7 @@ export default {
       font-size: 14px !important;
       color: #000;
       max-width: 585px;
-      max-height: 96px;
+      //max-height: 96px;
       p,
       h1,
       h2,
@@ -204,7 +204,13 @@ export default {
         font-size: 14px !important;
       }
       img {
+        max-width: 100%;
+        max-height: 200px;
+        overflow: hidden;
+      }
+      .qq-emotion {
         height: 22px;
+        margin: 0
       }
       a {
         color: $color-blue-base;
@@ -216,8 +222,9 @@ export default {
         max-height: 80px;
         line-height: 20px;
         max-width: 410px;
-        img {
-          height: 20px;
+        .qq-emotion {
+          height: 22px;
+          margin: 0
         }
       }
     }

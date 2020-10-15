@@ -118,6 +118,7 @@ export default {
     videoUploading: '视频上传中...'
   },
   core: {
+    videoError: '视频正在转码中，请发布后观看',
     register_close: '站点禁止注册',
     regcode: '为加强站内人员管理，站点开启了人工验证注册用户，请耐心等待审核通过。',
     bind_error: '绑定错误',
@@ -328,6 +329,7 @@ export default {
     paymentViewVideo: '查看视频',
     publishExamineTip: '您发布的内容正在审核中哦',
     examineTip: '内容正在审核中，审核通过后才能正常显示！',
+    VideoTranscoding: '视频正在转码中，转码成功后才能正常播放',
     underReview: '内容正在审核中，审核通过后才能生成海报',
     commentTip: '当前评论正在审核中，审核通过后才能正常显示！',
     transcodingTip: '视频正在转码中，转码成功后才能正常显示！',
@@ -467,6 +469,7 @@ export default {
     word: '文字',
     released: '发布了：',
     noPostingPermission: '当前没有发帖权限',
+    noPostingCategory: '当前分类没有发帖权限',
     noPostingTopic: '当前没有查看主题权限',
     ioschoicetitle: '受iOS限制，暂时无法提供服务',
     ioschoicecontent: '请采用Android设备访问，给您带来不便尽请原谅！',
@@ -640,6 +643,7 @@ export default {
     numbermodifitions: '用户名只可修改一次',
     submit: '提交',
     emptyname: '名字不能为空',
+    repeatname: '修改用户名不能与之前用户名一致',
     modifysucc: '名字修改成功',
     phonbound: '已绑定手机',
     placeEnterCode: '请输入短信验证码',
@@ -969,7 +973,11 @@ export default {
     noFollowers: '暂无关注用户，请搜索',
     themes: '主题',
     searchmorethemes: '搜索更多主题',
-    norelatedthemesfound: '没有找到相关主题'
+    norelatedthemesfound: '没有找到相关主题',
+    find: '为您找到',
+    searchresult: '的相关搜索结果',
+    searchuserresult: '的相关用户搜索结果',
+    usercount: '名'
   },
   // 登录注册
   user: {
@@ -1019,6 +1027,11 @@ export default {
     confirm: '确认',
     cancel: '取消',
     enterOtherReason: '请输入其他理由',
-    reportSucceed: '举报成功'
+    reportSucceed: '举报成功',
+    advertisingRubbish: '广告垃圾',
+    illegalContent: '违规内容',
+    maliciousIrrigation: '恶意灌水',
+    repeatPost: '重复发帖',
+    otherreason: '其他理由'
   }
 }

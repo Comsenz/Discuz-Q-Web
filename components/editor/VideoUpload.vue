@@ -23,7 +23,7 @@
       ref="upload"
       list-type="picture-card"
       class="image-upload"
-      accept="video/*"
+      :accept="typesLimit"
       action=""
       :auto-upload="false"
       :limit="1"
@@ -55,6 +55,18 @@ export default {
       showVideoPop: false
     }
   },
+  computed: {
+    forums() {
+      return this.$store.state.site.info.attributes || {}
+    },
+    sizeLimit() {
+      return this.forums && this.forums.qcloud ? this.forums.qcloud.qcloud_vod_size : ''
+    },
+    typesLimit() {
+      return this.forums && this.forums.qcloud ? this.forums.qcloud.qcloud_vod_ext.split(',').map(item => '.' + item).join(',') : ''
+      // return types.map(item => item.toLowerCase())
+    }
+  },
   methods: {
     handleVideoRemove() {
       return this.$confirm(this.$t('topic.confirmDelete'), this.$t('discuzq.msgBox.title'), {
@@ -70,8 +82,13 @@ export default {
     },
     addVideo(file) {
       if (this.onUploadVideo) return
-      if (file.raw.size > 10485760) {
-        this.$message.error(this.$t('profile.filesizecannotexceed') + '10 MB')
+      if (this.sizeLimit && file.raw.size > this.sizeLimit * 1024 * 1024) {
+        this.$message.error(this.$t('profile.filesizecannotexceed') + this.sizeLimit + 'MB')
+        this.$refs.upload.clearFiles()
+        return
+      }
+      if (!this.videoTypeCheck(file)) {
+        this.$message.error('暂不支持此类型的视频')
         this.$refs.upload.clearFiles()
         return
       }
@@ -90,6 +107,10 @@ export default {
             this.postVideo(doneResult.fileId)
           })
       })
+    },
+    videoTypeCheck(file) {
+      const fileType = file.name.split('.')[file.name.split('.').length - 1].toLowerCase()
+      return !(fileType === 'm3u8' || this.typesLimit.indexOf(fileType.toLowerCase()) < 0) // m3u8 由于后端不能转码，强限制
     },
     getSignature(callBack = null) {
       this.$store.dispatch('jv/get', ['signature', {}]).then(res => {

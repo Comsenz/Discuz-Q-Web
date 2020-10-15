@@ -11,11 +11,10 @@
 
       <div class="myprofile-top mtop">
         <Avatar
-          :user="{ id: userInfo.id, username: userInfo.username, avatarUrl: avataruserInfo.avatarUrl}"
+          :user="{ id: userInfo.id, username: userInfo.username, avatarUrl: avataruserInfo.avatarUrl, isReal: avataruserInfo.isReal}"
           :size="50"
           :round="true"
           class="avatar"
-          :is-real="userInfo.isReal"
         />
         <div class="usr">
           <span class="usrname">{{ userInfo.username }}</span>
@@ -482,9 +481,7 @@ export default {
   },
   methods: {
     countDown(interval) {
-      console.log('倒计时')
       if (!this.canClick) return
-      console.log('倒计时2')
       this.canClick = false
       this.content = interval + this.$t('modify.retransmission')
       const clock = setInterval(() => {
@@ -522,7 +519,6 @@ export default {
       }
       this.$store.dispatch('jv/get', [`users/${this.userId}`, { params }]).then(
         (res) => {
-          console.log('useriinfo', res)
           this.loading = false
           this.userInfo = res
           this.signcontent = this.userInfo.signature
@@ -532,7 +528,19 @@ export default {
           this.wordnumber = this.signcontent.length
         },
         (e) => {
-          this.handleError(e)
+          const { response: { data: { errors }}} = e
+          if (errors && Array.isArray(errors) && errors.length > 0 && errors[0]) {
+            const error = errors[0].detail && errors[0].detail.length > 0 ? errors[0].detail[0] : errors[0].code
+            if (error === 'Invalid includes [wechat]') {
+              this.$message.error(error)
+              localStorage.removeItem('access_token')
+              localStorage.removeItem('user_id')
+              window.location.replace('/')
+            } else {
+              const errorText = errors[0].detail && errors[0].detail.length > 0 ? errors[0].detail[0] : this.$t(`core.${error}`)
+              this.$message.error(errorText)
+            }
+          }
         }
       )
     },
@@ -553,7 +561,6 @@ export default {
       this.$nextTick(() => {
         this.$refs.sign.focus()
       })
-      console.log('签名', this.inputVal)
       // this.inputVal = this.signcontent
     },
     // 签名确认修改
@@ -598,13 +605,10 @@ export default {
     },
     // 发送短信接口
     sendsms() {
-      console.log('初始绑定手机')
       if (/^1(3|4|5|6|7|8|9)\d{9}$/.test(this.novice)) {
         if (this.forums.qcloud.qcloud_captcha) {
-          console.log('腾讯云验证已经开启')
           this.tcaptcha()
         } else {
-          console.log('腾讯云验证未开启')
           if (this.rebind) {
             this.sendVerifyCode2()
           } else {
@@ -618,12 +622,9 @@ export default {
     // 发送短信接口2
     sendsms2() {
       this.newphon = ''
-      console.log('验证旧手机')
       if (this.forums.qcloud.qcloud_captcha) {
-        console.log('腾讯云验证已经开启')
         this.tcaptcha()
       } else {
-        console.log('腾讯云验证未开启')
         // 直接修改手机验证码发送
         this.sendVerifyCode()
       }
@@ -638,7 +639,6 @@ export default {
             this.ticket = res.ticket
             this.randstr = res.randstr
             // 验证通过后发布
-            console.log('验证码发送')
             if (this.novice) {
               if (this.rebind) {
                 this.sendVerifyCode2()
@@ -733,7 +733,6 @@ export default {
       )
       postphon.then(
         (res) => {
-          console.log('旧手机验证码', res, this.content)
           if (res.interval) this.countDown(res.interval)
           this.rebind = true
           this.ticket = ''
@@ -756,7 +755,6 @@ export default {
       )
       postphon.then(
         (res) => {
-          console.log('绑定新手机验证码', res)
           if (res.interval) this.countDown2(res.interval)
           this.rebind = true
           this.ticket = ''
@@ -769,7 +767,6 @@ export default {
     mobileComfirm() {
       this.oldVerify()
       this.newVerify()
-      console.log('hh')
       this.isMobileModify = !this.isMobileModify
     },
     oldVerify() {
@@ -821,7 +818,6 @@ export default {
     },
     // 密码为空校验
     passSub() {
-      console.log('newPass')
       if (
         this.oldPassWord &&
         this.newPassWord &&
@@ -939,10 +935,12 @@ export default {
     },
     // 用户名提交
     nameSub() {
-      if (this.newName) {
-        this.changename()
-      } else {
+      if (!this.newName) {
         this.$message.error(this.$t('modify.emptyname'))
+      } else if (this.newName === this.userInfo.username) {
+        this.$message.error(this.$t('modify.repeatname'))
+      } else {
+        this.changename()
       }
     },
     changename() {
@@ -959,7 +957,6 @@ export default {
       patchname.then(
         (res) => {
           if (res) {
-            console.log('修改用户名', res)
             this.isNameModify = !this.isNameModify
             this.$message.success(this.$t('modify.modifysucc'))
           }
@@ -1174,14 +1171,14 @@ export default {
     ::v-deep.el-input__inner {
       border-right: none;
       border-bottom-right-radius: 0px;
-    border-top-right-radius: 0px;
+      border-top-right-radius: 0px;
     }
   }
   .count-b {
     width: 90px;
     height: 40px;
     padding: 0;
-    margin-left: -4.5px;
+    margin-left: -5px;
     color: #606162;
     vertical-align: top;
     border-bottom-left-radius: 0px;

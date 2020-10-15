@@ -1,4 +1,4 @@
-import enLocale from './plugins/lang/en.js'
+// import enLocale from './plugins/lang/en.js'
 import zhLocale from './plugins/lang/zh.js'
 
 const path = require('path')
@@ -51,15 +51,15 @@ export default {
   */
   head: {
     // title: process.env.npm_package_name || '',
-    title: 'Discuz! Q',
+    // title: 'Discuz! Q',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
-    ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
+    // link: [
+    //   { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+    // ]
   },
   router: {
     middleware: 'header',
@@ -72,7 +72,8 @@ export default {
     'element-ui/lib/theme-chalk/index.css',
     '@/assets/css/reset.scss',
     'vditor/src/assets/scss/index.scss',
-    'viewerjs/dist/viewer.css'
+    'viewerjs/dist/viewer.css',
+    'video.js/src/css/video-js.scss'
   ],
   /*
   ** Plugins to load before mounting the App
@@ -83,6 +84,7 @@ export default {
     '@/plugins/svg-icon',
     '@/directive/permission',
     '@/plugins/route',
+    '@/plugins/xss',
     { src: '@/plugins/cropper', ssr: false },
     { src: '@/plugins/viewer', ssr: false },
     { src: '@/plugins/dzqjs', ssr: false }
@@ -159,11 +161,6 @@ export default {
     },
     // svg处理
     extend(config, context) {
-      // 生成环境清除log
-      // if (context.isClient && !context.isDev) {
-      // config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
-      // }
-
       // Run ESLint on save
       if (context.isDev && context.isClient) {
         config.module.rules.push({

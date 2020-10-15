@@ -3,11 +3,11 @@
     <main class="cont-left">
       <div class="search-header">
         <div class="result-count">
-          为您找到 <span v-if="q" class="keyword">"{{ q }}"</span>的相关搜索结果 {{ userCount + threadCount }} {{ $t('topic.item') }}
+          {{ $t('search.find') }} <span v-if="q" class="keyword">"{{ q }}"</span>{{ $t('search.searchresult') }} {{ userCount + threadCount }} {{ $t('topic.item') }}
         </div>
         <create-post-popover />
       </div>
-      <div class="count">{{ $t('search.users') }} {{ userCount }} 名</div>
+      <div class="count">{{ $t('search.users') + userCount + $t('search.usercount') }} </div>
       <div class="user-list">
         <div class="user-flex">
           <nuxt-link v-for="(item, index) in userList.slice(0, userPageSize)" :key="index" :to="`/pages/profile/index?userId=${item.id}`" class="user-item">
@@ -66,7 +66,6 @@ export default {
       }
       callback(null, resData)
     } catch (error) {
-      console.log('ssr err')
       callback(null, {})
     }
   },
@@ -100,6 +99,9 @@ export default {
   },
   methods: {
     init() {
+      if (this.$route.query.categoryId) {
+        this.categoryId = this.$route.query.categoryId
+      }
       if (this.$route.query.q) {
         this.q = this.$route.query.q
         this.getUserList()
@@ -118,7 +120,6 @@ export default {
         'filter[username]': `*${this.q}*`
       }
       this.$store.dispatch('jv/get', ['users', { params }]).then(res => {
-        console.log('userlist', res)
         res.forEach((v, i) => {
           res[i].groupName = v.groups[0] ? v.groups[0].name : ''
         })

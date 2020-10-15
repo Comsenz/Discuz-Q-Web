@@ -2,7 +2,7 @@
   <div class="author">
     <div class="title">{{ $t('topic.aboutAuthor') }}</div>
     <avatar-component :author="author" class="author-info">
-      {{ $t('topic.activeAt') }} {{ timerDiff(author.loginAt) }}{{ $t('topic.before') }}
+      {{ $t('topic.activeAt') }} {{ timerDiff(author.updatedAt) }}{{ $t('topic.before') }}
     </avatar-component>
     <div class="signature">{{ author.signature }}</div>
     <div class="container-billBoard">

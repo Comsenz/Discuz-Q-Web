@@ -108,7 +108,7 @@ export default {
   head() {
     return {
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: this.forums && this.forums.set_site && this.forums.set_site.site_favicon || '/favicon.ico' }
+        { rel: 'icon', type: 'image/x-icon', href: this.forums && this.forums.set_site && this.forums.set_site.site_favicon }
       ]
     }
   }

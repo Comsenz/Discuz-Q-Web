@@ -230,6 +230,18 @@ table {
   min-width: 100px !important;
 }
 
+.el-image {
+  border-radius: 0 !important;
+}
+
+.el-upload--picture-card {
+  border-radius: 0 !important;
+}
+
+.el-upload-list--picture-card .el-upload-list__item {
+  border-radius: 0 !important;
+}
+
 /* html */
 .content-html {
   font-size: 16px;
@@ -334,11 +346,16 @@ table {
   max-width: 100%;
 }
 .content-html img {
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+.content-html .qq-emotion {
   height: 22px;
-  display: block;
-  max-width: 100%;
-  margin-bottom: 0;
-  overflow: hidden;
+  margin: 0;
+}
+.content-html video {
+  max-width: 100% !important;
+  overflow: hidden !important;
 }
 .content-html blockquote {
   padding: 22px 0 22px 22px;

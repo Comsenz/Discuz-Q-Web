@@ -9,7 +9,7 @@
             <template v-if="item.type === 1">
               {{ item.title }}
             </template>
-            <div v-else v-html="formatRichText(item.firstPost && item.firstPost.summary)" />
+            <div v-else v-html="$xss(formatRichText(item.firstPost && item.firstPost.summary))" />
           </nuxt-link>
         </div>
       </div>
@@ -149,7 +149,8 @@ export default {
       hasMore: false,
       timer: null, // 轮询获取新主题 定时器
       threadCount: 0, // 主题总数
-      total: 0 // 新的主题数，通过轮询获取
+      total: 0, // 新的主题数，通过轮询获取
+      htitle: '\u200E'
     }
   },
   computed: {
@@ -161,6 +162,12 @@ export default {
     }
   },
   mounted() {
+    if (this.forums && this.forums.set_site) {
+      this.htitle = this.forums.set_site.site_name ? this.forums.set_site.site_name : 'Discuz! Q'
+    }
+    if (this.$route.query.categoryId) {
+      this.categoryId = this.$route.query.categoryId
+    }
     if (this.threadsStickyData.length === 0) {
       this.getThreadsSticky()
     }
@@ -227,7 +234,7 @@ export default {
         if (data && data._jv) {
           this.hasMore = this.threadsData.length < _threadCount
         }
-        // 加载成功页码加1，为加载更多做准备
+        // 加载成功 页码加1，为加载更多做准备
         this.pageNum++
         if (this.timer) {
           clearInterval(this.timer)
@@ -243,7 +250,7 @@ export default {
     },
     // 点击加载更多
     loadMore() {
-      // TODO: 在这里加1的话，遇到加载不成功的会不断加页码
+      // 在这里加1的话，遇到加载不成功的会不断加页码
       //  this.pageNum++
       this.getThreadsList()
     },
@@ -277,7 +284,7 @@ export default {
     },
     // 点击分类
     onChangeCategory(id) {
-      this.$router.push({ url: '/', query: { categoryId: id !== 0 ? id : '' }})
+      this.$router.push({ url: '/', query: id !== 0 ? { categoryId: id } : {}})
       this.categoryId = id
       this.reloadThreadsList()
       this.threadsStickyData = []
@@ -316,7 +323,7 @@ export default {
   },
   head() {
     return {
-      title: this.forums && this.forums.set_site && this.forums.set_site.site_name || 'Discuz! Q'
+      title: this.htitle
     }
   }
 }

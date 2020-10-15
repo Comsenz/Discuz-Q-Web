@@ -230,7 +230,7 @@ table {
 .el-image {
   border-radius: 0 !important;
 }
-// el-upload-picture-card 去圆角 
+// el-upload-picture-card 去圆角
 .el-upload--picture-card {
   border-radius: 0 !important;
 }
@@ -269,7 +269,9 @@ $em: 16px;
   .video { margin: 22px 0; text-align: center; }
   .video-video { width: 100%; }
   .uni-image { max-width: 100%; }
-  img { height: 22px; display: block; max-width: 100%; margin-bottom: 0; overflow: hidden; }
+  img { max-width: 100% !important; overflow: hidden !important; }
+  .qq-emotion {height: 22px; margin: 0}
+  video {max-width: 100% !important; overflow: hidden !important; }
   blockquote { padding: 22px 0 22px 22px; margin: 10px 0; color: #6a737d; border-left: 6px solid #dbdbdb; }
   blockquote p { margin: 0; }
   ul { display: block; padding-left: 2 * $em; margin: 1em 0; list-style: disc; }

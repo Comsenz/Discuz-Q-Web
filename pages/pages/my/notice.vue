@@ -82,6 +82,9 @@ export default {
   computed: {
     userInfo() {
       return this.$store.state.user.info.attributes || {}
+    },
+    userId() {
+      return this.$store.getters['session/get']('userId')
     }
   },
   mounted() {
@@ -142,7 +145,7 @@ export default {
         try {
           await this.$store.dispatch('user/getUserInfo', this.userInfo.id)
         } catch (err) {
-          console.log('getuUserInfo err', err)
+          console.log('getUserInfo err', err)
         }
       }, e => {
         this.handleError(e)
@@ -194,7 +197,7 @@ export default {
     showChatBox(item) {
       if (!item) return
       this.dialogData.id = item._jv ? item._jv.id : ''
-      if (this.userId !== item.sender_user_id) {
+      if (this.userId * 1 !== item.sender_user_id) {
         this.dialogData.name = item.sender ? item.sender.username : ''
       } else {
         this.dialogData.name = item.recipient ? item.recipient.username : ''
