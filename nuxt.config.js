@@ -84,6 +84,7 @@ export default {
     '@/plugins/svg-icon',
     '@/directive/permission',
     '@/plugins/route',
+    '@/plugins/xss',
     { src: '@/plugins/cropper', ssr: false },
     { src: '@/plugins/viewer', ssr: false },
     { src: '@/plugins/dzqjs', ssr: false }

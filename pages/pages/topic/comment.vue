@@ -18,7 +18,7 @@
           <avatar-component :size="40" round :author="thread && thread.user || {}">
             {{ timerDiff(thread.createdAt) + $t('topic.before') }} ..
           </avatar-component>
-          <div v-show="thread && thread.firstPost" class="content-html" v-html="thread && thread.firstPost && thread.firstPost.summary || ''" />
+          <div v-show="thread && thread.firstPost" class="content-html" v-html="thread && thread.firstPost && $xss(thread.firstPost.summary) || ''" />
           <nuxt-link :to="`/pages/topic/index?id=${thread._jv ? thread._jv.id : ''}`" class="view-more">{{ $t('topic.viewDetail') }}</nuxt-link>
           <svg-icon v-if="thread && thread.isEssence" style="font-size: 50px;" type="essence-comment" class="essence" />
         </div>

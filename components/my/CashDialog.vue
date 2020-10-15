@@ -51,7 +51,7 @@
           <template slot-scope="scope">
             <span
               class="desc"
-              v-html="statusFormat2(scope.row)"
+              v-html="$xss(statusFormat2(scope.row))"
             />
           </template>
         </el-table-column>
@@ -68,7 +68,7 @@
           :formatter="statusFormat"
         >
           <template slot-scope="scope">
-            <span v-html="statusFormat(scope.row)" />
+            <span v-html="$xss(statusFormat(scope.row))" />
           </template>
         </el-table-column>
         <el-table-column
@@ -80,7 +80,7 @@
           <template slot-scope="scope">
             <span
               style="font-size:16px;"
-              v-html="scope.row.cash_apply_amount"
+              v-html="$xss(scope.row.cash_apply_amount)"
             />
           </template>
         </el-table-column>

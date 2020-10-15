@@ -11,7 +11,7 @@
         <div class="first-post" @click.self="toDetail">
           <div @click="onClickContent">
             <div class="content">
-              <div v-html="formatTopicHTML(item.lastThread[0].firstPost.summary)" />
+              <div v-html="$xss(formatTopicHTML(item.lastThread[0].firstPost.summary))" />
             </div>
           </div>
           <!-- 图片 -->

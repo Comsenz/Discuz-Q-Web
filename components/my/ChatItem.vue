@@ -59,7 +59,7 @@
       <div
         class="post-content"
         @click="showChatBox"
-        v-html="item.dialogMessage && item.dialogMessage.summary"
+        v-html="$xss(item.dialogMessage && item.dialogMessage.summary)"
       />
     </div>
   </div>

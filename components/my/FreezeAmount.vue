@@ -38,7 +38,7 @@
           <template slot-scope="scope">
             <span
               style="font-size:16px;"
-              v-html="amountFormat(scope.row.change_freeze_amount)"
+              v-html="$xss(amountFormat(scope.row.change_freeze_amount))"
             />
           </template>
         </el-table-column>

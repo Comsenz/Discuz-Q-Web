@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="container-detail">
-        <div class="content-html" @click="showAll($event, comment)" v-html="formatSummary(comment)" />
+        <div class="content-html" @click="showAll($event, comment)" v-html="$xss(formatSummary(comment))" />
         <div v-if="comment.images && comment.images.length > 0" v-viewer="{url: 'data-source'}" class="images">
           <el-image
             v-for="(image, imageIndex) in comment.images"
@@ -64,7 +64,7 @@
               <span v-if="reply.canHide" class="delete-reply" @click.stop="$emit('deleteComment', reply._jv.id)">{{ $t('topic.delete') }}</span>
             </div>
           </div>
-          <div class="content-html" @click="showAll($event, replyIndex, replyList)" v-html="formatSummary(reply)" />
+          <div class="content-html" @click="showAll($event, replyIndex, replyList)" v-html="$xss(formatSummary(reply))" />
           <div v-if="reply.images && reply.images.length > 0" v-viewer="{url: 'data-source'}" class="images" @click.stop="() => {}">
             <el-image
               v-for="(image, imageIndex) in reply.images"

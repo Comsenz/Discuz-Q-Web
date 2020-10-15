@@ -9,7 +9,7 @@
             <template v-if="item.type === 1">
               {{ item.title }}
             </template>
-            <div v-else v-html="formatRichText(item.firstPost && item.firstPost.summary)" />
+            <div v-else v-html="$xss(formatRichText(item.firstPost && item.firstPost.summary))" />
           </nuxt-link>
         </div>
       </div>
