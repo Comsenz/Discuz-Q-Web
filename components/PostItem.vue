@@ -43,7 +43,7 @@
               <span class="blue ">{{ item.title }}</span></div>
             <div v-else class="content">
               <svg-icon v-show="parseFloat(item.price) > 0" type="pay-yuan" class="icon-pay-yuan" />
-              <span :class="{'content-block': parseFloat(item.price) > 0}" v-html="formatTopicHTML(item.firstPost.summary)" />
+              <span :class="{'content-block': parseFloat(item.price) > 0}" v-html="$xss(formatTopicHTML(item.firstPost.summary))" />
             </div>
           </div>
           <!-- 图片 -->

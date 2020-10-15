@@ -70,7 +70,7 @@
           <template slot-scope="scope">
             <span
               style="font-size:16px;"
-              v-html="amountFormat(scope.row)"
+              v-html="$xss(amountFormat(scope.row))"
             />
           </template>
         </el-table-column>

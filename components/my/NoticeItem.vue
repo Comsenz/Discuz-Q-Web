@@ -45,7 +45,7 @@
         v-if="item.post_content"
         :to="`/pages/topic/comment?threadId=${item.thread_id}&commentId=${item.reply_post_id !== 0 ? item.reply_post_id : item.post_id}`"
         class="post-content"
-        v-html="item.post_content"
+        v-html="$xss(item.post_content)"
       />
       <nuxt-link
         v-if="(item.thread_title || item.content) && item.type !== 'system'"
@@ -57,11 +57,11 @@
         <div class="thread-title">
           <div
             v-if="item.thread_title"
-            v-html="item.thread_title"
+            v-html="$xss(item.thread_title)"
           />
           <div
             v-else-if="item.content"
-            v-html="item.content"
+            v-html="$xss(item.content)"
           />
         </div>
         <div class="to-detail">{{ $t('notice.toDetail') }}</div>
@@ -69,7 +69,7 @@
       <div
         v-if="item.type === 'system'"
         class="post-content"
-        v-html="item.content"
+        v-html="$xss(item.content)"
       />
       <div
         v-if="item.type === 'withdrawal'"

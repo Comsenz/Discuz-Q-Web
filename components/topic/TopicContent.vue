@@ -1,7 +1,7 @@
 <template>
   <article class="global">
     <h2 class="title">{{ title }}</h2>
-    <div class="content-html" v-html="formatTopicHTML(article.contentHtml || '')" />
+    <div class="content-html" v-html="$xss(formatTopicHTML(article.contentHtml || ''))" />
     <div v-if="video.cover_url" class="container-video-img-cover">
       <div class="warp-video-img-cover">
         <img class="video-img-cover" :src="video.cover_url" :alt="video.file_name" @click.stop="openVideo">

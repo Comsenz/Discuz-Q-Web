@@ -13,7 +13,7 @@
       <div class="title">{{ $t('topic.recommend') }}</div>
       <div v-for="(item, index) in threeEssenceThread" :key="index" class="container-post">
         <div v-if="item.title && item.firstPost.summaryText" class="content-html" @click="goToPage(item)"> {{ item.title || item.firstPost.summaryText }} </div>
-        <div v-else class="content-html" @click="goToPage(item)" v-html="item.firstPost.summary" />
+        <div v-else class="content-html" @click="goToPage(item)" v-html="$xss(item.firstPost.summary)" />
         <span class="view-count">{{ item.viewCount }} {{ $t('topic.readAlready') }}</span>
       </div>
     </div>

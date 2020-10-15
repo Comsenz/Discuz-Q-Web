@@ -8,7 +8,7 @@
         <div v-if="reply.isApproved === 0" class="checking">{{ $t('topic.inReview') }}</div>
       </div>
       <div class="container-detail">
-        <div class="content-html" v-html="formatHtml(reply.contentHtml)" />
+        <div class="content-html" v-html="$xss(formatHtml(reply.contentHtml))" />
         <div v-if="reply.images && reply.images.length > 0" v-viewer="{url: 'data-source'}" class="images">
           <el-image
             v-for="(image, imageIndex) in reply.images"
