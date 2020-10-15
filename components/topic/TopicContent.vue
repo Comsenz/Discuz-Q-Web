@@ -3,24 +3,13 @@
     <h2 class="title">{{ title }}</h2>
     <div class="content-html" v-html="formatTopicHTML(article.contentHtml || '')" />
     <div v-if="video.cover_url" class="container-video-img-cover">
-      <img
-        class="video-img-cover"
-        :src="video.cover_url"
-        :alt="video.file_name"
-        @click.stop="openVideo"
-      >
-      <svg-icon type="video-play" class="icon-play" style="font-size: 50px" @click="openVideo" />
+      <div class="warp-video-img-cover">
+        <img class="video-img-cover" :src="video.cover_url" :alt="video.file_name" @click.stop="openVideo">
+        <svg-icon type="video-play" class="icon-play" style="font-size: 50px" @click="openVideo" />
+      </div>
     </div>
     <div v-if="article.images && article.images.length > 0" v-viewer="{url: 'data-source'}" class="images" @click="unpaid ? openVideo() : ''">
-      <el-image
-        v-for="(image, index) in article.images"
-        :key="index"
-        class="image"
-        :data-source="unpaid ? '' : image.url"
-        :src="image.thumbUrl"
-        :alt="image.filename"
-        fit="cover"
-      >
+      <el-image v-for="(image, index) in article.images" :key="index" class="image" :data-source="unpaid ? '' : image.url" :src="image.thumbUrl" :alt="image.filename" fit="cover">
         <div slot="placeholder" class="image-slot">
           <i class="el-icon-loading" />
         </div>
@@ -292,19 +281,21 @@ export default {
     }
 
     > .container-video-img-cover {
-      position: relative;
       margin-top: 30px;
-      max-width: 400px;
-      cursor: pointer;
-      > .video-img-cover {
-        display: block;
-        max-width: 400px;
-      }
-      > .icon-play {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+      > .warp-video-img-cover {
+        cursor: pointer;
+        position: relative;
+        display: inline-block;
+        > .video-img-cover {
+          display: block;
+          max-width: 400px;
+        }
+        > .icon-play {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
       }
     }
 
