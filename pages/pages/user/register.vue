@@ -495,12 +495,6 @@ export default {
     },
     // 微信扫码登录状态
     getLoginStatus(scene_str) {
-      const params = {
-        _jv: {
-          type: `oauth/wechat/web/user/search`
-        },
-        scene_str: scene_str
-      }
       this.$store.dispatch('jv/get', `/oauth/wechat/web/user/search?scene_str=${scene_str}`).then(data => {
         if (data.id) {
           this.loginStatus = true
