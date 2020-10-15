@@ -23,7 +23,7 @@
       ref="upload"
       list-type="picture-card"
       class="image-upload"
-      accept="video/*"
+      :accept="typesLimit"
       action=""
       :auto-upload="false"
       :limit="1"
@@ -56,9 +56,15 @@ export default {
     }
   },
   computed: {
+    forums() {
+      return this.$store.state.site.info.attributes || {}
+    },
     sizeLimit() {
-      const forums = this.$store.state.site.info.attributes || {}
-      return forums && forums.qcloud ? forums.qcloud.qcloud_vod_size : ''
+      return this.forums && this.forums.qcloud ? this.forums.qcloud.qcloud_vod_size : ''
+    },
+    typesLimit() {
+      return this.forums && this.forums.qcloud ? this.forums.qcloud.qcloud_vod_ext.split(',').map(item => '.' + item).join(',') : ''
+      // return types.map(item => item.toLowerCase())
     }
   },
   methods: {
@@ -81,6 +87,11 @@ export default {
         this.$refs.upload.clearFiles()
         return
       }
+      if (!this.videoTypeCheck(file)) {
+        this.$message.error('暂不支持此类型的视频')
+        this.$refs.upload.clearFiles()
+        return
+      }
       this.$emit('update:onUploadVideo', true)
       const _videoList = [...this.videoList]
       _videoList.push({ name: file.name, url: file.url, videoPercent: 0 })
@@ -96,6 +107,10 @@ export default {
             this.postVideo(doneResult.fileId)
           })
       })
+    },
+    videoTypeCheck(file) {
+      const fileType = file.name.split('.')[file.name.split('.').length - 1].toLowerCase()
+      return !(fileType === 'm3u8' || this.typesLimit.indexOf(fileType.toLowerCase()) < 0) // m3u8 由于后端不能转码，强限制
     },
     getSignature(callBack = null) {
       this.$store.dispatch('jv/get', ['signature', {}]).then(res => {
