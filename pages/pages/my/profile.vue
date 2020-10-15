@@ -528,7 +528,19 @@ export default {
           this.wordnumber = this.signcontent.length
         },
         (e) => {
-          this.handleError(e)
+          const { response: { data: { errors }}} = e
+          if (errors && Array.isArray(errors) && errors.length > 0 && errors[0]) {
+            const error = errors[0].detail && errors[0].detail.length > 0 ? errors[0].detail[0] : errors[0].code
+            if (error === 'Invalid includes [wechat]') {
+              this.$message.error(error)
+              localStorage.removeItem('access_token')
+              localStorage.removeItem('user_id')
+              window.location.replace('/')
+            } else {
+              const errorText = errors[0].detail && errors[0].detail.length > 0 ? errors[0].detail[0] : this.$t(`core.${error}`)
+              this.$message.error(errorText)
+            }
+          }
         }
       )
     },
