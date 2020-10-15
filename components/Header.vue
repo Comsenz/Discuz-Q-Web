@@ -22,9 +22,9 @@
         </el-input>
       </div>
       <!-- 未登录 -->
-      <div v-if="!userId || siteClose">
-        <el-button :disabled="siteClose" size="small" class="h-button h-button1" @click="login">{{ $t('user.login') }}</el-button>
-        <el-button :disabled="(forums && forums.set_reg && !forums.set_reg.register_close) || siteClose" size="small" class="h-button h-button2" @click="register">{{ $t('user.register') }}</el-button>
+      <div v-if="siteClose || !islogin ">
+        <el-button v-if="siteClose || !userId" :disabled="siteClose" size="small" class="h-button h-button1" @click="login">{{ $t('user.login') }}</el-button>
+        <el-button v-if="siteClose || !userId" :disabled="(forums && forums.set_reg && !forums.set_reg.register_close) || siteClose" size="small" class="h-button h-button2" @click="register">{{ $t('user.register') }}</el-button>
       </div>
       <!-- 已登录 -->
       <div v-if="userId && JSON.stringify(userInfo) !== '{}' && !siteClose" class="flex">
@@ -69,7 +69,8 @@ export default {
       siteClose: false,
       userInfoTimer: null, // 定时器
       offsetTop: 0,
-      imgurl: require('@/assets/logo.png')
+      imgurl: require('@/assets/logo.png'),
+      islogin: true
     }
   },
   computed: {
@@ -106,6 +107,10 @@ export default {
     if (this.$route.path === '/pages/site/close') {
       this.siteClose = true
     }
+    this.$nextTick(() => {
+      const id = localStorage.getItem('user_id')
+      this.islogin = id
+    })
   },
   destroyed() {
     if (process.client) {

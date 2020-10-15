@@ -42,8 +42,8 @@
               <svg-icon v-show="parseFloat(item.price) > 0" type="pay-yuan" class="blue" style="font-size: 17px; display: inline-block; margin-right: 5px;" />
               <span class="blue ">{{ item.title }}</span></div>
             <div v-else class="content">
-              <svg-icon v-show="payIconFormat(item.price) > 0" type="pay-yuan" class="icon-pay-yuan" />
-              <span v-html="payIconFormat(formatTopicHTML(item.firstPost.summary), parseFloat(item.price) > 0)" />
+              <svg-icon v-show="parseFloat(item.price) > 0" type="pay-yuan" class="icon-pay-yuan" />
+              <span :class="{'content-block': parseFloat(item.price) > 0}" v-html="formatTopicHTML(item.firstPost.summary)" />
             </div>
           </div>
           <!-- 图片 -->
@@ -239,10 +239,6 @@ export default {
     }
   },
   methods: {
-    // 点赞
-    payIconFormat(html, paid) {
-      return paid && html ? html.replace('<p>', '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;') : html
-    },
     handleLike() {
       if (this.loading) return
       if (!this.item.firstPost.canLike) {
@@ -406,6 +402,10 @@ export default {
       top: 0;
       left: 0;
       color: #8590A6;
+    }
+    .content-block{
+      text-indent: 20px;
+      display: block;
     }
     ::v-deep .content {
       position: relative;
