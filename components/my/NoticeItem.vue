@@ -24,7 +24,6 @@
             :to="`/pages/profile/index?userId=${item.user_id}`"
             class="user-name"
           >{{ item.user_name }}
-            <!-- <span v-if="item.thread_user_groups === '管理员'" class="text">({{ item.thread_user_groups }})</span> -->
           </nuxt-link>
           <span class="text">
             <template v-if="item.type === 'rewarded'">
