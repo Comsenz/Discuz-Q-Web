@@ -94,7 +94,7 @@ npm run build
 ```
 
 ## 依赖
-1. [nuxt.js](https://nuxtjs.org//)：基于vue的开发框架
+1. [nuxt.js](https://nuxtjs.org/)：基于vue的开发框架
 2. [vue](https://cn.vuejs.org/index.html)：JavaScript 渐进式框架
 3. [vuex](https://vuex.vuejs.org/zh/)：状态管理
 4. [vue-i18n](https://kazupon.github.io/vue-i18n/zh/)：国际化
