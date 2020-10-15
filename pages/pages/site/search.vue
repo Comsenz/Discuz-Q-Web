@@ -66,7 +66,6 @@ export default {
       }
       callback(null, resData)
     } catch (error) {
-      console.log('ssr err')
       callback(null, {})
     }
   },
@@ -121,7 +120,6 @@ export default {
         'filter[username]': `*${this.q}*`
       }
       this.$store.dispatch('jv/get', ['users', { params }]).then(res => {
-        console.log('userlist', res)
         res.forEach((v, i) => {
           res[i].groupName = v.groups[0] ? v.groups[0].name : ''
         })

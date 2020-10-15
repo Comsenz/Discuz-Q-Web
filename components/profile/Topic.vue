@@ -67,7 +67,6 @@ export default {
             this.hasMore = this.threadsData.length < res._jv.json.meta.threadCount
           }
           this.pageNum += 1
-          console.log('当前主题数据12', this.threadsData)
         }, e => {
           this.handleError(e)
         }).finally(() => {
@@ -76,8 +75,6 @@ export default {
     },
     loadMore() {
       if (this.hasMore) {
-        console.log('topicloadmore')
-        // this.pageNum += 1
         this.loadThreads()
       }
     }

@@ -153,7 +153,6 @@ export default {
     },
     setmydata() {
       this.userInfo = this.$store.state.user.info
-      console.log('hhhh', this.userInfo)
       this.name = this.userInfo.attributes.username
       this.balance = this.userInfo.attributes.walletBalance
       this.usertestphon = this.userInfo.attributes.mobile
@@ -164,7 +163,6 @@ export default {
     },
     forumsdata() {
       this.forums = this.$store.state.site.info.attributes
-      console.log('站点信息', this.forums)
       this.cost = this.forums.set_cash.cash_rate
       this.percentage = this.forums.set_cash.cash_rate * 100
     },
@@ -209,10 +207,8 @@ export default {
     // 发送验证码
     sendsms() {
       if (this.forums.qcloud.qcloud_captcha) {
-        console.log('腾讯云验证已经开启')
         this.tcaptcha()
       } else {
-        console.log('腾讯云验证未开启')
         this.second = 60
         this.sendVerifyCode()
       }
@@ -225,7 +221,6 @@ export default {
           this.ticket = res.ticket
           this.randstr = res.randstr
           // 验证通过后发布
-          console.log('验证码发送')
           // 修改手机验证码发送
           this.sendVerifyCode()
         }
@@ -272,10 +267,8 @@ export default {
         }, e => {
           // eslint-disable-next-line object-curly-spacing
           const { response: { data: { errors } } } = e
-          console.log(errors[0])
           if (errors[0]) {
             if (errors[0].status === '422') {
-              console.log(errors[0].detail, errors[0])
               this.$message.error(errors[0].detail[0])
             } else if (errors[0].status === 500) {
               this.$message.error(this.$t(`core.${errors[0].code}`))
@@ -310,7 +303,6 @@ export default {
         }, e => {
           // eslint-disable-next-line object-curly-spacing
           const { response: { data: { errors } } } = e
-          console.log(errors)
           if (errors[0]) {
             if (errors[0].status === '422') {
               this.$message.error(errors[0].detail[0])

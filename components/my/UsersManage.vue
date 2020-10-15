@@ -261,7 +261,7 @@ export default {
       try {
         await this.$store.dispatch('site/getSiteInfo')
       } catch (err) {
-        console.log('getuUserInfo err', err)
+        console.log('getUserInfo err', err)
       }
     },
     onClickSearch() {

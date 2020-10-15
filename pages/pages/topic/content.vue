@@ -85,7 +85,6 @@ export default {
       }
       callback(null, resData)
     } catch (error) {
-      console.log('ssr err')
       callback(null, {})
     }
   },
@@ -126,7 +125,6 @@ export default {
     getTopicDetail(id) {
       this.$store.dispatch('jv/get', [`topics/${id}`, {}]).then(res => {
         if (res) {
-          console.log('res', res)
           this.topic = res
         }
       })

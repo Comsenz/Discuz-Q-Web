@@ -23,7 +23,6 @@ export default {
   methods: {
     async getSiteInfo() {
       const error = this.$store.state.forum.error
-      console.log('error', error)
       this.close_tips = error ? error.detail : ''
       // try {
       //   await this.$store.dispatch('site/getSiteInfo')

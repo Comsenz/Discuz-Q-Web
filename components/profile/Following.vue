@@ -157,8 +157,6 @@ export default {
       status
         .run(() => this.$store.dispatch('jv/get', ['follow', { params }]))
         .then(res => {
-          console.log(this.userId)
-          console.log('用户关注列表', res)
           this.loading = false
           this.hasMore = res.length === this.pageSize
           if (type === 'change') {
@@ -194,13 +192,11 @@ export default {
       }
       this.$store.dispatch('jv/post', params)
         .then(res => {
-          console.log('添加关注', res)
           if (this.userId === this.currentLoginId) {
             this.$emit('changeFollow', { userId: this.userId })
           }
           // is_mutual 是否互相关注 1 是 0 否
           const item = this.followingList[index]
-          console.log('当前你与自己粉丝或别人粉丝的关注状态', item)
           // 深拷贝防止vuex 修改state报错
           const item2 = JSON.parse(JSON.stringify(item))
           item2.toUser.follow = res.is_mutual === 1 ? 2 : 1

@@ -245,7 +245,6 @@ export default {
   },
   methods: {
     handleSizeChange(val) {
-      console.log(`当前页: ${val}`)
       this.pageNum = 1
       this.pageSize = val
       this.getShieldList()
@@ -255,7 +254,6 @@ export default {
       this.getShieldList()
     },
     handleSizeChange2(val) {
-      console.log(`当前页: ${val}`)
       this.pageNum = 1
       this.pageSize = val
       this.getUserList(this.inputVal)
@@ -276,7 +274,6 @@ export default {
         res.forEach((v, i) => {
           this.unbundUserData.push(res[i].id)
         })
-        console.log('和名单数据', res)
         this.shieldTotal = res.length
       }, e => this.handleError(e)).finally(() => { this.loading = false })
     },
@@ -291,7 +288,6 @@ export default {
         if (res._jv) {
           delete res._jv
         }
-        console.log('获取黑名单', res)
         this.shieldList = res
       }, e => this.handleError(e)).finally(() => { this.loading = false })
     },
@@ -302,7 +298,6 @@ export default {
         type: 'warning'
       }).then(() => {
         this.unbundlingUser(uid)
-        console.log(uid)
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -347,7 +342,6 @@ export default {
         'filter[username]': `*${key}*`
       }
       this.$store.dispatch('jv/get', ['users', { params }]).then(res => {
-        console.log('用户搜索', res)
         res.forEach((v, i) => {
           res[i].groupName = v.groups[0] ? v.groups[0].name : ''
         })
@@ -366,7 +360,6 @@ export default {
         type: 'warning'
       }).then(() => {
         this.handleShield()
-        console.log(uid)
       }).catch(() => {
         this.$message({
           type: 'info',
