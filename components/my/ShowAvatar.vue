@@ -196,7 +196,6 @@ export default {
     // 修改头像
     fileChange(file) {
       const files = file
-      console.log('图片文件', file)
       if (/.(png|jpg|jpeg|JPG|JPEG)$/.test(files.name)) {
         var reader = new FileReader()
         reader.readAsDataURL(files)
@@ -236,7 +235,6 @@ export default {
       this.$refs.cropper.getCropBlob((data) => {
         this.downImg = data
         this.$refs.photoFile.submit()
-        console.log('裁剪完的图片', this.downImg)
         this.loading = true
       })
     },
@@ -262,7 +260,6 @@ export default {
         data: formData,
         timeout: 200000000 // 防止文件过大超时
       }).then((res) => {
-        console.log('图片上传', res)
         if (res) {
           this.loading = false
           this.$message.success('图片上传成功')

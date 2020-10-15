@@ -6,8 +6,6 @@ let baseURL = '/api'
 // SSR 服务端 baseURL 修正处理
 if (process.server === true) {
   if (process.env.NODE_ENV === 'production') {
-    console.log('process.env.VUE_APP_CONFIG_API_URL =>', process.env.VUE_APP_CONFIG_API_URL)
-
     baseURL = `${process.env.VUE_APP_CONFIG_API_URL || 'https://discuz.chat'}${baseURL}`
   } else {
     baseURL = `http://127.0.0.1:${process.env.npm_package_config_nuxt_port || 3000}${baseURL}`
@@ -42,26 +40,19 @@ service.interceptors.request.use(
     return oConfig
   },
   oError => {
-    console.log('Request Error => ', oError)
-
     return Promise.reject(oError)
   }
 )
 // Respone 拦截器
 service.interceptors.response.use(
   oRes => {
-    // console.log('Response => ', oRes)
-
     return oRes
   },
   oError => {
-    console.log('Response Error => ', oError)
-
     if (oError.response && oError.response.data && oError.response.data.errors) {
       oError.response.data.errors.forEach(error => {
         switch (error.code) {
           case 'access_denied':
-            console.log('token 无效 重新请求')
             // token 无效 重新请求
             if (process.client) {
               localStorage.removeItem('access_token')
@@ -71,21 +62,18 @@ service.interceptors.response.use(
             // delete response.config.header.Authorization;
             break
           case 'model_not_found':
-            console.log('模型未找到')
             // app.$store.dispatch('forum/setError', {
             //   code: 'type_404',
             //   status: 500,
             // });
             break
           case 'permission_denied':
-            console.log('没有查看权限')
             // app.$store.dispatch('forum/setError', {
             //   code: 'type_401',
             //   status: 500,
             // });
             break
           case 'site_closed':
-            console.log('site_closed')
             // uni.showToast({
             //   icon: 'none',
             //   title: i18n.t(`core.${error.code}`),

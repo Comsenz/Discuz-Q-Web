@@ -37,7 +37,6 @@ export default {
     }
   },
   mounted() {
-    console.log('Vditor => ', Vditor)
     if (Vditor) {
       this.contentEditor = new Vditor('vditor', {
         icon: 'material',
@@ -60,20 +59,12 @@ export default {
       include: 'groups'
     }
     this.$store.dispatch('jv/get', params).then(data => {
-      console.log('user data => ', data)
     })
   },
   destroyed() {
     this.contentEditor && this.contentEditor.destroy()
   },
   methods: {
-    selectFn(index) {
-      // console.log('当前点击索引', index)
-      // const _attr = [...this.attr]
-      // _attr[index].text = '!_attr[index].isSelect'
-      // _attr[index].isSelect = !_attr[index].isSelect
-      // this.attr = _attr
-    },
     onSuccess(fileList) {
       this.imageList = fileList
     },
@@ -87,7 +78,6 @@ export default {
         }
       }
       this.$store.dispatch('jv/get', params).then(data => {
-        console.log('forum data => ', data)
         this.info = data
       })
     },

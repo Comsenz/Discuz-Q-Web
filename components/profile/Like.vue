@@ -59,7 +59,6 @@ export default {
       status
         .run(() => this.$store.dispatch('jv/get', ['threads/likes', { params }]))
         .then(res => {
-          console.log('点赞数据', res)
           this.loading = false
           this.hasMore = res.length === this.pageSize
           this.data = [...this.data, ...res]

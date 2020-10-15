@@ -30,12 +30,10 @@ export default {
       }
       this.$store.dispatch('jv/get', [`forum`, { params }]).then(res => {
         this.forums = res
-        console.log('agreement', this.forums)
         this.open(this.type)
       })
     },
     open(type) {
-      console.log(type)
       if (type === 'register') {
         this.popTitle = this.$t('permission.user.agreementRegister')
         this.popDetail = this.forums.agreement.register_content

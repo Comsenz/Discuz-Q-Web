@@ -271,7 +271,6 @@ export default {
     onPostContentChange(key, value) {
       const _post = Object.assign({}, this.post)
       _post[key] = value
-      console.log(_post, 'post')
       this.$emit(`update:post`, _post)
     },
     onPaymentChange(key, value) {

@@ -145,7 +145,7 @@ export default {
         try {
           await this.$store.dispatch('user/getUserInfo', this.userInfo.id)
         } catch (err) {
-          console.log('getuUserInfo err', err)
+          console.log('getUserInfo err', err)
         }
       }, e => {
         this.handleError(e)

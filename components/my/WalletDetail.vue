@@ -185,7 +185,6 @@ export default {
   methods: {
     // 金额排序
     sortAmount(str1, str2) {
-      console.log(str1, str2)
       return str1.change_available_amount * 1 - str2.change_available_amount * 1
     },
     // 处理时间
@@ -228,18 +227,13 @@ export default {
     // 钱包明细日期选中
     bindDateChange2(e) {
       this.date2 = e
-      console.log('钱包明细日期选中', this.date2)
       if (this.date2 !== null) {
         this.getList2('filter')
-      } else {
-        console.log('日期已经为空')
       }
     },
     // 钱包明细状态筛选类型
     confirm2(e) {
-      console.log('钱包明细状态筛选类型', e)
       this.filterSelected2 = e
-      // console.log(this.filterSelected)
       this.getList2('filter')
     },
     // 获取钱包明细数据
@@ -272,10 +266,8 @@ export default {
           const result = this.handleHandle(res)
           // 处理钱
           this.sumMoney2 = this.handlemoney2(result)
-          console.log('钱包总金额', this.sumMoney2)
           this.dataList2 = result
           this.total2 = res._jv.json.meta.total
-          console.log('钱包明细', this.dataList2)
         }, e => {
           this.handleError(e)
         }).finally(() => {
@@ -296,10 +288,7 @@ export default {
     },
     // 钱包处理文字
     handleHandle(res) {
-      console.log('文字1', res)
-
       const results = JSON.parse(JSON.stringify(res))
-      console.log('文字', results)
       results.forEach((item, index) => {
         let desc = this.handleTitle(item)
         // 截取42个字
@@ -357,14 +346,12 @@ export default {
     },
     // 钱包分页
     handleSizeChange2(val) {
-      console.log(`每页 ${val} 条`)
       this.pageNum2 = 1
       this.pageSize2 = val
       this.getList2()
     },
     // 钱包分页
     handleCurrentChange2(val) {
-      console.log(`当前页: ${val}`)
       this.pageNum2 = val
       this.getList2()
     }

@@ -122,12 +122,11 @@ export default {
         this.input.value = ''
         this.$emit('success', _fileList)
         this.$emit('update:onUploadImage', false)
-      }, e => {
+      }, () => {
         // 失败的时候取消对应的预览照片
         const length = promiseList.length
         this.previewImages.splice(this.previeImages.length - length, length)
         this.$message.error('图片上传失败, 请稍后再试')
-        console.log('error => ', e)
       })
     },
     removeItem(index) {
@@ -144,9 +143,6 @@ export default {
           this.previewImages.splice(index, 1)
           this.$message.success('删除成功')
         }, 900)
-        // return service.delete(this.action + '/' + this.fileList[index].id).then(() => { 不需要从后台删除
-        //   console.log('后台删除成功')
-        // }, e => this.handleError(e))
       }, () => console.log('取消删除'))
     },
     checkSizeLimit(files) {

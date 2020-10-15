@@ -179,7 +179,6 @@ export default {
     if (code !== 'undefined') {
       this.code = code
     }
-    console.log(this.forums)
     if (this.forums && this.forums.set_site && this.forums.set_site.site_mode) {
       this.site_mode = this.forums.set_site.site_mode
     }
@@ -238,7 +237,6 @@ export default {
     logind() {
       const userId = this.$store.getters['session/get']('userId')
       if (!userId) return
-      console.log('hhhhhhhhhh')
       const params = {
         include: 'groups'
       }
@@ -250,7 +248,6 @@ export default {
         if (this.user && this.user.paid) {
           this.isPaid = this.user.paid
         }
-        console.log('----this.user-----', this.user)
         if (this.site_mode !== 'pay' || this.isPaid) {
           this.$router.push('/')
         }
@@ -280,7 +277,6 @@ export default {
         this.$store.dispatch('session/h5Login', params)
           .then(res => {
             this.loading = false
-            console.log('登录成功', res)
             if (res && res.data && res.data.data && res.data.data.id) {
               this.logind()
               this.userName = ''
@@ -295,7 +291,6 @@ export default {
             ) {
               const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code
               const errorText = res.data.errors[0].detail ? res.data.errors[0].detail[0] : this.$t(`core.${error}`)
-              console.log('error', error)
               this.$message.error(errorText)
             }
             if (
@@ -352,7 +347,6 @@ export default {
           .dispatch('session/verificationCodeh5Login', params)
           .then(res => {
             this.loading = false
-            console.log('手机号验证成功', res)
             if (res && res.data && res.data.data && res.data.data.id) {
               this.logind()
               this.$message.success(this.$t('user.loginSuccess'))
@@ -365,7 +359,6 @@ export default {
             ) {
               const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code
               const errorText = res.data.errors[0].detail ? res.data.errors[0].detail[0] : this.$t(`core.${error}`)
-              console.log('error', error)
               this.$message.error(errorText)
             }
             if (
@@ -402,7 +395,6 @@ export default {
     // PC扫码登陆-生成二维码
     createQRcode() {
       this.$store.dispatch('jv/get', `/oauth/wechat/pc/qrcode`).then(res => {
-        console.log('user data => ', res)
         if (res) {
           this.wechatLogin = res
           const _this = this
@@ -414,7 +406,6 @@ export default {
     getLoginStatus() {
       if (this.wechatLogin && !this.wechatLogin.session_token) return
       this.$store.dispatch('jv/get', `/oauth/wechat/pc/login/${this.wechatLogin.session_token}`).then(res => {
-        console.log('查询是否登录 ', res)
         if (res.pc_login) {
           clearInterval(this.wehcatLoginTimer)
           this.$store.commit('session/SET_USER_ID', res._jv.id)

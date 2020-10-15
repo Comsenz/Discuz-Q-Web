@@ -146,7 +146,6 @@ export default {
     const { code } = this.$route.query
     this.inviteCode = code
     this.getInviteInfo(this.inviteCode)
-    console.log('路由参数', this.inviteCode)
   },
   methods: {
     handleClose(done) {
@@ -160,7 +159,6 @@ export default {
       status
         .run(() => this.$store.dispatch('jv/get', `invite/${code}`)
           .then(res => {
-            console.log('邀请信息', res)
             this.inviteData = res
             this.check2()
             const permission = res.group.permission.slice(0, 3)
@@ -184,9 +182,7 @@ export default {
         return
       }
       // 处理邀请码状态 status 0 失效  1 未使用  2 已使用 3 已过期
-      const statusVal =
-        this.inviteData.status || this.inviteData.status === 0 ? this.inviteData.status : 'error'
-      console.log(this.inviteData.status)
+      const statusVal = this.inviteData.status || this.inviteData.status === 0 ? this.inviteData.status : 'error'
       switch (statusVal) {
         case 0: {
           this.codeTips = this.$t('site.codeinvalid')
@@ -234,9 +230,7 @@ export default {
         }
         return
       }
-      const statusVal =
-        this.inviteData.status || this.inviteData.status === 0 ? this.inviteData.status : 'error'
-      console.log(this.inviteData.status)
+      const statusVal = this.inviteData.status || this.inviteData.status === 0 ? this.inviteData.status : 'error'
       switch (statusVal) {
         case 0: {
           this.codeTitle = this.$t('site.codeinvalid2')
@@ -244,7 +238,6 @@ export default {
           break
         }
         case 1: {
-          console.log('check2')
           this.codeTitle = this.$t('manage.payJoin')
           this.codeTips = this.$t('manage.inviteInfoTitle')
           this.normal = true
@@ -278,7 +271,6 @@ export default {
       // 未登陆的情况
       if (!this.$store.getters['session/get']('isLogin')) {
         // 需要引入mixins loginauth.js
-        console.log('未登录进入付费圈子', this.inviteCode)
         this.handleLogin('/', this.inviteCode)
       } else {
         // 已经登陆的情况

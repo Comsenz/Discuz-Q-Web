@@ -165,16 +165,12 @@ export default {
     // 冻结金额日期选中
     bindDateChange3(e) {
       this.date3 = e
-      console.log('冻结金额日期选中', this.date3)
       if (this.date3 !== null) {
         this.getFreezelist('filter')
-      } else {
-        console.log('日期已经为空')
       }
     },
     // 冻结金额状态筛选类型
     confirm3(e) {
-      console.log('冻结金额状态筛选类型', e)
       this.filterSelected3 = e
       this.getFreezelist('filter')
     },
@@ -217,7 +213,6 @@ export default {
         'page[limit]': this.pageSize3
       }
       this.$store.dispatch('jv/get', ['wallet/log', { params }]).then(res => {
-        console.log('冻结金额列表数据', res)
         this.total3 = res._jv.json.meta.total
         this.freezelist = res
       }, e => {
@@ -228,7 +223,6 @@ export default {
     },
     // 金额排序
     sortAmount(str1, str2) {
-      console.log(str1, str2)
       return str1.change_available_amount * 1 - str2.change_available_amount * 1
     },
     // 时间格式化
@@ -241,14 +235,12 @@ export default {
     },
     // 冻结金额分页
     handleSizeChange3(val) {
-      console.log(`每页 ${val} 条`)
       this.pageNum3 = 1
       this.pageSize3 = val
       this.getFreezelist()
     },
     // 冻结金额分页
     handleCurrentChange3(val) {
-      console.log(`当前页: ${val}`)
       this.pageNum3 = val
       this.getFreezelist()
     }

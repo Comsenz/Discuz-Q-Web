@@ -85,8 +85,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.mobile)
-    console.log(this.phonenum)
     this.phoneNumber = this.mobile
     this.realphoneNumber = this.phonenum
   },

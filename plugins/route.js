@@ -18,7 +18,6 @@ export default ({ app }) => {
             const { response: { data: { errors }}} = e
             // 站点关闭跳转
             if (errors[0].code === 'site_closed') {
-              console.log(errors[0].code)
               await store
                 .dispatch('forum/setError', { code: errors[0].code, detail: errors[0].detail[0] })
               if (to.path === '/pages/site/close') return next()
@@ -37,7 +36,6 @@ export default ({ app }) => {
         } catch (error) {
           // 清除用户信息
           store.commit('user/SET_USER_INFO', {})
-          console.log(error)
         }
       }
 
@@ -59,6 +57,5 @@ export default ({ app }) => {
     next()
   })
   router.afterEach((to, from) => {
-    console.log('afterEach')
   })
 }

@@ -85,8 +85,6 @@ export default {
       if (val === 'followed' && (!this.userId || +this.userId === 0)) {
         if (process.client) {
           this.$message.error(this.$t('core.not_authenticated'))
-        } else {
-          console.log('请登录后再操作')
         }
         return
       }

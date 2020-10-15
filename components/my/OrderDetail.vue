@@ -163,7 +163,6 @@ export default {
   methods: {
     // 金额排序
     sortAmount(str1, str2) {
-      console.log(str1, str2)
       return str1.amount * 1 - str2.amount * 1
     },
     // 处理时间
@@ -201,18 +200,13 @@ export default {
     // 订单日期选中
     bindDateChange4(e) {
       this.date4 = e
-      console.log('订单日期选中', this.date4)
       if (this.date4 !== null) {
         this.getList4('filter')
-      } else {
-        console.log('日期已经为空')
       }
     },
     // 订单状态筛选类型
     confirm4(e) {
-      console.log('订单状态筛选类型', e)
       this.filterSelected4 = e
-      // console.log(this.filterSelected)
       this.getList4('filter')
     },
     // 获取订单数据
@@ -239,14 +233,12 @@ export default {
       status
         .run(() => this.$store.dispatch('jv/get', ['orders', { params }]))
         .then(res => {
-          console.log('hhh', res)
           // 处理文字
           const result = this.handleHandle4(res)
           // 处理钱
           this.sumMoney4 = this.handlemoney4(result)
           this.dataList4 = result
           this.total4 = res._jv.json.meta.total
-          console.log('订单数据', this.dataList4)
         }, e => {
           this.handleError(e)
         }).finally(() => {
@@ -309,14 +301,12 @@ export default {
     },
     // 订单金额分页
     handleSizeChange4(val) {
-      console.log(`每页 ${val} 条`)
       this.pageNum4 = 1
       this.pageSize4 = val
       this.getList4()
     },
     // 订单金额分页
     handleCurrentChange4(val) {
-      console.log(`当前页: ${val}`)
       this.pageNum4 = val
       this.getList4()
     }

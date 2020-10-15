@@ -19,7 +19,6 @@ module.exports = {
         const errorCode = errors[0].code
         const error = errors[0].detail && errors[0].detail.length > 0 ? errors[0].detail[0] : errors[0].code
         const errorText = errors[0].detail && errors[0].detail.length > 0 ? errors[0].detail[0] : this.$t(`core.${error}`)
-        console.log(error, 'detail')
         // 站点关闭跳转
         if (errors[0].code === 'site_closed') return await this.siteClose(errors)
 

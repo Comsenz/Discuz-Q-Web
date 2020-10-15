@@ -197,7 +197,6 @@ export default {
       const postphon = status.run(() => this.$store.dispatch('jv/post', params))
       postphon
         .then(res => {
-          console.log('原支付密码验证', res)
           if (res._jv.json.data.id) {
             this.passError = false
             this.showPasswordInput = false
@@ -250,7 +249,6 @@ export default {
     },
     // 初始密码判断
     validateVerify(password = '') {
-      console.log('password', password)
       const params = {
         _jv: {
           type: 'users',
@@ -264,7 +262,6 @@ export default {
       postphon
         .then(res => {
           this.inputpas = ''
-          console.log('初始密码设置成功', res)
           if (res) {
             this.repPasswordInput = false
             this.showNewverify2 = false
@@ -274,7 +271,6 @@ export default {
           }
         })
         .catch(err => {
-          console.log(err)
           if (this.$refs.repeatnewpass) {
             this.$refs.repeatnewpass.empty()
           }
@@ -290,7 +286,6 @@ export default {
       status
         .run(() => this.$store.dispatch('jv/get', `wallet/user/${this.userId}`))
         .then(res => {
-          console.log('钱包信息', res)
           this.dataInfo = res
           this.hasPassword = res.user.canWalletPay
         }, e => this.handleError(e))
@@ -302,7 +297,6 @@ export default {
       } else {
         this.isWithoutphone = true
       }
-      console.log('hhhhhhhhhhhhh', this.dataInfo)
     }
   },
   head() {

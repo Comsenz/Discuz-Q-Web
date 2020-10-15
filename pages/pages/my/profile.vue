@@ -481,9 +481,7 @@ export default {
   },
   methods: {
     countDown(interval) {
-      console.log('倒计时')
       if (!this.canClick) return
-      console.log('倒计时2')
       this.canClick = false
       this.content = interval + this.$t('modify.retransmission')
       const clock = setInterval(() => {
@@ -521,7 +519,6 @@ export default {
       }
       this.$store.dispatch('jv/get', [`users/${this.userId}`, { params }]).then(
         (res) => {
-          console.log('useriinfo', res)
           this.loading = false
           this.userInfo = res
           this.signcontent = this.userInfo.signature
@@ -552,7 +549,6 @@ export default {
       this.$nextTick(() => {
         this.$refs.sign.focus()
       })
-      console.log('签名', this.inputVal)
       // this.inputVal = this.signcontent
     },
     // 签名确认修改
@@ -597,13 +593,10 @@ export default {
     },
     // 发送短信接口
     sendsms() {
-      console.log('初始绑定手机')
       if (/^1(3|4|5|6|7|8|9)\d{9}$/.test(this.novice)) {
         if (this.forums.qcloud.qcloud_captcha) {
-          console.log('腾讯云验证已经开启')
           this.tcaptcha()
         } else {
-          console.log('腾讯云验证未开启')
           if (this.rebind) {
             this.sendVerifyCode2()
           } else {
@@ -617,12 +610,9 @@ export default {
     // 发送短信接口2
     sendsms2() {
       this.newphon = ''
-      console.log('验证旧手机')
       if (this.forums.qcloud.qcloud_captcha) {
-        console.log('腾讯云验证已经开启')
         this.tcaptcha()
       } else {
-        console.log('腾讯云验证未开启')
         // 直接修改手机验证码发送
         this.sendVerifyCode()
       }
@@ -637,7 +627,6 @@ export default {
             this.ticket = res.ticket
             this.randstr = res.randstr
             // 验证通过后发布
-            console.log('验证码发送')
             if (this.novice) {
               if (this.rebind) {
                 this.sendVerifyCode2()
@@ -732,7 +721,6 @@ export default {
       )
       postphon.then(
         (res) => {
-          console.log('旧手机验证码', res, this.content)
           if (res.interval) this.countDown(res.interval)
           this.rebind = true
           this.ticket = ''
@@ -755,7 +743,6 @@ export default {
       )
       postphon.then(
         (res) => {
-          console.log('绑定新手机验证码', res)
           if (res.interval) this.countDown2(res.interval)
           this.rebind = true
           this.ticket = ''
@@ -768,7 +755,6 @@ export default {
     mobileComfirm() {
       this.oldVerify()
       this.newVerify()
-      console.log('hh')
       this.isMobileModify = !this.isMobileModify
     },
     oldVerify() {
@@ -820,7 +806,6 @@ export default {
     },
     // 密码为空校验
     passSub() {
-      console.log('newPass')
       if (
         this.oldPassWord &&
         this.newPassWord &&
@@ -960,7 +945,6 @@ export default {
       patchname.then(
         (res) => {
           if (res) {
-            console.log('修改用户名', res)
             this.isNameModify = !this.isNameModify
             this.$message.success(this.$t('modify.modifysucc'))
           }
