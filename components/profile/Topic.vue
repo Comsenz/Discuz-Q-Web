@@ -6,6 +6,7 @@
         :key="index"
         :item="item"
         :lazy="false"
+        @change="changelike"
       />
       <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="threadsData.length" @loadMore="loadMore" />
     </div>
@@ -77,6 +78,15 @@ export default {
       if (this.hasMore) {
         this.loadThreads()
       }
+    },
+    changelike() {
+      console.log('hhh')
+      this.$emit('changeLike', { userId: this.userId })
+    },
+    changetopiclike() {
+      this.pageNum = 1
+      this.threadsData = []
+      this.loadThreads()
     }
   }
 }
