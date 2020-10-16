@@ -153,6 +153,7 @@ export default {
       }
       return true
     },
+    // 格式化html
     formatTopicHTML(html) {
       return s9e.parse(html)
     }

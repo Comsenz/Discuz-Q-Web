@@ -220,6 +220,7 @@ export default {
     viewDetail(item) {
       this.$emit('view-detail', item)
     },
+    // 复制
     copyLink(code) {
       const oInput = document.createElement('input')
       if (process.client) {
@@ -246,15 +247,18 @@ export default {
       }
       this.getInviteList()
     },
+    // 搜索
     onClickSearch() {
       this.pageNum = 1
       this.getInviteList()
     },
+    // 分页
     handleSizeChange(val) {
       this.pageNum = 1
       this.pageSize = val
       this.getInviteList()
     },
+    // 每一页的数量
     handleCurrentChange(val) {
       this.pageNum = val
       this.getInviteList()

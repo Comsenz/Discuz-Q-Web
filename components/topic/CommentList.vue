@@ -141,7 +141,7 @@ export default {
     formatSummary(comment) {
       let html
       if (comment.contentHtml !== comment.summary) {
-        html = comment.summary + `<button style="font-size: 14px;color: #00479B; cursor: pointer" class="showAllComment">${this.$t('topic.all')}<button>`
+        html = comment.summary + `<button class="showAllComment">${this.$t('topic.all')}</button>`
       } else {
         html = comment.contentHtml
       }
@@ -231,6 +231,11 @@ export default {
         margin-bottom: 20px;
         ::v-deep p {
           font-size: 14px !important;
+        }
+        ::v-deep.showAllComment {
+          font-size: 14px;
+          color: #00479B;
+          cursor: pointer;
         }
       }
 

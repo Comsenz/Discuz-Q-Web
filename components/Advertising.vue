@@ -29,6 +29,12 @@ export default {
     this.qrcode = null
   },
   methods: {
+    /**
+     * 生成二维码
+     * @param {*} link 网址
+     * @example:
+     * createQrcode('https://discuz.chat/')
+     */
     createQrcode(link) {
       if (process.client) {
         this.qrcode = null

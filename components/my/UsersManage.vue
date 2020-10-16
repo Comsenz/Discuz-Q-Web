@@ -235,6 +235,7 @@ export default {
         }
       })
     },
+    // 用户用户列表
     getUserList() {
       this.loading = true
       const params = {
@@ -264,6 +265,7 @@ export default {
         console.log('getUserInfo err', err)
       }
     },
+    // 搜索
     onClickSearch() {
       this.reloadList()
     },
@@ -276,6 +278,7 @@ export default {
       }
       this.reloadList()
     },
+    // 重新加载列表
     reloadList() {
       this.pageNum = 1
       this.getUserList()
@@ -410,6 +413,7 @@ export default {
         this.handleError(e)
       })
     },
+    // 复制链接
     copyLink(code) {
       const oInput = document.createElement('input')
       if (process.client) {

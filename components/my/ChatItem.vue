@@ -88,6 +88,7 @@ export default {
     }
   },
   methods: {
+    // 打开对话框 传值给父组件
     showChatBox() {
       this.$emit('show-chat-box', this.item)
     }
