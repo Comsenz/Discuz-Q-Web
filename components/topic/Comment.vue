@@ -3,6 +3,7 @@
     <comment-header v-if="postCount > 0" :comment-count="postCount" :is-positive-sort="isPositiveSort" @changeSort="changeSort" />
     <div v-else class="without-comment">{{ $t('topic.noComment') }}</div>
     <editor
+      v-if="afterEditComment"
       editor-style="comment"
       class="comment-editor"
       selector="comment-editor"
@@ -74,7 +75,7 @@ export default {
       postCount: 0,
       pageLimit: 5,
       growthFactor: 5,
-      isPositiveSort: true,
+      isPositiveSort: false,
       onCommentPublish: false,
       onEditCommentPublish: false,
       comment: { text: '', imageList: [], attachedList: [] },
@@ -84,7 +85,8 @@ export default {
       commentType: { type: 4, textLimit: 450, showPayment: false, showLocation: false, showTitle: false, showImage: true, showVideo: false,
         showAttached: false, showMarkdown: false, showEmoji: true, showTopic: false, showCaller: true, placeholder: '写下我的评论 ...' },
       commitLoading: false,
-      scrollLoading: false
+      scrollLoading: false,
+      afterEditComment: true // 临时用了重置编辑器
     }
   },
   created() {
@@ -145,6 +147,10 @@ export default {
     onEditComment(comment) {
       this.editComment = comment
       this.editCommentPost.text = comment.content
+      this.$nextTick(() => {
+        const textarea = document.querySelector(`.edit-comment-editor #textarea`)
+        textarea.style.height = textarea.scrollHeight + 'px' // TODO 重置textarea 待优
+      })
       if (comment.images.length > 0) {
         this.initThreadResource(this.editCommentPost.imageList, comment.images)
         this.editResourceShow.showUploadImg = true
@@ -208,6 +214,8 @@ export default {
       return this.$store.dispatch('jv/post', commentParams).then(response => {
         this.comment.text = ''
         this.comment.imageList = []
+        this.afterEditComment = false
+        this.$nextTick(() => { this.afterEditComment = true })
         this.getComment('commit')
         this.postLegalityCheck(response, this.$t('topic.commentPublishSuccess'))
       }, e => this.handleError(e)).finally(() => { this.onCommentPublish = false })

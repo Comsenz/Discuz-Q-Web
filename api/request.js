@@ -74,21 +74,21 @@ service.interceptors.response.use(
           case 'ban_user':
             break
           default:
-            // if (response.config.custom.showTost) {
-            //   clearTimeout(tostTimeout);
-            //   tostTimeout = setTimeout(() => {
-            //     // eslint-disable-next-line no-nested-ternary
-            //     const title = error.detail
-            //       ? Array.isArray(error.detail)
-            //         ? error.detail[0]
-            //         : error.detail
-            //       : i18n.t(`core.${error.code}`);
-            //     uni.showToast({
-            //       icon: 'none',
-            //       title,
-            //     });
-            //   });
-            // }
+          // if (response.config.custom.showTost) {
+          //   clearTimeout(tostTimeout);
+          //   tostTimeout = setTimeout(() => {
+          //     // eslint-disable-next-line no-nested-ternary
+          //     const title = error.detail
+          //       ? Array.isArray(error.detail)
+          //         ? error.detail[0]
+          //         : error.detail
+          //       : i18n.t(`core.${error.code}`);
+          //     uni.showToast({
+          //       icon: 'none',
+          //       title,
+          //     });
+          //   });
+          // }
         }
       })
     }
