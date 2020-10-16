@@ -15,10 +15,12 @@ export default {
   name: 'Category',
   mixins: [handleError],
   props: {
+    // 帖子加载中状态
     postLoading: {
       type: Boolean,
       default: false
     },
+    // 分类列表
     list: {
       type: Array,
       default: () => {
@@ -45,6 +47,7 @@ export default {
     }
   },
   mounted() {
+    // 判断父组件有没有传值过来，没有重新获取一遍
     if (this.list.length === 0) {
       this.getCategoryList()
     } else {
@@ -59,6 +62,7 @@ export default {
     }
   },
   methods: {
+    // 获取分类列表
     getCategoryList() {
       this.$store.dispatch('jv/get', ['categories', {}]).then(res => {
         const resData = [...res] || []
@@ -71,6 +75,7 @@ export default {
         this.handleError(e)
       })
     },
+    // 选中分类，传值给父组件
     onChange(id) {
       if (this.postLoading) return
       this.selectId = id

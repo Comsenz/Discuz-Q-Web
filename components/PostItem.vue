@@ -202,14 +202,17 @@ export default {
   },
   mixins: [handleError],
   props: {
+    // 主题详情
     item: {
       type: Object,
       default: () => {}
     },
+    // 是否显示分享按钮
     showShare: {
       type: Boolean,
       default: true
     },
+    // 是否图片懒加载
     lazy: {
       type: Boolean,
       default: true
@@ -218,12 +221,12 @@ export default {
   data() {
     return {
       loading: false,
-      showVideoPop: false,
-      showViewer: false,
-      isLiked: false
+      showVideoPop: false, // 视频弹窗
+      isLiked: false // 当前主题是否点赞
     }
   },
   computed: {
+    // 当前主题是否付费
     unpaid() {
       return !(this.item.paid || parseFloat(this.item.price) === 0)
     }
@@ -239,6 +242,7 @@ export default {
     }
   },
   methods: {
+    // 点赞
     handleLike() {
       if (this.loading) return
       if (!this.item.firstPost.canLike) {
@@ -261,13 +265,14 @@ export default {
         .dispatch('jv/patch', params)
         .then(
           (data) => {
-            this.$message.success(isLiked ? '点赞成功' : '取消点赞成功')
+            this.$message.success(isLiked ? this.$t('discuzq.msgBox.likeSuccess') : this.$t('discuzq.msgBox.cancelLikeSuccess'))
             if (isLiked) {
               this.likeCount++
             } else {
               this.likeCount--
             }
             this.isLiked = isLiked
+            this.$emit('change')
           },
           (e) => {
             this.handleError(e)
@@ -322,9 +327,11 @@ export default {
       }
       return true
     },
+    // 格式化html
     formatTopicHTML(html) {
       return s9e.parse(html)
     },
+    // 根据附件格式显示不同svg
     extensionValidate(extension) {
       return extensionList.indexOf(extension.toUpperCase()) > 0
         ? extension.toUpperCase()

@@ -37,6 +37,7 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 npm install
 ```
 
+## 包含ssr的部署
 ### 运行打包命令
 
 ```
@@ -50,6 +51,16 @@ npm run build
 ```
  pm2 start npm --name "DiscuzQ" -- run start
 ```
+
+## 不包含ssr的静态化部署
+
+```
+npm run generate
+```
+
+生成```dist```目录，访问```index.html```即可
+
+
 
 ## 项目目录结构说明
 ```
@@ -102,3 +113,4 @@ npm run build
 6. [element](https://element.eleme.cn/)：UI框架
 7. [cropper](https://www.npmjs.com/package/cropperjs)：图片裁剪插件
 8. [v-viewer](https://github.com/mirari/v-viewer)：图片点击放大预览插件
+8. [xss](https://www.npmjs.com/package/xss)：防xss注入插件

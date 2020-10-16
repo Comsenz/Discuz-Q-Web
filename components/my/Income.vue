@@ -105,6 +105,7 @@ export default {
   },
   mixins: [handleError],
   props: {
+    // 用户组
     groupMap: {
       type: Object,
       default: () => {
@@ -118,7 +119,7 @@ export default {
       pageNum: 1,
       pageSize: 10,
       searchText: '',
-      sort: '-created_at',
+      sort: '-created_at', // 排序 默认创建时间倒序
       total: 0,
       incomeList: [],
       totalMoney: 0 // 累计收益
@@ -182,6 +183,12 @@ export default {
         this.loading = false
       })
     },
+    /**
+     * 复制链接
+     * @param {*} code 邀请码
+     * @example:
+     * copyLink('https://discuz.chat/pages/site/partner-invite?code=1178')
+     */
     copyLink(code) {
       const oInput = document.createElement('input')
       if (process.client) {
@@ -208,15 +215,18 @@ export default {
       }
       this.getIncomeList()
     },
+    // 搜索
     onClickSearch() {
       this.pageNum = 1
       this.getIncomeList()
     },
+    // 分页
     handleSizeChange(val) {
       this.pageNum = 1
       this.pageSize = val
       this.getIncomeList()
     },
+    // 更换每一页数量
     handleCurrentChange(val) {
       this.pageNum = val
       this.getIncomeList()

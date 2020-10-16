@@ -75,7 +75,9 @@ export default {
       modifySuccess: '修改成功',
       operateSuccess: '操作成功',
       createSuccess: '创建成功',
-      copySuccess: '链接已复制到剪贴板'
+      copySuccess: '链接已复制到剪贴板',
+      likeSuccess: '点赞成功',
+      cancelLikeSuccess: '取消点赞成功'
     },
     // 上传
     upload: {
@@ -552,7 +554,8 @@ export default {
     confirmDelete: '确认设为无效?',
     modifyFail: '修改失败，无权限设为管理员',
     circleAge: '圈龄',
-    lastUpdateAt: '最后发言时间'
+    lastUpdateAt: '最后发言时间',
+    allStatus: '所有状态'
   },
   // 消息页面
   notice: {

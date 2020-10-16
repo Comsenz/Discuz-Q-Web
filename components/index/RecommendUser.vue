@@ -17,6 +17,7 @@ export default {
   name: 'RecommendUser',
   mixins: [handleError],
   props: {
+    // 用户列表
     list: {
       type: Array,
       default: () => {
@@ -46,7 +47,9 @@ export default {
     }
   },
   mounted() {
+    // 是否有查看用户列表权限
     if (this.forums && this.forums.other && this.forums.other.can_view_user_list) {
+      // 父组件是否有传值
       if (this.list.length === 0) {
         this.getList()
       } else {
@@ -55,6 +58,7 @@ export default {
     }
   },
   methods: {
+    // 获取推荐用户列表
     getList() {
       this.userList = []
       this.loading = true
@@ -73,6 +77,7 @@ export default {
         this.loading = false
       })
     },
+    // 刷新
     refresh() {
       this.getList()
     }

@@ -30,7 +30,7 @@ export const time2MinuteOrHour = time => {
  * @param {*} originTime 原始时间
  * @return 年月日 上午/下午 时分
  *
- * example:
+ * @example:
  * time2MorningOrAfternoon('2020-04-25T11:54:17+08:00')
  */
 export const time2MorningOrAfternoon = originTime => {
@@ -46,7 +46,7 @@ export const time2MorningOrAfternoon = originTime => {
  * 有效期（时间戳减去当前时间戳再转换为天）
  * @param {*} timestamp 时间戳
  * @return 天
- * example:
+ * @example:
  * timestamp2day(1589785128)
  */
 export const timestamp2day = timestamp => {
@@ -57,7 +57,7 @@ export const timestamp2day = timestamp => {
  * 圈龄（当前时间减去加入时间再转换为天，月，年）
  * @param {*} date 加入时间
  * @return 天，月，年
- * example:
+ * @example:
  * dateDay(2020-04-16T19:26:23+08:00)
  */
 export const dateDay = date => {
@@ -74,6 +74,14 @@ export const dateDay = date => {
   // }
   return day + '天'
 }
+/**
+ * 格式化时间
+ * @param {*} date 时间
+ * @param {*} fmt 时间格式
+ * @return 2020-4-16 19:26
+ * @example:
+ * time2YearMonthDay(2020-04-16T19:26:23+08:00, 'YYYY-MM-DD HH:mm')
+ */
 export const formatDate = (date, fmt) => {
   const _date = new Date(date)
   const o = {
@@ -96,8 +104,13 @@ export const formatDate = (date, fmt) => {
   return fmt
 }
 
-// 2020年-4月-16日
-
+/**
+ * 格式化时间
+ * @param {*} date 时间
+ * @return 2020年-4月-16日
+ * @example:
+ * time2YearMonthDay(2020-04-16T19:26:23+08:00)
+ */
 export const time2YearMonthDay = date => {
   const d = new Date(date)
   const year = d.getFullYear() + '年'
