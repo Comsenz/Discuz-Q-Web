@@ -2,6 +2,10 @@
 import axios from 'axios'
 // import cookie from '../utils/parserCookie'
 import env from '../utils/env'
+
+/**
+ * 中间件 判断是不是爬虫
+ */
 export default function(context) {
   if (context && context.req && context.req.headers) {
     // https://yq.aliyun.com/articles/655062
