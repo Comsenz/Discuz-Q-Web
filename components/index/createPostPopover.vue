@@ -51,6 +51,7 @@ export default {
         const _other = this.forums.other
         const _userInfo = this.userInfo
         if (!_other) return
+        // 判断是否有发帖权限
         if (!_other.can_create_thread && !_other.can_create_thread_long && !_other.can_create_thread_video && !_other.can_create_thread_image) {
           this.$message.error(this.$t('home.noPostingPermission'))
           return
@@ -77,9 +78,11 @@ export default {
             this.$message.error(this.$t('home.noPostingCategory'))
           }
         }
+        // 判断发文本权限
         if (!_other.can_create_thread) {
           this.can_create_thread = false
         }
+        // 判断发帖子权限
         if (!_other.can_create_thread_long) {
           this.can_create_thread_long = false
         }
@@ -87,6 +90,7 @@ export default {
         if (!_other.can_create_thread_video) {
           this.can_create_thread_video = false
         }
+        // 判断发图片权限
         if (!_other.can_create_thread_image) {
           this.can_create_thread_image = false
         }

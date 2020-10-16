@@ -50,6 +50,7 @@ export default {
     }
   },
   methods: {
+    // 复制链接
     copyLink() {
       const oInput = document.createElement('input')
       if (process.client) {
@@ -69,6 +70,7 @@ export default {
         oInput.remove()
       }, 100)
     },
+    // 弹出框显示时触发
     onShowPopover(e) {
       this.currentType = this.type
       let path = window.location.href
@@ -80,6 +82,12 @@ export default {
       }
       this.createQrcode(path)
     },
+    /**
+     * 生成二维码
+     * @param {*} link 网址
+     * @example:
+     * createQrcode('https://discuz.chat/')
+     */
     createQrcode(link) {
       if (process.client) {
         this.qrcode = null

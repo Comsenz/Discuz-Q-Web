@@ -11,6 +11,7 @@ export default {
     this.removeEventListener(window, 'scroll', this.handleScroll)
   },
   methods: {
+    // 监听滚动事件
     handleScroll() {
       // 变量scrollTop是滚动条滚动时，距离顶部的距离
       var scrollTop = document.documentElement.scrollTop || document.body.scrollTop
