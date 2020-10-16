@@ -113,3 +113,4 @@ npm run generate
 6. [element](https://element.eleme.cn/)：UI框架
 7. [cropper](https://www.npmjs.com/package/cropperjs)：图片裁剪插件
 8. [v-viewer](https://github.com/mirari/v-viewer)：图片点击放大预览插件
+8. [xss](https://www.npmjs.com/package/xss)：防xss注入插件
