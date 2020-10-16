@@ -172,9 +172,11 @@
             name="1"
           >
             <topic
+              v-if="activeName === '1'"
               ref="topic"
               :user-id="userId"
               :thread-data="threadsData"
+              @changeLike="changeLike"
             />
           </el-tab-pane>
           <el-tab-pane
@@ -182,9 +184,11 @@
             name="2"
           >
             <like
+              v-if="activeName === '2'"
               ref="like"
               :user-id="userId"
               :likethreads-data="likethreadsData"
+              @changeFollow="changeFollow"
             />
           </el-tab-pane>
           <el-tab-pane
@@ -429,6 +433,10 @@ export default {
     },
     changeFollow(e) {
       this.getUserInfo(e.userId)
+    },
+    changeLike(e) {
+      this.changeFollow(e)
+      // this.$refs.like.changelike()
     },
     // 私信
     chat() {

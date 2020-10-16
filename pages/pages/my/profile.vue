@@ -766,8 +766,6 @@ export default {
     // 手机号确认修改
     mobileComfirm() {
       this.oldVerify()
-      this.newVerify()
-      this.isMobileModify = !this.isMobileModify
     },
     oldVerify() {
       const params = {
@@ -778,11 +776,14 @@ export default {
       this.$store.dispatch('jv/post', params).then(
         (res) => {
           if (res) {
-            this.$message.success('旧手机验证成功')
+            this.newVerify()
           }
-        },
-        (e) => this.handleError(e)
-      )
+        }, (e) => {
+          this.newVerifyCode = ''
+          this.newphon = ''
+          this.oldVerifyCode = ''
+          this.handleError(e)
+        })
     },
     // 验证新手机号
     newVerify() {
@@ -802,12 +803,19 @@ export default {
           if (res) {
             this.isMobileModify = !this.isMobileModify
             this.$message.success(this.$t('modify.phontitle'))
+            this.newVerifyCode = ''
+            this.newphon = ''
+            this.oldVerifyCode = ''
             this.userinfo()
             this.$store.dispatch('user/getUserInfo', this.userId)
           }
         },
-        (e) => this.handleError(e)
-      )
+        (e) => {
+          this.handleError(e)
+          this.newVerifyCode = ''
+          this.newphon = ''
+          this.oldVerifyCode = ''
+        })
     },
     // 修改密码
     passModify() {

@@ -272,6 +272,7 @@ export default {
               this.likeCount--
             }
             this.isLiked = isLiked
+            this.$emit('change')
           },
           (e) => {
             this.handleError(e)

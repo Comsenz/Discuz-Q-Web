@@ -6,6 +6,7 @@
         :key="index"
         :item="item"
         :lazy="false"
+        @change="changelike"
       />
       <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="data.length" @loadMore="loadMore" />
     </div>
@@ -61,7 +62,11 @@ export default {
         .then(res => {
           this.loading = false
           this.hasMore = res.length === this.pageSize
-          this.data = [...this.data, ...res]
+          const ress = JSON.parse(JSON.stringify(res))
+          ress.forEach((val) => {
+            val.firstPost.isLiked = true
+          })
+          this.data = [...this.data, ...ress]
           if (res._jv) {
             this.hasMore = this.data.length < res._jv.json.meta.threadCount
           }
@@ -77,6 +82,12 @@ export default {
         // this.pageNum += 1
         this.loadlikes()
       }
+    },
+    changelike() {
+      this.pageNum = 1
+      this.data = []
+      this.$emit('changeFollow', { userId: this.userId })
+      this.loadlikes()
     }
   }
 }
