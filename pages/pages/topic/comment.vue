@@ -91,7 +91,6 @@ export default {
       // if (comment && commentIncluded) comment.user = commentIncluded.filter(item => item.type === 'users')[0].attributes
       return { thread, comment }
     } catch (e) {
-      console.log('ssr err', e)
       return { loading: true }
     }
   },

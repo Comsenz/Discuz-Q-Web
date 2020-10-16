@@ -80,7 +80,6 @@ export default {
       }
     },
     changelike() {
-      console.log('hhh')
       this.$emit('changeLike', { userId: this.userId })
     },
     changetopiclike() {

@@ -216,7 +216,6 @@ export default {
             return
           }
           this.handleError(err)
-          console.log('error', err)
         })
     },
     // 新密码

@@ -1,4 +1,5 @@
 export default function dzqjs() {
+  // 引入第三方js
   if (process.client) {
     window.sessionStorage.setItem('__TD_td_channel', window.location.hostname.replace(/\./g, '_'))
     const tdjs = document.createElement('script')

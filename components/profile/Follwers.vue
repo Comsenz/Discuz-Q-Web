@@ -235,7 +235,6 @@ export default {
       this.pageNum = 1
       this.followerList = []
       this.getFollowerList('change')
-      console.log(e)
     },
     onClickSearch() {
       this.pageNum = 1
