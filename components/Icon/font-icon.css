@@ -1,0 +1,402 @@
+@charset "UTF-8";
+@font-face {
+  font-family: "quiicons";
+  /* project id 1741858 */
+  src: url("//at.alicdn.com/t/font_1741858_ge8d9e54ua.eot");
+  src: url("//at.alicdn.com/t/font_1741858_ge8d9e54ua.eot?#iefix") format("embedded-opentype"), url("//at.alicdn.com/t/font_1741858_ge8d9e54ua.woff2") format("woff2"), url("//at.alicdn.com/t/font_1741858_ge8d9e54ua.woff") format("woff"), url("//at.alicdn.com/t/font_1741858_ge8d9e54ua.ttf") format("truetype"), url("//at.alicdn.com/t/font_1741858_ge8d9e54ua.svg#quiicons") format("svg");
+}
+.qui-icon {
+  position: relative;
+  /* stylelint-disable-next-line */
+  font-family: "quiicons";
+  font-size: 28rpx;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-unfold:before {
+  content: "";
+}
+
+.icon-fold:before {
+  content: "";
+}
+
+.icon-loading2:before {
+  content: "";
+}
+
+.icon-loading1:before {
+  content: "";
+}
+
+.icon-loading:before {
+  content: "";
+}
+
+.icon-load:before {
+  content: "";
+}
+
+.icon-rmb:before {
+  content: "";
+}
+
+.icon-percent:before {
+  content: "";
+}
+
+.icon-success:before {
+  content: "";
+}
+
+.icon-fail:before {
+  content: "";
+}
+
+.icon-mine:before {
+  content: "";
+}
+
+.icon-search:before {
+  content: "";
+}
+
+.icon-folding-r:before {
+  content: "";
+}
+
+.icon-fill:before {
+  content: "";
+}
+
+.icon-wx-pay:before {
+  content: "";
+}
+
+.icon-wallet-pay:before {
+  content: "";
+}
+
+.icon-reward:before {
+  content: "";
+}
+
+.icon-pay:before {
+  content: "";
+}
+
+.icon-management:before {
+  content: "";
+}
+
+.icon-image:before {
+  content: "";
+}
+
+.icon-comments:before {
+  content: "";
+}
+
+.icon-collection:before {
+  content: "";
+}
+
+.icon-collectioned:before {
+  content: "";
+}
+
+.icon-waring:before {
+  content: "";
+}
+
+.icon-follow:before {
+  content: "";
+}
+
+.icon-each-follow:before {
+  content: "";
+}
+
+.icon-cancel-follow:before {
+  content: "";
+}
+
+.icon-selected:before {
+  content: "";
+}
+
+.icon-play:before {
+  content: "";
+}
+
+.icon-oval:before {
+  content: "";
+}
+
+.icon-expression:before {
+  content: "";
+}
+
+.icon-call:before {
+  content: "";
+}
+
+.icon-add:before {
+  content: "";
+}
+
+.icon-delete:before {
+  content: "";
+}
+
+.icon-wx-friends:before {
+  content: "";
+}
+
+.icon-word:before {
+  content: "";
+}
+
+.icon-video:before {
+  content: "";
+}
+
+.icon-share1:before {
+  content: "";
+}
+
+.icon-share:before {
+  content: "";
+}
+
+.icon-screen:before {
+  content: "";
+}
+
+.icon-publish:before {
+  content: "";
+}
+
+.icon-poster:before {
+  content: "";
+}
+
+.icon-post:before {
+  content: "";
+}
+
+.icon-message:before {
+  content: "";
+}
+
+.icon-message1:before {
+  content: "";
+}
+
+.icon-link:before {
+  content: "";
+}
+
+.icon-like:before {
+  content: "";
+}
+
+.icon-liked:before {
+  content: "";
+}
+
+.icon-img:before {
+  content: "";
+}
+
+.icon-home:before {
+  content: "";
+}
+
+.icon-close:before {
+  content: "";
+}
+
+.icon-wxPay:before {
+  content: "";
+}
+
+.icon-walletPay:before {
+  content: "";
+}
+
+.icon-message-n:before {
+  content: "";
+}
+
+.icon-noData:before {
+  content: "";
+}
+
+.icon-circle:before {
+  content: "";
+}
+
+.icon-back:before {
+  content: "";
+}
+
+.icon-close1:before {
+  content: "";
+}
+
+.icon-wei:before {
+  content: "";
+}
+
+.icon-more:before {
+  content: "";
+}
+
+.icon-resources:before {
+  content: "";
+}
+
+.icon-ZIP:before {
+  content: "";
+}
+
+.icon-XLSX:before {
+  content: "";
+}
+
+.icon-XLS:before {
+  content: "";
+}
+
+.icon-TXT:before {
+  content: "";
+}
+
+.icon-RAR:before {
+  content: "";
+}
+
+.icon-PSD:before {
+  content: "";
+}
+
+.icon-PPT:before {
+  content: "";
+}
+
+.icon-PDF:before {
+  content: "";
+}
+
+.icon-MP4:before {
+  content: "";
+}
+
+.icon-MP3:before {
+  content: "";
+}
+
+.icon-LINK:before {
+  content: "";
+}
+
+.icon-IPA:before {
+  content: "";
+}
+
+.icon-EXE:before {
+  content: "";
+}
+
+.icon-EPS:before {
+  content: "";
+}
+
+.icon-DOC:before {
+  content: "";
+}
+
+.icon-DOCX:before {
+  content: "";
+}
+
+.icon-CDR:before {
+  content: "";
+}
+
+.icon-CAD:before {
+  content: "";
+}
+
+.icon-APK:before {
+  content: "";
+}
+
+.icon-AI:before {
+  content: "";
+}
+
+.icon-7ZIP:before {
+  content: "";
+}
+
+.icon-sort:before {
+  content: "";
+}
+
+.icon-bold:before {
+  content: "";
+}
+
+.icon-title:before {
+  content: "";
+}
+
+.icon-italic:before {
+  content: "";
+}
+
+.icon-quote:before {
+  content: "";
+}
+
+.icon-code:before {
+  content: "";
+}
+
+.icon-link1:before {
+  content: "";
+}
+
+.icon-unordered-list:before {
+  content: "";
+}
+
+.icon-ordered-list:before {
+  content: "";
+}
+
+.icon-fujian:before {
+  content: "";
+}
+
+.icon-undeline:before {
+  content: "";
+}
+
+.icon-strikethrough:before {
+  content: "";
+}
+
+.icon-sort1:before {
+  content: "";
+}
+
+.icon-home-icon:before {
+  content: "";
+}
+
+/*# sourceMappingURL=font-icon.css.map */
