@@ -31,40 +31,43 @@
 export default {
   data() {
     return {
+      // 筛选按钮
       filterQuery: [{
-        label: this.$t('home.all'),
+        label: this.$t('home.all'), // 所有
         value: ''
       }, {
-        label: this.$t('home.essence'),
+        label: this.$t('home.essence'), // 精华
         value: 'isEssence'
       }, {
-        label: this.$t('home.followed'),
+        label: this.$t('home.followed'), // 已关注
         value: 'followed'
       }],
+      // 类型
       filterType: [{
-        label: this.$t('home.noLimit'),
+        label: this.$t('home.noLimit'), // 不限
         value: ''
       }, {
-        label: this.$t('home.text'),
+        label: this.$t('home.text'), // 文本
         value: 0
       }, {
-        label: this.$t('home.invitation'),
+        label: this.$t('home.invitation'), // 帖子
         value: 1
       }, {
-        label: this.$t('home.video'),
+        label: this.$t('home.video'), // 视频
         value: 2
       }, {
-        label: this.$t('home.picture'),
+        label: this.$t('home.picture'), // 图片
         value: 3
       }],
+      // 排序
       filterSort: [{
-        label: this.$t('home.noLimit'),
+        label: this.$t('home.noLimit'), // 不限
         value: ''
       }, {
-        label: this.$t('home.sortCreatedAt'),
+        label: this.$t('home.sortCreatedAt'), // 发布时间
         value: '-createdAt'
       }, {
-        label: this.$t('home.sortUpdatedAt'),
+        label: this.$t('home.sortUpdatedAt'), // 更新时间
         value: '-updatedAt'
       }],
       query: {
@@ -80,6 +83,7 @@ export default {
     }
   },
   methods: {
+    // 点击筛选，传值给父组件
     onClickFilter(val) {
       if (val === 'followed' && (!this.userId || +this.userId === 0)) {
         if (process.client) {
@@ -90,10 +94,12 @@ export default {
       this.query.filter = val
       this.$emit('onChangeFilter', val)
     },
+    // 点击类型筛选，传值给父组件
     handleCommandType(command) {
       this.query.filterType = command
       this.$emit('onChangeType', command)
     },
+    // 点击排序，传值给父组件
     handleCommandSort(command) {
       this.query.filterSort = command
       this.$emit('onChangeSort', command)

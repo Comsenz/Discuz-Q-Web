@@ -4,7 +4,7 @@
       <!-- 筛选 -->
       <el-select v-model="selectedStatus" :placeholder="$t('profile.pleaseselect')" size="medium" @change="reloadList">
         <el-option
-          label="所有状态"
+          :label="$t('manage.allStatus')"
           value=""
         />
         <el-option
@@ -185,6 +185,7 @@ export default {
       })
         .catch(_ => {})
     },
+    // 复制链接到剪切板
     copyLink(code) {
       const oInput = document.createElement('input')
       if (process.client) {
@@ -199,15 +200,18 @@ export default {
         oInput.remove()
       }, 100)
     },
+    // 重新加载列表
     reloadList() {
       this.pageNum = 1
       this.getInviteList()
     },
+    // 分页
     handleSizeChange(val) {
       this.pageNum = 1
       this.pageSize = val
       this.getInviteList()
     },
+    // 每一页的数量
     handleCurrentChange(val) {
       this.pageNum = val
       this.getInviteList()

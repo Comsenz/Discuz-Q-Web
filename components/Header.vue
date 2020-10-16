@@ -85,6 +85,7 @@ export default {
     }
   },
   watch: {
+    // 监听路由变化
     $route(to, from) {
       if (to.path === '/pages/site/close') {
         this.siteClose = true
@@ -133,6 +134,7 @@ export default {
         this.userInfoTimer = window.setInterval(this.getUserInfo, 60000)
       }
     },
+    // 从store里面获取用户信息
     async getUserInfo() {
       try {
         await this.$store.dispatch('user/getUserInfo', this.userId)
@@ -140,19 +142,23 @@ export default {
         console.log('header getUserInfo err', err)
       }
     },
+    // 跳往注册页面
     register() {
       this.$router.push(
         `/pages/user/register?validate=${this.forums && this.forums.set_reg && this.forums.set_reg.register_validate}&code=${this.code}`
       )
     },
+    // 跳转登录页面
     login() {
       this.$router.push('/pages/user/login')
     },
+    // 跳转搜索页面
     onClickSearch() {
       if (this.inputVal) {
         this.$router.push('/pages/site/search?q=' + this.inputVal)
       }
     },
+    // 跳转首页
     toIndex() {
       if (this.$route.path === '/') {
         window.location.href = '/'

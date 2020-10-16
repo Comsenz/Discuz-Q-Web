@@ -23,6 +23,7 @@ export default {
       return this.$store.state.site.info.attributes || {}
     }
   },
+  // 设置head信息
   head() {
     return {
       link: [
