@@ -37,6 +37,7 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 npm install
 ```
 
+## 包含ssr的部署
 ### 运行打包命令
 
 ```
@@ -50,6 +51,16 @@ npm run build
 ```
  pm2 start npm --name "DiscuzQ" -- run start
 ```
+
+## 不包含ssr的静态化部署
+
+```
+npm run generate
+```
+
+生成```dist```目录，访问```index.html```即可
+
+
 
 ## 项目目录结构说明
 ```
