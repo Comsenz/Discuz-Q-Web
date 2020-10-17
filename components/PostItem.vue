@@ -285,31 +285,28 @@ export default {
     // 跳转详情页
     toDetail() {
       if (!this.canViewPostsFn()) return
-      // this.$router.push({ path: `/pages/topic/${this.item._jv && this.item._jv.id}` })
-      window.open(
-        `/pages/topic/index?id=${this.item._jv && this.item._jv.id}`,
-        '_blank'
-      )
+      this.routerLink()
     },
     // 点击图片 判断是否付费， 未付费跳转详情页
     onClickImage() {
       if (!this.unpaid || !this.canViewPostsFn()) return
-      window.open(
-        `/pages/topic/index?id=${this.item._jv && this.item._jv.id}`,
-        '_blank'
-      )
+      this.routerLink()
     },
     // 点击视频 判断是否付费， 未付费跳转详情页
     openVideo() {
       if (!this.canViewPostsFn()) return
       if (this.unpaid) {
-        window.open(
-          `/pages/topic/index?id=${this.item._jv && this.item._jv.id}`,
-          '_blank'
-        )
+        this.routerLink()
       } else {
         this.showVideoPop = true
       }
+    },
+    // 详情路由
+    routerLink() {
+      window.open(
+        `/topic/index?id=${this.item._jv && this.item._jv.id}`,
+        '_blank'
+      )
     },
     // 点击正文，使用事件委托判断a标签
     onClickContent(e) {
