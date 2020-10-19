@@ -96,7 +96,7 @@ export default {
   },
   methods: {
     getComment(type) {
-      if (this.commitLoading || this.scrollLoading) return // 事件防抖
+      if (this.commitLoading) return // 事件防抖
       type === 'commit' ? this.commitLoading = true : this.scrollLoading = true
       this.$store.dispatch('jv/get', [`posts`, { params: {
         'filter[thread]': this.threadId,
@@ -123,6 +123,7 @@ export default {
       }, e => this.handleError(e)).finally(() => { this.commitLoading = false })
     },
     changeSort(value) {
+      this.scrollLoading = true
       this.pageNumber = 1
       this.commentList = []
       this.isPositiveSort = value

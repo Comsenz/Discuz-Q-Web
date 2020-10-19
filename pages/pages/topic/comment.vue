@@ -143,7 +143,7 @@ export default {
       }, e => this.handleError(e))
     },
     getReplyList(type) {
-      if (this.replyLoading || this.scrollLoading) return
+      if (this.replyLoading) return
       type === 'commit' ? this.replyLoading = true : this.scrollLoading = true
       return this.$store.dispatch('jv/get', [`posts`, {
         params: {
@@ -162,6 +162,7 @@ export default {
       }, e => this.handleError(e)).finally(() => { this.replyLoading = this.scrollLoading = false })
     },
     changeSort(value) {
+      this.scrollLoading = true
       this.pageNumber = 1
       this.replyList = []
       this.isPositiveSort = value
