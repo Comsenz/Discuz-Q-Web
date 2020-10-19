@@ -143,8 +143,11 @@ export default {
       if (!this.categorySelectedId) return this.$message.warning(this.$t('post.theClassifyCanNotBeBlank'))
       if (this.post.text.length > this.typeInformation[this.type].textLimit) return this.$message.warning(this.$t('post.messageLengthCannotOver'))
       if (this.type === '0' && !this.post.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
+
       if (this.type === '1' && !this.post.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
       if (this.type === '1' && !this.post.title) return this.$message.warning(this.$t('post.theTitleCanNotBeBlank'))
+      if (this.type === '1' && this.post.title && this.post.title.length > 150) return this.$message.warning(this.$t('post.titleLengthCannotOver'))
+
       if (this.type === '2' && this.post.videoList.length === 0) return this.$message.warning(this.$t('post.videoCannotBeEmpty'))
       if (this.type === '3' && this.post.imageList.length === 0) return this.$message.warning(this.$t('post.imageCannotBeEmpty'))
       if (this.type === '4' && !this.post.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))

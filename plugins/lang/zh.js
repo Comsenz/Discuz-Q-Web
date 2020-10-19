@@ -265,6 +265,7 @@ export default {
     yuan: '元',
     customize: '自定义',
     messageLengthCannotOver: '内容字数超出限制',
+    titleLengthCannotOver: '文章标题不可超出 150 个字符',
     theTitleCanNotBeBlank: '标题不能为空',
     theContentCanNotBeBlank: '内容不能为空',
     theClassifyCanNotBeBlank: '请选择分类',

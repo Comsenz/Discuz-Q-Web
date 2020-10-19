@@ -1,6 +1,6 @@
 <template>
   <article class="global">
-    <h2 class="title">{{ title }}</h2>
+    <div class="title">{{ title }}</div>
     <div class="content-html" v-html="$xss(formatTopicHTML(article.contentHtml || ''))" />
     <div v-if="video.cover_url" class="container-video-img-cover">
       <div class="warp-video-img-cover">
@@ -200,7 +200,10 @@ export default {
     margin-top: 20px;
 
     > .title {
+      font-weight: bold;
       font-size: 20px;
+      word-break: break-all;
+      max-width: 650px;
     }
 
     > .content-html {
