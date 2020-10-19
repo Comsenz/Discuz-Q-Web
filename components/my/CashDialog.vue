@@ -123,20 +123,16 @@
 import { status } from '@/library/jsonapi-vuex/index'
 import { time2MinuteOrHour } from '@/utils/time'
 import handleError from '@/mixin/handleError'
+
 export default {
   mixins: [
     handleError
   ],
   data() {
-    const date = new Date()
-    const year = date.getFullYear()
-    let month = date.getMonth() + 1
-    month = month < 10 ? `0${month}` : month
-    const currentDate = `${year}-${month}`
     return {
       loading: false,
       hasMore: false,
-      date: currentDate, // 提现记录日期
+      date: '', // 提现记录日期
       value: '', // 提现记录被选择到的类型id
       pageSize: 10, // 提现记录每页展示的数目
       pageNum: 1, // 提现当前页数
@@ -179,10 +175,18 @@ export default {
     }
   },
   mounted() {
+    this.setCurrentTime()
     this.getUserInfo()
     this.getList()
   },
   methods: {
+    setCurrentTime() {
+      const date = window.currentTime
+      const year = date.getFullYear()
+      let month = date.getMonth() + 1
+      month = month < 10 ? `0${month}` : month
+      this.date = `${year}-${month}`
+    },
     // 用户信息
     getUserInfo() {
       this.userInfo = this.$store.state.user.info.attributes

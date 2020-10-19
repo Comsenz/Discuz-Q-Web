@@ -114,18 +114,13 @@ export default {
     handleError
   ],
   data() {
-    const date = new Date()
-    const year = date.getFullYear()
-    let month = date.getMonth() + 1
-    month = month < 10 ? `0${month}` : month
-    const currentDate = `${year}-${month}`
     return {
       loading: false,
       hasMore: false,
       value: '', // 提现记录被选择到的类型id
       pageSize2: 10, // 钱包明细每页展示的数目
       pageNum2: 1, // 钱包明细当前页数
-      date2: currentDate, // 钱包明细日期
+      date2: '', // 钱包明细日期
       filterSelected2: '', // 钱包明细状态过滤内容的id
       dataList2: [], // 钱包明细数据
       total2: 0, // 钱包qi记录总记录数
@@ -183,6 +178,13 @@ export default {
     this.getList2()
   },
   methods: {
+    setCurrentTime() {
+      const date = window.currentTime
+      const year = date.getFullYear()
+      let month = date.getMonth() + 1
+      month = month < 10 ? `0${month}` : month
+      this.date2 = `${year}-${month}`
+    },
     // 金额排序
     sortAmount(str1, str2) {
       return str1.change_available_amount * 1 - str2.change_available_amount * 1

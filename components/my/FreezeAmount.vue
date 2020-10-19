@@ -85,11 +85,6 @@ export default {
     handleError
   ],
   data() {
-    const date = new Date()
-    const year = date.getFullYear()
-    let month = date.getMonth() + 1
-    month = month < 10 ? `0${month}` : month
-    const currentDate = `${year}-${month}`
     return {
       loading: false,
       hasMore: false,
@@ -97,7 +92,6 @@ export default {
       pageSize3: 10, // 冻结每页展示的数目
       pageNum3: 1, // 冻结当前页数
       freeze_amount: '',
-      date3: currentDate, // 冻结金额日期,
       filterSelected3: '', // 冻结状态过滤内容的id
       freezelist: [], // 冻结金额
       total3: 0, // 冻结金额记录总记录数
@@ -161,13 +155,6 @@ export default {
     getUserInfo() {
       this.userInfo = this.$store.state.user.info.attributes
       this.walletFreeze = this.userInfo ? this.userInfo.walletFreeze : 0
-    },
-    // 冻结金额日期选中
-    bindDateChange3(e) {
-      this.date3 = e
-      if (this.date3 !== null) {
-        this.getFreezelist('filter')
-      }
     },
     // 冻结金额状态筛选类型
     confirm3(e) {

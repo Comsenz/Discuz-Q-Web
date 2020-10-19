@@ -46,6 +46,8 @@ service.interceptors.request.use(
 // Respone 拦截器
 service.interceptors.response.use(
   oRes => {
+    // console.log(new Date(oRes.headers.date), '正确事件')
+    if (process.client) window.currentTime = new Date(oRes.headers.date)
     return oRes
   },
   oError => {

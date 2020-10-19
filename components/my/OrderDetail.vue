@@ -118,18 +118,13 @@ export default {
     handleError
   ],
   data() {
-    const date = new Date()
-    const year = date.getFullYear()
-    let month = date.getMonth() + 1
-    month = month < 10 ? `0${month}` : month
-    const currentDate = `${year}-${month}`
     return {
       loading: false,
       hasMore: false,
       value: '',
       pageSize4: 10, // 订单每页展示的数目
       pageNum4: 1, // 订单当前页数
-      date4: currentDate, // 订单日期
+      date4: '', // 订单日期
       filterSelected4: '', // 订单状态过滤内容的id
       dataList4: [], // 订单数据
       total4: 0, // 订单记录总记录数
@@ -158,9 +153,17 @@ export default {
     }
   },
   mounted() {
+    this.setCurrentTime()
     this.getList4()
   },
   methods: {
+    setCurrentTime() {
+      const date = window.currentTime
+      const year = date.getFullYear()
+      let month = date.getMonth() + 1
+      month = month < 10 ? `0${month}` : month
+      this.date4 = `${year}-${month}`
+    },
     // 金额排序
     sortAmount(str1, str2) {
       return str1.amount * 1 - str2.amount * 1

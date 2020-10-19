@@ -12,9 +12,11 @@ module.exports = {
     }
   },
   methods: {
-    timerDiff(dateStart, dateEnd = new Date()) {
+    timerDiff(dateStart, dateEnd) {
+      if (!process.client) return ''
       if (!(dateStart instanceof Date)) dateStart = new Date(dateStart)
-      if (!(dateEnd instanceof Date)) dateEnd = new Date(dateEnd)
+      if (!(dateEnd instanceof Date)) dateEnd = window.currentTime
+      if (!dateEnd) dateEnd = window.currentTime
       const diff = dateEnd - dateStart
       let value
       for (let i = 0; i < this.diffModulus.length; i++) {

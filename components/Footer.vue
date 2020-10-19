@@ -18,8 +18,8 @@ export default {
       return this.$store.state.site.info.attributes || {}
     }
   },
-  created() {
-    const date = new Date()
+  mounted() {
+    const date = window.currentTime
     this.year = date.getFullYear()
   }
 }
