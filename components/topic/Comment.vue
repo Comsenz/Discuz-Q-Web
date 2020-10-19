@@ -17,8 +17,9 @@
         <comment-list
           :thread-id="threadId"
           :comment-list="commentList"
-          @replyPublish="getComment('commit')"
+          @replyPublish="updateSingleComment"
           @deleteComment="deleteComment"
+          @deleteReply="deleteReply"
           @editComment="onEditComment"
           @like="onLike"
         />
@@ -27,7 +28,7 @@
         :loading="scrollLoading"
         :length="commentList.length"
         :has-more="postCount > commentList.length"
-        :page-num="pageLimit < growthFactor ? 1 : Math.floor(pageLimit / growthFactor)"
+        :page-num="pageNumber"
         @loadMore="getComment('scroll')"
       />
     </template>
@@ -55,6 +56,7 @@
 
 <script>
 const postInclude = 'user,replyUser,images,thread,user.groups,thread.category,thread.firstPost,lastThreeComments,lastThreeComments.user,lastThreeComments.replyUser,deletedUser,lastDeletedLog,lastThreeComments.images'
+const commentInclude = 'user,likedUsers,commentPosts,commentPosts.user,commentPosts.user.groups,commentPosts.replyUser,commentPosts.replyUser.groups,commentPosts.mentionUsers,commentPosts.images,images,attachments'
 import publishResource from '@/mixin/publishResource'
 import postLegalityCheck from '@/mixin/postLegalityCheck'
 import handleError from '@/mixin/handleError'
@@ -74,7 +76,7 @@ export default {
       commentList: [],
       postCount: 0,
       pageLimit: 5,
-      growthFactor: 5,
+      pageNumber: 1,
       isPositiveSort: false,
       onCommentPublish: false,
       onEditCommentPublish: false,
@@ -94,26 +96,34 @@ export default {
   },
   methods: {
     getComment(type) {
-      if (this.loading === true) return // 事件防抖
+      if (this.commitLoading || this.scrollLoading) return // 事件防抖
       type === 'commit' ? this.commitLoading = true : this.scrollLoading = true
       this.$store.dispatch('jv/get', [`posts`, { params: {
         'filter[thread]': this.threadId,
         'filter[isDeleted]': 'no',
         'filter[isComment]': 'no',
-        'page[number]': 1,
+        'page[number]': this.pageNumber,
         'page[limit]': this.pageLimit,
         sort: this.isPositiveSort ? 'createdAt' : '-createdAt',
         include: postInclude
       }}]).then(data => {
-        this.pageLimit += this.growthFactor
-        this.commentList = data
         // TODO postCount 不包括审核中的回复
+        this.pageNumber += 1
+        this.commentList.push(...data)
         this.postCount = data.length > 0 ? (data[0].thread.postCount - 1) : 0
       }, e => this.handleError(e)).finally(() => { this.commitLoading = this.scrollLoading = false })
     },
+    updateSingleComment(commentId) {
+      if (this.commitLoading === true) return // 事件防抖
+      this.commitLoading = true
+      return this.$store.dispatch('jv/get', [`posts/${commentId}`, { params: { include: commentInclude }}]).then(comment => {
+        comment.lastThreeComments = comment.commentPosts.reverse().filter(item => !item.isDeleted).slice(0, 3) // 除去已删除，改为倒叙，截取前三
+        this.$set(this.commentList, this.getCommentIndexFromId(commentId), comment)
+        this.commitLoading = false
+      }, e => this.handleError(e)).finally(() => { this.commitLoading = false })
+    },
     changeSort(value) {
-      this.scrollLoading = true
-      this.pageLimit = this.growthFactor
+      this.pageNumber = 1
       this.commentList = []
       this.isPositiveSort = value
       this.getComment('commit')
@@ -129,8 +139,22 @@ export default {
       }, e => this.handleError(e))
     },
     deleteComment(id) {
+      const params = { _jv: { type: `posts`, id }, isDeleted: true }
+      this.$confirm(this.$t('topic.confirmDelete'), this.$t('discuzq.msgBox.title'), {
+        confirmButtonText: this.$t('discuzq.msgBox.confirm'),
+        cancelButtonText: this.$t('discuzq.msgBox.cancel'),
+        type: 'warning'
+      }).then(() => {
+        return this.$store.dispatch('jv/patch', params).then(() => {
+          this.postCount -= 1
+          this.commentList.splice(this.getCommentIndexFromId(id), 1)
+          this.$message.success(this.$t('topic.deleteSuccess'))
+        }, e => this.handleError(e))
+      }, () => console.log('取消删除'))
+    },
+    deleteReply({ replyId, commentId }) {
       const params = {
-        _jv: { type: `posts`, id },
+        _jv: { type: `posts`, id: replyId },
         isDeleted: true
       }
       this.$confirm(this.$t('topic.confirmDelete'), this.$t('discuzq.msgBox.title'), {
@@ -139,7 +163,7 @@ export default {
         type: 'warning'
       }).then(() => {
         return this.$store.dispatch('jv/patch', params).then(() => {
-          this.getComment('commit')
+          this.updateSingleComment(commentId)
           this.$message.success(this.$t('topic.deleteSuccess'))
         }, e => this.handleError(e))
       }, () => console.log('取消删除'))
@@ -173,8 +197,8 @@ export default {
       editCommentParams = this.publishPostResource(editCommentParams, this.editCommentPost)
       this.deleteAttachmentsAfterEdit(this.editComment.images, this.editCommentPost.imageList)
       this.$store.dispatch('jv/patch', [editCommentParams, { url: `/posts/${this.editComment._jv.id}` }]).then(response => {
+        this.updateSingleComment(this.editComment._jv.id)
         this.postLegalityCheck(response, this.$t('topic.commentPublishSuccess'))
-        this.getComment('commit')
         this.closeEditPop()
       }, e => this.handleError(e)).finally(() => { this.onEditCommentPublish = false })
     },
@@ -216,9 +240,19 @@ export default {
         this.comment.imageList = []
         this.afterEditComment = false
         this.$nextTick(() => { this.afterEditComment = true })
-        this.getComment('commit')
         this.postLegalityCheck(response, this.$t('topic.commentPublishSuccess'))
+        // false 倒序 true 正序， 倒叙是从最新到最旧
+        if (this.isPositiveSort) {
+          this.commentList.length === this.postCount ? this.commentList.push(response) : ''
+        } else {
+          this.commentList.unshift(response)
+        }
+        this.postCount += 1
       }, e => this.handleError(e)).finally(() => { this.onCommentPublish = false })
+    },
+    getCommentIndexFromId(id) {
+      const deleteComment = this.commentList.filter(item => item._jv.id === id)[0]
+      return this.commentList.indexOf(deleteComment)
     }
   }
 }
