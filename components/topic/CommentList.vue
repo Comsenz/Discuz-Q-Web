@@ -227,7 +227,6 @@ export default {
         word-break: break-all;
         margin-top: 10px;
         font-size: 14px !important;
-        margin-bottom: 20px;
         ::v-deep p {
           font-size: 14px !important;
         }
@@ -244,7 +243,7 @@ export default {
       }
 
       > .actions {
-        margin-bottom: 20px;
+        margin: 20px 0;
         width: 100%;
         display: flex;
         justify-content: space-between;
