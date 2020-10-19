@@ -8,8 +8,6 @@
       with-credentials
       :file-list="attachedList"
       :accept="attachedTypeLimit"
-      :limit="3"
-      :disabled="attachedList.length > 3"
       class="resources-upload"
       :before-upload="checkSize"
       :on-progress="() => $emit('update:onUploadAttached', true)"
@@ -75,17 +73,6 @@ export default {
       return 10485760
     }
   },
-  watch: {
-    attachedList: {
-      handler(val) {
-        this.handleExceed(val)
-      },
-      deep: true
-    }
-  },
-  mounted() {
-    this.handleExceed(this.attachedList)
-  },
   methods: {
     checkSize(file) {
       const result = file.size < this.attachedSizeLimit
@@ -123,11 +110,6 @@ export default {
     handleError(e) {
       this.$emit('update:onUploadAttached', false)
       this.handleAttachmentError(e)
-    },
-    handleExceed(fileList) {
-      // el-upload--text 是附件上传组件的特定样式, 和 图片上传 区分
-      const elUpload = document.querySelector('.el-upload.el-upload--text')
-      elUpload.style.display = fileList.length >= 3 ? 'none' : 'inline-block'
     }
   }
 }
