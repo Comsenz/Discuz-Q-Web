@@ -3,7 +3,7 @@
     <comment-header v-if="postCount > 0" :comment-count="postCount" :is-positive-sort="isPositiveSort" @changeSort="changeSort" />
     <div v-else class="without-comment">{{ $t('topic.noComment') }}</div>
     <editor
-      v-if="afterEditComment"
+      v-if="afterPushComment"
       editor-style="comment"
       class="comment-editor"
       selector="comment-editor"
@@ -88,7 +88,7 @@ export default {
         showAttached: false, showMarkdown: false, showEmoji: true, showTopic: false, showCaller: true, placeholder: '写下我的评论 ...' },
       commitLoading: false,
       scrollLoading: false,
-      afterEditComment: true // 临时用了重置编辑器
+      afterPushComment: true // 临时用了重置编辑器
     }
   },
   created() {
@@ -238,8 +238,8 @@ export default {
       return this.$store.dispatch('jv/post', commentParams).then(response => {
         this.comment.text = ''
         this.comment.imageList = []
-        this.afterEditComment = false
-        this.$nextTick(() => { this.afterEditComment = true })
+        this.afterPushComment = false // 重置输入框
+        this.$nextTick(() => { this.afterPushComment = true })
         this.postLegalityCheck(response, this.$t('topic.commentPublishSuccess'))
         // false 倒序 true 正序， 倒叙是从最新到最旧
         if (this.isPositiveSort) {
