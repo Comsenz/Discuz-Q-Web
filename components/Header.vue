@@ -36,7 +36,7 @@
         <nuxt-link v-if="userInfo.username && userInfo.id" :to="`/pages/profile/index?userId=${userInfo.id}`" class="menu-item user-name text-hidden">
           {{ userInfo.username }}
         </nuxt-link>
-        <nuxt-link to="/pages/my/notice/" class="menu-item notice-btn">
+        <nuxt-link to="/pages/my/notice" class="menu-item notice-btn">
           <span class="flex">
             {{ $t('home.tabsNews') }}
             <span
@@ -45,7 +45,7 @@
             >{{ userInfo.unreadNotifications > 99 ? '99+' : userInfo.unreadNotifications }}</span>
           </span>
         </nuxt-link>
-        <nuxt-link to="/pages/my/profile/" class="menu-item">{{ $t('profile.personalhomepage') }}</nuxt-link>
+        <nuxt-link to="/pages/my/profile" class="menu-item">{{ $t('profile.personalhomepage') }}</nuxt-link>
         <div class="menu-item" @click="logout">{{ $t('user.logout') }}</div>
       </div>
     </div>

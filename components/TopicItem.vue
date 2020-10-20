@@ -113,9 +113,6 @@ export default {
       return this.thread && !(this.thread.paid || parseFloat(this.thread.price) === 0)
     }
   },
-  mounted() {
-    console.log('item', this.item)
-  },
   methods: {
     // 跳转详情页
     toDetail() {
