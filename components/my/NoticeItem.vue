@@ -195,6 +195,8 @@ export default {
     .post-content {
       padding: 10px 0 0;
       display: block;
+      word-break: break-all;
+      @include text-hidden(3);
       &:hover {
         color: $color-blue-base;
       }
