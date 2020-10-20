@@ -19,11 +19,12 @@
 
 <script>
 import handleError from '@/mixin/handleError'
+import handleAttachmentError from '@/mixin/handleAttachmentError'
 import service from '@/api/request'
 
 export default {
   name: 'Upload',
-  mixins: [handleError],
+  mixins: [handleError, handleAttachmentError],
   props: {
     action: {
       type: String,
@@ -128,7 +129,11 @@ export default {
         const length = promiseList.length
         this.$emit('update:onUploadImage', false)
         this.previewImages.splice(this.previewImages.length - length, length)
-        this.$message.error('图片上传失败, 请稍后再试')
+        if (e && e.message) {
+          this.$message.error(`core.${e.message}`)
+        } else {
+          this.$message.error('图片上传失败，请稍后再试')
+        }
       })
     },
     removeItem(index) {
