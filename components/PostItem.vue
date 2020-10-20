@@ -43,7 +43,7 @@
               <span class="blue ">{{ item.title }}</span></div>
             <div v-else class="content">
               <svg-icon v-show="parseFloat(item.price) > 0" type="pay-yuan" class="icon-pay-yuan" />
-              <span :class="{'content-block': parseFloat(item.price) > 0}" v-html="$xss(formatTopicHTML(item.firstPost.summary))" />
+              <div :class="{'content-block': parseFloat(item.price) > 0}" v-html="$xss(formatTopicHTML(item.firstPost.summary))" />
             </div>
           </div>
           <!-- 图片 -->
@@ -409,7 +409,6 @@ export default {
     }
     .content-block{
       text-indent: 20px;
-      display: block;
     }
     ::v-deep .content {
       position: relative;
@@ -436,7 +435,8 @@ export default {
       }
       .qq-emotion {
         height: 22px;
-        margin: 0
+        vertical-align: middle;
+        margin-top: -2px;
       }
       a {
         color: $color-blue-base;
@@ -449,8 +449,8 @@ export default {
         line-height: 20px;
         max-width: 410px;
         .qq-emotion {
-          height: 22px;
-          margin: 0
+          height: 20px;
+          margin-top: -1px;
         }
       }
     }

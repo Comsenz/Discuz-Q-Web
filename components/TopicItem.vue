@@ -7,22 +7,23 @@
         </div>
         <div class="view-count">{{ $t('home.topicViewCount', {total: item.view_count }) }}</div>
       </div>
-      <template v-if="item && item.lastThread && item.lastThread.length > 0 && item.lastThread[0].firstPost">
+      <template v-if="thread && thread.firstPost">
         <div class="first-post" @click.self="toDetail">
           <div @click="onClickContent">
             <div class="content">
-              <div v-html="$xss(formatTopicHTML(item.lastThread[0].firstPost.summary))" />
+              <svg-icon v-show="parseFloat(thread.price) > 0" type="pay-yuan" class="icon-pay-yuan" />
+              <div :class="{'content-block': parseFloat(thread.price) > 0}" v-html="$xss(formatTopicHTML(thread.firstPost.summary))" />
             </div>
           </div>
           <!-- 图片 -->
           <div
-            v-if="item.lastThread[0].firstPost.images && item.lastThread[0].firstPost.images.length > 0"
+            v-if="thread"
             v-viewer="{ url: 'data-source' }"
             class="images"
             @click.self="toDetail"
           >
             <el-image
-              v-for="(image, index) in item.lastThread[0].firstPost.images.slice(0, 3)"
+              v-for="(image, index) in thread.firstPost.images.slice(0, 3)"
               :key="index"
               class="image"
               :src="image.thumbUrl"
@@ -38,15 +39,15 @@
             </el-image>
           </div>
           <div
-            v-if="item.lastThread[0].firstPost.images && item.lastThread[0].firstPost.images.length > 3"
+            v-if="thread.firstPost.images && thread.firstPost.images.length > 3"
             class="image-count"
             @click="toDetail"
           >
-            {{ $t("home.total") }} {{ item.lastThread[0].firstPost.images.length }}
+            {{ $t("home.total") }} {{ thread.firstPost.images.length }}
             {{ $t("home.seeAllImage") }}
           </div>
           <!-- 视频 -->
-          <div
+          <!-- <div
             v-if="item.type === 2 && item.threadVideo"
             class="video-main"
             @click.stop="openVideo"
@@ -67,7 +68,7 @@
             :cover-url="item.threadVideo.cover_url"
             :url="item.threadVideo.media_url"
             @remove="showVideoPop = false"
-          />
+          /> -->
         </div>
       </template>
       <div class="thread-count">{{ $t('home.topicCount', {total: item.thread_count}) }}</div>
@@ -103,9 +104,17 @@ export default {
     }
   },
   computed: {
+    // 话题最新主题
+    thread() {
+      return this.item && this.item.lastThread && this.item.lastThread.length > 0 && this.item.lastThread[0] || {}
+    },
+    // 未付费
     unpaid() {
-      return !(this.item.paid || parseFloat(this.item.price) === 0)
+      return this.thread && !(this.thread.paid || parseFloat(this.thread.price) === 0)
     }
+  },
+  mounted() {
+    console.log('item', this.item)
   },
   methods: {
     // 跳转详情页
@@ -115,13 +124,13 @@ export default {
     },
     // 点击图片 判断是否付费， 未付费跳转详情页
     onClickImage() {
-      if (!this.unpaid || !this.canViewPostsFn()) return
+      if (this.thread && !this.thread.unpaid || !this.canViewPostsFn()) return
       this.routerLink()
     },
     // 点击视频 判断是否付费， 未付费跳转详情页
     openVideo() {
       if (!this.canViewPostsFn()) return
-      if (this.unpaid) {
+      if (this.thread && this.thread.unpaid) {
         this.routerLink()
       } else {
         this.showVideoPop = true
@@ -130,7 +139,7 @@ export default {
     // 详情路由
     routerLink() {
       window.open(
-        `/topic/index?id=${this.item._jv && this.item._jv.id}`,
+        `/topic/index?id=${this.thread && this.thread._jv && this.thread._jv.id}`,
         '_blank'
       )
     },
@@ -144,7 +153,7 @@ export default {
     },
     // 是否有查看详情的权限
     canViewPostsFn() {
-      if (!this.item.canViewPosts) {
+      if (this.thread && !this.thread.canViewPosts) {
         this.$message.error(this.$t('home.noPostingTopic'))
         return false
       }
@@ -185,12 +194,24 @@ export default {
     .first-post {
       cursor: pointer;
     }
+    .icon-pay-yuan {
+      height: 24px;
+      font-size: 15px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      color: #8590A6;
+    }
+    .content-block{
+      text-indent: 20px;
+    }
     ::v-deep .content {
       @include text-hidden(4);
       line-height: 24px;
       font-size: 14px !important;
       color: #000;
       max-width: 585px;
+      position: relative;
       //max-height: 96px;
       p,
       h1,
@@ -208,7 +229,8 @@ export default {
       }
       .qq-emotion {
         height: 22px;
-        margin: 0
+        vertical-align: middle;
+        margin-top: -2px;
       }
       a {
         color: $color-blue-base;
@@ -221,8 +243,8 @@ export default {
         line-height: 20px;
         max-width: 410px;
         .qq-emotion {
-          height: 22px;
-          margin: 0
+          height: 20px;
+          margin-top: -1px;
         }
       }
     }
