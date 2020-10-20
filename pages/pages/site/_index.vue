@@ -43,7 +43,7 @@
       <div v-if="forums && forums.set_site" class="circlemode">
         <div class="title base-font-size">{{ $t('site.circlemode') }} \ {{ $t('site.price') }}</div>
         <div v-if="forums.set_site &&forums.set_site.site_mode === 'public'" class="content base-font-size grey-color">{{ $t('site.publicmode') }} \ {{ $t('post.free') }}  </div>
-        <div v-else class="content base-font-size grey-color">{{ $t('site.paymentmode') }} \ {{ $t('post.yuanItem') }}{{ forums.set_site.site_price }}（{{ $t('site.periodvalidity') + forums.set_site.site_expire + $t('site.day') }}）</div>
+        <div v-else class="content base-font-size grey-color">{{ $t('site.paymentmode') }} \ {{ $t('post.yuanItem') }}{{ forums.set_site.site_price }}（{{ forums.set_site.site_expire ? $t('site.periodvalidity') + forums.set_site.site_expire + $t('site.day') : $t('site.permanent') }}）</div>
       </div>
       <div class="permission">
         <div class="title base-font-size">{{ $t('manage.myRole') }} \ {{ $t('site.permission') }}</div>

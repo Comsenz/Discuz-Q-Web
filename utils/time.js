@@ -7,7 +7,7 @@
  * time2MinuteOrHour('2020-04-25T13:42:00.000Z')
  */
 export const time2MinuteOrHour = time => {
-  const now = window.currentTime
+  const now = window.currentTime || new Date()
   const pass = new Date(time)
   const result = now - pass
   // 分钟差小于60分钟

@@ -31,7 +31,7 @@ export default {
     }
   },
   mounted() {
-    const date = window.currentTime
+    const date = window.currentTime || new Date()
     this.year = date.getFullYear()
   }
 }
