@@ -61,36 +61,42 @@
         <span v-if="typeInformation && typeInformation.textLimit" class="tip">
           {{ typeInformation.textLimit>=(post.text.length || 0) ? $t('post.note', { num: typeInformation.textLimit - (post.text.length || 0) }) : $t('post.exceed', { num: (post.text.length || 0 ) - typeInformation.textLimit }) }}
         </span>
-        <div :class="['actions', editorStyle]">
-          <div class="block">
-            <template v-for="(action, index) in actions">
-              <popover v-if="action.show && action.icon === 'emoji'" :key="index" :visible="showEmoji" class="svg" @hidePop="hideActions">
-                <template v-slot:pop> <emoji-list @selectEmoji="selectActions" /> </template>
-                <template v-slot:activeNode><svg-icon :type="action.icon" style="font-size: 20px" @click="onActions(action.toggle)" /></template>
-              </popover>
-              <popover v-if="action.show && action.icon === 'topic'" :key="index" :visible="showTopic" class="svg" @hidePop="hideActions">
-                <template v-slot:pop> <topic-list @selectedTopic="selectActions" /> </template>
-                <template v-slot:activeNode> <svg-icon :type="action.icon" style="font-size: 20px" @click="onActions(action.toggle)" /> </template>
-              </popover>
-              <svg-icon v-else-if="action.show && action.icon === 'call'" :key="index" :type="action.icon" class="svg" style="font-size: 20px" @click="onActions(action.toggle)" />
-            </template>
-          </div>
-          <div class="block">
-            <template v-for="(resource, index) in resources">
-              <svg-icon v-if="resource.show" :key="index" :type="resource.icon" class="svg" style="font-size: 20px" @click="addResource(resource.toggle)" />
-            </template>
-          </div>
-          <editor-markdown
-            v-if="typeInformation && typeInformation.showMarkdown"
-            :selector="selector"
-            :text="post && post.text"
-            class="block"
-            @changeText="text => onPostContentChange('text', text)"
+        <div :class="['editor-bar', editorStyle]">
+          <editor-actions
+            :actions="actions"
+            :show-emoji="showEmoji"
+            :show-topic="showTopic"
+            :show-caller="showCaller"
+            :resources="resources"
+            @closeCaller="showCaller = false"
+            @selectActions="selectActions"
+            @addResource="addResource"
+            @hidePop="hideActions"
+            @onActions="onActions"
           />
+          <!--          <div class="block">-->
+          <!--            <template v-for="(action, index) in actions">-->
+          <!--              <popover v-if="action.show && action.icon === 'emoji'" :key="index" :visible="showEmoji" class="svg" @hidePop="hideActions">-->
+          <!--                <template v-slot:pop> <emoji-list @selectEmoji="selectActions" /> </template>-->
+          <!--                <template v-slot:activeNode><svg-icon :type="action.icon" style="font-size: 20px" @click="onActions(action.toggle)" /></template>-->
+          <!--              </popover>-->
+          <!--              <popover v-if="action.show && action.icon === 'topic'" :key="index" :visible="showTopic" class="svg" @hidePop="hideActions">-->
+          <!--                <template v-slot:pop> <topic-list @selectedTopic="selectActions" /> </template>-->
+          <!--                <template v-slot:activeNode> <svg-icon :type="action.icon" style="font-size: 20px" @click="onActions(action.toggle)" /> </template>-->
+          <!--              </popover>-->
+          <!--              <svg-icon v-else-if="action.show && action.icon === 'call'" :key="index" :type="action.icon" class="svg" style="font-size: 20px" @click="onActions(action.toggle)" />-->
+          <!--            </template>-->
+          <!--            &lt;!&ndash;@人弹窗&ndash;&gt;-->
+          <!--            <caller v-if="showCaller" @close="showCaller = false" @selectedCaller="selectActions" />-->
+          <!--          </div>-->
+          <!--          <div class="block">-->
+          <!--            <template v-for="(resource, index) in resources">-->
+          <!--              <svg-icon v-if="resource.show" :key="index" :type="resource.icon" class="svg" style="font-size: 20px" @click="addResource(resource.toggle)" />-->
+          <!--            </template>-->
+          <!--          </div>-->
+          <!--          <editor-markdown v-if="typeInformation && typeInformation.showMarkdown" :selector="selector" :text="post && post.text" class="block" @changeText="text => onPostContentChange('text', text)" />-->
           <el-button class="button-publish" :loading="onPublish" type="primary" size="small" @click="publish">{{ $t('post.post') }}</el-button>
         </div>
-        <!--@人弹窗-->
-        <caller v-if="showCaller" @close="showCaller = false" @selectedCaller="selectActions" />
       </div>
     </div>
   </div>
@@ -132,7 +138,7 @@ export default {
       type: Boolean,
       default: false
     },
-    editorStyle: {
+    editorStyle: { // post chat comment reply 代表不同的编辑器风格
       type: String,
       default: 'post'
     },
@@ -441,7 +447,7 @@ export default {
       padding: 20px 20px 30px;
     }
 
-    .actions {
+    .editor-bar {
       width: 100%;
       height: 45px;
       display: flex;
@@ -449,24 +455,6 @@ export default {
       align-items: center;
       background: #ffffff;
       &.chat { background: $background-color-grey }
-
-      > .block {
-        display: flex;
-        padding: 0 10px;
-
-        &:first-child {
-          border: 0;
-        }
-
-        .svg {
-          cursor: pointer;
-          margin-left: 20px;
-
-          &:first-child {
-            margin-left: 0;
-          }
-        }
-      }
 
       > .button-publish {
         margin-left: auto;
