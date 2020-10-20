@@ -1,5 +1,6 @@
 <template>
   <div class="editor">
+    <!--title-->
     <label v-if="typeInformation && typeInformation.showTitle">
       <input
         :placeholder="$t('post.pleaseInputPostTitle')"
@@ -9,22 +10,13 @@
         @input="e => onPostContentChange('title', e.target.value)"
       >
     </label>
+    <!--payment-->
     <editor-payment
       v-if="typeInformation && typeInformation.showPayment && canCreateThreadPaid"
       :payment="payment || {}"
       :type="typeInformation && typeInformation.type"
       @paymentChange="e => onPaymentChange(e.key, e.value)"
     />
-    <div v-if="typeInformation && typeInformation.showLocation && lbs" class="location-picker">
-      <div class="location-title">{{ $t('post.location') }}:</div>
-      <div class="location-input" @click="getLocation">
-        <svg-icon type="location" style="font-size: 17px" />
-        <span class="value">{{ location && location.location || $t('post.pleaseSelectLocation') }}</span>
-        <span v-show="location.location" class="icon-close" @click.stop="$emit('update:location', { location: '', latitude: '', longitude: '' })">
-          <svg-icon type="close" style="font-size: 12px" />
-        </span>
-      </div>
-    </div>
     <!--    <div id="vditor" style="margin-top: 20px" />-->
     <div :class="['container-textarea', editorStyle]">
       <label>
@@ -39,15 +31,6 @@
       </label>
       <div>
         <div v-if="showUploadImg || showUploadVideo || showUploadAttached" class="resources-list">
-          <!--          <image-upload-->
-          <!--            v-if="showUploadImg"-->
-          <!--            :image-list="post && post.imageList"-->
-          <!--            :on-upload-image.sync="onUploadImage"-->
-          <!--            :header="header"-->
-          <!--            :is-edit="isEdit"-->
-          <!--            :url="url"-->
-          <!--            @imageChange="e => onPostContentChange(e.key, e.value)"-->
-          <!--          />-->
           <Upload
             v-if="showUploadImg"
             :file-list="post && post.imageList"
@@ -104,14 +87,12 @@
             class="block"
             @changeText="text => onPostContentChange('text', text)"
           />
-          <el-button class="button-publish" :loading="onPublish" type="primary" size="small" @click="publish">
-            {{ $t('post.post') }}
-          </el-button>
+          <el-button class="button-publish" :loading="onPublish" type="primary" size="small" @click="publish">{{ $t('post.post') }}</el-button>
         </div>
+        <!--@人弹窗-->
         <caller v-if="showCaller" @close="showCaller = false" @selectedCaller="selectActions" />
       </div>
     </div>
-    <get-location v-if="pickingLocation" @close="pickingLocation = false" />
   </div>
 </template>
 
@@ -201,10 +182,6 @@ export default {
         return { authorization: `Bearer ${token}` }
       }
       return ''
-    },
-    lbs() {
-      const forums = this.$store.state.site.info.attributes || {}
-      return forums.lbs && forums.lbs.lbs
     },
     textarea() {
       return process.client ? document.querySelector(`.${this.selector} #textarea`) : ''
@@ -329,21 +306,6 @@ export default {
       this.showEmoji = false
       this.showTopic = false
       this.showCaller = false
-    },
-    getLocation() {
-      this.pickingLocation = true
-      window.addEventListener('message', this.onMessage, false)
-    },
-    onMessage(event) {
-      const loc = event.data
-      // 防止其他应用也会向该页面post信息，需判断module是否为'locationPicker'
-      if (loc && loc.module === 'locationPicker') {
-        const latitude = loc.latlng.lat
-        const longitude = loc.latlng.lng
-        const location = loc.poiname === '我的位置' ? loc.poiaddress : loc.poiname
-        this.pickingLocation = false
-        this.$emit('update:location', { latitude, longitude, location })
-      }
     },
     publish() {
       if (this.onUploadAttached) return this.$message.warning(this.$t('post.pleaseWaitForTheAttachedUploadToComplete'))
