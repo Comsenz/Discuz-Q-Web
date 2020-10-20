@@ -2,101 +2,61 @@
   <div class="editor">
     <!--title-->
     <label v-if="typeInformation && typeInformation.showTitle">
-      <input
-        :placeholder="$t('post.pleaseInputPostTitle')"
-        class="input-title"
-        type="text"
-        :value="post && post.title"
-        @input="e => onPostContentChange('title', e.target.value)"
-      >
+      <input :placeholder="$t('post.pleaseInputPostTitle')" class="input-title" type="text" :value="post && post.title" @input="e => onPostContentChange('title', e.target.value)">
     </label>
     <!--payment-->
-    <editor-payment
-      v-if="typeInformation && typeInformation.showPayment && canCreateThreadPaid"
-      :payment="payment || {}"
-      :type="typeInformation && typeInformation.type"
-      @paymentChange="e => onPaymentChange(e.key, e.value)"
-    />
+    <editor-payment v-if="typeInformation && typeInformation.showPayment && canCreateThreadPaid" :payment="payment || {}" :type="typeInformation && typeInformation.type" @paymentChange="e => onPaymentChange(e.key, e.value)" />
     <!--    <div id="vditor" style="margin-top: 20px" />-->
+    <!--my editor-->
     <div :class="['container-textarea', editorStyle]">
+      <!--bar-->
+      <editor-tool-bar
+        v-if="editorStyle === 'post'"
+        :text-limit="typeInformation && typeInformation.textLimit"
+        :text-length="post && post.text && post.text.length"
+        :actions="actions"
+        :show-emoji="showEmoji"
+        :show-topic="showTopic"
+        :show-caller="showCaller"
+        :resources="resources"
+        :on-publish="onPublish"
+        :editor-style="editorStyle"
+        @publish="publish"
+        @closeCaller="showCaller = false"
+        @selectActions="selectActions"
+        @addResource="addResource"
+        @hidePop="hideActions"
+        @onActions="onActions"
+      />
       <label>
-        <textarea
-          id="textarea"
-          :value="post && post.text"
-          :class="['input-text', editorStyle]"
-          :placeholder="typeInformation ? typeInformation.placeholder : ''"
-          :maxlength="post && post.textLimit"
-          @input="e => onPostContentChange('text', e.target.value)"
-        />
+        <textarea id="textarea" :value="post && post.text" :class="['input-text', editorStyle]" :placeholder="typeInformation ? typeInformation.placeholder : ''" :maxlength="post && post.textLimit" @input="e => onPostContentChange('text', e.target.value)" />
       </label>
       <div>
+        <!--uploader-->
         <div v-if="showUploadImg || showUploadVideo || showUploadAttached" class="resources-list">
-          <Upload
-            v-if="showUploadImg"
-            :file-list="post && post.imageList"
-            :on-upload-image.sync="onUploadImage"
-            action="/attachments"
-            accept="image/*"
-            :limit="9"
-            :size-limit="attachedSizeLimit"
-            @success="imageList => onPostContentChange('imageList', imageList)"
-            @remove="imageList => onPostContentChange('imageList', imageList)"
-          />
-          <video-upload
-            v-if="showUploadVideo"
-            :on-upload-video.sync="onUploadVideo"
-            :video-list="post && post.videoList"
-            @videoChange="e => onPostContentChange(e.key, e.value)"
-          />
-          <attached-upload
-            v-if="showUploadAttached"
-            :on-upload-attached.sync="onUploadAttached"
-            :attached-list="post && post.attachedList"
-            :header="header"
-            :is-edit="isEdit"
-            :url="url"
-            @attachedChange="e => onPostContentChange(e.key, e.value)"
-          />
+          <Upload v-if="showUploadImg" :file-list="post && post.imageList" :on-upload-image.sync="onUploadImage" action="/attachments" accept="image/*" :limit="9" :size-limit="attachedSizeLimit" @success="imageList => onPostContentChange('imageList', imageList)" @remove="imageList => onPostContentChange('imageList', imageList)" />
+          <video-upload v-if="showUploadVideo" :on-upload-video.sync="onUploadVideo" :video-list="post && post.videoList" @videoChange="e => onPostContentChange(e.key, e.value)" />
+          <attached-upload v-if="showUploadAttached" :on-upload-attached.sync="onUploadAttached" :attached-list="post && post.attachedList" :header="header" :is-edit="isEdit" :url="url" @attachedChange="e => onPostContentChange(e.key, e.value)" />
         </div>
-        <span v-if="typeInformation && typeInformation.textLimit" class="tip">
-          {{ typeInformation.textLimit>=(post.text.length || 0) ? $t('post.note', { num: typeInformation.textLimit - (post.text.length || 0) }) : $t('post.exceed', { num: (post.text.length || 0 ) - typeInformation.textLimit }) }}
-        </span>
-        <div :class="['editor-bar', editorStyle]">
-          <editor-actions
-            :actions="actions"
-            :show-emoji="showEmoji"
-            :show-topic="showTopic"
-            :show-caller="showCaller"
-            :resources="resources"
-            @closeCaller="showCaller = false"
-            @selectActions="selectActions"
-            @addResource="addResource"
-            @hidePop="hideActions"
-            @onActions="onActions"
-          />
-          <!--          <div class="block">-->
-          <!--            <template v-for="(action, index) in actions">-->
-          <!--              <popover v-if="action.show && action.icon === 'emoji'" :key="index" :visible="showEmoji" class="svg" @hidePop="hideActions">-->
-          <!--                <template v-slot:pop> <emoji-list @selectEmoji="selectActions" /> </template>-->
-          <!--                <template v-slot:activeNode><svg-icon :type="action.icon" style="font-size: 20px" @click="onActions(action.toggle)" /></template>-->
-          <!--              </popover>-->
-          <!--              <popover v-if="action.show && action.icon === 'topic'" :key="index" :visible="showTopic" class="svg" @hidePop="hideActions">-->
-          <!--                <template v-slot:pop> <topic-list @selectedTopic="selectActions" /> </template>-->
-          <!--                <template v-slot:activeNode> <svg-icon :type="action.icon" style="font-size: 20px" @click="onActions(action.toggle)" /> </template>-->
-          <!--              </popover>-->
-          <!--              <svg-icon v-else-if="action.show && action.icon === 'call'" :key="index" :type="action.icon" class="svg" style="font-size: 20px" @click="onActions(action.toggle)" />-->
-          <!--            </template>-->
-          <!--            &lt;!&ndash;@人弹窗&ndash;&gt;-->
-          <!--            <caller v-if="showCaller" @close="showCaller = false" @selectedCaller="selectActions" />-->
-          <!--          </div>-->
-          <!--          <div class="block">-->
-          <!--            <template v-for="(resource, index) in resources">-->
-          <!--              <svg-icon v-if="resource.show" :key="index" :type="resource.icon" class="svg" style="font-size: 20px" @click="addResource(resource.toggle)" />-->
-          <!--            </template>-->
-          <!--          </div>-->
-          <!--          <editor-markdown v-if="typeInformation && typeInformation.showMarkdown" :selector="selector" :text="post && post.text" class="block" @changeText="text => onPostContentChange('text', text)" />-->
-          <el-button class="button-publish" :loading="onPublish" type="primary" size="small" @click="publish">{{ $t('post.post') }}</el-button>
-        </div>
+        <!--bar-->
+        <editor-tool-bar
+          v-if="editorStyle !== 'post'"
+          :text-limit="typeInformation && typeInformation.textLimit || 450"
+          :text-length="post && post.text && post.text.length || 0"
+          :actions="actions"
+          :show-emoji="showEmoji"
+          :show-topic="showTopic"
+          :show-caller="showCaller"
+          :resources="resources"
+          :on-publish="onPublish"
+          :editor-style="editorStyle"
+          @publish="publish"
+          @closeCaller="showCaller = false"
+          @selectActions="selectActions"
+          @addResource="addResource"
+          @hidePop="hideActions"
+          @onActions="onActions"
+        />
       </div>
     </div>
   </div>
@@ -286,7 +246,7 @@ export default {
         const path = e.path || (e.composedPath && e.composedPath())
         path.forEach(item => {
           if (item.classList) {
-            if (item.classList.contains('emoji-list') || item.classList.contains('topic-list') || item.classList.contains('actions')) pass = false
+            if (item.classList.contains('emoji-list') || item.classList.contains('topic-list') || item.classList.contains('editor-bar')) pass = false
           }
         })
         if (pass) {
@@ -446,31 +406,5 @@ export default {
       background: $background-color-grey;
       padding: 20px 20px 30px;
     }
-
-    .editor-bar {
-      width: 100%;
-      height: 45px;
-      display: flex;
-      padding: 0 10px;
-      align-items: center;
-      background: #ffffff;
-      &.chat { background: $background-color-grey }
-
-      > .button-publish {
-        margin-left: auto;
-        ::v-deep span {
-          font-size: 14px;
-        }
-      }
-    }
-
-    .tip {
-      position: absolute;
-      // bottom: 50px;
-      bottom: 45px;
-      right: 10px;
-      color: #D0D4DC;
-    }
-
   }
 </style>
