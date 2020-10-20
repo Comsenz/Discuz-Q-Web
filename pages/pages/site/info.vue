@@ -1,16 +1,11 @@
 <template>
-  <div
-    v-if="forums && forums.users"
-    class="info"
-  >
+  <div v-if="forums && forums.users" class="info">
     <!-- 有偿加入 -->
     <h2 class="info-title">{{ $t('manage.payJoin') }}</h2>
     <!-- 付费信息部分 -->
     <div class="payinfo">
       <p class="payinfo-title">{{ $t('manage.payInfoTitle') }}</p>
-      <p>
-        <span class="color">{{ $t('post.paymentAmount') }}</span><span class="paymoney">{{ '¥' + ` ${site_price} ` }}元</span>
-      </p>
+      <p><span class="color">{{ $t('post.paymentAmount') }}</span><span class="paymoney">{{ '¥' + ` ${site_price} ` }}元</span></p>
       <p>
         <span class="date color">{{ $t('site.periodvalidity') }}</span><span class="workdate">自加入起 {{ forums.set_site && forums.set_site.site_expire
           ? (forums.set_site && forums.set_site.site_expire ) + ` ${$t('site.day')}`
@@ -28,31 +23,23 @@
         <span class="img">
           <Avatar
             :user="{
-              username: forums.set_site && forums.set_site.site_author.username,
-              avatarUrl: forums.set_site && forums.set_site.site_author.avatar,
+              username: forums.set_site && forums.set_site.site_author && forums.set_site.site_author.username || '',
+              avatarUrl: forums.set_site && forums.set_site.site_author && forums.set_site.site_author.avatar || '',
             }"
             :size="30"
             :round="true"
             class="avatar"
           />
-        </span><span class="workdate3">{{ forums.set_site && forums.set_site.site_author.username }}</span>
+        </span>
+        <span class="workdate3">{{ forums.set_site && forums.set_site.site_author && forums.set_site.site_author.username || '' }}</span>
       </p>
       <p>
         <span class="date color">{{ $t('home.theme') }}</span>
         <span class="workdate bold">{{ forums.other && forums.other.count_users }}</span>
       </p>
       <p class="member-img">
-        <span
-          v-for="(item, index) in forums.users"
-          :key="index"
-          class="img"
-        >
-          <Avatar
-            :user="item"
-            :size="30"
-            :round="true"
-            class="avatar"
-          />
+        <span v-for="(item, index) in forums.users" :key="index" class="img">
+          <Avatar :user="item" :size="30" :round="true" class="avatar" />
         </span>
       </p>
       <p>
@@ -64,50 +51,34 @@
         <span class="workdate2">{{ forums.set_site && forums.set_site.site_introduction }}</span>
       </p>
     </div>
-    <p
-      v-if="isLogin"
-      class="joinnow"
-    >
+    <p v-if="isLogin" class="joinnow">
       <span>{{ $t('site.justonelaststepjoinnow') }}</span>
       <span class="bold">
         {{ forums.set_site && forums.set_site.site_name }}
       </span>
       <span>{{ $t('site.site') }}</span>
-      <el-button
-        type="primary"
-        :class="isLogin ? 'r-button islogin' :'r-button'"
-        @click="paysureShow"
-      >{{ $t('site.paynow') }}，¥{{ ` ${site_price} ` || 0 }}
+      <el-button type="primary" :class="isLogin ? 'r-button islogin' :'r-button'" @click="paysureShow">
+        {{ $t('site.paynow') }}，¥{{ ` ${site_price} ` || 0 }}
         {{
           forums.set_site && forums.set_site.site_expire
             ? `  / ${$t('site.periodvalidity')}${forums.set_site &&
               forums.set_site.site_expire}${$t('site.day')}`
             : ` / ${$t('site.permanent')}`
-        }}</el-button>
+        }}
+      </el-button>
     </p>
     <div v-if="!isLogin">
-      <el-button
-        type="primary"
-        class="r-button"
-        @click="tologin"
-      >{{ $t('site.joinnow') }}</el-button>
-
+      <el-button type="primary" class="r-button" @click="tologin">{{ $t('site.joinnow') }}</el-button>
     </div>
-    <topic-wx-pay
-      v-if="qrcodeShow"
-      :qr-code="codeUrl"
-      @close="qrcodeShow = false"
-    />
+    <topic-wx-pay v-if="qrcodeShow" :qr-code="codeUrl" @close="qrcodeShow = false" />
   </div>
 </template>
 
 <script>
 import handleError from '@/mixin/handleError'
-
 let payWechat = null
 export default {
   mixins: [handleError],
-
   data() {
     return {
       isLogin: this.$store.getters['session/get']('isLogin'),
@@ -197,14 +168,11 @@ export default {
     // 查询订单支状 browserType: 0是小程序，1是微信浏览器，2是h5，3是pc
     getOrderStatus(orderSn, browserType) {
       this.$store
-        .dispatch('jv/get', [`orders/${orderSn}`, {
-          custom: { loading: false }
-        }])
+        .dispatch('jv/get', [`orders/${orderSn}`])
         .then(res => {
           this.payStatus = res.status
           if (this.payStatus === 1) {
             this.payShowStatus = false
-            this.coverLoading = false
             if (browserType === '3') {
               // 这是pc扫码支付完成
               this.qrcodeShow = false
@@ -214,37 +182,18 @@ export default {
           }
         })
         .catch(() => {
-          this.coverLoading = false
           this.$message.success(this.$t('pay.payFail'))
         })
+    }
+  },
+  head() {
+    return {
+      title: this.$t('profile.circleinfo')
     }
   }
 }
 </script>
 <style lang='scss' scoped>
-.qrco-overlay {
-  background: transparent;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 8px;
-  position: fixed;
-  margin: auto;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  z-index: 1;
-}
-::v-deep .model {
-  .el-dialog__body {
-    padding: 0;
-  }
-  img {
-    width: 100%;
-  }
-}
-[v-cloak] {
-  display: none;
-}
 .bold {
   font-weight: bold;
 }

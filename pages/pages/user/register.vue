@@ -1,117 +1,47 @@
 <template>
-  <div
-    v-if="forums"
-    v-loading="loading"
-    class="register"
-  >
-
+  <div v-if="forums" v-loading="loading" class="register">
     <h2 class="register-title">{{ $t('user.register') }}{{ forums && forums.set_site && forums.set_site.site_name ? forums.set_site.site_name : '' }}</h2>
-    <el-tabs
-      v-model="activeName"
-      type="border-card"
-      class="register-select"
-      @tab-click="changeactive"
-    >
+    <el-tabs v-model="activeName" type="border-card" class="register-select" @tab-click="changeactive">
       <!-- 用户名注册 -->
-      <el-tab-pane
-        label="用户名注册"
-        name="0"
-      >
+      <el-tab-pane label="用户名注册" name="0">
         <form>
           <div>
             <span class="title">{{ $t('profile.username') }}</span>
-            <el-input
-              v-model="userName"
-              :placeholder="$t('user.username')"
-              class="reg-input"
-            />
+            <el-input v-model="userName" :placeholder="$t('user.username')" class="reg-input" />
           </div>
           <div>
             <span class="title2">输入密码</span>
-            <el-input
-              v-model="passWord"
-              :placeholder="$t('user.password')"
-              type="password"
-              class="reg-input"
-              show-password
-              @keyup.enter.native="register"
-            />
+            <el-input v-model="passWord" :placeholder="$t('user.password')" type="password" class="reg-input" show-password @keyup.enter.native="register" />
           </div>
           <div :class="passerror ?'rep passerr':'rep'">
             <span class="title2">重复密码</span>
-            <el-input
-              v-model="repeatPassWord"
-              :placeholder="$t('user.password')"
-              type="password"
-              :class="passerror ? 'reg-input inputerr':'reg-input'"
-              show-password
-              @keyup.enter.native="register"
-            />
-            <div
-              v-if="passerror"
-              class="passerror"
-            >{{ $t('modify.reenter') }}</div>
+            <el-input v-model="repeatPassWord" :placeholder="$t('user.password')" type="password" :class="passerror ? 'reg-input inputerr':'reg-input'" show-password @keyup.enter.native="register" />
+            <div v-if="passerror" class="passerror">{{ $t('modify.reenter') }}</div>
           </div>
           <div v-if="validate">
             <span class="title2">注册原因</span>
-            <el-input
-              v-model="Reason"
-              :placeholder="$t('user.reason')"
-              class="reg-input"
-              @keyup.enter.native="register"
-            />
+            <el-input v-model="Reason" :placeholder="$t('user.reason')" class="reg-input" @keyup.enter.native="register" />
           </div>
-
           <div class="agreement">
             <reg-agreement @check="check" />
           </div>
-          <el-button
-            type="primary"
-            class="r-button"
-            @click="register"
-          >{{ $t('user.register') }}</el-button>
+          <el-button type="primary" class="r-button" @click="register">{{ $t('user.register') }}</el-button>
           <div class="tologin">
-            <span
-              v-if="register"
-              @click="jump2Login"
-            >已有帐号，立即<nuxt-link to="/pages/user/login">{{ $t('user.login') }}</nuxt-link> </span>
+            <span v-if="register" @click="jump2Login">已有帐号，立即<nuxt-link to="/pages/user/login">{{ $t('user.login') }}</nuxt-link> </span>
           </div>
         </form>
       </el-tab-pane>
       <!-- 手机号注册 -->
-      <el-tab-pane
-        v-if="forums.qcloud && forums.qcloud.qcloud_sms"
-        :label="$t('user.phoneregister')"
-        name="1"
-      >
+      <el-tab-pane v-if="forums.qcloud && forums.qcloud.qcloud_sms" :label="$t('user.phoneregister')" name="1">
         <span class="title2">{{ $t('user.phonenumber') }}</span>
-        <el-input
-          v-model="phoneNumber"
-          :placeholder="$t('user.phoneNumber')"
-          class="phone-input"
-          maxlength="11"
-        />
-        <el-button
-          class="count-b"
-          :class="{disabled: !canClick}"
-          :disabled="!canClick"
-          @click="phoneRegister"
-        >{{ content }}</el-button>
+        <el-input v-model="phoneNumber" :placeholder="$t('user.phoneNumber')" class="phone-input" maxlength="11" />
+        <el-button class="count-b" :class="{disabled: !canClick}" :disabled="!canClick" @click="phoneRegister">{{ content }}</el-button>
         <span class="title">{{ $t('user.verification') }}</span>
-        <el-input
-          v-model="verifyCode"
-          :placeholder="$t('user.verificationCode')"
-          class="reg-input"
-          @keyup.enter.native="PhoneLogin"
-        />
+        <el-input v-model="verifyCode" :placeholder="$t('user.verificationCode')" class="reg-input" @keyup.enter.native="PhoneLogin" />
         <div class="agreement">
           <reg-agreement @check="check" />
         </div>
-        <el-button
-          type="primary"
-          class="r-button"
-          @click="PhoneLogin"
-        >{{ $t('user.register') }}</el-button>
+        <el-button type="primary" class="r-button" @click="PhoneLogin">{{ $t('user.register') }}</el-button>
       </el-tab-pane>
       <!-- 快速注册 -->
       <!-- <el-tab-pane label="快速注册">

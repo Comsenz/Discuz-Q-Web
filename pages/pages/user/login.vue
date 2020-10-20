@@ -1,98 +1,34 @@
 <template>
-  <div
-    v-if="forums"
-    v-loading="loading"
-    class="register"
-  >
+  <div v-if="forums" v-loading="loading" class="register">
     <h2 class="register-title">{{ $t('user.login') }}{{ forums && forums.set_site && forums.set_site.site_name ? forums.set_site.site_name : '' }}</h2>
-    <el-tabs
-      v-model="activeName"
-      type="border-card"
-      class="register-select"
-      @tab-click="changeActive"
-    >
+    <el-tabs v-model="activeName" type="border-card" class="register-select" @tab-click="changeActive">
       <!-- 用户名登录 -->
-      <el-tab-pane
-        label="用户名登录"
-        name="0"
-      >
+      <el-tab-pane label="用户名登录" name="0">
         <form>
           <span class="title">用户名</span>
-          <el-input
-            v-model="userName"
-            :placeholder="$t('user.username')"
-            class="reg-input"
-          />
+          <el-input v-model="userName" :placeholder="$t('user.username')" class="reg-input" />
           <span class="title2">{{ $t('user.pwd') }}</span>
-          <el-input
-            v-model="passWord"
-            :placeholder="$t('user.password')"
-            type="password"
-            class="reg-input"
-            show-password
-            @keyup.enter.native="UserLogin"
-          />
+          <el-input v-model="passWord" :placeholder="$t('user.password')" type="password" class="reg-input" show-password @keyup.enter.native="UserLogin" />
           <div class="agreement">
             <el-checkbox v-model="checked" />
             <span class="agree">{{ $t('user.status') }} </span>
             <div class="logorreg">
-              <span v-if="canReg">尚无帐号，立即
-                <span
-                  class="agreement_text"
-                  @click="toRegister"
-                > {{ $t('user.register') }}</span></span>
-              <nuxt-link
-                v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms"
-                to="/pages/modify/findpwd"
-                :class="['findpass',iscanReg()]"
-              >{{ $t('modify.findpawdtitle') }}</nuxt-link>
+              <span v-if="canReg">尚无帐号，立即<span class="agreement_text" @click="toRegister"> {{ $t('user.register') }}</span></span>
+              <nuxt-link v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms" to="/pages/modify/findpwd" :class="['findpass',iscanReg()]">{{ $t('modify.findpawdtitle') }}</nuxt-link>
             </div>
           </div>
-          <el-button
-            type="primary"
-            class="r-button"
-            @click="UserLogin"
-          >{{ $t('user.login') }}</el-button>
+          <el-button type="primary" class="r-button" @click="UserLogin">{{ $t('user.login') }}</el-button>
         </form>
       </el-tab-pane>
       <!-- 手机号登录 -->
-      <el-tab-pane
-        v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms"
-        :label="$t('user.phonelogin')"
-        name="1"
-      >
+      <el-tab-pane v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms" :label="$t('user.phonelogin')" name="1">
         <span class="title2">{{ $t('profile.mobile') }}</span>
-
-        <el-input
-          v-model="phoneNumber"
-          :placeholder="$t('user.phoneNumber')"
-          class="phone-input"
-          maxlength="11"
-        />
-
-        <el-button
-          class="count-b"
-          :class="{disabled: !canClick}"
-          size="middle"
-          @click="sendVerifyCode"
-        >{{ content }}</el-button>
-
+        <el-input v-model="phoneNumber" :placeholder="$t('user.phoneNumber')" class="phone-input" maxlength="11" />
+        <el-button class="count-b" :class="{disabled: !canClick}" size="middle" @click="sendVerifyCode">{{ content }}</el-button>
         <span class="title3">{{ $t('user.verification') }}</span>
-        <el-input
-          v-model="verifyCode"
-          :placeholder="$t('user.verificationCode')"
-          class="reg-input"
-          @keyup.enter.native="PhoneLogin"
-        />
-        <div class="agreement">
-          <!-- <el-checkbox v-model="checked" /> -->
-          <reg-agreement @check="check" />
-        </div>
-        <el-button
-          type="primary"
-          class="r-button"
-          @click="PhoneLogin"
-        >{{ $t('user.login') }}</el-button>
+        <el-input v-model="verifyCode" :placeholder="$t('user.verificationCode')" class="reg-input" @keyup.enter.native="PhoneLogin" />
+        <div class="agreement"><reg-agreement @check="check" /></div>
+        <el-button type="primary" class="r-button" @click="PhoneLogin">{{ $t('user.login') }}</el-button>
       </el-tab-pane>
       <!-- 快捷登录 -->
       <!-- <el-tab-pane
