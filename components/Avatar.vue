@@ -57,7 +57,7 @@ export default {
       return `background-color: #${stringToColor(this.usernameAt)};${this.sizes[this.size]}`
     },
     sizeClass() {
-      return 'avatar-size-' + this.size
+      return ['avatar-size-' + this.size, this.preventJump ? 'prevent-jump' : '']
     },
     roundClass() {
       return this.round ? 'round' : ''
@@ -147,5 +147,8 @@ export default {
 }
 .img{
   object-fit: cover;
+}
+.prevent-jump{
+  cursor: default;
 }
 </style>
