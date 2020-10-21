@@ -1,25 +1,7 @@
-
-/**
- * ESLint Config for Tencent
- * https://git.code.oa.com/standards/javascript
- *
- * 贡献者：
- *   xcatliu <xcaliu@tencent.com>
- *
- * 依赖版本：
- *   eslint ^6.8.0
- *   babel-eslint ^10.0.3
- *   @typescript-eslint/parser ^2.31.0
- *   @typescript-eslint/eslint-plugin ^2.31.0
- *   eslint-plugin-import ^2.19.1
- *
- * 此文件是由脚本 scripts/build.ts 自动生成
- *
- * @reason 为什么要开启（关闭）此规则
- */
 module.exports = {
-  parser: 'babel-eslint',
+  root: true,
   parserOptions: {
+    parser: 'babel-eslint',
     ecmaVersion: 2019,
     // ECMAScript modules 模式
     sourceType: 'module',
@@ -41,8 +23,106 @@ module.exports = {
     commonjs: true,
     es6: true,
   },
-  // 以当前目录为根目录，不再向上查找 .eslintrc.js
-  root: true, rules: {
+  extends: ['plugin:vue/recommended', 'eslint:recommended'],
+
+  // add your custom rules here
+  // it is base on https://github.com/vuejs/eslint-config-vue
+  rules: {
+    'vue/max-attributes-per-line': [2, {
+      singleline: 10,
+      multiline: {
+        max: 1,
+        allowFirstLine: false,
+      },
+    }],
+    'vue/singleline-html-element-content-newline': 'off',
+    'vue/multiline-html-element-content-newline': 'off',
+    'vue/name-property-casing': ['error', 'PascalCase'],
+    'vue/no-v-html': 'off',
+    'accessor-pairs': 2,
+    'constructor-super': 2,
+    curly: [2, 'multi-line'],
+    'dot-location': [2, 'property'],
+    'handle-callback-err': [2, '^(err|error)$'],
+    'jsx-quotes': [2, 'prefer-single'],
+    'new-parens': 2,
+    'no-caller': 2,
+    'no-console': 'off',
+    'no-class-assign': 2,
+    'no-cond-assign': 2,
+    'no-control-regex': 0,
+    'no-delete-var': 2,
+    'no-dupe-args': 2,
+    'no-dupe-keys': 2,
+    'no-duplicate-case': 2,
+    'no-empty-character-class': 2,
+    'no-empty-pattern': 2,
+    'no-ex-assign': 2,
+    'no-extend-native': 2,
+    'no-extra-bind': 2,
+    'no-extra-boolean-cast': 2,
+    'no-extra-parens': [2, 'functions'],
+    'no-fallthrough': 2,
+    'no-floating-decimal': 2,
+    'no-func-assign': 2,
+    'no-implied-eval': 2,
+    'no-inner-declarations': [2, 'functions'],
+    'no-invalid-regexp': 2,
+    'no-irregular-whitespace': 2,
+    'no-label-var': 2,
+    'no-labels': [2, {
+      allowLoop: false,
+      allowSwitch: false,
+    }],
+    'no-lone-blocks': 2,
+    'no-mixed-spaces-and-tabs': 2,
+    'no-multi-spaces': 2,
+    'no-multi-str': 2,
+    'no-native-reassign': 2,
+    'no-negated-in-lhs': 2,
+    'no-new-require': 2,
+    'no-new-symbol': 2,
+    'no-obj-calls': 2,
+    'no-octal': 2,
+    'no-octal-escape': 2,
+    'no-path-concat': 2,
+    'no-proto': 2,
+    'no-redeclare': 2,
+    'no-regex-spaces': 2,
+    'no-return-assign': [2, 'except-parens'],
+    'no-self-assign': 2,
+    'no-self-compare': 2,
+    'no-sequences': 2,
+    'no-shadow-restricted-names': 2,
+    'no-spaced-func': 2,
+    'no-sparse-arrays': 2,
+    'no-this-before-super': 2,
+    'no-throw-literal': 2,
+    'no-trailing-spaces': 2,
+    'no-undef-init': 2,
+    'no-unexpected-multiline': 2,
+    'no-unmodified-loop-condition': 2,
+    'no-unreachable': 2,
+    'no-unsafe-finally': 2,
+    'no-useless-call': 2,
+    'no-useless-computed-key': 2,
+    'no-with': 2,
+    'semi-spacing': [2, {
+      before: false,
+      after: true,
+    }],
+    'space-unary-ops': [2, {
+      words: true,
+      nonwords: false,
+    }],
+    'spaced-comment': [2, 'always', {
+      markers: ['global', 'globals', 'eslint', 'eslint-disable', '*package', '!', ','],
+    }],
+    'use-isnan': 2,
+    'valid-typeof': 2,
+    'yield-star-spacing': [2, 'both'],
+    yoda: [2, 'never'],
+    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     /**
      * 不要在中括号中添加空格
      */
@@ -440,7 +520,7 @@ module.exports = {
     /**
      * 禁止变量名出现下划线
      */
-    'no-underscore-dangle': 'warn',
+    // 'no-underscore-dangle': 'warn',
     /**
      * 必须使用 !a 替代 a ? false : true
      */
@@ -613,10 +693,10 @@ module.exports = {
     /**
      * 注释的斜线或 * 后必须有空格
      */
-    'spaced-comment': [
-      'error',
-      'always',
-    ],
+    // 'spaced-comment': [
+    //   'error',
+    //   'always',
+    // ],
     /**
      * 要求或禁止模板字符串中的嵌入表达式周围空格的使用
      */
@@ -630,4 +710,8 @@ module.exports = {
     'wrap-iife': [
       'error',
       'outside',
-    ] } };
+    ],
+
+
+  },
+};
