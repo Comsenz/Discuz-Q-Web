@@ -1,6 +1,12 @@
 <template>
   <div v-if="categoryList.length > 0" class="category-container">
-    <div v-for="(item, index) in categoryList" :key="index" class="category-item" :class="{'active': selectId === (item._jv && item._jv.id), 'loading': postLoading}" @click="onChange(item._jv && item._jv.id)">
+    <div
+      v-for="(item, index) in categoryList"
+      :key="index"
+      class="category-item"
+      :class="{'active': selectId === (item._jv && item._jv.id), 'loading': postLoading}"
+      @click="onChange(item._jv && item._jv.id)"
+    >
       <i v-if="selectId === (item._jv && item._jv.id)" class="el-icon-arrow-left arrow-icon" />
       <div class="flex">
         <div class="title">{{ item.name }}</div>
@@ -23,9 +29,7 @@ export default {
     // 分类列表
     list: {
       type: Array,
-      default: () => {
-        return []
-      }
+      default: () => []
     }
   },
   data() {
@@ -37,11 +41,11 @@ export default {
   watch: {
     list: {
       handler(val) {
-        let thread_count = 0 // 计算全部帖子数
-        val.forEach(item => {
-          thread_count += item.thread_count
+        let threadCount = 0 // 计算全部帖子数
+        val.forEach((item) => {
+          threadCount += item.thread_count
         })
-        this.categoryList = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), thread_count: thread_count }, ...val]
+        this.categoryList = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), threadCount }, ...val]
       },
       deep: true
     }
@@ -51,11 +55,11 @@ export default {
     if (this.list.length === 0) {
       this.getCategoryList()
     } else {
-      let thread_count = 0 // 计算全部帖子数
-      this.list.forEach(item => {
-        thread_count += item.thread_count
+      let threadCount = 0 // 计算全部帖子数
+      this.list.forEach((item) => {
+        threadCount += item.thread_count
       })
-      this.categoryList = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), thread_count: thread_count }, ...this.list]
+      this.categoryList = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), threadCount }, ...this.list]
     }
     if (this.$route.query.categoryId) {
       this.selectId = this.$route.query.categoryId
@@ -64,14 +68,14 @@ export default {
   methods: {
     // 获取分类列表
     getCategoryList() {
-      this.$store.dispatch('jv/get', ['categories', {}]).then(res => {
+      this.$store.dispatch('jv/get', ['categories', {}]).then((res) => {
         const resData = [...res] || []
-        let thread_count = 0 // 计算全部帖子数
-        resData.forEach(item => {
-          thread_count += item.thread_count
+        let threadCount = 0 // 计算全部帖子数
+        resData.forEach((item) => {
+          threadCount += item.thread_count
         })
-        this.categoryList = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), thread_count: thread_count }, ...resData]
-      }, e => {
+        this.categoryList = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), threadCount }, ...resData]
+      }, (e) => {
         this.handleError(e)
       })
     },

@@ -186,9 +186,8 @@ export default {
       }
       if (row > 0) {
         return `<font color="09BB07">+￥${row}</font>`
-      } else {
-        return `<font style="color:#FA5151">-￥${row.substr(1)}</font>`
       }
+      return `<font style="color:#FA5151">-￥${row.substr(1)}</font>`
     },
     // 获取冻结金额列表数据
     getFreezelist() {
@@ -199,18 +198,19 @@ export default {
         'page[number]': this.pageNum3,
         'page[limit]': this.pageSize3
       }
-      this.$store.dispatch('jv/get', ['wallet/log', { params }]).then(res => {
+      this.$store.dispatch('jv/get', ['wallet/log', { params }]).then((res) => {
         this.total3 = res._jv.json.meta.total
         this.freezelist = res
-      }, e => {
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.loading = false
       })
+        .finally(() => {
+          this.loading = false
+        })
     },
     // 金额排序
     sortAmount(str1, str2) {
-      return str1.change_available_amount * 1 - str2.change_available_amount * 1
+      return (str1.change_available_amount * 1) - (str2.change_available_amount * 1)
     },
     // 时间格式化
     dateFormat(row) {

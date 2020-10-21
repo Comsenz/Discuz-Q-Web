@@ -187,7 +187,7 @@ export default {
     },
     // 金额排序
     sortAmount(str1, str2) {
-      return str1.change_available_amount * 1 - str2.change_available_amount * 1
+      return (str1.change_available_amount * 1) - (str2.change_available_amount * 1)
     },
     // 处理时间
     timeHandle(time) {
@@ -218,9 +218,8 @@ export default {
       }
       if (row > 0) {
         return `<font color="#FA5151">+￥${row}</font>`
-      } else {
-        return `<font style="color:#09BB07">-￥${row.substr(1)}</font>`
       }
+      return `<font style="color:#09BB07">-￥${row.substr(1)}</font>`
     },
     // 时间格式化
     dateFormat(row) {
@@ -263,16 +262,17 @@ export default {
       }
       status
         .run(() => this.$store.dispatch('jv/get', ['wallet/log', { params }]))
-        .then(res => {
+        .then((res) => {
           // 处理文字
           const result = this.handleHandle(res)
           // 处理钱
           this.sumMoney2 = this.handlemoney2(result)
           this.dataList2 = result
           this.total2 = res._jv.json.meta.total
-        }, e => {
+        }, (e) => {
           this.handleError(e)
-        }).finally(() => {
+        })
+        .finally(() => {
           this.loading = false
         })
     },
@@ -282,6 +282,7 @@ export default {
       let sum = 0
 
       res.forEach((item, index) => {
+        // eslint-disable-next-line no-useless-escape
         res[index] = parseFloat(item.change_available_amount.replace(/\+|\-|\*|\?/g, ''))
         sum = sum + res[index]
       })
@@ -297,7 +298,7 @@ export default {
         if (desc.length > 42) {
           desc = `${desc.substr(0, 42)}...`
         }
-        results[index]['change_desc'] = desc
+        results[index].change_desc = desc
       })
       return results
     },

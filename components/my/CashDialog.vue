@@ -215,14 +215,15 @@ export default {
       }
       status
         .run(() => this.$store.dispatch('jv/get', ['wallet/cash', { params }]))
-        .then(res => {
+        .then((res) => {
           // 处理钱
           this.sumMoney = this.handlemoney(res)
           this.dataList = res
           this.total = res._jv.json.meta.total
-        }, e => {
+        }, (e) => {
           this.handleError(e)
-        }).finally(() => {
+        })
+        .finally(() => {
           this.loading = false
         })
     },
@@ -278,6 +279,7 @@ export default {
       const res = JSON.parse(JSON.stringify(result))
       let sum = 0
       res.forEach((item, index) => {
+        // eslint-disable-next-line no-useless-escape
         res[index] = parseFloat(item.cash_apply_amount.replace(/\+|\-|\*|\?/g, ''))
         sum = sum + res[index]
       })

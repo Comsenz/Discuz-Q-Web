@@ -5,45 +5,77 @@
     </div>
     <avatar
       v-if="item.user"
-      :user="{
-        id: item.user.id,
-        username: item.user.username,
-        avatarUrl: item.user.avatarUrl,
-        isReal: item.user.isReal
+      :user="{ id: item.user.id,
+               username: item.user.username,
+               avatarUrl: item.user.avatarUrl,
+               isReal: item.user.isReal
       }"
       class="avatar"
     />
     <div class="main-cont">
       <div class="top-flex">
-        <nuxt-link
-          v-if="item.user"
-          :to="`/pages/profile/index?userId=${item.user.id}`"
-          class="user-info"
-        >
+        <nuxt-link v-if="item.user" :to="`/pages/profile/index?userId=${item.user.id}`" class="user-info">
           <span class="user-name">{{ item.user.username }}</span>
           <span
-            v-if="
-              item.user &&
-                item.user.groups &&
-                item.user.groups.length > 0 &&
-                item.user.groups[0].isDisplay
-            "
+            v-if="item.user && item.user.groups && item.user.groups.length > 0 && item.user.groups[0].isDisplay"
             class="admin"
-          >({{ item.user.groups[0].name }})</span>
+          >
+            ({{ item.user.groups[0].name }})
+          </span>
         </nuxt-link>
         <div v-if="item.createdAt" class="time">
           {{ $t("topic.publishAt") }} {{ item.createdAt | formatDate }}
         </div>
       </div>
+      <div v-if="item.type === 5">
+        <!-- 未回答 -->
+        <template v-if="item.question && item.question.is_answer === 0">
+          <nuxt-link
+            v-if="item.user"
+            :to="`/pages/profile/index?userId=${item.user.id}`"
+            class="blue"
+          >@{{ item.user.username }}</nuxt-link>
+          {{ $t('topic.be') }}
+          <nuxt-link
+            v-if="item.question && item.question.beUser"
+            :to="`/pages/profile/index?userId=${item.question.beUser.id}`"
+            class="blue"
+          >@{{ item.question.beUser.username }}</nuxt-link>
+          {{ $t('topic.question') }}
+        </template>
+        <!-- 已回答 -->
+        <template v-if="item.question && item.question.is_answer === 1">
+          <nuxt-link
+            v-if="item.question && item.question.beUser"
+            :to="`/pages/profile/index?userId=${item.question.beUser.id}`"
+            class="blue"
+          >@{{ item.question.beUser.username }}</nuxt-link>
+          {{ $t('topic.answer') }}
+          <nuxt-link
+            v-if="item.user"
+            :to="`/pages/profile/index?userId=${item.user.id}`"
+            class="blue"
+          >@{{ item.user.username }}</nuxt-link>
+          {{ $t('topic.of') }}{{ $t('topic.question') }}
+        </template>
+      </div>
       <template v-if="item.firstPost">
         <div class="first-post" @click.self="toDetail">
           <div @click="onClickContent">
             <div v-if="item.type === 1" class="title">{{ $t('home.released') }}
-              <svg-icon v-show="parseFloat(item.price) > 0" type="pay-yuan" class="blue" style="font-size: 17px; display: inline-block; margin-right: 5px;" />
+              <svg-icon
+                v-show="parseFloat(item.price) > 0"
+                type="pay-yuan"
+                class="blue"
+                style="font-size: 17px; display: inline-block; margin-right: 5px;"
+              />
               <span class="blue ">{{ item.title }}</span></div>
             <div v-else class="content">
               <svg-icon v-show="parseFloat(item.price) > 0" type="pay-yuan" class="icon-pay-yuan" />
-              <span :class="{'content-block': parseFloat(item.price) > 0}" v-html="$xss(formatTopicHTML(item.firstPost.summary))" />
+              <div
+                :class="{'content-block': parseFloat(item.price) > 0}"
+                v-html="$xss(formatTopicHTML(item.firstPost.summary))"
+              />
             </div>
           </div>
           <!-- 图片 -->
@@ -259,17 +291,17 @@ export default {
             this.item.firstPost._jv &&
             this.item.firstPost._jv.id
         },
-        isLiked: isLiked
+        isLiked
       }
       return this.$store
         .dispatch('jv/patch', params)
         .then(
-          (data) => {
+          () => {
             this.$message.success(isLiked ? this.$t('discuzq.msgBox.likeSuccess') : this.$t('discuzq.msgBox.cancelLikeSuccess'))
             if (isLiked) {
-              this.likeCount++
+              this.likeCount += 1
             } else {
-              this.likeCount--
+              this.likeCount -= 1
             }
             this.isLiked = isLiked
             this.$emit('change')
@@ -349,6 +381,9 @@ export default {
     background: rgba(229, 242, 255, 0.3);
     border-bottom: 1px solid #e7ecf2;
   }
+  .blue{
+    color: $color-blue-base;
+  }
   .essence {
     position: absolute;
     top: -5px;
@@ -395,9 +430,7 @@ export default {
       margin-bottom: 6px;
       @include text-hidden();
       flex: 0 0 60%;
-      .blue{
-        color: $color-blue-base;
-      }
+
     }
     .icon-pay-yuan {
       height: 24px;
@@ -409,7 +442,6 @@ export default {
     }
     .content-block{
       text-indent: 20px;
-      display: block;
     }
     ::v-deep .content {
       position: relative;
@@ -436,7 +468,8 @@ export default {
       }
       .qq-emotion {
         height: 22px;
-        margin: 0
+        vertical-align: middle;
+        margin-top: -2px;
       }
       a {
         color: $color-blue-base;
@@ -449,8 +482,8 @@ export default {
         line-height: 20px;
         max-width: 410px;
         .qq-emotion {
-          height: 22px;
-          margin: 0
+          height: 20px;
+          margin-top: -1px;
         }
       }
     }

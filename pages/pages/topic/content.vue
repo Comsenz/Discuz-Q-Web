@@ -3,7 +3,10 @@
     <div class="container">
       <main class="cont-left">
         <div class="topic-detail">
-          <div class="title">#<span class="topic-name">{{ topic.content }}</span># <svg-icon v-if="topic.recommended === 1" type="recommend" /></div>
+          <div class="title">
+            #<span class="topic-name">{{ topic.content }}</span>#
+            <svg-icon v-if="topic.recommended === 1" type="recommend" />
+          </div>
           <div class="info">
             <div class="item">{{ $t('home.topicCount', {total: topic.thread_count}) }}</div>
             <div class="item">{{ $t('home.topicViewCount', {total: topic.view_count }) }}</div>
@@ -18,7 +21,13 @@
         </div>
         <div class="thread-list">
           <post-item v-for="(item, index) in threadsData" :key="index" :item="item" />
-          <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="threadsData.length" @loadMore="loadMore" />
+          <list-load-more
+            :loading="loading"
+            :has-more="hasMore"
+            :page-num="pageNum"
+            :length="threadsData.length"
+            @loadMore="loadMore"
+          />
         </div>
       </main>
       <aside class="cont-right">
@@ -42,7 +51,7 @@ export default {
   name: 'TopicContent',
   mixins: [handleError],
   // 异步数据用法
-  async asyncData({ params, store, query }, callback) {
+  async asyncData({ store, query }, callback) {
     if (!env.isSpider) {
       callback(null, {})
     }
@@ -56,7 +65,7 @@ export default {
     }
     const userParams = {
       include: 'groups',
-      'limit': 4
+      limit: 4
     }
     try {
       const resData = {}
@@ -68,9 +77,16 @@ export default {
       if (Array.isArray(threadsData)) {
         resData.threadsData = threadsData.slice(0, 10)
       } else if (threadsData && threadsData._jv && threadsData._jv.json) {
-        var _threadsData = threadsData._jv.json.data || []
+        const _threadsData = threadsData._jv.json.data || []
         _threadsData.forEach((item, index) => {
-          _threadsData[index] = { ...item, ...item.attributes, 'firstPost': item.relationships && item.relationships.firstPost && item.relationships.firstPost.data, 'user': item.relationships && item.relationships.user && item.relationships.user.data, 'groups': item.relationships && item.relationships.groups && item.relationships.groups.data, '_jv': { 'id': item.id }}
+          _threadsData[index] = {
+            ...item,
+            ...item.attributes,
+            firstPost: item.relationships && item.relationships.firstPost && item.relationships.firstPost.data,
+            user: item.relationships && item.relationships.user && item.relationships.user.data,
+            groups: item.relationships && item.relationships.groups && item.relationships.groups.data,
+            _jv: { id: item.id }
+          }
         })
         resData.threadsData = _threadsData
       }
@@ -107,7 +123,7 @@ export default {
     }
   },
   watch: {
-    '$route': 'init'
+    $route: 'init'
   },
   mounted() {
     this.init()
@@ -123,7 +139,7 @@ export default {
     },
     // 话题详情
     getTopicDetail(id) {
-      this.$store.dispatch('jv/get', [`topics/${id}`, {}]).then(res => {
+      this.$store.dispatch('jv/get', [`topics/${id}`, {}]).then((res) => {
         if (res) {
           this.topic = res
         }
@@ -140,7 +156,7 @@ export default {
         'page[limit]': this.pageSize,
         'filter[topicId]': `${this.topicId}`
       }
-      this.$store.dispatch('jv/get', ['threads', { params }]).then(res => {
+      this.$store.dispatch('jv/get', ['threads', { params }]).then((res) => {
         this.hasMore = res.length === this.pageSize
         this.total = res._jv.json.meta.threadCount
         if (this.pageNum === 1) {
@@ -154,15 +170,16 @@ export default {
         } else {
           this.threadsData = [...this.threadsData, ...res]
         }
-        this.pageNum++
+        this.pageNum += 1
         if (res._jv) {
           this.hasMore = this.threadsData.length < res._jv.json.meta.threadCount
         }
-      }, e => {
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.loading = false
       })
+        .finally(() => {
+          this.loading = false
+        })
     },
     loadMore() {
       this.getThreadsList()

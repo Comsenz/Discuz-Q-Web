@@ -1,28 +1,15 @@
 <template>
-  <div
-    v-if="forums"
-    v-loading="loading"
-    class="register"
-  >
-    <h2 class="register-title">{{ $t('user.login') }}{{ forums && forums.set_site && forums.set_site.site_name ? forums.set_site.site_name : '' }}</h2>
-    <el-tabs
-      v-model="activeName"
-      type="border-card"
-      class="register-select"
-      @tab-click="changeActive"
-    >
+  <div v-if="forums" v-loading="loading" class="register">
+    <h2 class="register-title">
+      {{ $t('user.login') }}
+      {{ forums && forums.set_site && forums.set_site.site_name ? forums.set_site.site_name : '' }}
+    </h2>
+    <el-tabs v-model="activeName" type="border-card" class="register-select" @tab-click="changeActive">
       <!-- 用户名登录 -->
-      <el-tab-pane
-        label="用户名登录"
-        name="0"
-      >
+      <el-tab-pane :label="$t('user.userlogin')" name="0">
         <form>
-          <span class="title">用户名</span>
-          <el-input
-            v-model="userName"
-            :placeholder="$t('user.username')"
-            class="reg-input"
-          />
+          <span class="title">{{ $t('user.usrname') }}</span>
+          <el-input v-model="userName" :placeholder="$t('user.username')" class="reg-input" />
           <span class="title2">{{ $t('user.pwd') }}</span>
           <el-input
             v-model="passWord"
@@ -36,47 +23,30 @@
             <el-checkbox v-model="checked" />
             <span class="agree">{{ $t('user.status') }} </span>
             <div class="logorreg">
-              <span v-if="canReg">尚无帐号，立即
-                <span
-                  class="agreement_text"
-                  @click="toRegister"
-                > {{ $t('user.register') }}</span></span>
+              <span v-if="canReg">
+                {{ $t('user.noexist') }}
+                <span class="agreement_text" @click="toRegister"> {{ $t('user.register') }}</span></span>
               <nuxt-link
                 v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms"
                 to="/pages/modify/findpwd"
                 :class="['findpass',iscanReg()]"
-              >{{ $t('modify.findpawdtitle') }}</nuxt-link>
+              >
+                {{ $t('modify.findpawdtitle') }}</nuxt-link>
             </div>
           </div>
-          <el-button
-            type="primary"
-            class="r-button"
-            @click="UserLogin"
-          >{{ $t('user.login') }}</el-button>
+          <el-button type="primary" class="r-button" @click="UserLogin">{{ $t('user.login') }}</el-button>
         </form>
       </el-tab-pane>
       <!-- 手机号登录 -->
-      <el-tab-pane
-        v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms"
-        :label="$t('user.phonelogin')"
-        name="1"
-      >
+      <el-tab-pane v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms" :label="$t('user.phonelogin')" name="1">
         <span class="title2">{{ $t('profile.mobile') }}</span>
-
-        <el-input
-          v-model="phoneNumber"
-          :placeholder="$t('user.phoneNumber')"
-          class="phone-input"
-          maxlength="11"
-        />
-
+        <el-input v-model="phoneNumber" :placeholder="$t('user.phoneNumber')" class="phone-input" maxlength="11" />
         <el-button
           class="count-b"
           :class="{disabled: !canClick}"
           size="middle"
           @click="sendVerifyCode"
         >{{ content }}</el-button>
-
         <span class="title3">{{ $t('user.verification') }}</span>
         <el-input
           v-model="verifyCode"
@@ -84,15 +54,8 @@
           class="reg-input"
           @keyup.enter.native="PhoneLogin"
         />
-        <div class="agreement">
-          <!-- <el-checkbox v-model="checked" /> -->
-          <reg-agreement @check="check" />
-        </div>
-        <el-button
-          type="primary"
-          class="r-button"
-          @click="PhoneLogin"
-        >{{ $t('user.login') }}</el-button>
+        <div class="agreement"><reg-agreement @check="check" /></div>
+        <el-button type="primary" class="r-button" @click="PhoneLogin">{{ $t('user.login') }}</el-button>
       </el-tab-pane>
       <!-- 快捷登录 -->
       <!-- <el-tab-pane
@@ -189,7 +152,7 @@ export default {
     // 获取配置优先的登录方式
     this.activeName = this.forums && this.forums.set_reg ? this.forums.set_reg.register_type.toString() : ''
     // 微信登录初始化
-    if (this.activeName === '2' || this.forums && this.forums.qcloud && !this.forums.qcloud.qcloud_sms) {
+    if (this.activeName === '2' && this.forums && this.forums.qcloud && !this.forums.qcloud.qcloud_sms) {
       this.activeName = '0'
       // this.createQRcode()
     }
@@ -203,11 +166,12 @@ export default {
     },
     countDown(interval) {
       if (!this.canClick) return
+      let intervals = interval
       this.canClick = false
-      this.content = interval + this.$t('modify.retransmission')
+      this.content = intervals + this.$t('modify.retransmission')
       const clock = setInterval(() => {
-        interval--
-        this.content = interval + this.$t('modify.retransmission')
+        intervals = intervals - 1
+        this.content = intervals + this.$t('modify.retransmission')
         if (interval < 0) {
           clearInterval(clock)
           this.content = this.$t('modify.sendVerifyCode')
@@ -243,7 +207,7 @@ export default {
       // 登录成功重新获取一下站点信息
       this.$store.dispatch('site/getSiteInfo')
 
-      this.$store.dispatch('jv/get', [`users/${userId}`, { params }]).then(val => {
+      this.$store.dispatch('jv/get', [`users/${userId}`, { params }]).then((val) => {
         this.user = val
         if (this.user && this.user.paid) {
           this.isPaid = this.user.paid
@@ -275,7 +239,7 @@ export default {
           }
         }
         this.$store.dispatch('session/h5Login', params)
-          .then(res => {
+          .then((res) => {
             this.loading = false
             if (res && res.data && res.data.data && res.data.data.id) {
               this.logind()
@@ -303,7 +267,7 @@ export default {
               this.$router.push('/')
             }
           })
-          .catch(err => {
+          .catch((err) => {
             this.loading = false
             console.log(err)
           })
@@ -318,7 +282,7 @@ export default {
       }
       params = await this.checkCaptcha(params)
       status.run(() => this.$store.dispatch('jv/post', params))
-        .then(res => {
+        .then((res) => {
           if (res.interval) this.countDown(res.interval)
         }, e => this.handleError(e))
     },
@@ -345,7 +309,7 @@ export default {
         }
         this.$store
           .dispatch('session/verificationCodeh5Login', params)
-          .then(res => {
+          .then((res) => {
             this.loading = false
             if (res && res.data && res.data.data && res.data.data.id) {
               this.logind()
@@ -371,7 +335,7 @@ export default {
               this.$router.push('/')
             }
           })
-          .catch(err => {
+          .catch((err) => {
             this.loading = false
             console.log(err)
           })
@@ -380,9 +344,9 @@ export default {
     // qq登录
     qqLogin() {
       const params = {
-        _jv: { type: `/oauth/qq` }
+        _jv: { type: '/oauth/qq' }
       }
-      this.$store.dispatch('jv/get', params).then(res => {
+      this.$store.dispatch('jv/get', params).then((res) => {
         console.log('qq登陆', res)
       })
     },
@@ -394,7 +358,7 @@ export default {
     },
     // PC扫码登陆-生成二维码
     createQRcode() {
-      this.$store.dispatch('jv/get', `/oauth/wechat/pc/qrcode`).then(res => {
+      this.$store.dispatch('jv/get', '/oauth/wechat/pc/qrcode').then((res) => {
         if (res) {
           this.wechatLogin = res
           const _this = this
@@ -405,7 +369,7 @@ export default {
     // 轮询查询微信是否登录成功
     getLoginStatus() {
       if (this.wechatLogin && !this.wechatLogin.session_token) return
-      this.$store.dispatch('jv/get', `/oauth/wechat/pc/login/${this.wechatLogin.session_token}`).then(res => {
+      this.$store.dispatch('jv/get', `/oauth/wechat/pc/login/${this.wechatLogin.session_token}`).then((res) => {
         if (res.pc_login) {
           clearInterval(this.wehcatLoginTimer)
           this.$store.commit('session/SET_USER_ID', res._jv.id)
@@ -414,7 +378,7 @@ export default {
           this.logind()
           this.$message.success('登录成功')
         }
-      }, e => {
+      }, (e) => {
         clearInterval(this.wehcatLoginTimer)
         this.handleError(e)
         this.createQRcode()

@@ -5,7 +5,12 @@
       class="avatar"
     >
       <avatar
-        :user="{ id: item.sender.id,username: item.sender.username, avatarUrl: item.sender.avatarUrl, isReal: item.sender.isReal}"
+        :user="{
+          id: item.sender.id,
+          username: item.sender.username,
+          avatarUrl: item.sender.avatarUrl,
+          isReal: item.sender.isReal
+        }"
         :size="50"
       />
       <div
@@ -18,7 +23,11 @@
       class="avatar"
     >
       <avatar
-        :user="{ id: item.recipient.id,username: item.recipient.username, avatarUrl: item.recipient.avatarUrl, isReal: item.recipient.isReal}"
+        :user="{ id: item.recipient.id,
+                 username: item.recipient.username,
+                 avatarUrl: item.recipient.avatarUrl,
+                 isReal: item.recipient.isReal
+        }"
         :size="50"
       />
       <div
@@ -54,7 +63,9 @@
           </nuxt-link>
           <span class="text">{{ $t('notice.chat') }}</span>
         </template>
-        <div class="time">{{ (item.dialogMessage ? item.dialogMessage.created_at : item.created_at) | formatDate }}</div>
+        <div class="time">
+          {{ (item.dialogMessage ? item.dialogMessage.created_at : item.created_at) | formatDate }}
+        </div>
       </div>
       <div
         class="post-content"

@@ -24,7 +24,7 @@ export default {
   },
   methods: {
     tobind() {
-      this.$router.push(`/pages/my/profile?phonebind=true`)
+      this.$router.push('/pages/my/profile?phonebind=true')
     }
   }
 }
@@ -32,7 +32,6 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/css/variable/color.scss";
-
 .container {
   height: 315px;
   .btn{

@@ -1,5 +1,9 @@
 <template>
-  <div v-if="forums && forums.other && forums.other.can_view_user_list" v-loading="loading" class="recommend-user-container">
+  <div
+    v-if="forums && forums.other && forums.other.can_view_user_list"
+    v-loading="loading"
+    class="recommend-user-container"
+  >
     <div class="recommend-user-title">{{ $t('home.recommentUser') }}</div>
     <div v-show="!loading" class="recommend-user-list">
       <user-item v-for="(item, index) in userList" :key="index" :item="item" show="simple" />
@@ -20,9 +24,7 @@ export default {
     // 用户列表
     list: {
       type: Array,
-      default: () => {
-        return []
-      }
+      default: () => []
     }
   },
   data() {
@@ -64,18 +66,20 @@ export default {
       this.loading = true
       const params = {
         include: 'groups',
-        'limit': this.pageSize
+        limit: this.pageSize
       }
-      this.$store.dispatch('jv/get', ['users/recommended', { params }]).then(res => {
-        res.forEach((v, i) => {
-          res[i].groupName = v.groups[0] ? v.groups[0].name : ''
+      this.$store.dispatch('jv/get', ['users/recommended', { params }]).then((res) => {
+        const data = res
+        data.forEach((v, i) => {
+          data[i].groupName = v.groups[0] ? v.groups[0].name : ''
         })
-        this.userList = res
-      }, e => {
+        this.userList = data
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.loading = false
       })
+        .finally(() => {
+          this.loading = false
+        })
     },
     // 刷新
     refresh() {

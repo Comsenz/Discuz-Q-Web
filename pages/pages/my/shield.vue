@@ -12,7 +12,9 @@
         class="shieldtop"
       >
         <div :class="userList.length === 0 ? 'shieldnum hide':'shieldnum'">
-          {{ $t('manage.find') }}<span class="searchusr">"{{ inputVal }}"</span>{{ $t('profile.searchresult') }}{{ searchTotal }}{{ $t('topic.item') }}
+          {{ $t('manage.find') }}
+          <span class="searchusr">"{{ inputVal }}"</span>
+          {{ $t('profile.searchresult') }}{{ searchTotal }}{{ $t('topic.item') }}
         </div>
         <el-input
           v-model="inputVal"
@@ -265,17 +267,17 @@ export default {
     // 获取黑名单数据
     getShieldData() {
       this.loading = true
-      this.$store.dispatch('jv/get', `users/${this.userId}/deny`).then(res => {
-        if (res._jv) {
-          delete res._jv
-        }
+      this.$store.dispatch('jv/get', `users/${this.userId}/deny`).then((res) => {
         this.unbundUserData = []
         this.unbundUserData.push(Number(this.userId))
         res.forEach((v, i) => {
           this.unbundUserData.push(res[i].id)
         })
         this.shieldTotal = res.length
-      }, e => this.handleError(e)).finally(() => { this.loading = false })
+      }, e => this.handleError(e))
+        .finally(() => {
+          this.loading = false
+        })
     },
     // 获取黑名单列表
     getShieldList() {
@@ -284,12 +286,12 @@ export default {
         'page[limit]': this.pageSize,
         'page[number]': this.pageNum
       }
-      this.$store.dispatch('jv/get', [`users/${this.userId}/deny`, { params }]).then(res => {
-        if (res._jv) {
-          delete res._jv
-        }
+      this.$store.dispatch('jv/get', [`users/${this.userId}/deny`, { params }]).then((res) => {
         this.shieldList = res
-      }, e => this.handleError(e)).finally(() => { this.loading = false })
+      }, e => this.handleError(e))
+        .finally(() => {
+          this.loading = false
+        })
     },
     changeshield(uid) {
       this.$confirm('是否解除屏蔽该用户?', '提示', {
@@ -298,12 +300,13 @@ export default {
         type: 'warning'
       }).then(() => {
         this.unbundlingUser(uid)
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消解除屏蔽'
-        })
       })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消解除屏蔽'
+          })
+        })
     },
     // 解绑用户
     unbundlingUser(uid) {
@@ -341,15 +344,19 @@ export default {
         'page[limit]': this.pageSize,
         'filter[username]': `*${key}*`
       }
-      this.$store.dispatch('jv/get', ['users', { params }]).then(res => {
-        res.forEach((v, i) => {
-          res[i].groupName = v.groups[0] ? v.groups[0].name : ''
+      this.$store.dispatch('jv/get', ['users', { params }]).then((res) => {
+        const resp = res
+        resp.forEach((v, i) => {
+          resp[i].groupName = v.groups[0] ? v.groups[0].name : ''
         })
         // 过滤搜索用户中已屏蔽的用户和当前登录用户
-        const data = res.filter(item => this.unbundUserData.indexOf(item.id) === -1)
+        const data = resp.filter(item => this.unbundUserData.indexOf(item.id) === -1)
         this.userList = data
-        this.searchTotal = res._jv.json.meta.total
-      }, e => this.handleError(e)).finally(() => { this.loading2 = false })
+        this.searchTotal = resp._jv.json.meta.total
+      }, e => this.handleError(e))
+        .finally(() => {
+          this.loading2 = false
+        })
     },
     // 屏蔽用户
     shieldUser(uid) {
@@ -360,12 +367,13 @@ export default {
         type: 'warning'
       }).then(() => {
         this.handleShield()
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消屏蔽'
-        })
       })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消屏蔽'
+          })
+        })
     },
     handleShield() {
       const params = {

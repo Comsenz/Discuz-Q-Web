@@ -55,7 +55,8 @@
       <p>
         <span class="date color ">{{ $t('site.circlemode') }}</span>
         <span class="workdate">
-          {{ forums.set_site && forums.set_site.site_mode === 'pay' ? $t('site.paymentmode') +'， ' + '¥'+ ((forums.set_site && forums.set_site.site_price) || 0)+$t('post.yuan')+'， ' + $t('site.periodvalidity') +
+          {{ forums.set_site && forums.set_site.site_mode === 'pay' ? $t('site.paymentmode') +'， ' + '¥'+
+            ((forums.set_site && forums.set_site.site_price) || 0)+$t('post.yuan')+'， ' + $t('site.periodvalidity') +
             ((forums.set_site && forums.set_site.site_expire) || 0 )+ $t('site.day'):$t('site.publicmode') }}
         </span>
       </p>
@@ -150,24 +151,24 @@ export default {
   methods: {
     handleClose(done) {
       this.$confirm('确认关闭？')
-        .then(_ => {
+        .then(() => {
           done()
         })
-        .catch(_ => { })
+        .catch(() => { })
     },
     getInviteInfo(code) {
       status
         .run(() => this.$store.dispatch('jv/get', `invite/${code}`)
-          .then(res => {
+          .then((res) => {
             this.inviteData = res
             this.check2()
             const permission = res.group.permission.slice(0, 3)
             this.permission = permission
-          }).catch(e => {
+          })
+          .catch((e) => {
             this.check2()
             console.log(e)
-          })
-        )
+          }))
     },
     // 验证码验证
     check() {

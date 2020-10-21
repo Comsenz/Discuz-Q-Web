@@ -35,7 +35,8 @@
         <div class="head">{{ $t('modify.actualamout') }}</div>
         <div class="body product-information">
           <span class="title3"> ￥ {{ contint || 0 }}</span>
-          <span class="title4"> {{ $t('modify.servicechaege') }}{{ procedures }}{{ $t('modify.percentage') }} {{ percentage }}%)</span>
+          <span class="title4">
+            {{ $t('modify.servicechaege') }}{{ procedures }}{{ $t('modify.percentage') }} {{ percentage }}%)</span>
         </div>
       </div>
       <div class="row">
@@ -61,7 +62,8 @@
             class="phone"
             style="margin-left:20px;"
           >
-            {{ $t('profile.codesend') }}  <span style="font-weight:bold;color:#000000; ">{{ usertestphon }}</span> {{ $t('profile.phonesms') }}
+            {{ $t('profile.codesend') }}
+            <span style="font-weight:bold;color:#000000; ">{{ usertestphon }}</span> {{ $t('profile.phonesms') }}
           </span>
           <span
             v-else
@@ -76,7 +78,9 @@
       </div>
     </div>
     <div class="bottom">
-      <span style="font-size:14px">￥{{ contint || 0 }}{{ $t('pay.rmb') + $t('profile.withdrawalto') + '，' + name || '' }} {{ $t('pay.ofAccount') }}</span>
+      <span style="font-size:14px">
+        ￥{{ contint || 0 }}{{ $t('pay.rmb') + $t('profile.withdrawalto') + '，' + name || '' }} {{ $t('pay.ofAccount') }}
+      </span>
       <el-button
         size="medium"
         type="primary"
@@ -138,15 +142,15 @@ export default {
   methods: {
     countDown(interval) {
       if (!this.canClick) return
+      let intervals = interval
       this.canClick = false
-      this.content = interval + this.$t('modify.retransmission')
-      const clock = window.setInterval(() => {
-        interval--
-        this.content = interval + this.$t('modify.retransmission')
+      this.content = intervals + this.$t('modify.retransmission')
+      const clock = setInterval(() => {
+        intervals = intervals - 1
+        this.content = intervals + this.$t('modify.retransmission')
         if (interval < 0) {
-          window.clearInterval(clock)
+          clearInterval(clock)
           this.content = this.$t('modify.sendVerifyCode')
-          // this.totalTime = 60
           this.canClick = true
         }
       }, 1000)
@@ -187,7 +191,7 @@ export default {
         }
         if (this.canAmount.length > 0) {
           this.length = true
-          const number = this.canAmount - this.canAmount * this.cost
+          const number = this.canAmount - (this.canAmount * this.cost)
           if (number) {
             this.contint = `${number.toFixed(2)}`
             const casnumber = this.canAmount * this.cost
@@ -216,7 +220,7 @@ export default {
     // 腾讯验证码
     tcaptcha() {
       // eslint-disable-next-line no-undef
-      this.captcha = new TencentCaptcha(this.forums.qcloud.qcloud_captcha_app_id, res => {
+      this.captcha = new TencentCaptcha(this.forums.qcloud.qcloud_captcha_app_id, (res) => {
         if (res.ret === 0) {
           this.ticket = res.ticket
           this.randstr = res.randstr
@@ -240,7 +244,7 @@ export default {
       }
       const postphon = status.run(() => this.$store.dispatch('jv/post', params))
       postphon
-        .then(res => {
+        .then((res) => {
           if (res.interval) this.countDown(res.interval)
           this.ticket = ''
           this.randstr = ''
@@ -260,11 +264,11 @@ export default {
       }
       this.$store
         .dispatch('jv/post', params)
-        .then(res => {
+        .then((res) => {
           if (res) {
             this.cashwithdrawal()
           }
-        }, e => {
+        }, (e) => {
           // eslint-disable-next-line object-curly-spacing
           const { response: { data: { errors } } } = e
           if (errors[0]) {
@@ -289,7 +293,7 @@ export default {
       }
       const postcash = status.run(() => this.$store.dispatch('jv/post', params))
       postcash
-        .then(res => {
+        .then((res) => {
           if (res) {
             this.canAmount = ''
             this.contint = ''
@@ -300,7 +304,7 @@ export default {
             this.$emit('close')
             // this.$router.go(0)
           }
-        }, e => {
+        }, (e) => {
           // eslint-disable-next-line object-curly-spacing
           const { response: { data: { errors } } } = e
           if (errors[0]) {

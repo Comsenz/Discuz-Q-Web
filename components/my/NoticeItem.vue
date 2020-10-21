@@ -27,7 +27,11 @@
           </nuxt-link>
           <span class="text">
             <template v-if="item.type === 'rewarded'">
-              <template v-if="item.isScale">{{ item.order_type === 1 ? typeMap['registerScale'] : item.order_type === 2 ? typeMap['rewardScale'] : item.order_type === 3 ? typeMap['payScale'] : typeMap[item.type] }}
+              <template v-if="item.isScale">
+                {{ item.order_type === 1
+                  ? typeMap['registerScale'] : item.order_type === 2
+                    ? typeMap['rewardScale'] : item.order_type === 3
+                      ? typeMap['payScale'] : typeMap[item.type] }}
               </template>
               <template v-else-if="item.order_type === 3">{{ typeMap['payMe'] }}</template>
               <template v-else>{{ typeMap[item.type] }}</template>
@@ -43,7 +47,8 @@
       </div>
       <nuxt-link
         v-if="item.post_content"
-        :to="`/pages/topic/comment?threadId=${item.thread_id}&commentId=${item.reply_post_id !== 0 ? item.reply_post_id : item.post_id}`"
+        :to="`/pages/topic/comment?threadId=${item.thread_id}&commentId=${item.reply_post_id !== 0
+          ? item.reply_post_id : item.post_id}`"
         class="post-content"
         v-html="$xss(item.post_content)"
       />
@@ -107,15 +112,15 @@ export default {
   data() {
     return {
       typeMap: {
-        'related': this.$t('notice.relatedMe'),
-        'replied': this.$t('notice.repliedMe'),
-        'liked': this.$t('notice.likedMe'),
-        'rewarded': this.$t('notice.rewardedMe'),
-        'payMe': this.$t('notice.payMe'),
-        'registerScale': this.$t('notice.registerScale'),
-        'rewardScale': this.$t('notice.rewardScale'),
-        'payScale': this.$t('notice.payScale'),
-        'system': this.$t('notice.system')
+        related: this.$t('notice.relatedMe'),
+        replied: this.$t('notice.repliedMe'),
+        liked: this.$t('notice.likedMe'),
+        rewarded: this.$t('notice.rewardedMe'),
+        payMe: this.$t('notice.payMe'),
+        registerScale: this.$t('notice.registerScale'),
+        rewardScale: this.$t('notice.rewardScale'),
+        payScale: this.$t('notice.payScale'),
+        system: this.$t('notice.system')
       }
     }
   },
@@ -195,6 +200,8 @@ export default {
     .post-content {
       padding: 10px 0 0;
       display: block;
+      word-break: break-all;
+      @include text-hidden(3);
       &:hover {
         color: $color-blue-base;
       }

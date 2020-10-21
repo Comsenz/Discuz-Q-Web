@@ -8,7 +8,13 @@
         :lazy="false"
         @change="changelike"
       />
-      <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="data.length" @loadMore="loadMore" />
+      <list-load-more
+        :loading="loading"
+        :has-more="hasMore"
+        :page-num="pageNum"
+        :length="data.length"
+        @loadMore="loadMore"
+      />
     </div>
   </div>
 </template>
@@ -48,7 +54,7 @@ export default {
   },
   methods: {
     // 加载当前点赞数据
-    loadlikes(type) {
+    loadlikes() {
       this.loading = true
       const params = {
         include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
@@ -59,11 +65,12 @@ export default {
       }
       status
         .run(() => this.$store.dispatch('jv/get', ['threads/likes', { params }]))
-        .then(res => {
+        .then((res) => {
           this.loading = false
           this.hasMore = res.length === this.pageSize
           const ress = JSON.parse(JSON.stringify(res))
           ress.forEach((val) => {
+            // eslint-disable-next-line no-param-reassign
             val.firstPost.isLiked = true
           })
           this.data = [...this.data, ...ress]
@@ -71,9 +78,10 @@ export default {
             this.hasMore = this.data.length < res._jv.json.meta.threadCount
           }
           this.pageNum += 1
-        }, e => {
+        }, (e) => {
           this.handleError(e)
-        }).finally(() => {
+        })
+        .finally(() => {
           this.loading = false
         })
     },

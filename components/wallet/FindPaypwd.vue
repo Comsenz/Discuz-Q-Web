@@ -112,9 +112,9 @@ export default {
       }
       params = await this.checkCaptcha(params)
       status.run(() => this.$store.dispatch('jv/post', params))
-        .then(res => {
+        .then((res) => {
           if (res.interval) this.countDown(res.interval)
-        }, e => {
+        }, (e) => {
           const { response:
             {
               data: { errors }
@@ -142,7 +142,7 @@ export default {
           type: 'reset_pay_pwd'
         }
         status.run(() => this.$store.dispatch('jv/post', params))
-          .then(res => {
+          .then(() => {
             this.$message.success(this.$t('modify.paymentsucceed'))
             this.$emit('close')
           }, e => this.handleError(e))

@@ -5,7 +5,10 @@
       <a class="site" href="https://discuz.com" target="_blank">Discuz! Q</a>
       <span class="block">© {{ year }}</span>
     </div>
-    <div v-if="forums && forums.set_site && (forums.set_site.site_record || forums.set_site.site_record_code)" class="id">
+    <div
+      v-if="forums && forums.set_site && (forums.set_site.site_record || forums.set_site.site_record_code)"
+      class="id"
+    >
       <div class="site-record-code">
         <a href="https://beian.miit.gov.cn/" target="_blank">{{ forums.set_site ? forums.set_site.site_record : '' }}</a>
       </div>

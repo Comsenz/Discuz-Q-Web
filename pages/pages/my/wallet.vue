@@ -98,7 +98,12 @@
           @password="setPass2"
         />
       </div>
-      <find-paypwd v-if="isfindpwd" :mobile="dataInfo.user.mobile" :phonenum="dataInfo.user.originalMobile" @close="isfindpwd = false" />
+      <find-paypwd
+        v-if="isfindpwd"
+        :mobile="dataInfo.user.mobile"
+        :phonenum="dataInfo.user.originalMobile"
+        @close="isfindpwd = false"
+      />
       <without-phone v-if="isWithoutphone" @close=" isWithoutphone = false" />
     </div>
     <el-tabs
@@ -196,22 +201,21 @@ export default {
       }
       const postphon = status.run(() => this.$store.dispatch('jv/post', params))
       postphon
-        .then(res => {
+        .then((res) => {
           if (res._jv.json.data.id) {
             this.passError = false
             this.showPasswordInput = false
-            this.$message.success(
-              this.$t('modify.authensucceeded')
-            )
+            this.$message.success(this.$t('modify.authensucceeded'))
             this.showNewverify = true
             this.usertokenid = res._jv.json.data.id
           }
         })
-        .catch(err => {
+        .catch((err) => {
           this.$refs.walletpass.empty()
           const { response: { data: { errors }}} = err
           if (errors[0].code === 'validation_error') {
             this.passError = true
+            // eslint-disable-next-line prefer-destructuring
             this.passwordErrorTip = errors[0].detail[0]
             return
           }
@@ -259,7 +263,7 @@ export default {
       }
       const postphon = status.run(() => this.$store.dispatch('jv/patch', params))
       postphon
-        .then(res => {
+        .then((res) => {
           this.inputpas = ''
           if (res) {
             this.repPasswordInput = false
@@ -269,7 +273,7 @@ export default {
             this.getInfo()
           }
         })
-        .catch(err => {
+        .catch((err) => {
           if (this.$refs.repeatnewpass) {
             this.$refs.repeatnewpass.empty()
           }
@@ -284,7 +288,7 @@ export default {
     getInfo() {
       status
         .run(() => this.$store.dispatch('jv/get', `wallet/user/${this.userId}`))
-        .then(res => {
+        .then((res) => {
           this.dataInfo = res
           this.hasPassword = res.user.canWalletPay
         }, e => this.handleError(e))

@@ -10,14 +10,25 @@
                 {{ $t('core.sort') }}<i class="el-icon-arrow-down el-icon--right" />
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item v-for="(item,index) in filterSort" :key="index" :command="item.value" :class="{'active': item.value === sort}">{{ item.label }}</el-dropdown-item>
+                <el-dropdown-item
+                  v-for="(item,index) in filterSort"
+                  :key="index"
+                  :command="item.value"
+                  :class="{'active': item.value === sort}"
+                >{{ item.label }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
         </div>
         <div class="topic-list">
           <topic-item v-for="(item, index) in topicsData" :key="index" :item="item" />
-          <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="topicsData.length" @loadMore="loadMore" />
+          <list-load-more
+            :loading="loading"
+            :has-more="hasMore"
+            :page-num="pageNum"
+            :length="topicsData.length"
+            @loadMore="loadMore"
+          />
         </div>
       </main>
       <aside class="cont-right">
@@ -41,7 +52,7 @@ export default {
   name: 'TopicContent',
   mixins: [handleError],
   // 异步数据用法
-  async asyncData({ params, store, query }, callback) {
+  async asyncData({ store }, callback) {
     if (!env.isSpider) {
       callback(null, {})
     }
@@ -51,7 +62,7 @@ export default {
     }
     const userParams = {
       include: 'groups',
-      'limit': 4
+      limit: 4
     }
     try {
       const resData = {}
@@ -61,9 +72,9 @@ export default {
       if (Array.isArray(topicsData)) {
         resData.topicsData = topicsData.slice(0, 10)
       } else if (topicsData && topicsData._jv && topicsData._jv.json) {
-        var _topicsData = topicsData._jv.json.data || []
+        const _topicsData = topicsData._jv.json.data || []
         _topicsData.forEach((item, index) => {
-          _topicsData[index] = { ...item, ...item.attributes, '_jv': { 'id': item.id }}
+          _topicsData[index] = { ...item, ...item.attributes, _jv: { id: item.id }}
         })
         resData.topicsData = _topicsData
       }
@@ -116,25 +127,26 @@ export default {
         include: 'lastThread,lastThread.firstPost,lastThread.firstPost.images',
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
-        'sort': this.sort
+        sort: this.sort
       }
-      this.$store.dispatch('jv/get', ['topics', { params }]).then(res => {
+      this.$store.dispatch('jv/get', ['topics', { params }]).then((res) => {
         this.hasMore = res.length === this.pageSize
         if (this.pageNum === 1) {
           this.topicsData = res
         } else {
           this.topicsData = [...this.topicsData, ...res]
         }
-        this.pageNum++
+        this.pageNum += 1
         if (res && res._jv && res._jv.json && res._jv.json.meta) {
           this.hasMore = this.topicsData.length < res._jv.json.meta.total
           this.total = res._jv.json.meta.total
         }
-      }, e => {
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.loading = false
       })
+        .finally(() => {
+          this.loading = false
+        })
     },
     loadMore() {
       this.getTopicList()

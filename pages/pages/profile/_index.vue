@@ -17,7 +17,9 @@
           />
           <div class="profile-info">
             <span class="info-name">{{ userInfo.username || '' }}</span>
-            <span class="info-actor">{{ userInfo.groups && userInfo.groups[0] && userInfo.groups[0].isDisplay ? userInfo.groupsName : '' }}</span>
+            <span class="info-actor">
+              {{ userInfo.groups && userInfo.groups[0] && userInfo.groups[0].isDisplay ? userInfo.groupsName : '' }}
+            </span>
           </div>
         </div>
         <el-tabs
@@ -94,7 +96,9 @@
             type="auth"
             class="auth-icon"
           />
-          <span class="groupname">{{ userInfo.groups && userInfo.groups[0] && userInfo.groups[0].isDisplay ? userInfo.groupsName : '' }}</span>
+          <span class="groupname">
+            {{ userInfo.groups && userInfo.groups[0] && userInfo.groups[0].isDisplay ? userInfo.groupsName : '' }}
+          </span>
         </span>
         <p
           v-if="userInfo.signature"
@@ -233,7 +237,7 @@ export default {
   layout: 'custom_layout',
   mixins: [handleError],
   // 异步数据用法
-  async asyncData({ params, store, query }, callback) {
+  async asyncData({ store, query }, callback) {
     if (!env.isSpider) {
       callback(null, {})
     }
@@ -261,9 +265,13 @@ export default {
       if (Array.isArray(threadsData)) {
         resData.threadsData = threadsData
       } else if (threadsData && threadsData._jv && threadsData._jv.json) {
-        var _threadsData = threadsData._jv.json.data || []
+        const _threadsData = threadsData._jv.json.data || []
         _threadsData.forEach((item, index) => {
-          _threadsData[index] = { ...item, ...item.attributes, 'firstPost': item.relationships.firstPost.data, 'user': item.relationships.user.data, '_jv': { 'id': item.id }}
+          _threadsData[index] = {
+            ...item,
+            ...item.attributes,
+            firstPost: item.relationships.firstPost.data, user: item.relationships.user.data, _jv: { id: item.id }
+          }
         })
         resData.threadsData = _threadsData
       }
@@ -271,9 +279,12 @@ export default {
       if (Array.isArray(likethreadsData)) {
         resData.likethreadsData = likethreadsData
       } else if (likethreadsData && likethreadsData._jv && likethreadsData._jv.json) {
-        var _likethreadsData = likethreadsData._jv.json.data || []
+        const _likethreadsData = likethreadsData._jv.json.data || []
         _likethreadsData.forEach((item, index) => {
-          _likethreadsData[index] = { ...item, ...item.attributes, 'firstPost': item.relationships.firstPost.data, 'user': item.relationships.user.data, '_jv': { 'id': item.id }}
+          _likethreadsData[index] = {
+            ...item,
+            ...item.attributes,
+            firstPost: item.relationships.firstPost.data, user: item.relationships.user.data, _jv: { id: item.id }}
         })
         resData.likethreadsData = _likethreadsData
       }
@@ -324,7 +335,7 @@ export default {
     }
   },
   watch: {
-    '$route'(to, from) {
+    '$route'() {
       this.$router.go(0)
     }
   },
@@ -358,7 +369,7 @@ export default {
       }
     },
     // tab激活
-    changeactive(e) {
+    changeactive() {
     },
     // 私信权限判断
     getAuth() {
@@ -378,7 +389,7 @@ export default {
       status
         .run(() => this.$store
           .dispatch('jv/get', [`users/${userId}`, { params }])
-          .then(res => {
+          .then((res) => {
             if (res.isDeleted) {
               this.$message.error('用户不存在')
             } else {
@@ -390,7 +401,7 @@ export default {
               this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
             }
           }))
-        .catch(err => {
+        .catch((err) => {
           this.loading = false
           this.handleError(err)
         })
@@ -451,20 +462,18 @@ export default {
     // 获取黑名单数据
     getShieldData() {
       this.loading = true
-      this.$store.dispatch('jv/get', `users/${this.currentLoginId}/deny`).then(res => {
-        if (res._jv) {
-          delete res._jv
-        }
+      this.$store.dispatch('jv/get', `users/${this.currentLoginId}/deny`).then((res) => {
         this.unbundUserData = []
         this.unbundUserData.push(Number(this.currentLoginId))
         res.forEach((v, i) => {
           this.unbundUserData.push(res[i].id)
         })
-        const data = res.filter(item => {
-          return item.id.toString() === this.userId
-        })
+        const data = res.filter(item => item.id.toString() === this.userId)
         this.isShield = data.length > 0
-      }, e => this.handleError(e)).finally(() => { this.loading = false })
+      }, e => this.handleError(e))
+        .finally(() => {
+          this.loading = false
+        })
     },
     // 屏蔽用户
     handleShield() {

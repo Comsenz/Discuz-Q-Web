@@ -15,7 +15,9 @@
     </ul>
     <template slot="reference">
       <slot name="button">
-        <el-button v-permission:showAndHidePopover="''" type="primary" class="new-post"><span class="add-icon">+</span>{{ $t('profile.post') }}</el-button>
+        <el-button v-permission:showAndHidePopover="''" type="primary" class="new-post">
+          <span class="add-icon">+</span>{{ $t('profile.post') }}
+        </el-button>
       </slot>
     </template>
   </el-popover>
@@ -52,7 +54,10 @@ export default {
         const _userInfo = this.userInfo
         if (!_other) return
         // 判断是否有发帖权限
-        if (!_other.can_create_thread && !_other.can_create_thread_long && !_other.can_create_thread_video && !_other.can_create_thread_image) {
+        if (!_other.can_create_thread &&
+        !_other.can_create_thread_long &&
+        !_other.can_create_thread_video &&
+        !_other.can_create_thread_image) {
           this.$message.error(this.$t('home.noPostingPermission'))
           return
         }
@@ -99,7 +104,7 @@ export default {
     },
     // 跳往发帖页
     toRouter(val) {
-      this.$router.push(`/pages/topic/post?type=${val}${this.categoryId ? '&categoryId=' + this.categoryId : ''}`)
+      this.$router.push(`/pages/topic/post?type=${val}${this.categoryId ? `&categoryId=${this.categoryId}` : ''}`)
     }
   }
 }

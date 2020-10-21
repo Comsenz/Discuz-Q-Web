@@ -1,33 +1,18 @@
 <template>
-  <div
-    v-if="forums"
-    v-loading="loading"
-    class="register"
-  >
-
-    <h2 class="register-title">{{ $t('user.register') }}{{ forums && forums.set_site && forums.set_site.site_name ? forums.set_site.site_name : '' }}</h2>
-    <el-tabs
-      v-model="activeName"
-      type="border-card"
-      class="register-select"
-      @tab-click="changeactive"
-    >
+  <div v-if="forums" v-loading="loading" class="register">
+    <h2 class="register-title">
+      {{ $t('user.register') }}
+      {{ forums && forums.set_site && forums.set_site.site_name ? forums.set_site.site_name : '' }}</h2>
+    <el-tabs v-model="activeName" type="border-card" class="register-select" @tab-click="changeactive">
       <!-- 用户名注册 -->
-      <el-tab-pane
-        label="用户名注册"
-        name="0"
-      >
+      <el-tab-pane label="用户名注册" name="0">
         <form>
           <div>
             <span class="title">{{ $t('profile.username') }}</span>
-            <el-input
-              v-model="userName"
-              :placeholder="$t('user.username')"
-              class="reg-input"
-            />
+            <el-input v-model="userName" :placeholder="$t('user.username')" class="reg-input" />
           </div>
           <div>
-            <span class="title2">输入密码</span>
+            <span class="title2">{{ $t('user.passwd') }}</span>
             <el-input
               v-model="passWord"
               :placeholder="$t('user.password')"
@@ -38,7 +23,7 @@
             />
           </div>
           <div :class="passerror ?'rep passerr':'rep'">
-            <span class="title2">重复密码</span>
+            <span class="title2">{{ $t('user.repeatpasswd') }}</span>
             <el-input
               v-model="repeatPassWord"
               :placeholder="$t('user.password')"
@@ -47,13 +32,10 @@
               show-password
               @keyup.enter.native="register"
             />
-            <div
-              v-if="passerror"
-              class="passerror"
-            >{{ $t('modify.reenter') }}</div>
+            <div v-if="passerror" class="passerror">{{ $t('modify.reenter') }}</div>
           </div>
           <div v-if="validate">
-            <span class="title2">注册原因</span>
+            <span class="title2">{{ $t('user.registerReason') }}</span>
             <el-input
               v-model="Reason"
               :placeholder="$t('user.reason')"
@@ -61,36 +43,22 @@
               @keyup.enter.native="register"
             />
           </div>
-
           <div class="agreement">
             <reg-agreement @check="check" />
           </div>
-          <el-button
-            type="primary"
-            class="r-button"
-            @click="register"
-          >{{ $t('user.register') }}</el-button>
+          <el-button type="primary" class="r-button" @click="register">{{ $t('user.register') }}</el-button>
           <div class="tologin">
             <span
               v-if="register"
               @click="jump2Login"
-            >已有帐号，立即<nuxt-link to="/pages/user/login">{{ $t('user.login') }}</nuxt-link> </span>
+            >{{ $t('user.exist') }}<nuxt-link to="/pages/user/login">{{ $t('user.login') }}</nuxt-link> </span>
           </div>
         </form>
       </el-tab-pane>
       <!-- 手机号注册 -->
-      <el-tab-pane
-        v-if="forums.qcloud && forums.qcloud.qcloud_sms"
-        :label="$t('user.phoneregister')"
-        name="1"
-      >
+      <el-tab-pane v-if="forums.qcloud && forums.qcloud.qcloud_sms" :label="$t('user.phoneregister')" name="1">
         <span class="title2">{{ $t('user.phonenumber') }}</span>
-        <el-input
-          v-model="phoneNumber"
-          :placeholder="$t('user.phoneNumber')"
-          class="phone-input"
-          maxlength="11"
-        />
+        <el-input v-model="phoneNumber" :placeholder="$t('user.phoneNumber')" class="phone-input" maxlength="11" />
         <el-button
           class="count-b"
           :class="{disabled: !canClick}"
@@ -107,11 +75,7 @@
         <div class="agreement">
           <reg-agreement @check="check" />
         </div>
-        <el-button
-          type="primary"
-          class="r-button"
-          @click="PhoneLogin"
-        >{{ $t('user.register') }}</el-button>
+        <el-button type="primary" class="r-button" @click="PhoneLogin">{{ $t('user.register') }}</el-button>
       </el-tab-pane>
       <!-- 快速注册 -->
       <!-- <el-tab-pane label="快速注册">
@@ -238,7 +202,7 @@ export default {
       }
       // 登录成功重新获取一下站点信息
       this.$store.dispatch('site/getSiteInfo')
-      this.$store.dispatch('jv/get', [`users/${userId}`, { params }]).then(val => {
+      this.$store.dispatch('jv/get', [`users/${userId}`, { params }]).then((val) => {
         this.user = val
         if (this.user && this.user.paid) {
           this.isPaid = this.user.paid
@@ -307,7 +271,7 @@ export default {
     toTCaptcha() {
       if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha_app_id) {
         // eslint-disable-next-line no-undef
-        this.captcha = new TencentCaptcha(this.forums.qcloud.qcloud_captcha_app_id, res => {
+        this.captcha = new TencentCaptcha(this.forums.qcloud.qcloud_captcha_app_id, (res) => {
           if (res.ret === 0) {
             this.ticket = res.ticket
             this.randstr = res.randstr
@@ -350,7 +314,7 @@ export default {
       }
       this.$store
         .dispatch('session/h5Register', params)
-        .then(res => {
+        .then((res) => {
           this.loading = false
           if (res && res.data && res.data.data && res.data.data.id) {
             this.logind()
@@ -377,7 +341,7 @@ export default {
             this.$message.error(errorText)
           }
         })
-        .catch(err => {
+        .catch((err) => {
           this.loading = false
           this.passWord = ''
           this.repeatPassWord = ''
@@ -397,7 +361,7 @@ export default {
         params.captcha_ticket = this.ticket
       }
       status.run(() => this.$store.dispatch('jv/post', params))
-        .then(res => {
+        .then((res) => {
           if (res.interval) this.countDown(res.interval)
         }, e => this.handleError(e))
     },
@@ -439,7 +403,7 @@ export default {
         }
         this.$store
           .dispatch('session/verificationCodeh5Login', params)
-          .then(res => {
+          .then((res) => {
             this.loading = false
             if (res && res.data && res.data.data && res.data.data.id) {
               this.logind()
@@ -466,7 +430,7 @@ export default {
               this.$message.error(errorText)
             }
           })
-          .catch(err => {
+          .catch((err) => {
             this.loading = false
             console.log(err)
           })
@@ -479,7 +443,7 @@ export default {
           type: '/oauth/wechat/web/user'
         }
       }
-      this.$store.dispatch('jv/get', _params).then(data => {
+      this.$store.dispatch('jv/get', _params).then((data) => {
         if (data) {
           this.info = data
           this.scene_str = data.scene_str
@@ -495,16 +459,14 @@ export default {
     },
     // 微信扫码登录状态
     getLoginStatus(scene_str) {
-      this.$store.dispatch('jv/get', `/oauth/wechat/web/user/search?scene_str=${scene_str}`).then(data => {
+      this.$store.dispatch('jv/get', `/oauth/wechat/web/user/search?scene_str=${scene_str}`).then((data) => {
         if (data.id) {
           this.loginStatus = true
         }
       })
     },
     jump2Login() {
-      this.$router.push(
-        `/pages/user/login?&validate=${this.validate}`
-      )
+      this.$router.push(`/pages/user/login?&validate=${this.validate}`)
     }
   },
   head() {
