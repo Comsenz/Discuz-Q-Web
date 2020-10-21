@@ -119,13 +119,13 @@ export default {
       this.post.text = data.firstPost.content
       this.post.id = data.firstPost._jv.id
       this.payment.price = parseFloat(data.price)
-      this.payment.attachmentPrice = parseFloat(data.attachment_price)
+      this.payment.attachmentPrice = parseFloat(data.attachmentPrice)
       this.payment.freeWords = parseInt(data.freeWords)
-      if (parseFloat(data.price) === 0 && parseFloat(data.attachment_price) === 0) {
+      if (parseFloat(data.price) === 0 && parseFloat(data.attachmentPrice) === 0) {
         this.payment.paidType = 'free'
-      } else if (parseFloat(data.price) > 0 && parseFloat(data.attachment_price) === 0) {
+      } else if (parseFloat(data.price) > 0 && parseFloat(data.attachmentPrice) === 0) {
         this.payment.paidType = 'Paid'
-      } else if (parseFloat(data.price) === 0 && parseFloat(data.attachment_price) > 0) {
+      } else if (parseFloat(data.price) === 0 && parseFloat(data.attachmentPrice) > 0) {
         this.payment.paidType = 'attachmentPaid'
       }
       this.location.location = data.location
@@ -153,6 +153,7 @@ export default {
       if (this.type === '1' && !this.post.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
       if (this.type === '1' && !this.post.title) return this.$message.warning(this.$t('post.theTitleCanNotBeBlank'))
       if (this.type === '1' && this.post.title && this.post.title.length > 150) return this.$message.warning(this.$t('post.titleLengthCannotOver'))
+      if (this.type === '1' && this.payment.paidType === 'attachmentPaid' && this.post.attachedList.length === 0) return this.$message.warning(this.$t('post.attachmentListCanNotBeEmptyWhileAttachmentPaid'))
 
       if (this.type === '2' && this.post.videoList.length === 0) return this.$message.warning(this.$t('post.videoCannotBeEmpty'))
       if (this.type === '3' && this.post.imageList.length === 0) return this.$message.warning(this.$t('post.imageCannotBeEmpty'))

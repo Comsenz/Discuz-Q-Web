@@ -89,22 +89,24 @@ export default {
         {
           value: 'paid',
           label: this.$t('post.paidWatch')
-        },
-        {
-          value: 'attachmentPaid',
-          label: this.$t('post.postFreeAttachmentPaid')
         }]
     }
   },
   watch: {
     payment: {
-      handler() {
-        this.freeWords = this.payment.freeWords || 0
-        this.price = this.payment.price || 0
-        this.attachmentPrice = this.payment.attachmentPrice || 0
+      handler(val) {
+        this.freeWords = val.freeWords || 0
+        this.price = val.price || 0
+        this.attachmentPrice = val.attachmentPrice || 0
       },
       immediate: true,
       deep: true
+    },
+    type: {
+      handler(val) {
+        val === 1 ? this.options.push({ value: 'attachmentPaid', label: this.$t('post.postFreeAttachmentPaid') }) : ''
+      },
+      immediate: true
     }
   },
   methods: {
