@@ -6,15 +6,21 @@
     <editor-payment v-if="typeInformation && typeInformation.showPayment && canCreateThreadPaid" :payment="payment || {}" :type="typeInformation && typeInformation.type" @paymentChange="e => onPaymentChange(e.key, e.value)" />
     <attached-upload v-if="typeInformation.showAttached" :on-upload-attached.sync="onUploadAttached" :attached-list="post && post.attachedList" :header="header" :is-edit="isEdit" :url="url" @attachedChange="e => onPostContentChange(e.key, e.value)" />
     <Vditor
+      v-if="typeInformation && typeInformation.type === 1"
       :show-caller="showCaller"
       :show-topic="showTopic"
       :show-emoji="showEmoji"
+      :image-accept="imageTypeLimit"
+      :attachment-accept="attachedTypeLimit"
+      :attachment-size-limit="attachedSizeLimit"
+      :on-upload-attached.sync="onUploadAttached"
+      :on-upload-image.sync="onUploadImage"
       @textChange="value => onPostContentChange('text', value)"
       @hideActions="hideActions"
       @onActions="onActions"
     />
-    <!--my editor-->
-    <div v-if="false" :class="['container-textarea', editorStyle]">
+    <!--my editor 除了帖子以外，不使用 vditor-->
+    <div v-if="typeInformation && typeInformation.type !== 1" :class="['container-textarea', editorStyle]">
       <!--bar-->
       <editor-tool-bar
         v-if="editorStyle === 'post'"
@@ -40,7 +46,7 @@
       <div>
         <!--uploader-->
         <div v-if="showUploadImg || showUploadVideo" class="resources-list">
-          <Upload v-if="showUploadImg" :file-list="post && post.imageList" :on-upload-image.sync="onUploadImage" action="/attachments" accept="image/*" :limit="9" :size-limit="attachedSizeLimit" @success="imageList => onPostContentChange('imageList', imageList)" @remove="imageList => onPostContentChange('imageList', imageList)" />
+          <Upload v-if="showUploadImg" :file-list="post && post.imageList" :on-upload-image.sync="onUploadImage" action="/attachments" :accept="imageTypeLimit" :limit="9" :size-limit="attachedSizeLimit" @success="imageList => onPostContentChange('imageList', imageList)" @remove="imageList => onPostContentChange('imageList', imageList)" />
           <video-upload v-if="showUploadVideo" :on-upload-video.sync="onUploadVideo" :video-list="post && post.videoList" @videoChange="e => onPostContentChange(e.key, e.value)" />
         </div>
         <!--bar-->
@@ -64,6 +70,7 @@
         />
       </div>
     </div>
+    <el-button class="button-publish" :loading="onPublish" type="primary" size="small" @click="publish">{{ $t('post.post') }}</el-button>
   </div>
 </template>
 
@@ -166,6 +173,20 @@ export default {
         return this.forums.set_attach.support_max_size * 1024 * 1024
       }
       return 10485760
+    },
+    imageTypeLimit() {
+      if (this.forums.set_attach) {
+        const limitText = this.forums.set_attach.support_img_ext
+        return limitText.split(',').map(item => '.' + item).join(',')
+      }
+      return ''
+    },
+    attachedTypeLimit() {
+      if (this.forums.set_attach) {
+        const limitText = this.forums.set_attach.support_file_ext
+        return limitText.split(',').map(item => '.' + item).join(',')
+      }
+      return ''
     }
   },
   watch: {
@@ -192,8 +213,8 @@ export default {
     }
   },
   mounted() {
-    // this.autoHeight()
-    // this.emojiListener()
+    this.textarea && this.autoHeight()
+    this.emojiListener()
   },
   methods: {
     onPostContentChange(key, value) {

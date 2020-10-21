@@ -1,5 +1,5 @@
 <template>
-  <div class="vditor-container">
+  <div v-loading="onUploadImage || onUploadAttached" element-loading-background="hsla(0,0%,100%,0.6)" class="vditor-container">
     <div id="vditor" style="margin-top: 20px" />
     <caller v-if="showCaller" @close="showCaller = false" @selectedCaller="selectActions" />
     <topic-list v-show="showTopic" class="action-vditor" @selectedTopic="selectActions" />
@@ -26,6 +26,26 @@ export default {
     showEmoji: {
       type: Boolean,
       default: false
+    },
+    attachmentSizeLimit: {
+      type: Number,
+      default: 999999999999999999999
+    },
+    attachmentAccept: {
+      type: String,
+      default: ''
+    },
+    imageAccept: {
+      type: String,
+      default: ''
+    },
+    onUploadImage: {
+      type: Boolean,
+      default: false
+    },
+    onUploadAttached: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -48,7 +68,7 @@ export default {
         },
         toolbar: [
           {
-            hotkey: '⌘-⇧-S',
+            hotkey: '',
             name: '@',
             tipPosition: 'ne',
             tip: '@ 好友',
@@ -59,7 +79,7 @@ export default {
             }
           },
           {
-            hotkey: '⌘-⇧-S',
+            hotkey: '',
             name: '#',
             tipPosition: 'ne',
             tip: '新增话题',
@@ -70,7 +90,7 @@ export default {
             }
           },
           {
-            hotkey: '⌘-⇧-S',
+            hotkey: '',
             name: 'my-emoji',
             tipPosition: 'ne',
             tip: '插入表情',
@@ -82,7 +102,7 @@ export default {
           },
           'headings', 'bold', 'italic', 'strike', 'link', 'list', 'ordered-list', 'check', 'outdent', 'indent', 'quote',
           {
-            hotkey: '⌘-⇧-S',
+            hotkey: '',
             name: 'picture',
             tipPosition: 'ne',
             tip: '插入图片',
@@ -93,7 +113,7 @@ export default {
             }
           },
           {
-            hotkey: '⌘-⇧-S',
+            hotkey: '',
             name: 'file',
             tipPosition: 'ne',
             tip: '插入文件',
@@ -112,15 +132,18 @@ export default {
       })
     },
     uploader(type) {
+      if (this.onUploadImage) return this.$message.warning('请等待上传中的图片完成上传')
+      if (this.onUploadAttached) return this.$message.warning('请等待上传中的文件完成上传')
       this.input = document.createElement('input')
       this.input.type = 'file'
       this.input.multiple = true
+      this.input.accept = type === 'image' ? this.imageAccept : this.attachmentAccept
       this.input.dispatchEvent(new MouseEvent('click'))
       this.input.oninput = (e) => {
         const files = e.target.files
         const fileArray = []
         // if (this.onUploadImage) return this.$message.warning('请等待上传中的图片完成上传')
-        // if (!this.checkSizeLimit(files)) return // 文件大小检查
+        if (!this.checkSizeLimit(files)) return // 文件大小检查
         for (let i = 0; i < files.length; i++) { fileArray.push(files[i]) }
         const promiseList = fileArray.reduce((result, file) => {
           result.push(this.uploadFile(file, type))
@@ -136,6 +159,7 @@ export default {
       return service.post('/attachments', formData)
     },
     uploadFiles(promiseList, type) {
+      type === 'image' ? this.$emit('update:onUploadImage', true) : this.$emit('update:onUploadAttached', true)
       Promise.all(promiseList).then(resList => {
         const files = resList.map(item => item.data.data)
         if (type === 'image') {
@@ -151,12 +175,21 @@ export default {
         } else {
           this.$message.error('图片上传失败，请稍后再试')
         }
+      }).finally(() => {
+        type === 'image' ? this.$emit('update:onUploadImage', false) : this.$emit('update:onUploadAttached', false)
       })
     },
     selectActions(code) {
-      console.log(code, 'code')
       this.vditor.insertValue(code)
       this.$emit('hideActions')
+    },
+    checkSizeLimit(files) {
+      let pass = true
+      for (let i = 0; i < files.length; i++) {
+        if (files[i].size > this.attachmentSizeLimit) pass = false
+      }
+      if (!pass) this.$message.error(`图片不可大于 ${this.attachmentSizeLimit / 1024 / 1024} MB`)
+      return pass
     }
   }
 }

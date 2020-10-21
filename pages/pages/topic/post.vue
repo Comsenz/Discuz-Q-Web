@@ -11,15 +11,7 @@
         >{{ category.name }}</span>
       </template>
     </div>
-    <editor
-      :type-information="typeInformation[type]"
-      :edit-resource-show="editResourceShow"
-      :payment.sync="payment"
-      :on-publish="onPublish"
-      :is-edit="isEditor"
-      :post.sync="post"
-      @publish="publish"
-    />
+    <editor :type-information="typeInformation[type]" :edit-resource-show="editResourceShow" :payment.sync="payment" :on-publish="onPublish" :is-edit="isEditor" :post.sync="post" @publish="publish" />
   </div>
 </template>
 
@@ -95,8 +87,7 @@ export default {
         if (data.isDeleted) return this.$router.push('/')
         this.isEditor = true
         this.initData(data)
-        this.$nextTick(() => { this.textarea.style.height = this.textarea.scrollHeight + 'px' }) // TODO 重置textarea 待优
-
+        if (this.textarea) this.$nextTick(() => { this.textarea.style.height = this.textarea.scrollHeight + 'px' }) // TODO 重置textarea 待优
         if (data.firstPost.images.length > 0) {
           this.editResourceShow.showUploadImg = true
           this.initThreadResource(this.post.imageList, data.firstPost.images)
