@@ -3,37 +3,48 @@
     <div v-if="item.isEssence" class="essence">
       <svg-icon type="index-essence" />
     </div>
-    <avatar
-      v-if="item.user"
-      :user="{
-        id: item.user.id,
-        username: item.user.username,
-        avatarUrl: item.user.avatarUrl,
-        isReal: item.user.isReal
-      }"
-      class="avatar"
-    />
+    <avatar v-if="item.user" :user="{ id: item.user.id, username: item.user.username, avatarUrl: item.user.avatarUrl, isReal: item.user.isReal }" class="avatar" />
     <div class="main-cont">
       <div class="top-flex">
-        <nuxt-link
-          v-if="item.user"
-          :to="`/pages/profile/index?userId=${item.user.id}`"
-          class="user-info"
-        >
+        <nuxt-link v-if="item.user" :to="`/pages/profile/index?userId=${item.user.id}`" class="user-info">
           <span class="user-name">{{ item.user.username }}</span>
-          <span
-            v-if="
-              item.user &&
-                item.user.groups &&
-                item.user.groups.length > 0 &&
-                item.user.groups[0].isDisplay
-            "
-            class="admin"
-          >({{ item.user.groups[0].name }})</span>
+          <span v-if="item.user && item.user.groups && item.user.groups.length > 0 && item.user.groups[0].isDisplay" class="admin">({{ item.user.groups[0].name }})</span>
         </nuxt-link>
         <div v-if="item.createdAt" class="time">
           {{ $t("topic.publishAt") }} {{ item.createdAt | formatDate }}
         </div>
+      </div>
+      <div v-if="item.type === 5">
+        <!-- 未回答 -->
+        <template v-if="item.question && item.question.is_answer === 0">
+          <nuxt-link
+            v-if="item.user"
+            :to="`/pages/profile/index?userId=${item.user.id}`"
+            class="blue"
+          >@{{ item.user.username }}</nuxt-link>
+          {{ $t('topic.be') }}
+          <nuxt-link
+            v-if="item.question && item.question.beUser"
+            :to="`/pages/profile/index?userId=${item.question.beUser.id}`"
+            class="blue"
+          >@{{ item.question.beUser.username }}</nuxt-link>
+          {{ $t('topic.question') }}
+        </template>
+        <!-- 已回答 -->
+        <template v-if="item.question && item.question.is_answer === 1">
+          <nuxt-link
+            v-if="item.question && item.question.beUser"
+            :to="`/pages/profile/index?userId=${item.question.beUser.id}`"
+            class="blue"
+          >@{{ item.question.beUser.username }}</nuxt-link>
+          {{ $t('topic.answer') }}
+          <nuxt-link
+            v-if="item.user"
+            :to="`/pages/profile/index?userId=${item.user.id}`"
+            class="blue"
+          >@{{ item.user.username }}</nuxt-link>
+          {{ $t('topic.of') }}{{ $t('topic.question') }}
+        </template>
       </div>
       <template v-if="item.firstPost">
         <div class="first-post" @click.self="toDetail">
@@ -349,6 +360,9 @@ export default {
     background: rgba(229, 242, 255, 0.3);
     border-bottom: 1px solid #e7ecf2;
   }
+  .blue{
+    color: $color-blue-base;
+  }
   .essence {
     position: absolute;
     top: -5px;
@@ -395,9 +409,7 @@ export default {
       margin-bottom: 6px;
       @include text-hidden();
       flex: 0 0 60%;
-      .blue{
-        color: $color-blue-base;
-      }
+
     }
     .icon-pay-yuan {
       height: 24px;
