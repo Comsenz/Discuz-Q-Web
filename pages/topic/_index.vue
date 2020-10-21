@@ -150,6 +150,7 @@ export default {
       }, e => this.handleError(e, 'thread'))
     },
     initData() {
+      console.log('thread => ', this.thread)
       if (this.thread.user && this.thread.user.groups[0] && this.thread.user.groups[0].permissionWithoutCategories) {
         this.canRewardOrPaid = this.thread.user.groups[0].permissionWithoutCategories.filter(item => item.permission === 'createThreadPaid').length > 0
         if (this.thread.user.groups[0]._jv.id === '1') this.canRewardOrPaid = true

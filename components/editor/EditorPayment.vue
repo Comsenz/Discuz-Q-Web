@@ -4,9 +4,9 @@
       <div class="text">{{ $t('post.isPay') }}:</div>
       <el-select
         size="medium"
-        :value="payment.isPaid"
+        :value="payment.paidType"
         placeholder="请选择"
-        @change="value => $emit('paymentChange', { key: 'isPaid', value })"
+        @change="value => $emit('paymentChange', { key: 'paidType', value })"
       >
         <el-option
           v-for="item in options"
@@ -17,7 +17,7 @@
       </el-select>
     </div>
     <div class="block">
-      <div v-show="payment.isPaid">
+      <div v-show="payment.paidType === 'paid'">
         <div class="text">{{ $t('post.paymentAmount') }}:</div>
         <el-input
           v-model="price"
@@ -30,9 +30,22 @@
           <span slot="prefix" class="prefix">￥</span>
         </el-input>
       </div>
+      <div v-show="payment.paidType === 'attachmentPaid' && type === 1">
+        <div class="text">{{ $t('post.paymentAmount') }}:</div>
+        <el-input
+          v-model="attachmentPrice"
+          size="medium"
+          placeholder="0"
+          maxlength="7"
+          @change="$emit('paymentChange', { key: 'attachmentPrice', value: parseFloat(attachmentPrice) })"
+          @input="onAttachmentPriceInput"
+        >
+          <span slot="prefix" class="prefix">￥</span>
+        </el-input>
+      </div>
     </div>
     <div class="block">
-      <div v-show="payment.isPaid && type === 1">
+      <div v-show="payment.paidType === 'paid' && type === 1">
         <div class="text">{{ $t('post.freeWordCount') }}:</div>
         <el-input
           v-model="freeWords"
@@ -67,25 +80,33 @@ export default {
     return {
       freeWords: 0,
       price: 0,
+      attachmentPrice: 0,
       options: [
         {
-          value: false,
+          value: 'free',
           label: this.$t('post.freeWatch')
         },
         {
-          value: true,
+          value: 'paid',
           label: this.$t('post.paidWatch')
         }]
     }
   },
   watch: {
     payment: {
-      handler() {
-        this.freeWords = this.payment.freeWords || 0
-        this.price = this.payment.price || 0
+      handler(val) {
+        this.freeWords = val.freeWords || 0
+        this.price = val.price || 0
+        this.attachmentPrice = val.attachmentPrice || 0
       },
       immediate: true,
       deep: true
+    },
+    type: {
+      handler(val) {
+        val === 1 ? this.options.push({ value: 'attachmentPaid', label: this.$t('post.postFreeAttachmentPaid') }) : ''
+      },
+      immediate: true
     }
   },
   methods: {
@@ -94,6 +115,9 @@ export default {
     },
     onPriceInput(value) {
       this.price = formatAmount(value)
+    },
+    onAttachmentPriceInput(value) {
+      this.attachmentPrice = formatAmount(value)
     }
   }
 }
@@ -121,11 +145,12 @@ export default {
 
       .prefix {
         line-height: 38px;
-        font-size: 17px;
-        color: $font-color-grey
+        font-size: 16px;
+        color: $font-color
       }
 
       .text {
+        font-weight: bold;
         color: $font-color;
         margin-bottom: 10px;
       }

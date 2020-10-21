@@ -227,6 +227,8 @@ export default {
   },
   // 发布页
   post: {
+    attachmentList: '附件列表:',
+    addAttachment: '+添加附件',
     download: '下载',
     free: '免费',
     callFriends: '@圈友',
@@ -246,8 +248,9 @@ export default {
     postImage: '发图片',
     post: '发 布',
     isPay: '付费模式',
-    freeWatch: '免费查看',
-    paidWatch: '付费查看',
+    freeWatch: '免费',
+    paidWatch: '付费',
+    postFreeAttachmentPaid: '文章免费，附件付费',
     pleaseInput: '请输入',
     paymentAmount: '付费金额',
     freeWordCount: '免费的查看字数',
@@ -263,6 +266,7 @@ export default {
     yuanItem: '￥',
     yuan: '元',
     customize: '自定义',
+    attachmentListCanNotBeEmptyWhileAttachmentPaid: '当前付费模式为文章免费，附件付费，附件不能为空',
     messageLengthCannotOver: '内容字数超出限制',
     titleLengthCannotOver: '文章标题不可超出 150 个字符',
     theTitleCanNotBeBlank: '标题不能为空',

@@ -16,7 +16,11 @@
       :before-remove="handleRemoveConfirm"
       :on-remove="handleAttachedRemove"
     >
-      <el-button size="small" type="primary">{{ $t('post.attachmentUpload') }}</el-button>
+      <!--<el-button size="small" type="primary">{{ $t('post.attachmentUpload') }}</el-button>-->
+      <div class="container">
+        <span class="attachment-list" @click.stop="">{{ $t('post.attachmentList') }}</span>
+        <span class="add-attachment">{{ $t('post.addAttachment') }}</span>
+      </div>
     </el-upload>
   </div>
 </template>
@@ -45,8 +49,7 @@ export default {
     },
     header: {
       type: Object,
-      default: () => {
-      }
+      default: () => {}
     }
   },
   data() {
@@ -116,4 +119,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/css/variable/color.scss';
+.container {
+  margin-top: 20px;
+  span {
+    font-size: 14px;
+  }
+  .attachment-list {
+    color: #6D6D6D;
+    cursor: default;
+    font-weight: bold;
+  }
+  .add-attachment {
+    margin-left: 10px;
+    color: $color-blue-base;
+  }
+}
+
 </style>

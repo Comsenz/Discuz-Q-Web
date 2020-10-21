@@ -27,8 +27,16 @@ module.exports = {
       return params
     },
     publishPayment(params, payment) {
-      params.price = payment.isPaid ? payment.price : 0
-      params.free_words = payment.isPaid ? payment.freeWords : 0
+      // free 免费， paid 全部付费，attachmentPaid 文章免费，附件付费
+      params.price = 0
+      params.free_words = 0
+      params.attachmentPrice = 0
+      if (payment.paidType === 'attachmentPaid') {
+        params.attachment_price = payment.attachmentPrice
+      } else if (payment.paidType === 'paid') {
+        params.price = payment.price
+        params.free_words = payment.freeWords
+      }
       return params
     },
     publishLocation(params, location) {
