@@ -1,11 +1,10 @@
 <template>
   <div class="editor">
-    <!--title-->
     <label v-if="typeInformation && typeInformation.showTitle">
       <input :placeholder="$t('post.pleaseInputPostTitle')" class="input-title" type="text" :value="post && post.title" @input="e => onPostContentChange('title', e.target.value)">
     </label>
-    <!--payment-->
     <editor-payment v-if="typeInformation && typeInformation.showPayment && canCreateThreadPaid" :payment="payment || {}" :type="typeInformation && typeInformation.type" @paymentChange="e => onPaymentChange(e.key, e.value)" />
+    <attached-upload v-if="typeInformation.showAttached" :on-upload-attached.sync="onUploadAttached" :attached-list="post && post.attachedList" :header="header" :is-edit="isEdit" :url="url" @attachedChange="e => onPostContentChange(e.key, e.value)" />
     <!--    <div id="vditor" style="margin-top: 20px" />-->
     <!--my editor-->
     <div :class="['container-textarea', editorStyle]">
@@ -33,10 +32,9 @@
       </label>
       <div>
         <!--uploader-->
-        <div v-if="showUploadImg || showUploadVideo || showUploadAttached" class="resources-list">
+        <div v-if="showUploadImg || showUploadVideo" class="resources-list">
           <Upload v-if="showUploadImg" :file-list="post && post.imageList" :on-upload-image.sync="onUploadImage" action="/attachments" accept="image/*" :limit="9" :size-limit="attachedSizeLimit" @success="imageList => onPostContentChange('imageList', imageList)" @remove="imageList => onPostContentChange('imageList', imageList)" />
           <video-upload v-if="showUploadVideo" :on-upload-video.sync="onUploadVideo" :video-list="post && post.videoList" @videoChange="e => onPostContentChange(e.key, e.value)" />
-          <attached-upload v-if="showUploadAttached" :on-upload-attached.sync="onUploadAttached" :attached-list="post && post.attachedList" :header="header" :is-edit="isEdit" :url="url" @attachedChange="e => onPostContentChange(e.key, e.value)" />
         </div>
         <!--bar-->
         <editor-tool-bar
@@ -78,10 +76,6 @@ export default {
       type: Object,
       default: () => {}
     },
-    location: {
-      type: Object,
-      default: () => {}
-    },
     typeInformation: {
       type: Object,
       default: () => {}
@@ -112,7 +106,6 @@ export default {
       contentEditor: {},
       selectionStart: 0,
       selectionEnd: 0,
-      pickingLocation: false,
       // 是否显示弹窗
       showEmoji: false,
       showCaller: false,
@@ -133,8 +126,8 @@ export default {
       ],
       resources: [
         { icon: 'picture', toggle: 'showUploadImg', show: false },
-        { icon: 'video', toggle: 'showUploadVideo', show: false },
-        { icon: 'attached', toggle: 'showUploadAttached', show: false }
+        { icon: 'video', toggle: 'showUploadVideo', show: false }
+        // { icon: 'attached', toggle: 'showUploadAttached', show: false }
       ]
     }
   },
@@ -185,7 +178,7 @@ export default {
         this.actions[2].show = val.showTopic
         this.resources[0].show = val.showImage
         this.resources[1].show = val.showVideo
-        this.resources[2].show = val.showAttached
+        // this.resources[2].show = val.showAttached
       },
       deep: true,
       immediate: true
@@ -288,40 +281,12 @@ export default {
   @import '@/assets/css/variable/color.scss';
 
   /* editor placeholder */
-  ::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.3);
-    -webkit-border-radius: 100px;
-  }
-
-  ::-webkit-scrollbar-thumb:active {
-    font-family: inherit;
-    background: rgba(0, 0, 0, 0.4);
-    -webkit-border-radius: 100px;
-  }
-
-  ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-    font-family: inherit;
-    font-size: 16px;
-    color: #8590A6;
-  }
-
-  ::-moz-placeholder { /* Firefox 19+ */
-    font-family: inherit;
-    font-size: 16px;
-    color: #8590A6;
-  }
-
-  :-ms-input-placeholder { /* IE 10+ */
-    font-family: inherit;
-    font-size: 16px;
-    color: #8590A6;
-  }
-
-  :-moz-placeholder { /* Firefox 18- */
-    font-family: inherit;
-    font-size: 16px;
-    color: #8590A6;
-  }
+  ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.3); -webkit-border-radius: 100px; }
+  ::-webkit-scrollbar-thumb:active { font-family: inherit; background: rgba(0, 0, 0, 0.4); -webkit-border-radius: 100px; }
+  ::-webkit-input-placeholder { /* Chrome/Opera/Safari */ font-family: inherit; font-size: 16px; color: #DDD; }
+  ::-moz-placeholder { /* Firefox 19+ */ font-family: inherit; font-size: 16px; color: #DDD; }
+  :-ms-input-placeholder { /* IE 10+ */ font-family: inherit; font-size: 16px; color: #DDD; }
+  :-moz-placeholder { /* Firefox 18- */ font-family: inherit; font-size: 16px; color: #DDD; }
 
   .editor {
     width: 100%;
@@ -361,35 +326,6 @@ export default {
         &.chat { height: 120px; background: #fff; overflow: auto; }
       }
 
-    }
-
-    > .location-picker {
-      margin-top: 10px;
-      min-width: 230px;
-      display: inline-block;
-      color: #6D6D6D;
-      font-size: 14px;
-      line-height: 20px;
-      > .location-input {
-        cursor: pointer;
-        margin-top: 10px;
-        width: 100%;
-        height: 35px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 15px;
-        border: 1px solid $border-color-base;
-        border-radius: 4px;
-        background: $background-color-editor;
-        > .value {
-          white-space: nowrap;
-          margin: 0 auto 0 10px;
-        }
-        > .icon-close {
-          margin-left: 10px;
-        }
-      }
     }
 
     > .container-textarea {

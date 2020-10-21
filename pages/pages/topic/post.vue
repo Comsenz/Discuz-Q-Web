@@ -14,7 +14,6 @@
     <editor
       :type-information="typeInformation[type]"
       :edit-resource-show="editResourceShow"
-      :location.sync="location"
       :payment.sync="payment"
       :on-publish="onPublish"
       :is-edit="isEditor"

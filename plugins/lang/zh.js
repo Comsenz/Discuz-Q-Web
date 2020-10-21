@@ -228,6 +228,8 @@ export default {
   },
   // 发布页
   post: {
+    attachmentList: '附件列表:',
+    addAttachment: '+添加附件',
     download: '下载',
     free: '免费',
     callFriends: '@圈友',
