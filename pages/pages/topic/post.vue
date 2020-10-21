@@ -38,7 +38,7 @@ export default {
       editThread: {}, // 被编辑的主题
       categoryList: [],
       post: { id: '', title: '', text: '', imageList: [], videoList: [], attachedList: [] },
-      payment: { isPaid: false, price: 0, freeWords: 0 },
+      payment: { paidType: 'free', price: 0, freeWords: 0, attachmentPrice: 0 }, // free 免费， paid 全部付费，attachmentPaid 文章免费，附件付费
       location: { latitude: '', location: '', longitude: '' },
       editResourceShow: { showUploadImg: false, showUploadVideo: false, showUploadAttached: false },
       typeInformation: {
@@ -119,8 +119,15 @@ export default {
       this.post.text = data.firstPost.content
       this.post.id = data.firstPost._jv.id
       this.payment.price = parseFloat(data.price)
+      this.payment.attachmentPrice = parseFloat(data.attachment_price)
       this.payment.freeWords = parseInt(data.freeWords)
-      this.payment.isPaid = parseFloat(data.price) > 0
+      if (parseFloat(data.price) === 0 && parseFloat(data.attachment_price) === 0) {
+        this.payment.paidType = 'free'
+      } else if (parseFloat(data.price) > 0 && parseFloat(data.attachment_price) === 0) {
+        this.payment.paidType = 'Paid'
+      } else if (parseFloat(data.price) === 0 && parseFloat(data.attachment_price) > 0) {
+        this.payment.paidType = 'attachmentPaid'
+      }
       this.location.location = data.location
       this.location.latitude = data.latitude
       this.location.longitude = data.longitude

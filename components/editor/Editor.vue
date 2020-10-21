@@ -140,7 +140,7 @@ export default {
         const token = window.localStorage.getItem('access_token')
         return { authorization: `Bearer ${token}` }
       }
-      return ''
+      return {}
     },
     textarea() {
       return process.client ? document.querySelector(`.${this.selector} #textarea`) : ''

@@ -49,8 +49,7 @@ export default {
     },
     header: {
       type: Object,
-      default: () => {
-      }
+      default: () => {}
     }
   },
   data() {
