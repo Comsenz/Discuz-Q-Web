@@ -31,20 +31,20 @@ export default {
   props: {
     error: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
-    }
+    };
   },
   methods: {
     empty() {
-      this.$refs.walletinput.deleat()
-    }
-  }
+      this.$refs.walletinput.deleat();
+    },
+  },
 
-}
+};
 </script>
 
 <style lang="scss" scoped>

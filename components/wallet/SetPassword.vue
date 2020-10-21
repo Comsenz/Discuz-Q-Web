@@ -30,14 +30,14 @@ export default {
   props: {
     error: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
-    }
-  }
-}
+    };
+  },
+};
 </script>
 
 <style lang="scss" scoped>

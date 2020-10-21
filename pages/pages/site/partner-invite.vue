@@ -55,7 +55,8 @@
       <p>
         <span class="date color ">{{ $t('site.circlemode') }}</span>
         <span class="workdate">
-          {{ forums.set_site && forums.set_site.site_mode === 'pay' ? $t('site.paymentmode') +'， ' + '¥'+ ((forums.set_site && forums.set_site.site_price) || 0)+$t('post.yuan')+'， ' + $t('site.periodvalidity') +
+          {{ forums.set_site && forums.set_site.site_mode === 'pay' ? $t('site.paymentmode') +'， ' + '¥'+
+            ((forums.set_site && forums.set_site.site_price) || 0)+$t('post.yuan')+'， ' + $t('site.periodvalidity') +
             ((forums.set_site && forums.set_site.site_expire) || 0 )+ $t('site.day'):$t('site.publicmode') }}
         </span>
       </p>
@@ -116,8 +117,8 @@
 </template>
 
 <script>
-import { status } from '@/library/jsonapi-vuex/index'
-import loginAuth from '@/mixin/loginAuth'
+import { status } from '@/library/jsonapi-vuex/index';
+import loginAuth from '@/mixin/loginAuth';
 export default {
   mixins: [loginAuth],
   data() {
@@ -133,86 +134,86 @@ export default {
       codeTips: '',
       codeTitle: '',
       inviteCode: '', // 邀请码,
-      normal: false
+      normal: false,
 
-    }
+    };
   },
   computed: {
     forums() {
-      return this.$store.state.site.info.attributes || {}
-    }
+      return this.$store.state.site.info.attributes || {};
+    },
   },
   mounted() {
-    const { code } = this.$route.query
-    this.inviteCode = code
-    this.getInviteInfo(this.inviteCode)
+    const { code } = this.$route.query;
+    this.inviteCode = code;
+    this.getInviteInfo(this.inviteCode);
   },
   methods: {
     handleClose(done) {
       this.$confirm('确认关闭？')
-        .then(_ => {
-          done()
+        .then(() => {
+          done();
         })
-        .catch(_ => { })
+        .catch(() => { });
     },
     getInviteInfo(code) {
       status
         .run(() => this.$store.dispatch('jv/get', `invite/${code}`)
-          .then(res => {
-            this.inviteData = res
-            this.check2()
-            const permission = res.group.permission.slice(0, 3)
-            this.permission = permission
-          }).catch(e => {
-            this.check2()
-            console.log(e)
+          .then((res) => {
+            this.inviteData = res;
+            this.check2();
+            const permission = res.group.permission.slice(0, 3);
+            this.permission = permission;
           })
-        )
+          .catch((e) => {
+            this.check2();
+            console.log(e);
+          }));
     },
     // 验证码验证
     check() {
       // 区分普通邀请和管理员邀请
       if (this.inviteCode && this.inviteCode.length !== 32) {
         if (!this.inviteData.id) {
-          this.codeTips = this.$t('site.codenotfound')
-          this.dialogVisible = true
+          this.codeTips = this.$t('site.codenotfound');
+          this.dialogVisible = true;
         } else {
-          this.submit()
+          this.submit();
         }
-        return
+        return;
       }
       // 处理邀请码状态 status 0 失效  1 未使用  2 已使用 3 已过期
-      const statusVal = this.inviteData.status || this.inviteData.status === 0 ? this.inviteData.status : 'error'
+      const statusVal = this.inviteData.status || this.inviteData.status === 0 ? this.inviteData.status : 'error';
       switch (statusVal) {
         case 0: {
-          this.codeTips = this.$t('site.codeinvalid')
-          this.dialogVisible = true
-          break
+          this.codeTips = this.$t('site.codeinvalid');
+          this.dialogVisible = true;
+          break;
         }
         case 1: {
-          this.submit()
-          break
+          this.submit();
+          break;
         }
         case 2: {
-          this.codeTips = this.$t('site.codeused')
-          this.dialogVisible = true
+          this.codeTips = this.$t('site.codeused');
+          this.dialogVisible = true;
 
-          break
+          break;
         }
         case 3: {
-          this.codeTips = this.$t('site.codeexpired')
-          this.dialogVisible = true
+          this.codeTips = this.$t('site.codeexpired');
+          this.dialogVisible = true;
 
-          break
+          break;
         }
         case 'error': {
-          this.codeTips = this.$t('site.codenotfound')
-          this.dialogVisible = true
+          this.codeTips = this.$t('site.codenotfound');
+          this.dialogVisible = true;
 
-          break
+          break;
         }
         default:
-          return ''
+          return '';
       }
     },
     // 进入站点时邀请码的验证
@@ -220,65 +221,65 @@ export default {
       // 区分普通邀请和管理员邀请
       if (this.inviteCode && this.inviteCode.length !== 32) {
         if (!this.inviteData.id) {
-          this.codeTitle = this.$t('site.codenotfound2')
-          this.codeTips = this.$t('site.codenotfound')
+          this.codeTitle = this.$t('site.codenotfound2');
+          this.codeTips = this.$t('site.codenotfound');
         } else {
-          this.codeTitle = this.$t('manage.payJoin')
-          this.codeTips = this.$t('manage.inviteInfoTitle')
-          this.normal = true
+          this.codeTitle = this.$t('manage.payJoin');
+          this.codeTips = this.$t('manage.inviteInfoTitle');
+          this.normal = true;
           // this.submit()
         }
-        return
+        return;
       }
-      const statusVal = this.inviteData.status || this.inviteData.status === 0 ? this.inviteData.status : 'error'
+      const statusVal = this.inviteData.status || this.inviteData.status === 0 ? this.inviteData.status : 'error';
       switch (statusVal) {
         case 0: {
-          this.codeTitle = this.$t('site.codeinvalid2')
-          this.codeTips = this.$t('site.codeinvalid')
-          break
+          this.codeTitle = this.$t('site.codeinvalid2');
+          this.codeTips = this.$t('site.codeinvalid');
+          break;
         }
         case 1: {
-          this.codeTitle = this.$t('manage.payJoin')
-          this.codeTips = this.$t('manage.inviteInfoTitle')
-          this.normal = true
-          break
+          this.codeTitle = this.$t('manage.payJoin');
+          this.codeTips = this.$t('manage.inviteInfoTitle');
+          this.normal = true;
+          break;
         }
         case 2: {
-          this.codeTitle = this.$t('site.codeused2')
-          this.codeTips = this.$t('site.codeused')
+          this.codeTitle = this.$t('site.codeused2');
+          this.codeTips = this.$t('site.codeused');
 
-          break
+          break;
         }
         case 3: {
-          this.codeTitle = this.$t('site.codeexpired2')
-          this.codeTips = this.$t('site.codeexpired')
+          this.codeTitle = this.$t('site.codeexpired2');
+          this.codeTips = this.$t('site.codeexpired');
 
-          break
+          break;
         }
         case 'error': {
-          this.codeTitle = this.$t('site.codenotfound2')
-          this.codeTips = this.$t('site.codenotfound')
+          this.codeTitle = this.$t('site.codenotfound2');
+          this.codeTips = this.$t('site.codenotfound');
 
-          break
+          break;
         }
         default:
-          return ''
+          return '';
       }
     },
     // 验证码提交
     submit() {
-      this.dialogVisible = false
+      this.dialogVisible = false;
       // 未登陆的情况
       if (!this.$store.getters['session/get']('isLogin')) {
         // 需要引入mixins loginauth.js
-        this.handleLogin('/', this.inviteCode)
+        this.handleLogin('/', this.inviteCode);
       } else {
         // 已经登陆的情况
-        this.$router.push('/')
+        this.$router.push('/');
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style lang='scss' scoped>
 .bold {

@@ -5,9 +5,12 @@
     <!-- 付费信息部分 -->
     <div class="payinfo">
       <p class="payinfo-title">{{ $t('manage.payInfoTitle') }}</p>
-      <p><span class="color">{{ $t('post.paymentAmount') }}</span><span class="paymoney">{{ '¥' + ` ${site_price} ` }}元</span></p>
       <p>
-        <span class="date color">{{ $t('site.periodvalidity') }}</span><span class="workdate">自加入起 {{ forums.set_site && forums.set_site.site_expire
+        <span class="color">{{ $t('post.paymentAmount') }}</span>
+        <span class="paymoney">{{ '¥' + ` ${site_price} ` }}元</span></p>
+      <p>
+        <span class="date color">{{ $t('site.periodvalidity') }}</span>
+        <span class="workdate">自加入起 {{ forums.set_site && forums.set_site.site_expire
           ? (forums.set_site && forums.set_site.site_expire ) + ` ${$t('site.day')}`
           : $t('site.permanent') }}</span>
       </p>
@@ -31,7 +34,9 @@
             class="avatar"
           />
         </span>
-        <span class="workdate3">{{ forums.set_site && forums.set_site.site_author && forums.set_site.site_author.username || '' }}</span>
+        <span class="workdate3">
+          {{ forums.set_site && forums.set_site.site_author && forums.set_site.site_author.username || '' }}
+        </span>
       </p>
       <p>
         <span class="date color">{{ $t('home.theme') }}</span>
@@ -75,8 +80,8 @@
 </template>
 
 <script>
-import handleError from '@/mixin/handleError'
-let payWechat = null
+import handleError from '@/mixin/handleError';
+let payWechat = null;
 export default {
   mixins: [handleError],
   data() {
@@ -87,111 +92,112 @@ export default {
       orderSn: '', // 订单编号
       codeUrl: '', // 二维码支付url，base64
       userId: this.$store.getters['session/get']('userId'),
-      site_price: 0
-    }
+      site_price: 0,
+    };
   },
   computed: {
     forums() {
-      return this.$store.state.site.info.attributes || {}
-    }
+      return this.$store.state.site.info.attributes || {};
+    },
   },
   mounted() {
-    this.userinfo()
-    this.site_price = this.forums && this.forums.set_site && this.forums.set_site.site_price ? (1 * this.forums.set_site.site_price).toFixed(2) : 0
+    this.userinfo();
+    this.site_price = this.forums && this.forums.set_site && this.forums.set_site.site_price
+      ? (1 * this.forums.set_site.site_price).toFixed(2) : 0;
   },
   methods: {
     time2YearMonthDay(date) {
-      const d = new Date(date)
-      const year = d.getFullYear() + '年'
-      const month = d.getMonth() < 10 ? `0${d.getMonth() + 1}月` : d.getMonth() + 1 + '月'
-      const dated = d.getDate() < 10 ? `0${d.getDate()}日` : d.getDate() + '日'
-      return [year, month, dated].join('')
+      const d = new Date(date);
+      const year = `${d.getFullYear()}年`;
+      const month = d.getMonth() < 10 ? `0${d.getMonth() + 1}月` : `${d.getMonth() + 1}月`;
+      const dated = d.getDate() < 10 ? `0${d.getDate()}日` : `${d.getDate()}日`;
+      return [year, month, dated].join('');
     },
     userinfo() {
       const params = {
-        include: 'groups,wechat'
-      }
-      this.$store.dispatch('jv/get', [`users/${this.userId}`, { params }]).then(res => {
+        include: 'groups,wechat',
+      };
+      this.$store.dispatch('jv/get', [`users/${this.userId}`, { params }]).then((res) => {
         if (res.paid) {
-          this.$router.push('/')
+          this.$router.push('/');
         }
-      })
+      });
     },
     tologin() {
-      this.$router.push('/pages/user/login')
+      this.$router.push('/pages/user/login');
     },
     // 支付方式选择完成点击确定时
     paysureShow() {
-      this.creatOrder(this.forums.set_site.site_price, 1, this.value)
+      this.creatOrder(this.forums.set_site.site_price, 1, this.value);
     },
     // 创建订单
     creatOrder(amount, type, value) {
       const params = {
         _jv: {
-          type: 'orders'
+          type: 'orders',
         },
         type,
-        amount
-      }
-      this.$store.dispatch('jv/post', params).then(res => {
-        this.orderSn = res.order_sn
-        this.orderPay(10, value, this.orderSn, '3') // pc浏览器
-      }, e => this.handleError(e))
+        amount,
+      };
+      this.$store.dispatch('jv/post', params).then((res) => {
+        this.orderSn = res.order_sn;
+        this.orderPay(10, value, this.orderSn, '3'); // pc浏览器
+      }, e => this.handleError(e));
     },
     // 订单支付
     orderPay(type, value, orderSn, browserType) {
-      let params = {}
+      let params = {};
       params = {
         _jv: {
-          type: `trade/pay/order/${orderSn}`
+          type: `trade/pay/order/${orderSn}`,
         },
-        payment_type: type
-      }
-      this.$store.dispatch('jv/post', params).then(res => {
-        this.wxRes = res
+        payment_type: type,
+      };
+      this.$store.dispatch('jv/post', params).then((res) => {
+        this.wxRes = res;
         if (browserType === '3') {
           if (res) {
-            this.codeUrl = res.wechat_qrcode
-            this.payShowStatus = false
-            this.qrcodeShow = true
+            this.codeUrl = res.wechat_qrcode;
+            this.payShowStatus = false;
+            this.qrcodeShow = true;
             payWechat = setInterval(() => {
               if (this.payStatus === 1) {
-                clearInterval(payWechat)
-                return
+                clearInterval(payWechat);
+                return;
               }
-              this.getOrderStatus(this.orderSn, browserType)
-            }, 3000)
+              this.getOrderStatus(this.orderSn, browserType);
+            }, 3000);
           }
         }
-      }, e => this.handleError(e))
+      }, e => this.handleError(e));
     },
     // 查询订单支状 browserType: 0是小程序，1是微信浏览器，2是h5，3是pc
     getOrderStatus(orderSn, browserType) {
       this.$store
         .dispatch('jv/get', [`orders/${orderSn}`])
-        .then(res => {
-          this.payStatus = res.status
+        .then((res) => {
+          this.payStatus = res.status;
           if (this.payStatus === 1) {
-            this.payShowStatus = false
+            this.payShowStatus = false;
             if (browserType === '3') {
               // 这是pc扫码支付完成
-              this.qrcodeShow = false
+              this.qrcodeShow = false;
             }
-            window.location.href = '/'
-            this.$message.success(this.$t('pay.paySuccess'))
+            window.location.href = '/';
+            this.$message.success(this.$t('pay.paySuccess'));
           }
         })
         .catch(() => {
-          this.$message.success(this.$t('pay.payFail'))
-        })
-    }
+          this.$message.success(this.$t('pay.payFail'));
+        });
+    },
   },
   head() {
     return {
-      title: this.$t('profile.circleinfo')
-    }
-  }
-}
+      title: this.$t('profile.circleinfo'),
+    };
+  },
+};
 </script>
 <style lang='scss' scoped>
 .bold {

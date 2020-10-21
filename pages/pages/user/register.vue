@@ -1,6 +1,8 @@
 <template>
   <div v-if="forums" v-loading="loading" class="register">
-    <h2 class="register-title">{{ $t('user.register') }}{{ forums && forums.set_site && forums.set_site.site_name ? forums.set_site.site_name : '' }}</h2>
+    <h2 class="register-title">
+      {{ $t('user.register') }}
+      {{ forums && forums.set_site && forums.set_site.site_name ? forums.set_site.site_name : '' }}</h2>
     <el-tabs v-model="activeName" type="border-card" class="register-select" @tab-click="changeactive">
       <!-- 用户名注册 -->
       <el-tab-pane label="用户名注册" name="0">
@@ -10,24 +12,46 @@
             <el-input v-model="userName" :placeholder="$t('user.username')" class="reg-input" />
           </div>
           <div>
-            <span class="title2">输入密码</span>
-            <el-input v-model="passWord" :placeholder="$t('user.password')" type="password" class="reg-input" show-password @keyup.enter.native="register" />
+            <span class="title2">{{ $t('user.passwd') }}</span>
+            <el-input
+              v-model="passWord"
+              :placeholder="$t('user.password')"
+              type="password"
+              class="reg-input"
+              show-password
+              @keyup.enter.native="register"
+            />
           </div>
           <div :class="passerror ?'rep passerr':'rep'">
-            <span class="title2">重复密码</span>
-            <el-input v-model="repeatPassWord" :placeholder="$t('user.password')" type="password" :class="passerror ? 'reg-input inputerr':'reg-input'" show-password @keyup.enter.native="register" />
+            <span class="title2">{{ $t('user.repeatpasswd') }}</span>
+            <el-input
+              v-model="repeatPassWord"
+              :placeholder="$t('user.password')"
+              type="password"
+              :class="passerror ? 'reg-input inputerr':'reg-input'"
+              show-password
+              @keyup.enter.native="register"
+            />
             <div v-if="passerror" class="passerror">{{ $t('modify.reenter') }}</div>
           </div>
           <div v-if="validate">
-            <span class="title2">注册原因</span>
-            <el-input v-model="Reason" :placeholder="$t('user.reason')" class="reg-input" @keyup.enter.native="register" />
+            <span class="title2">{{ $t('user.registerReason') }}</span>
+            <el-input
+              v-model="Reason"
+              :placeholder="$t('user.reason')"
+              class="reg-input"
+              @keyup.enter.native="register"
+            />
           </div>
           <div class="agreement">
             <reg-agreement @check="check" />
           </div>
           <el-button type="primary" class="r-button" @click="register">{{ $t('user.register') }}</el-button>
           <div class="tologin">
-            <span v-if="register" @click="jump2Login">已有帐号，立即<nuxt-link to="/pages/user/login">{{ $t('user.login') }}</nuxt-link> </span>
+            <span
+              v-if="register"
+              @click="jump2Login"
+            >{{ $t('user.exist') }}<nuxt-link to="/pages/user/login">{{ $t('user.login') }}</nuxt-link> </span>
           </div>
         </form>
       </el-tab-pane>
@@ -35,9 +59,19 @@
       <el-tab-pane v-if="forums.qcloud && forums.qcloud.qcloud_sms" :label="$t('user.phoneregister')" name="1">
         <span class="title2">{{ $t('user.phonenumber') }}</span>
         <el-input v-model="phoneNumber" :placeholder="$t('user.phoneNumber')" class="phone-input" maxlength="11" />
-        <el-button class="count-b" :class="{disabled: !canClick}" :disabled="!canClick" @click="phoneRegister">{{ content }}</el-button>
+        <el-button
+          class="count-b"
+          :class="{disabled: !canClick}"
+          :disabled="!canClick"
+          @click="phoneRegister"
+        >{{ content }}</el-button>
         <span class="title">{{ $t('user.verification') }}</span>
-        <el-input v-model="verifyCode" :placeholder="$t('user.verificationCode')" class="reg-input" @keyup.enter.native="PhoneLogin" />
+        <el-input
+          v-model="verifyCode"
+          :placeholder="$t('user.verificationCode')"
+          class="reg-input"
+          @keyup.enter.native="PhoneLogin"
+        />
         <div class="agreement">
           <reg-agreement @check="check" />
         </div>
@@ -73,14 +107,14 @@
 </template>
 
 <script>
-import handleError from '@/mixin/handleError'
-import { status } from '@/library/jsonapi-vuex/index'
+import handleError from '@/mixin/handleError';
+import { status } from '@/library/jsonapi-vuex/index';
 
-const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
-let QuickLogin = null
+const tcaptchs = process.client ? require('@/utils/tcaptcha') : '';
+let QuickLogin = null;
 export default {
   mixins: [
-    handleError, tcaptchs
+    handleError, tcaptchs,
   ],
   data() {
     return {
@@ -105,131 +139,131 @@ export default {
       canClick: true,
       loading: false,
       passerror: false,
-      loginStatus: false
+      loginStatus: false,
 
-    }
+    };
   },
   computed: {
     forums() {
-      return this.$store.state.site.info.attributes || {}
-    }
+      return this.$store.state.site.info.attributes || {};
+    },
   },
   mounted() {
-    const { validate, register, code } = this.$route.query
+    const { validate, register, code } = this.$route.query;
     if (validate) {
-      this.validate = JSON.parse(validate)
+      this.validate = JSON.parse(validate);
     }
     if (register) {
-      this.register = JSON.parse(register)
+      this.register = JSON.parse(register);
     }
     if (code !== 'undefined') {
-      this.code = code
+      this.code = code;
     }
     if (this.forums && this.forums.set_reg && this.forums.set_reg.register_captcha) {
-      this.register_captcha = this.forums.set_reg.register_captcha
+      this.register_captcha = this.forums.set_reg.register_captcha;
     }
     if (this.forums && this.forums.set_site && this.forums.set_site.site_mode) {
-      this.site_mode = this.forums.set_site.site_mode
+      this.site_mode = this.forums.set_site.site_mode;
     }
 
     if (this.forums && this.forums.set_reg) {
-      this.validate = this.forums.set_reg.register_validate
+      this.validate = this.forums.set_reg.register_validate;
     }
-    this.changeactive()
+    this.changeactive();
   },
   destroyed() {
-    clearInterval(QuickLogin)
+    clearInterval(QuickLogin);
   },
   methods: {
     check(value) {
-      this.ischeck = value
+      this.ischeck = value;
     },
     countDown(interval) {
-      if (!this.canClick) return
-      this.canClick = false
-      this.content = interval + this.$t('modify.retransmission')
+      if (!this.canClick) return;
+      this.canClick = false;
+      this.content = interval + this.$t('modify.retransmission');
       const clock = window.setInterval(() => {
-        interval--
-        this.content = interval + this.$t('modify.retransmission')
+        interval--;
+        this.content = interval + this.$t('modify.retransmission');
         if (interval < 0) {
-          window.clearInterval(clock)
-          this.content = this.$t('modify.sendVerifyCode')
+          window.clearInterval(clock);
+          this.content = this.$t('modify.sendVerifyCode');
           // this.totalTime = 60
-          this.canClick = true
+          this.canClick = true;
         }
-      }, 1000)
+      }, 1000);
     },
     // 注册成功后
     logind() {
-      const userId = this.$store.getters['session/get']('userId')
-      if (!userId) return
+      const userId = this.$store.getters['session/get']('userId');
+      if (!userId) return;
       const params = {
-        include: 'groups,wechat'
-      }
+        include: 'groups,wechat',
+      };
       // 登录成功重新获取一下站点信息
-      this.$store.dispatch('site/getSiteInfo')
-      this.$store.dispatch('jv/get', [`users/${userId}`, { params }]).then(val => {
-        this.user = val
+      this.$store.dispatch('site/getSiteInfo');
+      this.$store.dispatch('jv/get', [`users/${userId}`, { params }]).then((val) => {
+        this.user = val;
         if (this.user && this.user.paid) {
-          this.isPaid = this.user.paid
+          this.isPaid = this.user.paid;
         }
         if (this.site_mode !== 'pay' || this.isPaid) {
-          this.$router.push('/')
+          this.$router.push('/');
         }
         if (this.site_mode === 'pay' && !this.isPaid) {
-          this.$router.push('/pages/site/info')
+          this.$router.push('/pages/site/info');
         }
-      })
+      });
     },
     // tab激活
     changeactive(tab) {
-      this.passWord = ''
-      this.activeName = this.forums ? this.forums.set_reg.register_type.toString() : ''
+      this.passWord = '';
+      this.activeName = this.forums ? this.forums.set_reg.register_type.toString() : '';
       if (this.activeName === '2' || this.forums && this.forums.qcloud && !this.forums.qcloud.qcloud_sms) {
-        this.activeName = '0'
+        this.activeName = '0';
       }
     },
     changeinput() {
       setTimeout(() => {
-        this.phoneNumber = this.phoneNumber.replace(/[^\d]/g, '')
-      }, 30)
+        this.phoneNumber = this.phoneNumber.replace(/[^\d]/g, '');
+      }, 30);
       if (this.phoneNumber.length === 11) {
-        this.canClick = true
+        this.canClick = true;
       } else {
-        this.canClick = false
+        this.canClick = false;
       }
     },
     // 用户名注册
     register() {
       if (this.userName === '') {
-        this.$message.error('用户名不能为空')
+        this.$message.error('用户名不能为空');
       } else if (this.passWord === '') {
-        this.$message.error('密码不能为空')
+        this.$message.error('密码不能为空');
       } else if (this.passWord !== this.repeatPassWord) {
-        this.$message.error('两次输入的密码不一致,请重新输入')
-        this.passWord = ''
-        this.repeatPassWord = ''
-        this.passerror = true
+        this.$message.error('两次输入的密码不一致,请重新输入');
+        this.passWord = '';
+        this.repeatPassWord = '';
+        this.passerror = true;
       } else if (!this.ischeck) {
-        this.$message.error('请同意协议')
+        this.$message.error('请同意协议');
       } else if (this.forums && this.forums.set_reg && this.forums.set_reg.register_captcha) {
         if (this.validate && this.Reason === '') {
-          this.$message.error('注册原因不能为空')
+          this.$message.error('注册原因不能为空');
         } else {
-          this.toTCaptcha()
+          this.toTCaptcha();
         }
       } else {
-        this.registerClick()
+        this.registerClick();
       }
     },
     // 手机号
     phoneRegister() {
       if (this.phoneNumber === '') {
-        this.$message.error('手机号不能为空')
+        this.$message.error('手机号不能为空');
       } else if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha) {
-        this.toTCaptcha()
+        this.toTCaptcha();
       } else {
-        this.sendVerifyCode()
+        this.sendVerifyCode();
       }
     },
 
@@ -237,212 +271,210 @@ export default {
     toTCaptcha() {
       if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha_app_id) {
         // eslint-disable-next-line no-undef
-        this.captcha = new TencentCaptcha(this.forums.qcloud.qcloud_captcha_app_id, res => {
+        this.captcha = new TencentCaptcha(this.forums.qcloud.qcloud_captcha_app_id, (res) => {
           if (res.ret === 0) {
-            this.ticket = res.ticket
-            this.randstr = res.randstr
+            this.ticket = res.ticket;
+            this.randstr = res.randstr;
             if (this.passWord) {
-              this.registerClick()
+              this.registerClick();
             } else {
-              this.sendVerifyCode()
+              this.sendVerifyCode();
             }
           }
-        })
+        });
         // 显示验证码
-        this.captcha.show()
+        this.captcha.show();
       }
     },
     // 用户名注册
     registerClick() {
-      this.loading = true
+      this.loading = true;
       const params = {
         data: {
           attributes: {
             username: this.userName,
-            password: this.passWord
-          }
-        }
-      }
+            password: this.passWord,
+          },
+        },
+      };
       if (this.register_captcha && this.validate) {
-        params.data.attributes.register_reason = this.Reason
-        params.data.attributes.captcha_ticket = this.ticket
-        params.data.attributes.captcha_rand_str = this.randstr
+        params.data.attributes.register_reason = this.Reason;
+        params.data.attributes.captcha_ticket = this.ticket;
+        params.data.attributes.captcha_rand_str = this.randstr;
       }
       if (this.validate) {
-        params.data.attributes.register_reason = this.Reason
+        params.data.attributes.register_reason = this.Reason;
       }
       if (this.register_captcha) {
-        params.data.attributes.captcha_ticket = this.ticket
-        params.data.attributes.captcha_rand_str = this.randstr
+        params.data.attributes.captcha_ticket = this.ticket;
+        params.data.attributes.captcha_rand_str = this.randstr;
       }
       if (this.code !== '') {
-        params.data.attributes.code = this.code
+        params.data.attributes.code = this.code;
       }
       this.$store
         .dispatch('session/h5Register', params)
-        .then(res => {
-          this.loading = false
+        .then((res) => {
+          this.loading = false;
           if (res && res.data && res.data.data && res.data.data.id) {
-            this.logind()
-            this.$message.success(this.$t('user.registerSuccess'))
+            this.logind();
+            this.$message.success(this.$t('user.registerSuccess'));
           }
           if (
-            res &&
-            res.data &&
-            res.data.errors &&
-            res.data.errors[0].code === 'register_validate'
+            res
+            && res.data
+            && res.data.errors
+            && res.data.errors[0].code === 'register_validate'
           ) {
             // this.$message.error('帐号审核中，请等管理员审核通过')
-            this.$router.push(`/pages/user/warning?username=${this.userName}`)
-            return
+            this.$router.push(`/pages/user/warning?username=${this.userName}`);
+            return;
           }
           if (
-            res &&
-            res.data &&
-            res.data.errors &&
-            res.data.errors[0]
+            res
+            && res.data
+            && res.data.errors
+            && res.data.errors[0]
           ) {
-            const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code
-            const errorText = res.data.errors[0].detail ? res.data.errors[0].detail[0] : this.$t(`core.${error}`)
-            this.$message.error(errorText)
+            const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code;
+            const errorText = res.data.errors[0].detail ? res.data.errors[0].detail[0] : this.$t(`core.${error}`);
+            this.$message.error(errorText);
           }
         })
-        .catch(err => {
-          this.loading = false
-          this.passWord = ''
-          this.repeatPassWord = ''
-          console.log(err)
-        })
+        .catch((err) => {
+          this.loading = false;
+          this.passWord = '';
+          this.repeatPassWord = '';
+          console.log(err);
+        });
     },
     // 手机号注册
     sendVerifyCode() {
       const params = {
         _jv: { type: 'sms/send' },
         mobile: this.phoneNumber,
-        type: 'login'
-      }
+        type: 'login',
+      };
 
       if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha_app_id) {
-        params.captcha_rand_str = this.randstr
-        params.captcha_ticket = this.ticket
+        params.captcha_rand_str = this.randstr;
+        params.captcha_ticket = this.ticket;
       }
       status.run(() => this.$store.dispatch('jv/post', params))
-        .then(res => {
-          if (res.interval) this.countDown(res.interval)
-        }, e => this.handleError(e))
+        .then((res) => {
+          if (res.interval) this.countDown(res.interval);
+        }, e => this.handleError(e));
     },
     PhoneLogin() {
-      this.loading = true
+      this.loading = true;
       if (this.phoneNumber === '') {
-        this.$message.error('手机号不能为空')
-        this.loading = false
+        this.$message.error('手机号不能为空');
+        this.loading = false;
       } else if (this.verifyCode === '') {
-        this.$message.error('验证码不能为空')
-        this.loading = false
+        this.$message.error('验证码不能为空');
+        this.loading = false;
       } else if (!this.ischeck) {
-        this.$message.error('请同意协议')
-        this.loading = false
+        this.$message.error('请同意协议');
+        this.loading = false;
       } else {
         const params = {
           data: {
             attributes: {
               mobile: this.phoneNumber,
               code: this.verifyCode,
-              type: 'login'
-            }
-          }
-        }
+              type: 'login',
+            },
+          },
+        };
         if (this.register_captcha && this.validate) {
-          params.data.attributes.register_reason = this.reason
-          params.data.attributes.captcha_ticket = this.ticket
-          params.data.attributes.captcha_rand_str = this.randstr
+          params.data.attributes.register_reason = this.reason;
+          params.data.attributes.captcha_ticket = this.ticket;
+          params.data.attributes.captcha_rand_str = this.randstr;
         }
         if (this.validate) {
-          params.data.attributes.register_reason = this.reason
+          params.data.attributes.register_reason = this.reason;
         }
         if (this.register_captcha) {
-          params.data.attributes.captcha_ticket = this.ticket
-          params.data.attributes.captcha_rand_str = this.randstr
+          params.data.attributes.captcha_ticket = this.ticket;
+          params.data.attributes.captcha_rand_str = this.randstr;
         }
         if (this.code && this.code !== 'undefined') {
-          params.data.attributes.inviteCode = this.code
+          params.data.attributes.inviteCode = this.code;
         }
         this.$store
           .dispatch('session/verificationCodeh5Login', params)
-          .then(res => {
-            this.loading = false
+          .then((res) => {
+            this.loading = false;
             if (res && res.data && res.data.data && res.data.data.id) {
-              this.logind()
-              this.$message.success(this.$t('user.registerSuccess'))
+              this.logind();
+              this.$message.success(this.$t('user.registerSuccess'));
             }
             if (
-              res &&
-              res.data &&
-              res.data.errors &&
-              res.data.errors[0].code === 'register_validate'
+              res
+              && res.data
+              && res.data.errors
+              && res.data.errors[0].code === 'register_validate'
             ) {
               // this.$message.error('帐号审核中，请等管理员审核通过')
-              this.$router.push(`/pages/user/warning?username=${this.phoneNumber}`)
-              return
+              this.$router.push(`/pages/user/warning?username=${this.phoneNumber}`);
+              return;
             }
             if (
-              res &&
-              res.data &&
-              res.data.errors &&
-              res.data.errors[0]
+              res
+              && res.data
+              && res.data.errors
+              && res.data.errors[0]
             ) {
-              const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code
-              const errorText = res.data.errors[0].detail ? res.data.errors[0].detail[0] : this.$t(`core.${error}`)
-              this.$message.error(errorText)
+              const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code;
+              const errorText = res.data.errors[0].detail ? res.data.errors[0].detail[0] : this.$t(`core.${error}`);
+              this.$message.error(errorText);
             }
           })
-          .catch(err => {
-            this.loading = false
-            console.log(err)
-          })
+          .catch((err) => {
+            this.loading = false;
+            console.log(err);
+          });
       }
     },
     // 微信二维码
     QRcode() {
       const _params = {
         _jv: {
-          type: '/oauth/wechat/web/user'
-        }
-      }
-      this.$store.dispatch('jv/get', _params).then(data => {
+          type: '/oauth/wechat/web/user',
+        },
+      };
+      this.$store.dispatch('jv/get', _params).then((data) => {
         if (data) {
-          this.info = data
-          this.scene_str = data.scene_str
+          this.info = data;
+          this.scene_str = data.scene_str;
           QuickLogin = setInterval(() => {
             if (this.loginStatus) {
-              clearInterval(QuickLogin)
-              return
+              clearInterval(QuickLogin);
+              return;
             }
-            this.getLoginStatus(this.scene_str)
-          }, 10000)
+            this.getLoginStatus(this.scene_str);
+          }, 10000);
         }
-      })
+      });
     },
     // 微信扫码登录状态
     getLoginStatus(scene_str) {
-      this.$store.dispatch('jv/get', `/oauth/wechat/web/user/search?scene_str=${scene_str}`).then(data => {
+      this.$store.dispatch('jv/get', `/oauth/wechat/web/user/search?scene_str=${scene_str}`).then((data) => {
         if (data.id) {
-          this.loginStatus = true
+          this.loginStatus = true;
         }
-      })
+      });
     },
     jump2Login() {
-      this.$router.push(
-        `/pages/user/login?&validate=${this.validate}`
-      )
-    }
+      this.$router.push(`/pages/user/login?&validate=${this.validate}`);
+    },
   },
   head() {
     return {
-      title: this.$t('profile.register')
-    }
-  }
-}
+      title: this.$t('profile.register'),
+    };
+  },
+};
 </script>
 <style lang='scss' scoped>
 @import "@/assets/css/variable/color.scss";

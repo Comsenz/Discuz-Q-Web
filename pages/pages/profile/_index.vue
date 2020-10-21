@@ -17,7 +17,9 @@
           />
           <div class="profile-info">
             <span class="info-name">{{ userInfo.username || '' }}</span>
-            <span class="info-actor">{{ userInfo.groups && userInfo.groups[0] && userInfo.groups[0].isDisplay ? userInfo.groupsName : '' }}</span>
+            <span class="info-actor">
+              {{ userInfo.groups && userInfo.groups[0] && userInfo.groups[0].isDisplay ? userInfo.groupsName : '' }}
+            </span>
           </div>
         </div>
         <el-tabs
@@ -94,7 +96,9 @@
             type="auth"
             class="auth-icon"
           />
-          <span class="groupname">{{ userInfo.groups && userInfo.groups[0] && userInfo.groups[0].isDisplay ? userInfo.groupsName : '' }}</span>
+          <span class="groupname">
+            {{ userInfo.groups && userInfo.groups[0] && userInfo.groups[0].isDisplay ? userInfo.groupsName : '' }}
+          </span>
         </span>
         <p
           v-if="userInfo.signature"
@@ -225,17 +229,17 @@
 </template>
 
 <script>
-import { status } from '@/library/jsonapi-vuex/index'
-import handleError from '@/mixin/handleError'
-import env from '@/utils/env'
+import { status } from '@/library/jsonapi-vuex/index';
+import handleError from '@/mixin/handleError';
+import env from '@/utils/env';
 
 export default {
   layout: 'custom_layout',
   mixins: [handleError],
   // 异步数据用法
-  async asyncData({ params, store, query }, callback) {
+  async asyncData({ store, query }, callback) {
     if (!env.isSpider) {
-      callback(null, {})
+      callback(null, {});
     }
     const threadparams = {
       'filter[isDeleted]': 'no',
@@ -244,40 +248,47 @@ export default {
       'page[number]': 1,
       'page[limit]': 10,
       'filter[isApproved]': 1,
-      'filter[userId]': query.userId
-    }
+      'filter[userId]': query.userId,
+    };
     const likethreadsparams = {
       include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
       'page[number]': 1,
       'page[limit]': 10,
       'filter[isApproved]': 1,
-      'filter[user_id]': query.userId
-    }
+      'filter[user_id]': query.userId,
+    };
     try {
-      const resData = {}
-      const threadsData = await store.dispatch('jv/get', ['threads', { params: threadparams }])
-      const likethreadsData = await store.dispatch('jv/get', ['threads/likes', { params: likethreadsparams }])
+      const resData = {};
+      const threadsData = await store.dispatch('jv/get', ['threads', { params: threadparams }]);
+      const likethreadsData = await store.dispatch('jv/get', ['threads/likes', { params: likethreadsparams }]);
 
       if (Array.isArray(threadsData)) {
-        resData.threadsData = threadsData
+        resData.threadsData = threadsData;
       } else if (threadsData && threadsData._jv && threadsData._jv.json) {
-        var _threadsData = threadsData._jv.json.data || []
+        const _threadsData = threadsData._jv.json.data || [];
         _threadsData.forEach((item, index) => {
-          _threadsData[index] = { ...item, ...item.attributes, 'firstPost': item.relationships.firstPost.data, 'user': item.relationships.user.data, '_jv': { 'id': item.id }}
-        })
-        resData.threadsData = _threadsData
+          _threadsData[index] = {
+            ...item,
+            ...item.attributes,
+            firstPost: item.relationships.firstPost.data, user: item.relationships.user.data, _jv: { id: item.id },
+          };
+        });
+        resData.threadsData = _threadsData;
       }
 
       if (Array.isArray(likethreadsData)) {
-        resData.likethreadsData = likethreadsData
+        resData.likethreadsData = likethreadsData;
       } else if (likethreadsData && likethreadsData._jv && likethreadsData._jv.json) {
-        var _likethreadsData = likethreadsData._jv.json.data || []
+        const _likethreadsData = likethreadsData._jv.json.data || [];
         _likethreadsData.forEach((item, index) => {
-          _likethreadsData[index] = { ...item, ...item.attributes, 'firstPost': item.relationships.firstPost.data, 'user': item.relationships.user.data, '_jv': { 'id': item.id }}
-        })
-        resData.likethreadsData = _likethreadsData
+          _likethreadsData[index] = {
+            ...item,
+            ...item.attributes,
+            firstPost: item.relationships.firstPost.data, user: item.relationships.user.data, _jv: { id: item.id } };
+        });
+        resData.likethreadsData = _likethreadsData;
       }
-      callback(null, resData)
+      callback(null, resData);
       // return { threadsData: threadsData }
     } catch (error) {
       callback(null, {
@@ -292,9 +303,9 @@ export default {
           config: error.config,
           request_domain: (error.request || {}).domain,
           request_keys: Object.keys(error.request || {}),
-          response_keys: Object.keys(error.response || {})
-        }
-      })
+          response_keys: Object.keys(error.response || {}),
+        },
+      });
     }
   },
   data() {
@@ -315,192 +326,190 @@ export default {
       threadsData: [],
       likethreadsData: [],
       unbundlingArry: [], // 解绑用户组
-      unbundUserData: [] // 已屏蔽用户组
-    }
+      unbundUserData: [], // 已屏蔽用户组
+    };
   },
   computed: {
     forums() {
-      return this.$store.state.site.info.attributes || {}
-    }
+      return this.$store.state.site.info.attributes || {};
+    },
   },
   watch: {
-    '$route'(to, from) {
-      this.$router.go(0)
-    }
+    '$route'() {
+      this.$router.go(0);
+    },
   },
   created() {
-    const { userId, current } = this.$route.query
-    this.userId = userId || ''
-    this.current = current
-    this.activeName = this.current ? this.current : this.activeName
+    const { userId, current } = this.$route.query;
+    this.userId = userId || '';
+    this.current = current;
+    this.activeName = this.current ? this.current : this.activeName;
   },
   mounted() {
-    this.getAuth()
-    this.getUserInfo(this.userId)
-    window.addEventListener('scroll', this.handleScroll)
+    this.getAuth();
+    this.getUserInfo(this.userId);
+    window.addEventListener('scroll', this.handleScroll);
     if (this.currentLoginId) {
-      this.getShieldData()
+      this.getShieldData();
     }
     // this.$nextTick(() => {
     //   this.offsetTop = document.querySelector('.profile-h').offsetTop
     // })
   },
   destroyed() {
-    window.removeEventListener('scroll', this.handleScroll)
+    window.removeEventListener('scroll', this.handleScroll);
   },
   methods: {
     handleScroll() {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
       if (scrollTop > 220) {
-        this.headFixed = true
+        this.headFixed = true;
       } else {
-        this.headFixed = false
+        this.headFixed = false;
       }
     },
     // tab激活
-    changeactive(e) {
+    changeactive() {
     },
     // 私信权限判断
     getAuth() {
       // 用户组等改变会改变私信权限
       if (this.forums.other && this.forums.other.can_create_dialog) {
-        this.can_create_dialog = true
+        this.can_create_dialog = true;
       } else {
-        this.can_create_dialog = false
+        this.can_create_dialog = false;
       }
     },
     // 获取用户信息
     getUserInfo(userId) {
-      this.loading = true
+      this.loading = true;
       const params = {
-        include: 'groups,dialog'
-      }
+        include: 'groups,dialog',
+      };
       status
         .run(() => this.$store
           .dispatch('jv/get', [`users/${userId}`, { params }])
-          .then(res => {
+          .then((res) => {
             if (res.isDeleted) {
-              this.$message.error('用户不存在')
+              this.$message.error('用户不存在');
             } else {
-              this.loading = false
-              this.dialog.id = res.dialog ? res.dialog._jv.id : 0
-              this.dialog.name = res.username
-              this.profilename = `${this.dialog.name + this.$t('profile.myperson')}`
-              this.userInfo = res
-              this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
+              this.loading = false;
+              this.dialog.id = res.dialog ? res.dialog._jv.id : 0;
+              this.dialog.name = res.username;
+              this.profilename = `${this.dialog.name + this.$t('profile.myperson')}`;
+              this.userInfo = res;
+              this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : '';
             }
           }))
-        .catch(err => {
-          this.loading = false
-          this.handleError(err)
-        })
+        .catch((err) => {
+          this.loading = false;
+          this.handleError(err);
+        });
     },
     // 添加关注
     addFollow(userInfo) {
       if (process.client) {
         if (!localStorage.getItem('access_token')) {
-          return
+          return;
         }
       }
       if (this.isShield2) {
-        this.$message.error('你已被屏蔽')
-        return
+        this.$message.error('你已被屏蔽');
+        return;
       }
       const params = {
         _jv: {
-          type: 'follow'
+          type: 'follow',
         },
         type: 'user_follow',
-        to_user_id: userInfo.id.toString()
-      }
+        to_user_id: userInfo.id.toString(),
+      };
       this.$store.dispatch('jv/post', params)
         .then(() => {
-          this.getUserInfo(this.userId)
-          if (this.$refs.followers) this.$refs.followers.getFollowerList('change')
-        }, e => this.handleError(e))
+          this.getUserInfo(this.userId);
+          if (this.$refs.followers) this.$refs.followers.getFollowerList('change');
+        }, e => this.handleError(e));
     },
     // 取消关注
     deleteFollow(userInfo) {
       if (process.client) {
         if (!localStorage.getItem('access_token')) {
-          return
+          return;
         }
       }
       this.$store.dispatch('jv/delete', `follow/${userInfo.id}/1`).then(() => {
-        this.getUserInfo(this.userId)
-        if (this.$refs.followers) this.$refs.followers.getFollowerList('change')
-      })
+        this.getUserInfo(this.userId);
+        if (this.$refs.followers) this.$refs.followers.getFollowerList('change');
+      });
     },
     changeFollow(e) {
-      this.getUserInfo(e.userId)
+      this.getUserInfo(e.userId);
     },
     changeLike(e) {
-      this.changeFollow(e)
+      this.changeFollow(e);
       // this.$refs.like.changelike()
     },
     // 私信
     chat() {
       if (process.client) {
         if (!localStorage.getItem('access_token')) {
-          return
+          return;
         }
       }
-      this.chatting = true
+      this.chatting = true;
     },
     // 当前登录用户已屏蔽用户
     // 获取黑名单数据
     getShieldData() {
-      this.loading = true
-      this.$store.dispatch('jv/get', `users/${this.currentLoginId}/deny`).then(res => {
-        if (res._jv) {
-          delete res._jv
-        }
-        this.unbundUserData = []
-        this.unbundUserData.push(Number(this.currentLoginId))
+      this.loading = true;
+      this.$store.dispatch('jv/get', `users/${this.currentLoginId}/deny`).then((res) => {
+        this.unbundUserData = [];
+        this.unbundUserData.push(Number(this.currentLoginId));
         res.forEach((v, i) => {
-          this.unbundUserData.push(res[i].id)
-        })
-        const data = res.filter(item => {
-          return item.id.toString() === this.userId
-        })
-        this.isShield = data.length > 0
-      }, e => this.handleError(e)).finally(() => { this.loading = false })
+          this.unbundUserData.push(res[i].id);
+        });
+        const data = res.filter(item => item.id.toString() === this.userId);
+        this.isShield = data.length > 0;
+      }, e => this.handleError(e))
+        .finally(() => {
+          this.loading = false;
+        });
     },
     // 屏蔽用户
     handleShield() {
       if (process.client) {
         if (!localStorage.getItem('access_token')) {
-          return
+          return;
         }
       }
       const params = {
         _jv: {
-          type: `users/${this.userId}/deny`
-        }
-      }
+          type: `users/${this.userId}/deny`,
+        },
+      };
       this.$store.dispatch('jv/post', params).then(() => {
-        this.getShieldData()
-      })
+        this.getShieldData();
+      });
     },
     // 解绑用户
     unbundlingUser() {
       if (process.client) {
         if (!localStorage.getItem('access_token')) {
-          return
+          return;
         }
       }
       this.$store.dispatch('jv/delete', `users/${this.userId}/deny`).then(() => {
-        this.$t('profile.unboundsucceed')
-        this.getShieldData()
-      })
-    }
+        this.$t('profile.unboundsucceed');
+        this.getShieldData();
+      });
+    },
   },
   head() {
     return {
-      title: this.profilename
-    }
-  }
-}
+      title: this.profilename,
+    };
+  },
+};
 </script>
 <style lang='scss' scoped>
 @import "@/assets/css/variable/color.scss";

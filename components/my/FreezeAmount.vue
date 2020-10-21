@@ -78,11 +78,11 @@
 </template>
 
 <script>
-import { time2MinuteOrHour } from '@/utils/time'
-import handleError from '@/mixin/handleError'
+import { time2MinuteOrHour } from '@/utils/time';
+import handleError from '@/mixin/handleError';
 export default {
   mixins: [
-    handleError
+    handleError,
   ],
   data() {
     return {
@@ -98,141 +98,141 @@ export default {
       // 钱包明细状态选择文本
       options2: [{
         value: '',
-        label: this.$t('profile.all')
+        label: this.$t('profile.all'),
       }, {
         value: '10',
-        label: this.$t('profile.withdrawalfreeze')
+        label: this.$t('profile.withdrawalfreeze'),
 
       }, {
         value: '11',
-        label: this.$t('profile.withdrawalsucceed')
+        label: this.$t('profile.withdrawalsucceed'),
 
       }, {
         value: '12',
-        label: this.$t('profile.withdrawalunfreeze')
+        label: this.$t('profile.withdrawalunfreeze'),
 
       }, {
         value: '30',
-        label: this.$t('profile.registeredincome')
+        label: this.$t('profile.registeredincome'),
 
       }, {
         value: '31',
-        label: this.$t('profile.rewardincome')
+        label: this.$t('profile.rewardincome'),
 
       }, {
         value: '32',
-        label: this.$t('profile.laborincome')
+        label: this.$t('profile.laborincome'),
 
       }, {
         value: '50',
-        label: this.$t('profile.laborexpenditure')
+        label: this.$t('profile.laborexpenditure'),
 
       }, {
         value: '41',
-        label: this.$t('profile.givearewardforthetheme')
+        label: this.$t('profile.givearewardforthetheme'),
 
       }, {
         value: '60',
-        label: this.$t('profile.paidtoseeyourtheme')
+        label: this.$t('profile.paidtoseeyourtheme'),
 
       }, {
         value: '61',
-        label: this.$t('profile.paidtoview')
+        label: this.$t('profile.paidtoview'),
 
       }],
       userId: this.$store.getters['session/get']('userId'), // 获取当前登陆用户的ID
       userInfo: '',
-      walletFreeze: 0
+      walletFreeze: 0,
 
-    }
+    };
   },
   mounted() {
-    this.getUserInfo()
-    this.getFreezelist()
+    this.getUserInfo();
+    this.getFreezelist();
   },
   methods: {
     // 用户信息
     getUserInfo() {
-      this.userInfo = this.$store.state.user.info.attributes
-      this.walletFreeze = this.userInfo ? this.userInfo.walletFreeze : 0
+      this.userInfo = this.$store.state.user.info.attributes;
+      this.walletFreeze = this.userInfo ? this.userInfo.walletFreeze : 0;
     },
     // 冻结金额状态筛选类型
     confirm3(e) {
-      this.filterSelected3 = e
-      this.getFreezelist('filter')
+      this.filterSelected3 = e;
+      this.getFreezelist('filter');
     },
     // 钱包状态格式化
     statusFormat2(row) {
       switch (row.change_type) {
-        case 10: return this.$t('profile.withdrawalfreeze')
-        case 11: return this.$t('profile.withdrawalsucceed')
-        case 12: return this.$t('profile.withdrawalunfreeze')
-        case 30: return this.$t('profile.registeredincome')
-        case 31: return this.$t('profile.rewardincome')
-        case 32: return this.$t('profile.laborincome')
-        case 50: return this.$t('profile.laborexpenditure')
-        case 41: return this.$t('profile.givearewardforthetheme')
-        case 60: return this.$t('profile.paidtoseeyourtheme')
-        case 61: return this.$t('profile.paidtoview')
+        case 10: return this.$t('profile.withdrawalfreeze');
+        case 11: return this.$t('profile.withdrawalsucceed');
+        case 12: return this.$t('profile.withdrawalunfreeze');
+        case 30: return this.$t('profile.registeredincome');
+        case 31: return this.$t('profile.rewardincome');
+        case 32: return this.$t('profile.laborincome');
+        case 50: return this.$t('profile.laborexpenditure');
+        case 41: return this.$t('profile.givearewardforthetheme');
+        case 60: return this.$t('profile.paidtoseeyourtheme');
+        case 61: return this.$t('profile.paidtoview');
 
-        default: return '未知状态'
+        default: return '未知状态';
       }
     },
     // 金额格式化
     amountFormat(row) {
       // 订单
       if (row.amount > 0) {
-        return `<font color="09BB07">-￥${row.amount}</font>`
+        return `<font color="09BB07">-￥${row.amount}</font>`;
       }
       if (row > 0) {
-        return `<font color="09BB07">+￥${row}</font>`
-      } else {
-        return `<font style="color:#FA5151">-￥${row.substr(1)}</font>`
+        return `<font color="09BB07">+￥${row}</font>`;
       }
+      return `<font style="color:#FA5151">-￥${row.substr(1)}</font>`;
     },
     // 获取冻结金额列表数据
     getFreezelist() {
-      this.loading = true
+      this.loading = true;
       const params = {
         'filter[user]': this.userId,
         'filter[change_type]': '10, 11, 12', // 10提现冻结 11提现成功 12 提现解冻
         'page[number]': this.pageNum3,
-        'page[limit]': this.pageSize3
-      }
-      this.$store.dispatch('jv/get', ['wallet/log', { params }]).then(res => {
-        this.total3 = res._jv.json.meta.total
-        this.freezelist = res
-      }, e => {
-        this.handleError(e)
-      }).finally(() => {
-        this.loading = false
+        'page[limit]': this.pageSize3,
+      };
+      this.$store.dispatch('jv/get', ['wallet/log', { params }]).then((res) => {
+        this.total3 = res._jv.json.meta.total;
+        this.freezelist = res;
+      }, (e) => {
+        this.handleError(e);
       })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     // 金额排序
     sortAmount(str1, str2) {
-      return str1.change_available_amount * 1 - str2.change_available_amount * 1
+      return (str1.change_available_amount * 1) - (str2.change_available_amount * 1);
     },
     // 时间格式化
     dateFormat(row) {
-      return this.timeHandle(row.created_at)
+      return this.timeHandle(row.created_at);
     },
     // 处理时间
     timeHandle(time) {
-      return time2MinuteOrHour(time)
+      return time2MinuteOrHour(time);
     },
     // 冻结金额分页
     handleSizeChange3(val) {
-      this.pageNum3 = 1
-      this.pageSize3 = val
-      this.getFreezelist()
+      this.pageNum3 = 1;
+      this.pageSize3 = val;
+      this.getFreezelist();
     },
     // 冻结金额分页
     handleCurrentChange3(val) {
-      this.pageNum3 = val
-      this.getFreezelist()
-    }
-  }
-}
+      this.pageNum3 = val;
+      this.getFreezelist();
+    },
+  },
+};
 </script>
 <style lang='scss' scoped>
 .freezeAmount {

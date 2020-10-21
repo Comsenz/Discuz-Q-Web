@@ -1,7 +1,8 @@
 <template>
   <div class="page-findpwd">
     <div class="title"> {{ $t('modify.resetPasswordSuccess') }}</div>
-    <div class="describe"> {{ $t('modify.user') + ' “' + username + '” ' + $t('modify.resetPasswordSuccessRepeat') }} !</div>
+    <div class="describe">
+      {{ $t('modify.user') + ' “' + username + '” ' + $t('modify.resetPasswordSuccessRepeat') }} !</div>
     <div class="detail"> {{ $t('modify.resetPasswordLoginTip') }}</div>
     <nuxt-link
       to="/pages/user/login"
@@ -22,11 +23,11 @@ export default {
   name: 'ResetPwdSuccess',
   computed: {
     username() {
-      if (process.client) return window.localStorage.getItem('username') || ''
-      return ''
-    }
-  }
-}
+      if (process.client) return window.localStorage.getItem('username') || '';
+      return '';
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
