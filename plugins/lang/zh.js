@@ -1031,11 +1031,8 @@ export default {
     loginSuccess: '登录成功',
     loginBindSuccess: '登录绑定成功',
     pleaseLogin: '请登录',
-<<<<<<< HEAD
     wechatlogin: '微信扫码登录',
     qrtext: '请用微信扫一扫扫码上方二维码'
-=======
->>>>>>> 4ba4cfeb3f34fa2d7c532038a82551a834dca158
   },
   // 举报
   report: {
