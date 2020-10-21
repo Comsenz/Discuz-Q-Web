@@ -812,6 +812,8 @@ export default {
     myperson: '个人主页',
     backhomePage: '回首页',
     walletpasset: '已设置 / 修改',
+    isset: '已设置',
+    withoutsetpass: '未设置密码',
     submitchange: '提交修改',
     myprofile: '我的资料',
     mywallet: '我的钱包',
@@ -986,7 +988,8 @@ export default {
   // 登录注册
   user: {
     status: '记住我的登录状态',
-    userlogin: '登录Discuz!Q',
+    userlogin: '用户名登录',
+    usrname: '用户名',
     userregister: '注册新用户',
     phonelogin: '手机号码登录',
     phonenumber: '手机号码',
@@ -1001,11 +1004,13 @@ export default {
     reason: '请输入注册原因',
     phoneNumber: '请输入手机号码',
     pwd: '登录密码',
+    passwd: '输入密码',
+    repeatpasswd: '重复密码',
     verification: '验证码',
     verificationCode: '请输入短信验证码',
     verificationCode2: '请输入验证码',
-    exist: '已有账号? 登录一下',
-    noexist: '没有账号? 注册一下',
+    exist: '已有账号，立即',
+    noexist: '尚无帐号，立即',
     forgetPassword: '忘记密码?',
     phoneNumberLogin: '手机号码登录',
     verificationCodeLogin: '验证码登录',
@@ -1021,7 +1026,9 @@ export default {
     registerBindSuccess: '注册绑定成功',
     loginSuccess: '登录成功',
     loginBindSuccess: '登录绑定成功',
-    pleaseLogin: '请登录'
+    pleaseLogin: '请登录',
+    wechatlogin: '微信扫码登录',
+    qrtext: '请用微信扫一扫扫码上方二维码'
   },
   // 举报
   report: {
