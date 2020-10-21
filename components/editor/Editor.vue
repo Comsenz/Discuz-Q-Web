@@ -5,12 +5,14 @@
     </label>
     <editor-payment v-if="typeInformation && typeInformation.showPayment && canCreateThreadPaid" :payment="payment || {}" :type="typeInformation && typeInformation.type" @paymentChange="e => onPaymentChange(e.key, e.value)" />
     <attached-upload v-if="typeInformation.showAttached" :on-upload-attached.sync="onUploadAttached" :attached-list="post && post.attachedList" :header="header" :is-edit="isEdit" :url="url" @attachedChange="e => onPostContentChange(e.key, e.value)" />
-    <div class="vditor-container">
-      <div id="vditor" style="margin-top: 20px" />
-      <caller v-if="showCaller" @close="showCaller = false" @selectedCaller="selectActions" />
-      <topic-list v-show="showTopic" class="action-vditor" @selectedTopic="selectActions" />
-      <emoji-list v-show="showEmoji" class="action-vditor" @selectEmoji="selectActions" />
-    </div>
+    <Vditor
+      :show-caller="showCaller"
+      :show-topic="showTopic"
+      :show-emoji="showEmoji"
+      @textChange="value => onPostContentChange('text', value)"
+      @hideActions="hideActions"
+      @onActions="onActions"
+    />
     <!--my editor-->
     <div v-if="false" :class="['container-textarea', editorStyle]">
       <!--bar-->
@@ -67,8 +69,6 @@
 
 <script>
 import handleError from '@/mixin/handleError'
-import { call, topic, emoji } from '@/assets/svg-icons/vditor-icon'
-const Vditor = process.client ? require('vditor') : ''
 
 export default {
   name: 'Editor',
@@ -109,6 +109,7 @@ export default {
   },
   data() {
     return {
+      input: {},
       vditor: {},
       selectionStart: 0,
       selectionEnd: 0,
@@ -191,66 +192,10 @@ export default {
     }
   },
   mounted() {
-    Vditor && this.initVditor()
     // this.autoHeight()
     // this.emojiListener()
   },
   methods: {
-    initVditor() {
-      this.vditor = new Vditor('vditor', {
-        minHeight: 450,
-        placeholder: '请输入',
-        mode: 'wysiwyg',
-        toolbar: [
-          {
-            hotkey: '⌘-⇧-S',
-            name: '@',
-            tipPosition: 'ne',
-            tip: '@ 好友',
-            className: 'right',
-            icon: call,
-            click: () => {
-              this.hideActions()
-              this.showCaller = true
-            }
-          },
-          {
-            hotkey: '⌘-⇧-S',
-            name: '#',
-            tipPosition: 'ne',
-            tip: '新增话题',
-            className: 'right',
-            icon: topic,
-            click: () => {
-              this.hideActions()
-              this.showTopic = true
-            }
-          },
-          {
-            hotkey: '⌘-⇧-S',
-            name: 'my-emoji',
-            tipPosition: 'ne',
-            tip: '插入表情',
-            className: 'right',
-            icon: emoji,
-            click: () => {
-              this.hideActions()
-              this.showEmoji = true
-            }
-          },
-          'headings', 'bold', 'italic', 'strike', 'link', 'list', 'ordered-list', 'check', 'outdent', 'indent', 'quote', 'upload', 'line', 'code', 'inline-code', 'table', 'both', 'br', 'undo', 'redo'],
-        toolbarConfig: { pin: true },
-        cache: { enable: false },
-        after: () => {
-          // this.contentEditor.setValue('hello, Vditor + Vue!')
-        }
-      })
-    },
-    // 表情点击事件
-    // actionClick(code) {
-    //   this.vditor.insertValue(code)
-    //   this.emojiShow = false
-    // },
     onPostContentChange(key, value) {
       const _post = Object.assign({}, this.post)
       _post[key] = value
@@ -303,15 +248,10 @@ export default {
       this[toggle] = true
     },
     selectActions(code) {
-      // TODO 位置问题 vditor
-      this.vditor.enable()
-      this.vditor.insertValue(code)
+      this.getSelection()
+      const _text = this.post.text.slice(0, this.selectionStart) + code + this.post.text.slice(this.selectionStart, this.post.text.length)
+      this.onPostContentChange('text', _text)
       this.hideActions()
-
-      // this.getSelection()
-      // const _text = this.post.text.slice(0, this.selectionStart) + code + this.post.text.slice(this.selectionStart, this.post.text.length)
-      // this.onPostContentChange('text', _text)
-      // this.hideActions()
     },
     hideActions() {
       this.showEmoji = false
@@ -343,15 +283,6 @@ export default {
   .editor {
     width: 100%;
     margin-top: 20px;
-
-    .vditor-container {
-      position: relative;
-      > .action-vditor {
-        position: absolute;
-        top: 35px;
-        left: 2px;
-      }
-    }
 
     label {
       width: 100%;
