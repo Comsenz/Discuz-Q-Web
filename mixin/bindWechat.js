@@ -25,7 +25,11 @@ module.exports = {
       this.$store.dispatch('jv/get', `/oauth/wechat/pc/login/${this.wechatBind.session_token}`).then(res => {
         if (res.pc_login) {
           window.clearInterval(this.wehcatTimer)
-          this.userinfo()
+          clearInterval(this.wehcatLoginTimer)
+          this.$store.commit('session/SET_USER_ID', res._jv.id)
+          this.$store.commit('session/CHECK_SESSION', true)
+          this.$store.commit('session/SET_ACCESS_TOKEN', res.access_token)
+          // this.userinfo()
           this.isWechatModify = false
           this.$message.success('绑定成功')
         }

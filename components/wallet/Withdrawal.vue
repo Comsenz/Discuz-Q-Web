@@ -1,13 +1,19 @@
 <template>
-  <message
-    :title="$t('profile.towithdrawal')"
-    @close="$emit('close')"
-  >
+  <message :title="$t('profile.towithdrawal')" @close="$emit('close')">
     <div class="top">
       <div class="row">
-        <div class="head">{{ $t('modify.payee') }}</div>
-        <div class="body product-information">
-          <span class="title"> {{ name }}</span>
+        <div class="head">{{ $t('modify.wechatpayee') }}</div>
+        <div class="body reward">
+          <label>
+            <span />
+            <input
+              v-model="withdrawlNumber"
+              :placeholder="$t('modify.enterwechat')"
+              type="text"
+              class="rinput"
+            >
+          </label>
+          <div class="cashtext">{{ $t('pay.cashtext') }}</div>
         </div>
       </div>
       <div class="row">
@@ -55,7 +61,6 @@
               :disabled="!canClick"
               @click="sendsms"
             >{{ content }}</el-button>
-
           </label>
           <span
             v-if="usertestphon"
@@ -79,14 +84,9 @@
     </div>
     <div class="bottom">
       <span style="font-size:14px">
-        ￥{{ contint || 0 }}{{ $t('pay.rmb') + $t('profile.withdrawalto') + '，' + name || '' }} {{ $t('pay.ofAccount') }}
+        ￥{{ contint || 0 }}{{ $t('pay.rmb') + $t('profile.withdrawalto') + withdrawlNumber || '' }}{{ $t('pay.ofAccount') }}
       </span>
-      <el-button
-        size="medium"
-        type="primary"
-        class="border"
-        @click="btncash"
-      >{{ $t('profile.comfirmwithdrawal' ) }}</el-button>
+      <el-button size="medium" type="primary" class="border" @click="btncash">{{ $t('profile.comfirmwithdrawal' ) }}</el-button>
     </div>
   </message>
 </template>
@@ -132,7 +132,9 @@ export default {
       ticket: '', // 腾讯云验证码返回票据
       randstr: '', // 腾讯云验证码返回随机字符串
       captchaResult: {},
-      forums: ''
+      forums: '',
+      withdrawlNumber: '',
+      cashtype: 0
     }
   },
   mounted() {
@@ -161,6 +163,7 @@ export default {
       this.balance = this.userInfo.attributes.walletBalance
       this.usertestphon = this.userInfo.attributes.mobile
       this.userphon = this.userInfo.attributes.originalMobile
+      this.withdrawlNumber = this.userphon
       if (!this.usertestphon) {
         this.disabtype = true
       }
@@ -169,6 +172,7 @@ export default {
       this.forums = this.$store.state.site.info.attributes
       this.cost = this.forums.set_cash.cash_rate
       this.percentage = this.forums.set_cash.cash_rate * 100
+      this.cashtype = this.forums.paycenter && this.forums.paycenter.wxpay_mchpay_close ? 1 : 0
     },
     settlement() {
       setTimeout(() => {
@@ -288,8 +292,8 @@ export default {
           include: ['user', 'userWallet']
         },
         cash_apply_amount: this.canAmount,
-        cash_mobile: this.userphon,
-        cash_type: 1
+        cash_mobile: this.withdrawlNumber,
+        cash_type: this.cashtype
       }
       const postcash = status.run(() => this.$store.dispatch('jv/post', params))
       postcash
@@ -350,7 +354,7 @@ export default {
     }
 
     > .head {
-      width: 101px;
+      width: 142px;
       color: #000000;
 
       &.reward {
@@ -399,10 +403,11 @@ export default {
           &:active{
             border-color: #dcdfe6;
           }
-          .rinput {
-            font-size: 16px;
-            color: #000000;
-          }
+        }
+        .cashtext{
+          font-size: 11px;
+          color:#777777;
+          width:395px;
         }
         .phone {
           margin-top: 10px;
@@ -427,10 +432,13 @@ export default {
           > input {
             flex: 1;
             border: none;
-            color: #c0c4cc;
+            // color: #c0c4cc;
+          }
+          > .rinput {
+            font-size: 16px;
+            color: #000000;
           }
         }
-
         > .default-amounts {
           max-width: 660px;
           display: flex;

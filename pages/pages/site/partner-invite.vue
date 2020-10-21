@@ -1,132 +1,141 @@
 <template>
-  <div class="info">
-    <!-- 有偿加入 -->
-    <h2 :class="normal ? 'info-title' :'info-title tcolor'">{{ codeTitle }}</h2>
-    <!-- 站点内容部分-->
-    <div class="content-info abs">
-      <!-- 付费信息标题 -->
-      <p class="payinfo-title">{{ codeTips }}</p>
-      <!-- 创建时间 -->
-      <p>
-        <span class="color">{{ $t('site.creationtime') }}</span>
-        <span class="workdate">{{ forums.set_site && forums.set_site.site_install }}</span>
-      </p>
-      <!-- 圈子主人 -->
-      <p>
-        <span class="date color">{{ $t('site.circlemaster') }}</span>
-        <span class="img">
-          <Avatar
-            :user="{
-              username: forums.set_site && forums.set_site.site_author.username,
-              avatarUrl: forums.set_site && forums.set_site.site_author.avatar,
-            }"
-            :size="30"
-            :round="true"
-            class="avatar"
-          />
-        </span>
-        <span class="workdate">{{ forums.set_site && forums.set_site.site_author.username }}</span>
-      </p>
-      <!-- 用户 -->
-      <p>
-        <span class="date color">{{ $t('home.theme') }}</span>
-        <span class="workdate bold">{{ forums.other && forums.other.count_users }}</span>
-      </p>
-      <p class="member-img">
-        <span
-          v-for="(item, index) in forums.users"
-          :key="index"
-          class="img"
-        >
-          <Avatar
-            :user="item"
-            :size="30"
-            :round="true"
-            class="avatar"
-          />
-        </span>
-      </p>
-      <!-- 内容数量 -->
-      <p>
-        <span class="date color">{{ $t('manage.contents') }}</span>
-        <span class="workdate bold">{{ forums.other && forums.other.count_threads }}</span>
-      </p>
-      <!-- 站点模式 -->
-      <p>
-        <span class="date color ">{{ $t('site.circlemode') }}</span>
-        <span class="workdate">
-          {{ forums.set_site && forums.set_site.site_mode === 'pay' ? $t('site.paymentmode') +'， ' + '¥'+
-            ((forums.set_site && forums.set_site.site_price) || 0)+$t('post.yuan')+'， ' + $t('site.periodvalidity') +
-            ((forums.set_site && forums.set_site.site_expire) || 0 )+ $t('site.day'):$t('site.publicmode') }}
-        </span>
-      </p>
-      <!-- 我的权利 -->
-      <div class="myauthority">
-        <div class="myauth-t "> {{ $t('site.myauthority') }} </div>
-        <div class="myauth-c">
+  <div v-loading="loading" class="infocontainer">
+    <div v-if="forums && forums.users" class="info">
+      <!-- 有偿加入 -->
+      <h2 :class="normal ? 'info-title' :'info-title tcolor'">{{ codeTitle }}</h2>
+      <!-- 站点内容部分-->
+      <div class="content-info abs">
+        <!-- 付费信息标题 -->
+        <p class="payinfo-title">{{ codeTips }}</p>
+        <!-- 创建时间 -->
+        <p>
+          <span class="color">{{ $t('site.creationtime') }}</span>
+          <span class="workdate">{{ forums.set_site && forums.set_site.site_install }}</span>
+        </p>
+        <!-- 圈子主人 -->
+        <p>
+          <span class="date color">{{ $t('site.circlemaster') }}</span>
+          <span class="img">
+            <Avatar
+              :user="{
+                username: forums.set_site && forums.set_site.site_author.username,
+                avatarUrl: forums.set_site && forums.set_site.site_author.avatar,
+              }"
+              :size="30"
+              :round="true"
+              class="avatar"
+            />
+          </span>
+          <span class="workdate">{{ forums.set_site && forums.set_site.site_author.username }}</span>
+        </p>
+        <!-- 用户 -->
+        <p>
+          <span class="date color">{{ $t('home.theme') }}</span>
+          <span class="workdate bold">{{ forums.other && forums.other.count_users }}</span>
+        </p>
+        <p class="member-img">
           <span
-            v-for="(item, index) in permission"
+            v-for="(item, index) in forums.users"
             :key="index"
-          >{{ $t(`permission.${item.permission}`) }}</span>
+            class="img"
+          >
+            <Avatar
+              :user="item"
+              :size="30"
+              :round="true"
+              class="avatar"
+            />
+          </span>
+        </p>
+        <!-- 内容数量 -->
+        <p>
+          <span class="date color">{{ $t('manage.contents') }}</span>
+          <span class="workdate bold">{{ forums.other && forums.other.count_threads }}</span>
+        </p>
+        <!-- 站点模式 -->
+        <p>
+          <span class="date color ">{{ $t('site.circlemode') }}</span>
+          <span class="workdate">
+            {{ forums.set_site && forums.set_site.site_mode === 'pay' ? $t('site.paymentmode') +'， ' + '¥'+
+              ((forums.set_site && forums.set_site.site_price) || 0)+$t('post.yuan')+'， ' + $t('site.periodvalidity') +
+              ((forums.set_site && forums.set_site.site_expire) || 0 )+ $t('site.day'):$t('site.publicmode') }}
+          </span>
+        </p>
+        <!-- 我的权利 -->
+        <div class="myauthority">
+          <div class="myauth-t "> {{ $t('site.myauthority') }} </div>
+          <div class="myauth-c">
+            <span
+              v-for="(item, index) in permission"
+              :key="index"
+            >{{ $t(`permission.${item.permission}`) }}</span>
+          </div>
         </div>
-      </div>
 
-      <!-- 站点介绍 -->
+        <!-- 站点介绍 -->
+        <p>
+          <span class="date color rel">{{ $t('manage.siteintroduction') }}</span>
+          <span class="workdate2">{{ forums.set_site && forums.set_site.site_introduction }}</span>
+        </p>
+      </div>
       <p>
-        <span class="date color rel">{{ $t('manage.siteintroduction') }}</span>
-        <span class="workdate2">{{ forums.set_site && forums.set_site.site_introduction }}</span>
+        <span class="bold">{{ inviteData.user && inviteData.user.username }}</span>
+        邀请您，作为
+        <span class="bold">{{ `[ ${inviteData.group && inviteData.group.name ? inviteData.group.name : ''} ]` }}</span>加入
+        <span class="bold">{{ forums.set_site && forums.set_site.site_name }}</span>
+        {{ $t('site.site') }}
       </p>
-    </div>
-    <p>
-      <span class="bold">{{ inviteData.user && inviteData.user.username }}</span>
-      邀请您，作为
-      <span class="bold">{{ `[ ${inviteData.group && inviteData.group.name ? inviteData.group.name : ''} ]` }}</span>加入
-      <span class="bold">{{ forums.set_site && forums.set_site.site_name }}</span>
-      {{ $t('site.site') }}
-    </p>
-    <div>
-      <el-button
-        type="primary"
-        class="r-button"
-        @click="check"
-      >
-        {{ $t('site.accepttheinvitationandbecome') }}
-        {{ inviteData.group && inviteData.group.name }}
-      </el-button>
-    </div>
-    <!-- 验证提示 -->
-    <el-dialog
-      title="提示"
-      :visible.sync="dialogVisible"
-      width="30%"
-      :before-close="handleClose"
-    >
-      <span>{{ codeTips }}</span>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="dialogVisible = false">取 消</el-button>
+      <div>
         <el-button
           type="primary"
-          @click="submit"
-        >确 定</el-button>
-      </span>
-    </el-dialog>
+          class="r-button"
+          @click="check"
+        >
+          {{ $t('site.accepttheinvitationandbecome') }}
+          {{ inviteData.group && inviteData.group.name }}
+        </el-button>
+      </div>
+      <!-- 验证提示 -->
+      <el-dialog
+        title="提示"
+        :visible.sync="dialogVisible"
+        width="30%"
+        :before-close="handleClose"
+      >
+        <span>{{ codeTips }}</span>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="submit"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
+    <div v-if="threadsData.length > 0" class="thread">
+      <div class="threadtitle">部分内容预览</div>
+      <post-item v-for="(item, index) in threadsData" :key="index" :item="item" :infoimage="true" />
+    </div>
   </div>
 </template>
 
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
 import loginAuth from '@/mixin/loginAuth'
+import handleError from '@/mixin/handleError'
+
 export default {
-  mixins: [loginAuth],
+  mixins: [loginAuth, handleError],
   data() {
     return {
       isLogin: this.$store.getters['session/get']('isLogin'),
       pageSize: 7,
       pageNum: 1,
       userList: [],
+      threadsData: [],
       searchText: '',
       permission: [], // 权利
       inviteData: {}, // 邀请信息
@@ -134,8 +143,8 @@ export default {
       codeTips: '',
       codeTitle: '',
       inviteCode: '', // 邀请码,
-      normal: false
-
+      normal: false,
+      loading: true
     }
   },
   computed: {
@@ -147,6 +156,7 @@ export default {
     const { code } = this.$route.query
     this.inviteCode = code
     this.getInviteInfo(this.inviteCode)
+    this.loadThreads()
   },
   methods: {
     handleClose(done) {
@@ -277,6 +287,35 @@ export default {
         // 已经登陆的情况
         this.$router.push('/')
       }
+    },
+    // 加载当前主题数据
+    loadThreads() {
+      this.loading = true
+      const params = {
+        'filter[isDeleted]': 'no',
+        sort: '-createdAt',
+        include: 'user,user.groups,firstPost,firstPost.images,firstPost.postGoods,category,threadVideo,threadAudio',
+        'page[number]': 1,
+        'page[limit]': 10,
+        'filter[isApproved]': 1,
+        'filter[isSite]': 'yes'
+      }
+      status
+        .run(() => this.$store.dispatch('jv/get', ['threads', { params }]))
+        .then((res) => {
+          this.loading = false
+          this.threadsData = [...this.threadsData, ...res]
+        }, (e) => {
+          this.handleError(e)
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    }
+  },
+  head() {
+    return {
+      title: '邀请进站'
     }
   }
 }
@@ -294,6 +333,11 @@ export default {
 .color {
   color: #909399;
   margin-right: 15px;
+}
+.infocontainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
 }
 .info {
   display: flex;
@@ -399,5 +443,32 @@ export default {
       }
     }
   }
+}
+.thread{
+  margin-top: 145px;
+  overflow-y: auto;
+  width: 500px;
+  height: 477px;
+  background: #fbfbfb;
+  margin-left: 35px;
+  .threadtitle{
+    font-size: 14px;
+    color: #000000;
+    margin-left: 20px;
+    margin-top: 13px;
+  }
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color:white;
+  border-radius:100px;
+  -webkit-border-radius: 100px;
+}
+scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color:white;
+  border-radius:100px;
 }
 </style>

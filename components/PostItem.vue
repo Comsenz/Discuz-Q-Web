@@ -88,7 +88,7 @@
             <el-image
               v-for="(image, index) in item.firstPost.images.slice(0, 3)"
               :key="index"
-              class="image"
+              :class="{'image': true,'infoimage': infoimage}"
               :src="image.thumbUrl"
               :data-source="unpaid ? '' : image.url"
               :alt="image.filename"
@@ -248,6 +248,10 @@ export default {
     lazy: {
       type: Boolean,
       default: true
+    },
+    infoimage: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -497,6 +501,28 @@ export default {
         @media screen and (max-width: 1005px) {
           width: 130px;
           height: 130px;
+        }
+        &:nth-child(3n) {
+          margin-right: 0;
+        }
+        .image-slot {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          height: 100%;
+          background: #f5f7fa;
+          color: #909399;
+          font-size: 22px;
+        }
+      }
+      .infoimage {
+        width: 125px;
+        height: 125px;
+        margin-right: 10px;
+        @media screen and (max-width: 1005px) {
+          width: 70px;
+          height: 70px;
         }
         &:nth-child(3n) {
           margin-right: 0;
