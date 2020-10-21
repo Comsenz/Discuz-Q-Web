@@ -9,7 +9,13 @@
           <svg-icon type="delete" />{{ $t('topic.delete') }}
         </div>
       </post-item>
-      <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="favoriteList.length" @loadMore="loadMore" />
+      <list-load-more
+        :loading="loading"
+        :has-more="hasMore"
+        :page-num="pageNum"
+        :length="favoriteList.length"
+        @loadMore="loadMore"
+      />
     </div>
   </div>
 
@@ -42,7 +48,7 @@ export default {
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize
       }
-      this.$store.dispatch('jv/get', ['favorites', { params }]).then(data => {
+      this.$store.dispatch('jv/get', ['favorites', { params }]).then((data) => {
         this.total = data._jv.json.meta.threadCount
         this.hasMore = data.length === this.pageSize
         if (this.pageNum === 1) {
@@ -50,15 +56,16 @@ export default {
         } else {
           this.favoriteList = [...this.favoriteList, ...data]
         }
-        this.pageNum++
+        this.pageNum += 1
         if (data._jv) {
           this.hasMore = this.favoriteList.length < data._jv.json.meta.threadCount
         }
-      }, e => {
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.loading = false
       })
+        .finally(() => {
+          this.loading = false
+        })
     },
     loadMore() {
       this.getFavoriteList()
@@ -68,7 +75,7 @@ export default {
       this.$confirm(this.$t('topic.confirmCancelCollection'), this.$t('discuzq.msgBox.title'), {
         confirmButtonText: this.$t('discuzq.msgBox.confirm'),
         cancelButtonText: this.$t('discuzq.msgBox.cancel')
-      }).then(_ => {
+      }).then(() => {
         if (!item.canFavorite) {
           this.$message.error(this.$t('topic.deleteFail'))
         }
@@ -80,16 +87,18 @@ export default {
           },
           isFavorite: false
         }
-        return this.$store.dispatch('jv/patch', params).then(data => {
+        return this.$store.dispatch('jv/patch', params).then(() => {
           this.$message.success(this.$t('topic.cancelCollectionSuccess'))
           this.favoriteList.splice(index, 1)
-          this.total--
-        }, e => {
+          this.total -= 1
+        }, (e) => {
           this.handleError(e)
-        }).finally(() => {
-          this.loading = false
         })
-      }).catch(_ => {})
+          .finally(() => {
+            this.loading = false
+          })
+      })
+        .catch(() => {})
     }
   },
   head() {

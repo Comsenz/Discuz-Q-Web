@@ -3,7 +3,13 @@
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane v-for="(item, index) in noticeTypeList" :key="index" :name="item.value">
         <span slot="label">
-          <el-badge :is-dot="item.value !== 'chat' && userInfo.typeUnreadNotifications && userInfo.typeUnreadNotifications[item.value] ? true : false" class="badge-item">{{ item.label }}</el-badge>
+          <el-badge
+            :is-dot="item.value !== 'chat'
+              && userInfo.typeUnreadNotifications
+              && userInfo.typeUnreadNotifications[item.value]
+              ? true : false"
+            class="badge-item"
+          >{{ item.label }}</el-badge>
         </span>
       </el-tab-pane>
     </el-tabs>
@@ -15,7 +21,14 @@
             <svg-icon type="close" />
           </div>
         </div>
-        <list-load-more :loading="dialog.loading" :has-more="dialog.hasMore" :page-num="dialog.pageNum" :surplus="surplus" :length="dialog.list.length" @loadMore="loadMoreDialog" />
+        <list-load-more
+          :loading="dialog.loading"
+          :has-more="dialog.hasMore"
+          :page-num="dialog.pageNum"
+          :surplus="surplus"
+          :length="dialog.list.length"
+          @loadMore="loadMoreDialog"
+        />
       </template>
       <template v-else>
         <div v-for="(item, index) in noticeList" :key="index" class="notice-item">
@@ -24,7 +37,14 @@
             <svg-icon type="close" />
           </div>
         </div>
-        <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :surplus="surplus" :length="noticeList.length" @loadMore="loadMore" />
+        <list-load-more
+          :loading="loading"
+          :has-more="hasMore"
+          :page-num="pageNum"
+          :surplus="surplus"
+          :length="noticeList.length"
+          @loadMore="loadMore"
+        />
       </template>
     </div>
     <!-- 聊天框 -->
@@ -95,8 +115,8 @@ export default {
     getDialogList() {
       this.dialog.loading = true
       const params = {
-        'include': 'dialogMessage,sender,recipient,sender.groups,recipient.groups',
-        'sort': '-dialogMessageId',
+        include: 'dialogMessage,sender,recipient,sender.groups,recipient.groups',
+        sort: '-dialogMessageId',
         'page[number]': this.dialog.pageNum,
         'page[limit]': this.dialog.pageSize
       }
@@ -107,16 +127,18 @@ export default {
         } else {
           this.dialog.list = [...this.dialog.list, ...data]
         }
-        this.dialog.pageNum++
+        this.dialog.pageNum += 1
         if (data._jv && data._jv.json && data._jv.json.meta) {
-          this.dialog.hasMore = this.dialog.list.length < data._jv.json.meta.total && this.dialog.list.length >= this.dialog.pageSize
+          this.dialog.hasMore = this.dialog.list.length < data._jv.json.meta.total &&
+          this.dialog.list.length >= this.dialog.pageSize
           this.surplus = data._jv.json.meta.total - this.dialog.list.length
         }
-      }, e => {
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.dialog.loading = false
       })
+        .finally(() => {
+          this.dialog.loading = false
+        })
     },
     // 获取消息列表
     getNoticeList() {
@@ -141,17 +163,18 @@ export default {
           this.hasMore = this.noticeList.length < data._jv.json.meta.total && this.noticeList.length >= this.pageSize
           this.surplus = data._jv.json.meta.total - this.noticeList.length
         }
-        this.pageNum++
+        this.pageNum += 1
         try {
           await this.$store.dispatch('user/getUserInfo', this.userInfo.id)
         } catch (err) {
           console.log('getUserInfo err', err)
         }
-      }, e => {
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.loading = false
       })
+        .finally(() => {
+          this.loading = false
+        })
     },
     loadMore() {
       this.getNoticeList()
@@ -164,23 +187,24 @@ export default {
       this.$confirm(this.$t('topic.confirmDelete'), this.$t('discuzq.msgBox.title'), {
         confirmButtonText: this.$t('discuzq.msgBox.confirm'),
         cancelButtonText: this.$t('discuzq.msgBox.cancel')
-      }).then(_ => {
+      }).then(() => {
         if (type === 'chat') {
-          this.$store.dispatch('jv/delete', `dialog/${id}`).then(res => {
+          this.$store.dispatch('jv/delete', `dialog/${id}`).then((res) => {
             if (res) {
               this.$message.success(this.$t('topic.deleteSuccess'))
               this.dialog.list.splice(index, 1)
             }
           })
         } else {
-          this.$store.dispatch('jv/delete', `notification/${id}`).then(res => {
+          this.$store.dispatch('jv/delete', `notification/${id}`).then((res) => {
             if (res) {
               this.$message.success(this.$t('topic.deleteSuccess'))
               this.noticeList.splice(index, 1)
             }
           })
         }
-      }).catch(_ => {})
+      })
+        .catch(() => {})
     },
     handleClick(e) {
       if (e.name !== 'chat') {

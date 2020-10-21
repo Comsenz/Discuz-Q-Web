@@ -3,12 +3,25 @@
     <div v-if="item.isEssence" class="essence">
       <svg-icon type="index-essence" />
     </div>
-    <avatar v-if="item.user" :user="{ id: item.user.id, username: item.user.username, avatarUrl: item.user.avatarUrl, isReal: item.user.isReal }" class="avatar" />
+    <avatar
+      v-if="item.user"
+      :user="{ id: item.user.id,
+               username: item.user.username,
+               avatarUrl: item.user.avatarUrl,
+               isReal: item.user.isReal
+      }"
+      class="avatar"
+    />
     <div class="main-cont">
       <div class="top-flex">
         <nuxt-link v-if="item.user" :to="`/pages/profile/index?userId=${item.user.id}`" class="user-info">
           <span class="user-name">{{ item.user.username }}</span>
-          <span v-if="item.user && item.user.groups && item.user.groups.length > 0 && item.user.groups[0].isDisplay" class="admin">({{ item.user.groups[0].name }})</span>
+          <span
+            v-if="item.user && item.user.groups && item.user.groups.length > 0 && item.user.groups[0].isDisplay"
+            class="admin"
+          >
+            ({{ item.user.groups[0].name }})
+          </span>
         </nuxt-link>
         <div v-if="item.createdAt" class="time">
           {{ $t("topic.publishAt") }} {{ item.createdAt | formatDate }}
@@ -50,11 +63,19 @@
         <div class="first-post" @click.self="toDetail">
           <div @click="onClickContent">
             <div v-if="item.type === 1" class="title">{{ $t('home.released') }}
-              <svg-icon v-show="parseFloat(item.price) > 0" type="pay-yuan" class="blue" style="font-size: 17px; display: inline-block; margin-right: 5px;" />
+              <svg-icon
+                v-show="parseFloat(item.price) > 0"
+                type="pay-yuan"
+                class="blue"
+                style="font-size: 17px; display: inline-block; margin-right: 5px;"
+              />
               <span class="blue ">{{ item.title }}</span></div>
             <div v-else class="content">
               <svg-icon v-show="parseFloat(item.price) > 0" type="pay-yuan" class="icon-pay-yuan" />
-              <div :class="{'content-block': parseFloat(item.price) > 0}" v-html="$xss(formatTopicHTML(item.firstPost.summary))" />
+              <div
+                :class="{'content-block': parseFloat(item.price) > 0}"
+                v-html="$xss(formatTopicHTML(item.firstPost.summary))"
+              />
             </div>
           </div>
           <!-- 图片 -->
@@ -270,17 +291,17 @@ export default {
             this.item.firstPost._jv &&
             this.item.firstPost._jv.id
         },
-        isLiked: isLiked
+        isLiked
       }
       return this.$store
         .dispatch('jv/patch', params)
         .then(
-          (data) => {
+          () => {
             this.$message.success(isLiked ? this.$t('discuzq.msgBox.likeSuccess') : this.$t('discuzq.msgBox.cancelLikeSuccess'))
             if (isLiked) {
-              this.likeCount++
+              this.likeCount += 1
             } else {
-              this.likeCount--
+              this.likeCount -= 1
             }
             this.isLiked = isLiked
             this.$emit('change')

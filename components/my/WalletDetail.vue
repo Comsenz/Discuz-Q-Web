@@ -106,12 +106,12 @@
 </template>
 
 <script>
-import { status } from '@/library/jsonapi-vuex/index';
-import { time2MinuteOrHour } from '@/utils/time';
-import handleError from '@/mixin/handleError';
+import { status } from '@/library/jsonapi-vuex/index'
+import { time2MinuteOrHour } from '@/utils/time'
+import handleError from '@/mixin/handleError'
 export default {
   mixins: [
-    handleError,
+    handleError
   ],
   data() {
     return {
@@ -129,119 +129,119 @@ export default {
       // 钱包明细状态选择文本
       options2: [{
         value: '',
-        label: this.$t('profile.all') + this.$t('profile.type'),
+        label: this.$t('profile.all') + this.$t('profile.type')
       }, {
         value: '10',
-        label: this.$t('profile.withdrawalfreeze'),
+        label: this.$t('profile.withdrawalfreeze')
 
       }, {
         value: '11',
-        label: this.$t('profile.withdrawalsucceed'),
+        label: this.$t('profile.withdrawalsucceed')
 
       }, {
         value: '12',
-        label: this.$t('profile.withdrawalunfreeze'),
+        label: this.$t('profile.withdrawalunfreeze')
 
       }, {
         value: '30',
-        label: this.$t('profile.registeredincome'),
+        label: this.$t('profile.registeredincome')
 
       }, {
         value: '31',
-        label: this.$t('profile.rewardincome'),
+        label: this.$t('profile.rewardincome')
 
       }, {
         value: '32',
-        label: this.$t('profile.laborincome'),
+        label: this.$t('profile.laborincome')
 
       }, {
         value: '50',
-        label: this.$t('profile.laborexpenditure'),
+        label: this.$t('profile.laborexpenditure')
 
       }, {
         value: '41',
-        label: this.$t('profile.givearewardforthetheme'),
+        label: this.$t('profile.givearewardforthetheme')
 
       }, {
         value: '60',
-        label: this.$t('profile.paidtoseeyourtheme'),
+        label: this.$t('profile.paidtoseeyourtheme')
 
       }, {
         value: '61',
-        label: this.$t('profile.paidtoview'),
+        label: this.$t('profile.paidtoview')
 
-      }],
+      }]
 
-    };
+    }
   },
   mounted() {
-    this.getList2();
+    this.getList2()
   },
   methods: {
     setCurrentTime() {
-      const date = window.currentTime || new Date();
-      const year = date.getFullYear();
-      let month = date.getMonth() + 1;
-      month = month < 10 ? `0${month}` : month;
-      this.date2 = `${year}-${month}`;
+      const date = window.currentTime || new Date()
+      const year = date.getFullYear()
+      let month = date.getMonth() + 1
+      month = month < 10 ? `0${month}` : month
+      this.date2 = `${year}-${month}`
     },
     // 金额排序
     sortAmount(str1, str2) {
-      return (str1.change_available_amount * 1) - (str2.change_available_amount * 1);
+      return (str1.change_available_amount * 1) - (str2.change_available_amount * 1)
     },
     // 处理时间
     timeHandle(time) {
-      return time2MinuteOrHour(time);
+      return time2MinuteOrHour(time)
     },
     // 钱包状态格式化
     statusFormat2(row) {
       switch (row.change_type) {
-        case 10: return this.$t('profile.withdrawalfreeze');
-        case 11: return this.$t('profile.withdrawalsucceed');
-        case 12: return this.$t('profile.withdrawalunfreeze');
-        case 30: return this.$t('profile.registeredincome');
-        case 31: return this.$t('profile.rewardincome');
-        case 32: return this.$t('profile.laborincome');
-        case 50: return this.$t('profile.laborexpenditure');
-        case 41: return this.$t('profile.givearewardforthetheme');
-        case 60: return this.$t('profile.paidtoseeyourtheme');
-        case 61: return this.$t('profile.paidtoview');
+        case 10: return this.$t('profile.withdrawalfreeze')
+        case 11: return this.$t('profile.withdrawalsucceed')
+        case 12: return this.$t('profile.withdrawalunfreeze')
+        case 30: return this.$t('profile.registeredincome')
+        case 31: return this.$t('profile.rewardincome')
+        case 32: return this.$t('profile.laborincome')
+        case 50: return this.$t('profile.laborexpenditure')
+        case 41: return this.$t('profile.givearewardforthetheme')
+        case 60: return this.$t('profile.paidtoseeyourtheme')
+        case 61: return this.$t('profile.paidtoview')
 
-        default: return '未知状态';
+        default: return '未知状态'
       }
     },
     // 金额格式化
     amountFormat(row) {
       // 订单
       if (row.amount > 0) {
-        return `<font color="09BB07">-￥${row.amount}</font>`;
+        return `<font color="09BB07">-￥${row.amount}</font>`
       }
       if (row > 0) {
-        return `<font color="#FA5151">+￥${row}</font>`;
+        return `<font color="#FA5151">+￥${row}</font>`
       }
-      return `<font style="color:#09BB07">-￥${row.substr(1)}</font>`;
+      return `<font style="color:#09BB07">-￥${row.substr(1)}</font>`
     },
     // 时间格式化
     dateFormat(row) {
-      return this.timeHandle(row.created_at);
+      return this.timeHandle(row.created_at)
     },
     // 钱包明细日期选中
     bindDateChange2(e) {
-      this.date2 = e;
+      this.date2 = e
       if (this.date2 !== null) {
-        this.getList2('filter');
+        this.getList2('filter')
       }
     },
     // 钱包明细状态筛选类型
     confirm2(e) {
-      this.filterSelected2 = e;
-      this.getList2('filter');
+      this.filterSelected2 = e
+      this.getList2('filter')
     },
     // 获取钱包明细数据
     getList2(type) {
-      this.loading = true;
-      const dateArr = this.date2.split('-');
-      const days = new Date(dateArr[0], dateArr[1], 0).getDate();
+      this.loading = true
+      const dateArr = this.date2.split('-')
+      const days = new Date(dateArr[0], dateArr[1], 0).getDate()
       // change_type 10提现冻结，11提现成功，12提现解冻，30注册收入，31打赏收入，32人工收入，50人工支出
       const params = {
         include: 'user,order.user,order.thread,order.thread.firstPost',
@@ -249,58 +249,58 @@ export default {
         'page[number]': this.pageNum2,
         'page[limit]': this.pageSize2,
         'filter[start_time]': `${this.date2}-01-00-00-00`,
-        'filter[end_time]': `${this.date2}-${days}-00-00-00`,
-      };
+        'filter[end_time]': `${this.date2}-${days}-00-00-00`
+      }
       // 过滤时间或查看类型，重新设置当前页码和提现数据
       if (type && type === 'filter') {
-        params.pageNum2 = 1;
-        this.dataList2 = [];
+        params.pageNum2 = 1
+        this.dataList2 = []
       }
       // 当有选择某个分类类型时，添加新的过滤参数
       if (this.filterSelected2) {
-        params['filter[change_type]'] = this.filterSelected2;
+        params['filter[change_type]'] = this.filterSelected2
       }
       status
         .run(() => this.$store.dispatch('jv/get', ['wallet/log', { params }]))
         .then((res) => {
           // 处理文字
-          const result = this.handleHandle(res);
+          const result = this.handleHandle(res)
           // 处理钱
-          this.sumMoney2 = this.handlemoney2(result);
-          this.dataList2 = result;
-          this.total2 = res._jv.json.meta.total;
+          this.sumMoney2 = this.handlemoney2(result)
+          this.dataList2 = result
+          this.total2 = res._jv.json.meta.total
         }, (e) => {
-          this.handleError(e);
+          this.handleError(e)
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
     // 钱包总金额
     handlemoney2(result) {
-      const res = JSON.parse(JSON.stringify(result));
-      let sum = 0;
+      const res = JSON.parse(JSON.stringify(result))
+      let sum = 0
 
       res.forEach((item, index) => {
         // eslint-disable-next-line no-useless-escape
-        res[index] = parseFloat(item.change_available_amount.replace(/\+|\-|\*|\?/g, ''));
-        sum = sum + res[index];
-      });
+        res[index] = parseFloat(item.change_available_amount.replace(/\+|\-|\*|\?/g, ''))
+        sum = sum + res[index]
+      })
 
-      return sum.toFixed(2);
+      return sum.toFixed(2)
     },
     // 钱包处理文字
     handleHandle(res) {
-      const results = JSON.parse(JSON.stringify(res));
+      const results = JSON.parse(JSON.stringify(res))
       results.forEach((item, index) => {
-        let desc = this.handleTitle(item);
+        let desc = this.handleTitle(item)
         // 截取42个字
         if (desc.length > 42) {
-          desc = `${desc.substr(0, 42)}...`;
+          desc = `${desc.substr(0, 42)}...`
         }
-        results[index].change_desc = desc;
-      });
-      return results;
+        results[index].change_desc = desc
+      })
+      return results
     },
     // 处理钱包主题相关的数据
     handleTitle(item) {
@@ -309,57 +309,57 @@ export default {
           // 打赏收入
           const user = item.order.user
             ? item.order.user.username
-            : this.$t('profile.theuserwasdeleted');
-          const regex = /(<([^>]+)>)/gi;
+            : this.$t('profile.theuserwasdeleted')
+          const regex = /(<([^>]+)>)/gi
           const thread = item.order.thread
             ? item.order.thread.firstPost.summary.replace(regex, '')
-            : this.$t('profile.thethemewasdeleted');
-          return `${user} ${this.$t('profile.givearewardforyourtheme')} ${thread}`;
+            : this.$t('profile.thethemewasdeleted')
+          return `${user} ${this.$t('profile.givearewardforyourtheme')} ${thread}`
         }
         case 41: {
           // 打赏支出
-          const regex = /(<([^>]+)>)/gi;
+          const regex = /(<([^>]+)>)/gi
           const thread = item.order.thread
             ? item.order.thread.firstPost.summary.replace(regex, '')
-            : this.$t('profile.thethemewasdeleted');
-          return `${this.$t('profile.givearewardforthetheme')} ${thread}`;
+            : this.$t('profile.thethemewasdeleted')
+          return `${this.$t('profile.givearewardforthetheme')} ${thread}`
         }
         case 60: {
           // 付费主题收入
           const user = item.order.user
             ? item.order.user.username
-            : this.$t('profile.theuserwasdeleted');
-          const regex = /(<([^>]+)>)/gi;
+            : this.$t('profile.theuserwasdeleted')
+          const regex = /(<([^>]+)>)/gi
           const thread = item.order.thread
             ? item.order.thread.firstPost.summary.replace(regex, '')
-            : this.$t('profile.givearewardforthetheme');
-          return `${user} ${this.$t('profile.paidtoseeyourtheme')} ${thread}`;
+            : this.$t('profile.givearewardforthetheme')
+          return `${user} ${this.$t('profile.paidtoseeyourtheme')} ${thread}`
         }
         case 61: {
           // 付费主题支出
-          const regex = /(<([^>]+)>)/gi;
+          const regex = /(<([^>]+)>)/gi
           const thread = item.order.thread
             ? item.order.thread.firstPost.summary.replace(regex, '')
-            : this.$t('profile.thethemewasdeleted');
-          return `${this.$t('profile.paidtoview')} ${thread}`;
+            : this.$t('profile.thethemewasdeleted')
+          return `${this.$t('profile.paidtoview')} ${thread}`
         }
         default:
-          return item.change_desc;
+          return item.change_desc
       }
     },
     // 钱包分页
     handleSizeChange2(val) {
-      this.pageNum2 = 1;
-      this.pageSize2 = val;
-      this.getList2();
+      this.pageNum2 = 1
+      this.pageSize2 = val
+      this.getList2()
     },
     // 钱包分页
     handleCurrentChange2(val) {
-      this.pageNum2 = val;
-      this.getList2();
-    },
-  },
-};
+      this.pageNum2 = val
+      this.getList2()
+    }
+  }
+}
 </script>
 <style lang='scss' scoped>
 .walletDetail {

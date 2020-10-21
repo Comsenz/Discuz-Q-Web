@@ -14,11 +14,20 @@
         </div>
       </div>
       <div v-if="total > 0" class="new-post">
-        <div class="new-post-cont">{{ $t('home.hasNewContent', { total }) }} <span class="refresh" @click="reloadThreadsList">{{ $t('home.clickRefresh') }}</span></div>
+        <div class="new-post-cont">
+          {{ $t('home.hasNewContent', { total }) }}
+          <span class="refresh" @click="reloadThreadsList">{{ $t('home.clickRefresh') }}</span>
+        </div>
       </div>
       <div class="post-list">
         <post-item v-for="(item, index) in threadsData" :key="index" :item="item" />
-        <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="threadsData.length" @loadMore="loadMore" />
+        <list-load-more
+          :loading="loading"
+          :has-more="hasMore"
+          :page-num="pageNum"
+          :length="threadsData.length"
+          @loadMore="loadMore"
+        />
       </div>
     </main>
     <aside class="cont-right">
@@ -45,7 +54,7 @@ export default {
   name: 'Index',
   mixins: [handleError],
   // 异步数据用法
-  async asyncData({ params, store, query }, callback) {
+  async asyncData({ store, query }, callback) {
     if (!env.isSpider) {
       callback(null, {})
     }
@@ -68,7 +77,7 @@ export default {
     }
     const userParams = {
       include: 'groups',
-      'limit': 4
+      limit: 4
     }
     try {
       const resData = {}
@@ -80,18 +89,29 @@ export default {
       if (Array.isArray(threadsStickyData)) {
         resData.threadsStickyData = threadsStickyData
       } else if (threadsStickyData && threadsStickyData._jv && threadsStickyData._jv.json) {
-        var _threadsStickyData = threadsStickyData._jv.json.data || []
+        const _threadsStickyData = threadsStickyData._jv.json.data || []
         _threadsStickyData.forEach((item, index) => {
-          _threadsStickyData[index] = { ...item, ...item.attributes, 'firstPost': item.relationships.firstPost.data, '_jv': { 'id': item.id }}
+          _threadsStickyData[index] = {
+            ...item,
+            ...item.attributes,
+            firstPost: item.relationships.firstPost.data,
+            jv: { id: item.id }
+          }
         })
         resData.threadsStickyData = _threadsStickyData
       }
       if (Array.isArray(threadsData)) {
         resData.threadsData = threadsData
       } else if (threadsData && threadsData._jv && threadsData._jv.json) {
-        var _threadsData = threadsData._jv.json.data || []
+        const _threadsData = threadsData._jv.json.data || []
         _threadsData.forEach((item, index) => {
-          _threadsData[index] = { ...item, ...item.attributes, 'firstPost': item.relationships.firstPost.data, 'user': item.relationships.user.data, '_jv': { 'id': item.id }}
+          _threadsData[index] = {
+            ...item,
+            ...item.attributes,
+            firstPost: item.relationships.firstPost.data,
+            user: item.relationships.user.data,
+            _jv: { id: item.id }
+          }
         })
         resData.threadsData = _threadsData
       }
@@ -100,7 +120,7 @@ export default {
       } else if (categoryData && categoryData._jv && categoryData._jv.json) {
         const _categoryData = categoryData._jv.json.data || []
         _categoryData.forEach((item, index) => {
-          _categoryData[index] = { ...item, ...item.attributes, '_jv': { 'id': item.id }}
+          _categoryData[index] = { ...item, ...item.attributes, _jv: { id: item.id }}
         })
         resData.categoryData = _categoryData
       }
@@ -199,7 +219,7 @@ export default {
         'filter[categoryId]': this.categoryId,
         include: ['firstPost']
       }
-      this.$store.dispatch('jv/get', ['threads', { params }]).then(data => {
+      this.$store.dispatch('jv/get', ['threads', { params }]).then((data) => {
         this.threadsStickyData = [...data]
       })
     },
@@ -215,16 +235,20 @@ export default {
         'filter[type]': this.threadType,
         'filter[isEssence]': this.threadEssence,
         'filter[fromUserId]': this.fromUserId,
-        'sort': this.sort,
+        sort: this.sort,
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize
       }
       if (this.threadType !== null) {
         params['filter[type]'] = this.threadType
       }
-      this.$store.dispatch('jv/get', ['threads', { params }]).then(data => {
+      this.$store.dispatch('jv/get', ['threads', { params }]).then((data) => {
         this.hasMore = data.length === this.pageSize
-        const _threadCount = data && data._jv && data._jv.json && data._jv.json.meta && data._jv.json.meta.threadCount || 0
+        const _threadCount = (data &&
+          data._jv &&
+          data._jv.json &&
+          data._jv.json.meta &&
+          data._jv.json.meta.threadCount) || 0
         if (this.pageNum === 1) {
           this.threadsData = data
           this.threadCount = _threadCount
@@ -235,18 +259,19 @@ export default {
           this.hasMore = this.threadsData.length < _threadCount
         }
         // 加载成功 页码加1，为加载更多做准备
-        this.pageNum++
+        this.pageNum += 1
         if (this.timer) {
           clearInterval(this.timer)
         }
         this.timer = setInterval(() => {
           this.autoLoadThreads()
         }, 30000)
-      }, e => {
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.loading = false
       })
+        .finally(() => {
+          this.loading = false
+        })
     },
     // 点击加载更多
     loadMore() {
@@ -266,9 +291,9 @@ export default {
         'filter[fromUserId]': this.fromUserId,
         'page[limit]': 1
       }
-      this.$store.dispatch('jv/get', ['threads', { params }]).then(data => {
+      this.$store.dispatch('jv/get', ['threads', { params }]).then((data) => {
         if (data && data._jv) {
-          const _threadCount = data._jv.json && data._jv.json.meta && data._jv.json.meta.threadCount || 0
+          const _threadCount = (data._jv.json && data._jv.json.meta && data._jv.json.meta.threadCount) || 0
           if (this.threadCount > 0) {
             this.total = _threadCount - this.threadCount > 0 ? _threadCount - this.threadCount : 0
           }

@@ -3,7 +3,8 @@
     <div class="main-cont">
       <div class="top-flex">
         <div class="topic-title">
-          #<span class="topic-name">{{ item.content }}</span># <svg-icon v-if="item.recommended === 1" type="recommend" />
+          #<span class="topic-name">{{ item.content }}</span>#
+          <svg-icon v-if="item.recommended === 1" type="recommend" />
         </div>
         <div class="view-count">{{ $t('home.topicViewCount', {total: item.view_count }) }}</div>
       </div>
@@ -12,7 +13,10 @@
           <div @click="onClickContent">
             <div class="content">
               <svg-icon v-show="parseFloat(thread.price) > 0" type="pay-yuan" class="icon-pay-yuan" />
-              <div :class="{'content-block': parseFloat(thread.price) > 0}" v-html="$xss(formatTopicHTML(thread.firstPost.summary))" />
+              <div
+                :class="{'content-block': parseFloat(thread.price) > 0}"
+                v-html="$xss(formatTopicHTML(thread.firstPost.summary))"
+              />
             </div>
           </div>
           <!-- 图片 -->
@@ -106,7 +110,7 @@ export default {
   computed: {
     // 话题最新主题
     thread() {
-      return this.item && this.item.lastThread && this.item.lastThread.length > 0 && this.item.lastThread[0] || {}
+      return (this.item && this.item.lastThread && this.item.lastThread.length > 0 && this.item.lastThread[0]) || {}
     },
     // 未付费
     unpaid() {
@@ -121,7 +125,7 @@ export default {
     },
     // 点击图片 判断是否付费， 未付费跳转详情页
     onClickImage() {
-      if (this.thread && !this.thread.unpaid || !this.canViewPostsFn()) return
+      if ((this.thread && !this.thread.unpaid) || !this.canViewPostsFn()) return
       this.routerLink()
     },
     // 点击视频 判断是否付费， 未付费跳转详情页

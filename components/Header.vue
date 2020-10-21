@@ -5,7 +5,10 @@
         <div class="logo" @click="toIndex">
           <img
             v-show="forums && forums.set_site"
-            :src="forums && forums.set_site && forums.set_site.site_logo ? forums.set_site.site_logo : require('@/assets/logo.png')"
+            :src="forums
+              && forums.set_site
+              && forums.set_site.site_logo
+              ? forums.set_site.site_logo : require('@/assets/logo.png')"
             alt="头部logo"
           >
         </div>
@@ -23,17 +26,41 @@
       </div>
       <!-- 未登录 -->
       <div v-if="siteClose || !islogin ">
-        <el-button v-if="siteClose || !userId" :disabled="siteClose" size="small" class="h-button h-button1" @click="login">{{ $t('user.login') }}</el-button>
-        <el-button v-if="siteClose || !userId" :disabled="(forums && forums.set_reg && !forums.set_reg.register_close) || siteClose" size="small" class="h-button h-button2" @click="register">{{ $t('user.register') }}</el-button>
+        <el-button
+          v-if="siteClose || !userId"
+          :disabled="siteClose"
+          size="small"
+          class="h-button h-button1"
+          @click="login"
+        >
+          {{ $t('user.login') }}
+        </el-button>
+        <el-button
+          v-if="siteClose || !userId"
+          :disabled="(forums && forums.set_reg && !forums.set_reg.register_close) || siteClose"
+          size="small"
+          class="h-button h-button2"
+          @click="register"
+        >
+          {{ $t('user.register') }}
+        </el-button>
       </div>
       <!-- 已登录 -->
       <div v-if="userId && JSON.stringify(userInfo) !== '{}' && !siteClose" class="flex">
         <avatar
-          :user="{ id: userInfo.id, username: userInfo.username, avatarUrl: userInfo.avatarUrl, isReal: userInfo.isReal}"
+          :user="{ id: userInfo.id,
+                   username: userInfo.username,
+                   avatarUrl: userInfo.avatarUrl,
+                   isReal: userInfo.isReal
+          }"
           :size="35"
           :round="true"
         />
-        <nuxt-link v-if="userInfo.username && userInfo.id" :to="`/pages/profile/index?userId=${userInfo.id}`" class="menu-item user-name text-hidden">
+        <nuxt-link
+          v-if="userInfo.username && userInfo.id"
+          :to="`/pages/profile/index?userId=${userInfo.id}`"
+          class="menu-item user-name text-hidden"
+        >
           {{ userInfo.username }}
         </nuxt-link>
         <nuxt-link to="/pages/my/notice" class="menu-item notice-btn">
@@ -86,7 +113,7 @@ export default {
   },
   watch: {
     // 监听路由变化
-    $route(to, from) {
+    $route(to) {
       if (to.path === '/pages/site/close') {
         this.siteClose = true
       } else {
@@ -124,7 +151,7 @@ export default {
       this.$store
         .dispatch('session/logout')
         .then(() => {
-          location.href = `/`
+          location.href = '/'
         })
     },
     // 轮询获取用户信息，用于判断是否有新消息
@@ -144,9 +171,7 @@ export default {
     },
     // 跳往注册页面
     register() {
-      this.$router.push(
-        `/pages/user/register?validate=${this.forums && this.forums.set_reg && this.forums.set_reg.register_validate}&code=${this.code}`
-      )
+      this.$router.push(`/pages/user/register?validate=${this.forums && this.forums.set_reg && this.forums.set_reg.register_validate}&code=${this.code}`)
     },
     // 跳转登录页面
     login() {
@@ -155,7 +180,7 @@ export default {
     // 跳转搜索页面
     onClickSearch() {
       if (this.inputVal) {
-        this.$router.push('/pages/site/search?q=' + this.inputVal)
+        this.$router.push(`/pages/site/search?q=${this.inputVal}`)
       }
     },
     // 跳转首页

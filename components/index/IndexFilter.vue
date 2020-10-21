@@ -3,16 +3,39 @@
     <div class="index-filter">
       <template v-for="(item, index) in filterQuery">
         <template v-if="item.value === 'followed'">
-          <div v-if=" userId > 0" :key="index" class="filter-btn" :class="{ 'active': query.filter === item.value }" @click="onClickFilter(item.value)">{{ item.label }}</div>
+          <div
+            v-if=" userId > 0"
+            :key="index"
+            class="filter-btn"
+            :class="{ 'active': query.filter === item.value }"
+            @click="onClickFilter(item.value)"
+          >
+            {{ item.label }}
+          </div>
         </template>
-        <div v-else :key="index" class="filter-btn" :class="{ 'active': query.filter === item.value }" @click="onClickFilter(item.value)">{{ item.label }}</div>
+        <div
+          v-else
+          :key="index"
+          class="filter-btn"
+          :class="{ 'active': query.filter === item.value }"
+          @click="onClickFilter(item.value)"
+        >
+          {{ item.label }}
+        </div>
       </template>
       <el-dropdown class="filter-dropdown" placement="bottom" @command="handleCommandType">
         <span class="el-dropdown-link" :class="{'active': query.filterType !== ''}">
           {{ $t('home.filterType') }}<i class="el-icon-arrow-down el-icon--right" />
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item v-for="(item,index) in filterType" :key="index" :command="item.value" :class="{'active': item.value === query.filterType}">{{ item.label }}</el-dropdown-item>
+          <el-dropdown-item
+            v-for="(item,index) in filterType"
+            :key="index"
+            :command="item.value"
+            :class="{'active': item.value === query.filterType}"
+          >
+            {{ item.label }}
+          </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
       <el-dropdown class="filter-dropdown" placement="bottom" @command="handleCommandSort">
@@ -20,7 +43,14 @@
           {{ $t('core.sort') }}<i class="el-icon-arrow-down el-icon--right" />
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item v-for="(item,index) in filterSort" :key="index" :command="item.value" :class="{'active': item.value === query.filterSort}">{{ item.label }}</el-dropdown-item>
+          <el-dropdown-item
+            v-for="(item,index) in filterSort"
+            :key="index"
+            :command="item.value"
+            :class="{'active': item.value === query.filterSort}"
+          >
+            {{ item.label }}
+          </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>

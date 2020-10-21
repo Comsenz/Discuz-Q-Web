@@ -110,12 +110,12 @@
 </template>
 
 <script>
-import { status } from '@/library/jsonapi-vuex/index';
-import { time2MinuteOrHour } from '@/utils/time';
-import handleError from '@/mixin/handleError';
+import { status } from '@/library/jsonapi-vuex/index'
+import { time2MinuteOrHour } from '@/utils/time'
+import handleError from '@/mixin/handleError'
 export default {
   mixins: [
-    handleError,
+    handleError
   ],
   data() {
     return {
@@ -132,90 +132,90 @@ export default {
       userId: this.$store.getters['session/get']('userId'), // 获取当前登陆用户的ID
       options4: [{
         value: '',
-        label: this.$t('profile.all') + this.$t('profile.type'),
+        label: this.$t('profile.all') + this.$t('profile.type')
       }, {
         value: '0',
-        label: this.$t('profile.tobepaid'),
+        label: this.$t('profile.tobepaid')
       }, {
         value: '1',
-        label: this.$t('profile.paid'),
+        label: this.$t('profile.paid')
       }, {
         value: '2',
-        label: this.$t('profile.cancelorder'),
+        label: this.$t('profile.cancelorder')
       }, {
         value: '3',
-        label: this.$t('profile.payfail'),
+        label: this.$t('profile.payfail')
       }, {
         value: '4',
-        label: this.$t('profile.orderexpired'),
-      }],
+        label: this.$t('profile.orderexpired')
+      }]
 
-    };
+    }
   },
   mounted() {
-    this.setCurrentTime();
-    this.getList4();
+    this.setCurrentTime()
+    this.getList4()
   },
   methods: {
     setCurrentTime() {
-      const date = window.currentTime || new Date();
-      const year = date.getFullYear();
-      let month = date.getMonth() + 1;
-      month = month < 10 ? `0${month}` : month;
-      this.date4 = `${year}-${month}`;
+      const date = window.currentTime || new Date()
+      const year = date.getFullYear()
+      let month = date.getMonth() + 1
+      month = month < 10 ? `0${month}` : month
+      this.date4 = `${year}-${month}`
     },
     // 金额排序
     sortAmount(str1, str2) {
-      return (str1.amount * 1) - (str2.amount * 1);
+      return (str1.amount * 1) - (str2.amount * 1)
     },
     // 处理时间
     timeHandle(time) {
-      return time2MinuteOrHour(time);
+      return time2MinuteOrHour(time)
     },
     // 订单明细状态格式化
     statusFormat4(row) {
       switch (row.status) {
-        case 0: return this.$t('profile.tobepaid');
-        case 1: return this.$t('profile.paid');
-        case 2: return this.$t('profile.cancelorder');
-        case 3: return this.$t('profile.payfail');
-        case 4: return this.$t('profile.orderexpired');
+        case 0: return this.$t('profile.tobepaid')
+        case 1: return this.$t('profile.paid')
+        case 2: return this.$t('profile.cancelorder')
+        case 3: return this.$t('profile.payfail')
+        case 4: return this.$t('profile.orderexpired')
 
-        default: return '未知状态';
+        default: return '未知状态'
       }
     },
     // 时间格式化
     dateFormat(row) {
-      return this.timeHandle(row.created_at);
+      return this.timeHandle(row.created_at)
     },
     // 金额格式化
     amountFormat(row) {
       // 订单
       if (row.amount > 0) {
-        return `<font color="09BB07">-￥${row.amount}</font>`;
+        return `<font color="09BB07">-￥${row.amount}</font>`
       }
       if (row > 0) {
-        return `<font color="09BB07">+￥${row}</font>`;
+        return `<font color="09BB07">+￥${row}</font>`
       }
-      return `<font style="color:#FA5151">-￥${row.substr(1)}</font>`;
+      return `<font style="color:#FA5151">-￥${row.substr(1)}</font>`
     },
     // 订单日期选中
     bindDateChange4(e) {
-      this.date4 = e;
+      this.date4 = e
       if (this.date4 !== null) {
-        this.getList4('filter');
+        this.getList4('filter')
       }
     },
     // 订单状态筛选类型
     confirm4(e) {
-      this.filterSelected4 = e;
-      this.getList4('filter');
+      this.filterSelected4 = e
+      this.getList4('filter')
     },
     // 获取订单数据
     getList4(type) {
-      this.loading = true;
-      const dateArr = this.date4.split('-');
-      const days = new Date(dateArr[0], dateArr[1], 0).getDate();
+      this.loading = true
+      const dateArr = this.date4.split('-')
+      const days = new Date(dateArr[0], dateArr[1], 0).getDate()
       // status 0 待付款，1 已付款 ，2取消订单，3支付失败，4 订单已过期
       const params = {
         include: 'user,thread,thread.firstPost',
@@ -223,99 +223,99 @@ export default {
         'page[number]': this.pageNum4,
         'page[limit]': this.pageSize4,
         'filter[start_time]': `${this.date4}-01-00-00-00`,
-        'filter[end_time]': `${this.date4}-${days}-00-00-00`,
-      };
+        'filter[end_time]': `${this.date4}-${days}-00-00-00`
+      }
       if (type && type === 'filter') {
-        params.pageNum4 = 1;
-        this.dataList4 = [];
+        params.pageNum4 = 1
+        this.dataList4 = []
       }
       if (this.filterSelected4 || this.filterSelected4 === 0) {
-        params['filter[status]'] = this.filterSelected4;
+        params['filter[status]'] = this.filterSelected4
       }
       status
         .run(() => this.$store.dispatch('jv/get', ['orders', { params }]))
         .then((res) => {
           // 处理文字
-          const result = this.handleHandle4(res);
+          const result = this.handleHandle4(res)
           // 处理钱
-          this.sumMoney4 = this.handlemoney4(result);
-          this.dataList4 = result;
-          this.total4 = res._jv.json.meta.total;
+          this.sumMoney4 = this.handlemoney4(result)
+          this.dataList4 = result
+          this.total4 = res._jv.json.meta.total
         }, (e) => {
-          this.handleError(e);
+          this.handleError(e)
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
     // 处理订单
     handlemoney4(result) {
-      const res = JSON.parse(JSON.stringify(result));
-      let sum = 0;
+      const res = JSON.parse(JSON.stringify(result))
+      let sum = 0
       res.forEach((item, index) => {
         // eslint-disable-next-line no-useless-escape
-        res[index] = parseFloat(item.amount.replace(/\+|\-|\*|\?/g, ''));
-        sum = sum + res[index];
-      });
-      return sum.toFixed(2);
+        res[index] = parseFloat(item.amount.replace(/\+|\-|\*|\?/g, ''))
+        sum = sum + res[index]
+      })
+      return sum.toFixed(2)
     },
     // 订单处理文字
     handleHandle4(res) {
-      const results = JSON.parse(JSON.stringify(res));
+      const results = JSON.parse(JSON.stringify(res))
       results.forEach((item, index) => {
-        let desc = this.handleTitle4(item);
+        let desc = this.handleTitle4(item)
         // 截取42个字
         if (desc.length > 42) {
-          desc = `${desc.substr(0, 42)}...`;
+          desc = `${desc.substr(0, 42)}...`
         }
-        results[index].titleType = desc;
-      });
-      return results;
+        results[index].titleType = desc
+      })
+      return results
     },
     // 处理订单相关数据
     handleTitle4(item) {
       switch (item.type) {
         case 1: {
           // 注册
-          return this.$t('profile.register');
+          return this.$t('profile.register')
         }
         case 2: {
           // 打赏支出
-          const regex = /(<([^>]+)>)/gi;
+          const regex = /(<([^>]+)>)/gi
           const thread = item.thread
             ? item.thread.firstPost.summary.replace(regex, '')
-            : this.$t('profile.thethemewasdeleted');
-          return `${this.$t('profile.givearewardforthetheme')} ${thread}`;
+            : this.$t('profile.thethemewasdeleted')
+          return `${this.$t('profile.givearewardforthetheme')} ${thread}`
         }
         case 3: {
           // 付费主题支出
-          const regex = /(<([^>]+)>)/gi;
+          const regex = /(<([^>]+)>)/gi
           const thread = item.thread
             ? item.thread.firstPost.summary.replace(regex, '')
-            : this.$t('profile.thethemewasdeleted');
-          return `${this.$t('profile.paidtoview')} ${thread}`;
+            : this.$t('profile.thethemewasdeleted')
+          return `${this.$t('profile.paidtoview')} ${thread}`
         }
         case 4: {
           // 付费用户组
-          return this.$t('profile.paygroup');
+          return this.$t('profile.paygroup')
         }
         default:
-          return item.type;
+          return item.type
       }
     },
     // 订单金额分页
     handleSizeChange4(val) {
-      this.pageNum4 = 1;
-      this.pageSize4 = val;
-      this.getList4();
+      this.pageNum4 = 1
+      this.pageSize4 = val
+      this.getList4()
     },
     // 订单金额分页
     handleCurrentChange4(val) {
-      this.pageNum4 = val;
-      this.getList4();
-    },
-  },
-};
+      this.pageNum4 = val
+      this.getList4()
+    }
+  }
+}
 </script>
 <style lang='scss' scoped>
 .orderDetail {

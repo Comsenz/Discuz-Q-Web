@@ -23,21 +23,21 @@
 export default {
   data() {
     return {
-      username: '',
-    };
+      username: ''
+    }
   },
   mounted() {
-    const { username } = this.$route.query;
+    const { username } = this.$route.query
     if (username) {
-      this.username = username;
+      this.username = username
     }
   },
   methods: {
     home() {
-      this.$router.push('/');
-    },
-  },
-};
+      this.$router.push('/')
+    }
+  }
+}
 </script>
 <style lang='scss' scoped>
 .info {

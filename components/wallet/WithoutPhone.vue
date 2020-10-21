@@ -20,14 +20,14 @@ export default {
   name: 'WalletPassword',
   data() {
     return {
-    };
+    }
   },
   methods: {
     tobind() {
-      this.$router.push('/pages/my/profile?phonebind=true');
-    },
-  },
-};
+      this.$router.push('/pages/my/profile?phonebind=true')
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

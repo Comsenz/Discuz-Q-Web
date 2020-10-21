@@ -22,7 +22,9 @@
       <el-dropdown class="handle-dropdown" placement="bottom" trigger="click" @command="handleCommand">
         <el-button type="primary" size="medium" class="create-url">{{ $t('manage.generateInvitationUrl') }}</el-button>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item v-for="(item,index) in Object.keys(groupMap)" :key="index" :command="item">{{ groupMap[item] + $t('manage.invitationUrl') }}</el-dropdown-item>
+          <el-dropdown-item v-for="(item,index) in Object.keys(groupMap)" :key="index" :command="item">
+            {{ groupMap[item] + $t('manage.invitationUrl') }}
+          </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -37,8 +39,12 @@
       </el-table-column>
       <el-table-column :label="$t('manage.operate')" width="130">
         <template slot-scope="scope">
-          <el-button type="text" :disabled="scope.row.status !== 1" class="btn" @click="deleteInvite(scope.row._jv.id)">{{ $t('manage.setInvalid') }}</el-button>
-          <el-button type="text" :disabled="scope.row.status !== 1" class="btn" @click="copyLink(scope.row.code)">{{ $t('manage.share') }}</el-button>
+          <el-button type="text" :disabled="scope.row.status !== 1" class="btn" @click="deleteInvite(scope.row._jv.id)">
+            {{ $t('manage.setInvalid') }}
+          </el-button>
+          <el-button type="text" :disabled="scope.row.status !== 1" class="btn" @click="copyLink(scope.row.code)">
+            {{ $t('manage.share') }}
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -66,9 +72,7 @@ export default {
   props: {
     groupMap: {
       type: Object,
-      default: () => {
-        return {}
-      }
+      default: () => ({})
     }
   },
   data() {
@@ -123,7 +127,7 @@ export default {
           const list = res
           const _groupMap = this.groupMap
           if (list && list.length > 0) {
-            list.forEach(item => {
+            list.forEach((item) => {
               const day = timestamp2day(item.endtime)
               if (item.status === 1) {
                 item.time = this.$t('manage.remainDay', { day })
@@ -135,11 +139,12 @@ export default {
           }
           this.inviteList = list
         }
-      }, e => {
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.loading = false
       })
+        .finally(() => {
+          this.loading = false
+        })
     },
     // 管理员创建邀请链接
     createAdminInvite(groupId) {
@@ -152,13 +157,14 @@ export default {
           }
         }
       }
-      this.$store.dispatch('jv/post', [{ _jv: { type: 'invite' }}, { data: params }]).then((res) => {
+      this.$store.dispatch('jv/post', [{ _jv: { type: 'invite' }}, { data: params }]).then(() => {
         this.reloadList()
-      }, e => {
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.loading = false
       })
+        .finally(() => {
+          this.loading = false
+        })
     },
     // 删除链接
     deleteInvite(id) {
@@ -166,30 +172,31 @@ export default {
       const params = {
         _jv: {
           type: 'invite',
-          id: id
+          id
         }
       }
       this.$confirm(this.$t('manage.confirmDelete'), this.$t('discuzq.msgBox.title'), {
         confirmButtonText: this.$t('discuzq.msgBox.confirm'),
         cancelButtonText: this.$t('discuzq.msgBox.cancel')
-      }).then(_ => {
+      }).then(() => {
         this.loading = true
-        this.$store.dispatch('jv/delete', params).then((res) => {
+        this.$store.dispatch('jv/delete', params).then(() => {
           this.$message.success(this.$t('discuzq.msgBox.operateSuccess'))
           this.reloadList()
-        }, e => {
+        }, (e) => {
           this.handleError(e)
-        }).finally(() => {
-          this.loading = false
         })
+          .finally(() => {
+            this.loading = false
+          })
       })
-        .catch(_ => {})
+        .catch(() => {})
     },
     // 复制链接到剪切板
     copyLink(code) {
       const oInput = document.createElement('input')
       if (process.client) {
-        oInput.value = window.location.protocol + '//' + window.location.host + '/pages/site/partner-invite?code=' + code
+        oInput.value = `${window.location.protocol}//${window.location.host}/pages/site/partner-invite?code=${code}`
         oInput.id = 'copyInput'
         document.body.appendChild(oInput)
         oInput.select()

@@ -14,36 +14,36 @@ export default {
       type: '',
       forums: '',
       popTitle: '',
-      popDetail: '',
-    };
+      popDetail: ''
+    }
   },
   mounted() {
-    const { type } = this.$route.query;
-    this.type = type;
-    this.getAttachMent();
+    const { type } = this.$route.query
+    this.type = type
+    this.getAttachMent()
   },
   methods: {
     getAttachMent() {
       const params = {
         include: 'users',
-        'filter[tag]': 'agreement',
-      };
+        'filter[tag]': 'agreement'
+      }
       this.$store.dispatch('jv/get', ['forum', { params }]).then((res) => {
-        this.forums = res;
-        this.open(this.type);
-      });
+        this.forums = res
+        this.open(this.type)
+      })
     },
     open(type) {
       if (type === 'register') {
-        this.popTitle = this.$t('permission.user.agreementRegister');
-        this.popDetail = this.forums.agreement.register_content;
+        this.popTitle = this.$t('permission.user.agreementRegister')
+        this.popDetail = this.forums.agreement.register_content
       } else {
-        this.popTitle = this.$t('permission.user.agreementPrivacy');
-        this.popDetail = this.forums.agreement.privacy_content;
+        this.popTitle = this.$t('permission.user.agreementPrivacy')
+        this.popDetail = this.forums.agreement.privacy_content
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 <style lang='scss' scoped>
 .agreement {

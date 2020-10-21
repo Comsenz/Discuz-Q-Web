@@ -8,7 +8,16 @@
       >
       <div class="site-info">
         <div class="avatar">
-          <avatar v-if="forums.set_site && forums.set_site.site_author" :user="{ id:forums.set_site.site_author.id, username: forums.set_site.site_author.username, avatarUrl: forums.set_site.site_author.avatar}" :size="40" :round="true" />
+          <avatar
+            v-if="forums.set_site && forums.set_site.site_author"
+            :user="{
+              id:forums.set_site.site_author.id,
+              username: forums.set_site.site_author.username,
+              avatarUrl: forums.set_site.site_author.avatar
+            }"
+            :size="40"
+            :round="true"
+          />
           <avatar v-else :user="{ id: 0, username: '无', avatarUrl: ''}" :prevent-jump="true" :size="40" :round="true" />
           <div v-if="forums.set_site && forums.set_site.site_author" class="right">
             <div class="label">{{ $t('site.circlemaster') }}</div>
@@ -25,39 +34,66 @@
         </div>
         <div class="create-time">
           <div class="label">{{ $t('manage.creationtime') }}</div>
-          <div v-if="forums && forums.set_site && forums.set_site.site_install" class="value">{{ (forums.set_site && forums.set_site.site_install).substr(0, 10) }}</div>
+          <div v-if="forums && forums.set_site && forums.set_site.site_install" class="value">
+            {{ (forums.set_site && forums.set_site.site_install).substr(0, 10) }}
+          </div>
         </div>
       </div>
       <div class="site-detail">
         <div class="header">
           <div class="title base-font-size">{{ $t('manage.siteintroduction') }}</div>
-          <div v-if="+groupsId === 1" class="modify" @click="handleModify">{{ isModify ? $t('profile.cancelModify') : $t('profile.modify') }}</div>
+          <div v-if="+groupsId === 1" class="modify" @click="handleModify">
+            {{ isModify ? $t('profile.cancelModify') : $t('profile.modify') }}
+          </div>
         </div>
         <div v-if="forums && forums.set_site" v-loading="loading" class="content base-font-size">
           <template v-if="isModify">
             <el-input v-model="inputInfo" type="textarea" :rows="5" />
-            <el-button type="primary" class="confirm-btn" @click="confirmModify">{{ $t('profile.confirmModify') }}</el-button>
+            <el-button type="primary" class="confirm-btn" @click="confirmModify">
+              {{ $t('profile.confirmModify') }}
+            </el-button>
           </template>
           <template v-else>{{ forums.set_site.site_introduction }}</template>
         </div>
       </div>
       <div v-if="forums && forums.set_site" class="circlemode">
         <div class="title base-font-size">{{ $t('site.circlemode') }} \ {{ $t('site.price') }}</div>
-        <div v-if="forums.set_site &&forums.set_site.site_mode === 'public'" class="content base-font-size grey-color">{{ $t('site.publicmode') }} \ {{ $t('post.free') }}  </div>
-        <div v-else class="content base-font-size grey-color">{{ $t('site.paymentmode') }} \ {{ $t('post.yuanItem') }}{{ forums.set_site.site_price }}（{{ forums.set_site.site_expire ? $t('site.periodvalidity') + forums.set_site.site_expire + $t('site.day') : $t('site.permanent') }}）</div>
+        <div v-if="forums.set_site &&forums.set_site.site_mode === 'public'" class="content base-font-size grey-color">
+          {{ $t('site.publicmode') }} \ {{ $t('post.free') }}
+        </div>
+        <div v-else class="content base-font-size grey-color">
+          {{ $t('site.paymentmode') }} \ {{ $t('post.yuanItem') }}{{ forums.set_site.site_price }}
+          （{{ forums.set_site.site_expire ?
+            $t('site.periodvalidity') + forums.set_site.site_expire + $t('site.day')
+            : $t('site.permanent') }}）
+        </div>
       </div>
       <div class="permission">
         <div class="title base-font-size">{{ $t('manage.myRole') }} \ {{ $t('site.permission') }}</div>
         <div v-if="userInfo" class="user-detail">
           <div class="avatar">
-            <avatar :user="{ id: userInfo.id, username: userInfo.username, avatarUrl: userInfo.avatarUrl}" :prevent-jump="true" :size="50" :round="true" />
+            <avatar
+              :user="{ id: userInfo.id, username: userInfo.username, avatarUrl: userInfo.avatarUrl}"
+              :prevent-jump="true"
+              :size="50"
+              :round="true"
+            />
           </div>
           <div class="user-info">
             <div class="name base-font-size">{{ userInfo.username }}</div>
-            <div class="role">{{ $t('site.role') }} {{ forums.user && forums.user.groups && forums.user.groups.length > 0 && forums.user.groups[0].name || '' }}</div>
-            <div v-if="userInfo.joinedAt" class="join-time">{{ $t('manage.joinedTime') }} {{ userInfo.joinedAt.substr(0, 10) }}
-              <template v-if="forums && forums.set_site.site_mode === 'pay'">,{{ $t('site.periodvalidity') + $t('site.to') + handleExpiredAt(userInfo.expiredAt) }}
-                <!-- <template v-if="userInfo.expiredAt">({{ $t('pay.surplus') + (handleDays('userInfo.expiredAt') > 0 ? handleDays('userInfo.expiredAt') : 0) + $t('site.day') }})</template> -->
+            <div class="role">
+              {{ $t('site.role') }}
+              {{ forums.user && forums.user.groups && forums.user.groups.length > 0 && forums.user.groups[0].name
+                || '' }}
+            </div>
+            <div v-if="userInfo.joinedAt" class="join-time">
+              {{ $t('manage.joinedTime') }} {{ userInfo.joinedAt.substr(0, 10) }}
+              <template v-if="forums && forums.set_site.site_mode === 'pay'">
+                ,{{ $t('site.periodvalidity') + $t('site.to') + handleExpiredAt(userInfo.expiredAt) }}
+                <!-- <template v-if="userInfo.expiredAt">
+                  ({{ $t('pay.surplus') + (handleDays('userInfo.expiredAt') > 0
+                  ? handleDays('userInfo.expiredAt') : 0) + $t('site.day') }})
+                  </template> -->
               </template>
             </div>
             <div class="permission-list">
@@ -100,7 +136,8 @@ export default {
   },
   mounted() {
     this.inputInfo = this.forums && this.forums.set_site && this.forums.set_site.site_introduction
-    this.groupsId = this.forums && this.forums.user && this.forums.user.groups && this.forums.user.groups.length > 0 && this.forums.user.groups[0].id
+    this.groupsId = this.forums && this.forums.user && this.forums.user.groups && this.forums.user.groups.length > 0 &&
+    this.forums.user.groups[0].id
     this.getPermissions()
     this.reloadForums()
   },
@@ -127,7 +164,7 @@ export default {
         }]
       }
       this.loading = true
-      this.$store.dispatch('jv/post', [{ _jv: { type: 'settings' }}, { data: params }]).then(async(res) => {
+      this.$store.dispatch('jv/post', [{ _jv: { type: 'settings' }}, { data: params }]).then(async() => {
         try {
           await this.$store.dispatch('site/getSiteInfo')
         } catch (error) {
@@ -135,11 +172,13 @@ export default {
         }
         this.isModify = false
         this.$message.success(this.$t('discuzq.msgBox.modifySuccess'))
-      }).catch(e => {
-        this.handleError(e)
-      }).finally(() => {
-        this.loading = false
       })
+        .catch((e) => {
+          this.handleError(e)
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     // 调用 用户组权限 接口
     getPermissions() {
@@ -147,9 +186,13 @@ export default {
         'filter[type]': 'invite',
         include: ['permission']
       }
-      this.$store.dispatch('jv/get', ['groups', { params }]).then(res => {
-        const groupsId = this.forums && this.forums.user && this.forums.user.groups && this.forums.user.groups.length > 0 && this.forums.user.groups[0].id
-        res.forEach(item => {
+      this.$store.dispatch('jv/get', ['groups', { params }]).then((res) => {
+        const groupsId = this.forums &&
+        this.forums.user &&
+        this.forums.user.groups &&
+        this.forums.user.groups.length > 0 &&
+        this.forums.user.groups[0].id
+        res.forEach((item) => {
           if (+item._jv.id === +groupsId) {
             this.permissionList = item.permission
           }
@@ -159,9 +202,8 @@ export default {
     handleExpiredAt(date) {
       if (date) {
         return date.substr(0, 10)
-      } else {
-        return this.$t('site.permanent')
       }
+      return this.$t('site.permanent')
     },
     handleDays(date) {
       const _date = Math.round(new Date(date) / 1000)

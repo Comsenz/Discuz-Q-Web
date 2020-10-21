@@ -113,9 +113,7 @@ export default {
   props: {
     groupMap: {
       type: Object,
-      default: () => {
-        return {}
-      }
+      default: () => ({})
     }
   },
   data() {
@@ -167,7 +165,7 @@ export default {
         'page[number]': 1,
         'page[limit]': 1
       }
-      this.$store.dispatch('jv/get', ['wallet/log', { params }]).then(res => {
+      this.$store.dispatch('jv/get', ['wallet/log', { params }]).then((res) => {
         if (res && res._jv && res._jv.json && res._jv.json.meta) {
           this.totalMoney = res._jv.json.meta.sumChangeAvailableAmount
         }
@@ -180,7 +178,7 @@ export default {
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         'filter[username]': this.searchText,
-        'sort': this.sort
+        sort: this.sort
       }
       this.$store.dispatch('jv/get', ['invite/users', { params }]).then((res) => {
         if (res) {
@@ -189,16 +187,17 @@ export default {
             this.total = res._jv.json.meta.total
           }
         }
-      }, e => {
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.loading = false
       })
+        .finally(() => {
+          this.loading = false
+        })
     },
     // 普通用户邀请
     createUserInvite() {
-      const _can_invite_user_scale = this.forums && this.forums.other && this.forums.other.can_invite_user_scale
-      if (!_can_invite_user_scale) {
+      const canInviteUserScale = this.forums && this.forums.other && this.forums.other.can_invite_user_scale
+      if (!canInviteUserScale) {
         return this.$message.error(this.$t('core.permission_denied'))
       }
       const params = {
@@ -210,11 +209,12 @@ export default {
         if (res && res._jv) {
           this.copyLink(res._jv.code)
         }
-      }, e => {
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.loading = false
       })
+        .finally(() => {
+          this.loading = false
+        })
     },
     // 查看详情
     viewDetail(item) {
@@ -224,7 +224,7 @@ export default {
     copyLink(code) {
       const oInput = document.createElement('input')
       if (process.client) {
-        oInput.value = window.location.protocol + '//' + window.location.host + '/pages/site/partner-invite?code=' + code
+        oInput.value = `${window.location.protocol}//${window.location.host}/pages/site/partner-invite?code=${code}`
         oInput.id = 'copyInput'
         document.body.appendChild(oInput)
         oInput.select()

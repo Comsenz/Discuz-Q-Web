@@ -47,14 +47,14 @@
 </template>
 
 <script>
-import { status } from '@/library/jsonapi-vuex/index';
-import handleError from '@/mixin/handleError';
-import tencentCaptcha from '@/mixin/tencentCaptcha';
+import { status } from '@/library/jsonapi-vuex/index'
+import handleError from '@/mixin/handleError'
+import tencentCaptcha from '@/mixin/tencentCaptcha'
 
 export default {
   name: 'Findpwd',
   mixins: [
-    tencentCaptcha, handleError,
+    tencentCaptcha, handleError
   ],
   data() {
     return {
@@ -70,93 +70,93 @@ export default {
       validate: false, // 默认不开启注册审核
       code: '', // 注册邀请码
       site_mode: '', // 站点模式
-      isPaid: false, // 是否付费''
-    };
+      isPaid: false // 是否付费''
+    }
   },
   computed: {
     forums() {
-      return this.$store.state.site.info.attributes || {};
-    },
+      return this.$store.state.site.info.attributes || {}
+    }
   },
   mounted() {
-    const { validate, register, code } = this.$route.query;
+    const { validate, register, code } = this.$route.query
     if (validate) {
-      this.validate = JSON.parse(validate);
+      this.validate = JSON.parse(validate)
     }
     if (register) {
-      this.register = JSON.parse(register);
+      this.register = JSON.parse(register)
     }
     if (code !== 'undefined') {
-      this.code = code;
+      this.code = code
     }
     if (this.forums && this.forums.set_site && this.forums.set_site.site_mode) {
-      this.site_mode = this.forums.set_site.site_mode;
+      this.site_mode = this.forums.set_site.site_mode
     }
     if (this.forums && this.forums.set_reg) {
-      this.validate = this.forums.set_reg.register_validate;
+      this.validate = this.forums.set_reg.register_validate
     }
   },
   methods: {
     onInput(e) {
-      this.phoneNumber = e.target.value.replace(/[^\d]/g, '');
-      this.isVerifyDisabled = this.phoneNumber.length !== 11;
+      this.phoneNumber = e.target.value.replace(/[^\d]/g, '')
+      this.isVerifyDisabled = this.phoneNumber.length !== 11
     },
     countDown(interval) {
-      this.canCountDown = true;
-      this.countDownSecond = interval;
+      this.canCountDown = true
+      this.countDownSecond = interval
       const countDownInterval = setInterval(() => {
-        this.countDownSecond -= 1;
+        this.countDownSecond -= 1
         if (this.countDownSecond === 0) {
-          this.canCountDown = false;
-          clearInterval(countDownInterval);
+          this.canCountDown = false
+          clearInterval(countDownInterval)
         }
-      }, 1000);
+      }, 1000)
     },
     async sendVerifyCode() {
       let params = {
         _jv: { type: 'sms/send' },
         mobile: this.phoneNumber,
-        type: 'reset_pwd',
-      };
-      params = await this.checkCaptcha(params);
+        type: 'reset_pwd'
+      }
+      params = await this.checkCaptcha(params)
       status.run(() => this.$store.dispatch('jv/post', params))
         .then((res) => {
-          if (res.interval) this.countDown(res.interval);
+          if (res.interval) this.countDown(res.interval)
         }, (e) => {
           const { response:
             {
-              data: { errors },
-            },
-          } = e;
-          if (errors[0]) return this.$message.error(errors[0].detail[0]);
-        });
+              data: { errors }
+            }
+          } = e
+          if (errors[0]) return this.$message.error(errors[0].detail[0])
+        })
     },
     submit() {
       if (this.verifyCode === '') {
-        this.$message.error('验证码不能为空');
+        this.$message.error('验证码不能为空')
       } else if (this.newPassword === '') {
-        this.$message.error('新密码不能为空');
+        this.$message.error('新密码不能为空')
       } else if (this.newPasswordRepeat === '') {
-        this.$message.error('重复密码不能为空');
+        this.$message.error('重复密码不能为空')
       } else if (this.newPassword !== this.newPasswordRepeat) {
-        this.$message.error('二次密码输入不一致');
+        this.$message.error('二次密码输入不一致')
       } else {
         const params = {
           _jv: { type: 'sms/verify' },
           mobile: this.phoneNumber,
           code: this.verifyCode,
           password: this.newPassword,
-          type: 'reset_pwd',
-        };
+          type: 'reset_pwd'
+        }
         status.run(() => this.$store.dispatch('jv/post', params))
           .then((res) => {
-            if (process.client) window.localStorage.setItem('username', res.username);
-            this.$router.push('/pages/modify/resetpwdsuccess');
-          }, e => this.handleError(e));
+            if (process.client) window.localStorage.setItem('username', res.username)
+            this.$router.push('/pages/modify/resetpwdsuccess')
+          }, e => this.handleError(e))
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

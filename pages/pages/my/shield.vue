@@ -212,7 +212,7 @@
 </template>
 
 <script>
-import handleError from '@/mixin/handleError';
+import handleError from '@/mixin/handleError'
 export default {
   layout: 'center_layout',
   mixins: [handleError],
@@ -233,183 +233,183 @@ export default {
       inputVal: '',
       time: null,
       userList: [],
-      searchTotal: 0,
-    };
+      searchTotal: 0
+    }
   },
   computed: {
     userId() {
-      return this.$store.getters['session/get']('userId');
-    },
+      return this.$store.getters['session/get']('userId')
+    }
   },
   mounted() {
-    this.getShieldList();
-    this.getShieldData();
+    this.getShieldList()
+    this.getShieldData()
   },
   methods: {
     handleSizeChange(val) {
-      this.pageNum = 1;
-      this.pageSize = val;
-      this.getShieldList();
+      this.pageNum = 1
+      this.pageSize = val
+      this.getShieldList()
     },
     handleCurrentChange(val) {
-      this.pageNum = val;
-      this.getShieldList();
+      this.pageNum = val
+      this.getShieldList()
     },
     handleSizeChange2(val) {
-      this.pageNum = 1;
-      this.pageSize = val;
-      this.getUserList(this.inputVal);
+      this.pageNum = 1
+      this.pageSize = val
+      this.getUserList(this.inputVal)
     },
     handleCurrentChange2(val) {
-      this.pageNum = val;
-      this.getUserList(this.inputVal);
+      this.pageNum = val
+      this.getUserList(this.inputVal)
     },
     // 获取黑名单数据
     getShieldData() {
-      this.loading = true;
+      this.loading = true
       this.$store.dispatch('jv/get', `users/${this.userId}/deny`).then((res) => {
-        this.unbundUserData = [];
-        this.unbundUserData.push(Number(this.userId));
+        this.unbundUserData = []
+        this.unbundUserData.push(Number(this.userId))
         res.forEach((v, i) => {
-          this.unbundUserData.push(res[i].id);
-        });
-        this.shieldTotal = res.length;
+          this.unbundUserData.push(res[i].id)
+        })
+        this.shieldTotal = res.length
       }, e => this.handleError(e))
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
     // 获取黑名单列表
     getShieldList() {
-      this.loading = true;
+      this.loading = true
       const params = {
         'page[limit]': this.pageSize,
-        'page[number]': this.pageNum,
-      };
+        'page[number]': this.pageNum
+      }
       this.$store.dispatch('jv/get', [`users/${this.userId}/deny`, { params }]).then((res) => {
-        this.shieldList = res;
+        this.shieldList = res
       }, e => this.handleError(e))
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
     changeshield(uid) {
       this.$confirm('是否解除屏蔽该用户?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning',
+        type: 'warning'
       }).then(() => {
-        this.unbundlingUser(uid);
+        this.unbundlingUser(uid)
       })
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消解除屏蔽',
-          });
-        });
+            message: '已取消解除屏蔽'
+          })
+        })
     },
     // 解绑用户
     unbundlingUser(uid) {
       this.$store.dispatch('jv/delete', `users/${uid}/deny`).then(() => {
-        this.unbundlingArry.push(uid);
-        this.$message.success(this.$t('profile.unboundsucceed'));
-        this.getShieldList();
-        this.getShieldData();
-      });
+        this.unbundlingArry.push(uid)
+        this.$message.success(this.$t('profile.unboundsucceed'))
+        this.getShieldList()
+        this.getShieldData()
+      })
     },
     // 添加屏蔽
     addShield() {
-      this.isSearch = true;
-      this.userList = [];
-      this.searchTotal = 0;
+      this.isSearch = true
+      this.userList = []
+      this.searchTotal = 0
     },
     onClickSearch(e) {
-      this.inputVal = e.target.value;
-      this.unbundlingArry = [];
-      this.userList = [];
-      this.pageNum = 1;
-      this.getUserList(e.target.value);
+      this.inputVal = e.target.value
+      this.unbundlingArry = []
+      this.userList = []
+      this.pageNum = 1
+      this.getUserList(e.target.value)
     },
     searchinput() {
-      this.userList = [];
-      this.searchTotal = 0;
+      this.userList = []
+      this.searchTotal = 0
     },
     // 搜索用户列表
     getUserList(key) {
-      this.loading2 = true;
+      this.loading2 = true
       const params = {
         include: 'groups',
         sort: 'createdAt',
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
-        'filter[username]': `*${key}*`,
-      };
+        'filter[username]': `*${key}*`
+      }
       this.$store.dispatch('jv/get', ['users', { params }]).then((res) => {
-        const resp = res;
+        const resp = res
         resp.forEach((v, i) => {
-          resp[i].groupName = v.groups[0] ? v.groups[0].name : '';
-        });
+          resp[i].groupName = v.groups[0] ? v.groups[0].name : ''
+        })
         // 过滤搜索用户中已屏蔽的用户和当前登录用户
-        const data = resp.filter(item => this.unbundUserData.indexOf(item.id) === -1);
-        this.userList = data;
-        this.searchTotal = resp._jv.json.meta.total;
+        const data = resp.filter(item => this.unbundUserData.indexOf(item.id) === -1)
+        this.userList = data
+        this.searchTotal = resp._jv.json.meta.total
       }, e => this.handleError(e))
         .finally(() => {
-          this.loading2 = false;
-        });
+          this.loading2 = false
+        })
     },
     // 屏蔽用户
     shieldUser(uid) {
-      this.uid = uid;
+      this.uid = uid
       this.$confirm('是否屏蔽该用户?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning',
+        type: 'warning'
       }).then(() => {
-        this.handleShield();
+        this.handleShield()
       })
         .catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消屏蔽',
-          });
-        });
+            message: '已取消屏蔽'
+          })
+        })
     },
     handleShield() {
       const params = {
         _jv: {
-          type: `users/${this.uid}/deny`,
-        },
-      };
+          type: `users/${this.uid}/deny`
+        }
+      }
       this.$store.dispatch('jv/post', params).then(() => {
         if (this.unbundlingID(this.uid)) {
           this.unbundlingArry.splice(
             this.unbundlingArry.findIndex(item => item === this.uid),
-            1,
-          );
+            1
+          )
         }
-        this.inputVal = '';
-        this.pageNum = 1;
-        this.getUserList('');
-        this.getShieldData();
-        this.getShieldList();
-        this.isSearch = false;
-        this.$message.success(this.$t('profile.boundsucceed'));
-      });
+        this.inputVal = ''
+        this.pageNum = 1
+        this.getUserList('')
+        this.getShieldData()
+        this.getShieldList()
+        this.isSearch = false
+        this.$message.success(this.$t('profile.boundsucceed'))
+      })
     },
     // 判断是否已解绑某个用户
     unbundlingID(uid) {
       if (this.unbundlingArry && this.unbundlingArry.includes(uid)) {
-        return true;
+        return true
       }
-    },
+    }
   },
   head() {
     return {
-      title: this.$t('profile.myshield'),
-    };
-  },
-};
+      title: this.$t('profile.myshield')
+    }
+  }
+}
 </script>
 <style lang='scss' scoped>
 @import "@/assets/css/variable/color.scss";

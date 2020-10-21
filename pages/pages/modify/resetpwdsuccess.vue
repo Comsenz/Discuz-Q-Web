@@ -23,11 +23,11 @@ export default {
   name: 'ResetPwdSuccess',
   computed: {
     username() {
-      if (process.client) return window.localStorage.getItem('username') || '';
-      return '';
-    },
-  },
-};
+      if (process.client) return window.localStorage.getItem('username') || ''
+      return ''
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

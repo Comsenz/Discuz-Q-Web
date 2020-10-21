@@ -20,20 +20,20 @@
 </template>
 
 <script>
-import { status } from '@/library/jsonapi-vuex/index';
-import handleError from '@/mixin/handleError';
+import { status } from '@/library/jsonapi-vuex/index'
+import handleError from '@/mixin/handleError'
 
 export default {
   mixins: [handleError],
   props: {
     userId: {
       type: String,
-      default: '',
+      default: ''
     },
     likethreadsData: {
       type: Array,
-      default: () => [],
-    },
+      default: () => []
+    }
   },
   data() {
     return {
@@ -43,62 +43,62 @@ export default {
       currentLoginId: this.$store.getters['session/get']('userId'),
       loading: false,
       hasMore: false,
-      editThreadId: '',
-    };
+      editThreadId: ''
+    }
   },
   mounted() {
-    this.data = this.likethreadsData;
+    this.data = this.likethreadsData
     if (this.data.length === 0) {
-      this.loadlikes();
+      this.loadlikes()
     }
   },
   methods: {
     // 加载当前点赞数据
     loadlikes() {
-      this.loading = true;
+      this.loading = true
       const params = {
         include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         'filter[isApproved]': 1,
-        'filter[user_id]': this.userId,
-      };
+        'filter[user_id]': this.userId
+      }
       status
         .run(() => this.$store.dispatch('jv/get', ['threads/likes', { params }]))
         .then((res) => {
-          this.loading = false;
-          this.hasMore = res.length === this.pageSize;
-          const ress = JSON.parse(JSON.stringify(res));
+          this.loading = false
+          this.hasMore = res.length === this.pageSize
+          const ress = JSON.parse(JSON.stringify(res))
           ress.forEach((val) => {
             // eslint-disable-next-line no-param-reassign
-            val.firstPost.isLiked = true;
-          });
-          this.data = [...this.data, ...ress];
+            val.firstPost.isLiked = true
+          })
+          this.data = [...this.data, ...ress]
           if (res._jv) {
-            this.hasMore = this.data.length < res._jv.json.meta.threadCount;
+            this.hasMore = this.data.length < res._jv.json.meta.threadCount
           }
-          this.pageNum += 1;
+          this.pageNum += 1
         }, (e) => {
-          this.handleError(e);
+          this.handleError(e)
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
     loadMore() {
       if (this.hasMore) {
         // this.pageNum += 1
-        this.loadlikes();
+        this.loadlikes()
       }
     },
     changelike() {
-      this.pageNum = 1;
-      this.data = [];
-      this.$emit('changeFollow', { userId: this.userId });
-      this.loadlikes();
-    },
-  },
-};
+      this.pageNum = 1
+      this.data = []
+      this.$emit('changeFollow', { userId: this.userId })
+      this.loadlikes()
+    }
+  }
+}
 </script>
 <style lang='scss' scoped>
 @import "@/assets/css/variable/color.scss";

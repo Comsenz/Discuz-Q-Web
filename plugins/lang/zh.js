@@ -39,7 +39,7 @@ export default {
         wed: '三',
         thu: '四',
         fri: '五',
-        sat: '六',
+        sat: '六'
       },
       months: {
         jan: '一月',
@@ -53,10 +53,10 @@ export default {
         sep: '九月',
         oct: '十月',
         nov: '十一月',
-        dec: '十二月',
+        dec: '十二月'
       },
       morning: '上午',
-      afternoon: '下午',
+      afternoon: '下午'
     },
     // 列表加载提示相关
     list: {
@@ -64,7 +64,7 @@ export default {
       noMatch: '无匹配数据',
       noData: '暂无数据',
       noMoreData: '没有更多数据了',
-      noshield: '您没有屏蔽任何人',
+      noshield: '您没有屏蔽任何人'
     },
     // 提示框
     msgBox: {
@@ -77,47 +77,47 @@ export default {
       createSuccess: '创建成功',
       copySuccess: '链接已复制到剪贴板',
       likeSuccess: '点赞成功',
-      cancelLikeSuccess: '取消点赞成功',
+      cancelLikeSuccess: '取消点赞成功'
     },
     // 上传
     upload: {
       delete: '删除',
       preview: '查看图片',
-      continue: '继续上传',
+      continue: '继续上传'
     },
     // 图片
     image: {
       error: '加载失败',
-      imageUploading: '图片上传中...',
+      imageUploading: '图片上传中...'
     },
     // 视频
     video: {
       error: '加载失败',
-      videoUploading: '视频上传中...',
+      videoUploading: '视频上传中...'
     },
     // 导航
     pageHeader: {
-      title: '返回',
+      title: '返回'
     },
     // @人员页面
     atMember: {
       atTitle: '选择@人员',
       selectedMember: '搜索成员',
       notSelected: '尚未选',
-      selected: '@ 已选',
+      selected: '@ 已选'
     },
     role: {
-      noRole: '暂无角色',
+      noRole: '暂无角色'
     },
     symbol: {
-      colon: '：',
-    },
+      colon: '：'
+    }
   },
   uploader: {
     uploadFailed: '上传失败',
     uploadedSuccessfully: '上传成功',
     videoUploadedSuccessfully: '视频上传成功',
-    videoUploading: '视频上传中...',
+    videoUploading: '视频上传中...'
   },
   core: {
     videoError: '视频正在转码中，请发布后观看',
@@ -224,7 +224,7 @@ export default {
     wechat_mobile_unbound: '微信未绑定手机号',
     unable_to_get_location: '无法获取地理位置',
     '二维码已失效，扫码超时': '二维码已失效，扫码超时',
-    no_edit_self: '不可编辑自己',
+    no_edit_self: '不可编辑自己'
   },
   // 发布页
   post: {
@@ -280,7 +280,7 @@ export default {
     attachmentUpload: '附件上传',
     failedToObtainSignature: '获取签名失败',
     fromWeChatApplet: '来自微信小程序',
-    pleaseEnterAPostTitle: '请输入帖子标题',
+    pleaseEnterAPostTitle: '请输入帖子标题'
   },
   topic: {
     attachment: '附件',
@@ -387,7 +387,7 @@ export default {
     be: '向',
     of: '的',
     question: '提问：',
-    answer: '回答了',
+    answer: '回答了'
   },
   pay: {
     passwordError: '密码错误请重试',
@@ -436,10 +436,10 @@ export default {
     wechatIdentificationQRcode: '微信识别二维码',
     wechatTimeLimit: '二维码有效时长为5分钟, 请尽快支付',
     wechatScan: '请使用微信扫一扫',
-    wechatScanPay: '扫描二维码支付',
+    wechatScanPay: '扫描二维码支付'
   },
   auth: {
-    userinfo: '获取头像和昵称',
+    userinfo: '获取头像和昵称'
   },
   // 私信
   chat: {
@@ -447,7 +447,7 @@ export default {
     noMore: '没有更多了',
     loadRecord: '查看更多消息',
     messageCannotBeBlack: '消息内容不能为空',
-    messageLengthCannotOver: '消息内容不能超过 450 字',
+    messageLengthCannotOver: '消息内容不能超过 450 字'
   },
   // 首页
   home: {
@@ -499,7 +499,7 @@ export default {
     location: '位置信息',
     threadCount: '附近共有 {total} 条内容',
     topicCount: '共有 {total} 条内容',
-    topicViewCount: '热度 {total}°',
+    topicViewCount: '热度 {total}°'
   },
   // 站点管理页面
   manage: {
@@ -560,7 +560,7 @@ export default {
     modifyFail: '修改失败，无权限设为管理员',
     circleAge: '圈龄',
     lastUpdateAt: '最后发言时间',
-    allStatus: '所有状态',
+    allStatus: '所有状态'
   },
   // 消息页面
   notice: {
@@ -590,7 +590,7 @@ export default {
     approved: '您的提现审核已通过，请注意查收。',
     unapproved: '您的提现审核已拒绝，拒绝原因：审核不通过。',
     checkMore: '查看剩余{surplus}条',
-    toDetail: '前往',
+    toDetail: '前往'
   },
   invite: {
     invite: '推广邀请',
@@ -607,7 +607,7 @@ export default {
     viewDetail: '查看详细',
     userDetail: '受邀朋友收益',
     incomeTotal: '当前列表涉及金额',
-    searchPlaceholder: '请输入要搜索的用户名',
+    searchPlaceholder: '请输入要搜索的用户名'
   },
   // 海报分享页
   share: {
@@ -626,7 +626,7 @@ export default {
     siteintroduction: '站点介绍',
     member: '成员',
     confirm: '确定保存到相册吗',
-    nothing: '无',
+    nothing: '无'
   },
   // 信息修改页
   modify: {
@@ -730,7 +730,7 @@ export default {
     resetPassword: '请重新设置您的登录密码',
     resetPasswordSuccess: '设置新密码成功',
     resetPasswordSuccessRepeat: '重新设置新密码成功',
-    resetPasswordLoginTip: '请重新返回登录页面，并使用新设密码进行登录操作请点击下方登录。',
+    resetPasswordLoginTip: '请重新返回登录页面，并使用新设密码进行登录操作请点击下方登录。'
   },
   permission: {
     viewThreads: '查看主题列表',
@@ -746,7 +746,7 @@ export default {
       editPosts: '编辑',
       essence: '加精',
       sticky: '置顶',
-      deletePosts: '删除回复',
+      deletePosts: '删除回复'
     },
     createThreadImage: '发布图片',
     createThread: '发布文本',
@@ -756,7 +756,7 @@ export default {
     attachment: {
       create: ['上传附件', '上传图片'],
       view: ['查看附件', '查看图片'],
-      delete: '删除附件',
+      delete: '删除附件'
     },
     createThreadWithCaptcha: '发帖需要验证码',
     editOwnThreadOrPost: '编辑发布的主题或回复',
@@ -765,10 +765,10 @@ export default {
     publishNeedRealName: '发布内容需要实名认证',
     viewUserList: '站点会员列表',
     cash: {
-      create: '申请提现',
+      create: '申请提现'
     },
     order: {
-      create: '创建订单',
+      create: '创建订单'
     },
     user: {
       view: '查看某个用户信息权限',
@@ -776,29 +776,29 @@ export default {
       agreementRegister: '注册协议',
       agreementPrivacy: '隐私政策',
       edit: {
-        status: '编辑用户状态',
-      },
+        status: '编辑用户状态'
+      }
     },
     userFollow: {
-      create: '关注用户',
+      create: '关注用户'
     },
     group: {
-      edit: '编辑用户组',
+      edit: '编辑用户组'
     },
     viewSiteInfo: '站点信息',
     createInvite: '管理-邀请加入',
     dialog: {
-      create: '发布私信 ',
+      create: '发布私信 '
     },
     showGroups: '显示用户组名',
     trade: {
       pay: {
-        order: '订单支付',
-      },
+        order: '订单支付'
+      }
     },
     other: {
-      canInviteUserScale: '可邀请其他用户',
-    },
+      canInviteUserScale: '可邀请其他用户'
+    }
   },
   // 我的和个人主页
   profile: {
@@ -928,7 +928,7 @@ export default {
     uploadtimenotup: '上传头像频繁，一天仅允许上传一次头像',
     validationerror: '验证错误',
     filedownloadtips: '因iPhone系统限制，您的手机无法下载文件。请使用安卓手机或电脑访问下载',
-    filedownloadtipswx: '因系统限制，无法下载文件。请使用安卓手机或电脑访问H5版进行下载',
+    filedownloadtipswx: '因系统限制，无法下载文件。请使用安卓手机或电脑访问H5版进行下载'
   },
   site: {
     circleintroduction: '站点介绍',
@@ -967,7 +967,7 @@ export default {
     price: '费用',
     role: '角色：',
     to: '至',
-    permission: '权限',
+    permission: '权限'
   },
   // 搜索
   search: {
@@ -987,7 +987,7 @@ export default {
     find: '为您找到',
     searchresult: '的相关搜索结果',
     searchuserresult: '的相关用户搜索结果',
-    usercount: '名',
+    usercount: '名'
   },
   // 登录注册
   user: {
@@ -1047,6 +1047,6 @@ export default {
     illegalContent: '违规内容',
     maliciousIrrigation: '恶意灌水',
     repeatPost: '重复发帖',
-    otherreason: '其他理由',
-  },
-};
+    otherreason: '其他理由'
+  }
+}

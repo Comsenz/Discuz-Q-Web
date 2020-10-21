@@ -92,9 +92,9 @@
 </template>
 
 <script>
-import { status } from '@/library/jsonapi-vuex/index';
-import handleError from '@/mixin/handleError';
-const tcaptchs = process.client ? require('@/utils/tcaptcha') : '';
+import { status } from '@/library/jsonapi-vuex/index'
+import handleError from '@/mixin/handleError'
+const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
 
 export default {
 
@@ -103,12 +103,12 @@ export default {
   props: {
     price: {
       type: [Number, String],
-      default: '',
+      default: ''
     },
     error: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   data() {
     return {
@@ -132,50 +132,50 @@ export default {
       ticket: '', // 腾讯云验证码返回票据
       randstr: '', // 腾讯云验证码返回随机字符串
       captchaResult: {},
-      forums: '',
-    };
+      forums: ''
+    }
   },
   mounted() {
-    this.setmydata();
-    this.forumsdata();
+    this.setmydata()
+    this.forumsdata()
   },
   methods: {
     countDown(interval) {
-      if (!this.canClick) return;
-      let intervals = interval;
-      this.canClick = false;
-      this.content = intervals + this.$t('modify.retransmission');
+      if (!this.canClick) return
+      let intervals = interval
+      this.canClick = false
+      this.content = intervals + this.$t('modify.retransmission')
       const clock = setInterval(() => {
-        intervals = intervals - 1;
-        this.content = intervals + this.$t('modify.retransmission');
+        intervals = intervals - 1
+        this.content = intervals + this.$t('modify.retransmission')
         if (interval < 0) {
-          clearInterval(clock);
-          this.content = this.$t('modify.sendVerifyCode');
-          this.canClick = true;
+          clearInterval(clock)
+          this.content = this.$t('modify.sendVerifyCode')
+          this.canClick = true
         }
-      }, 1000);
+      }, 1000)
     },
     setmydata() {
-      this.userInfo = this.$store.state.user.info;
-      this.name = this.userInfo.attributes.username;
-      this.balance = this.userInfo.attributes.walletBalance;
-      this.usertestphon = this.userInfo.attributes.mobile;
-      this.userphon = this.userInfo.attributes.originalMobile;
+      this.userInfo = this.$store.state.user.info
+      this.name = this.userInfo.attributes.username
+      this.balance = this.userInfo.attributes.walletBalance
+      this.usertestphon = this.userInfo.attributes.mobile
+      this.userphon = this.userInfo.attributes.originalMobile
       if (!this.usertestphon) {
-        this.disabtype = true;
+        this.disabtype = true
       }
     },
     forumsdata() {
-      this.forums = this.$store.state.site.info.attributes;
-      this.cost = this.forums.set_cash.cash_rate;
-      this.percentage = this.forums.set_cash.cash_rate * 100;
+      this.forums = this.$store.state.site.info.attributes
+      this.cost = this.forums.set_cash.cash_rate
+      this.percentage = this.forums.set_cash.cash_rate * 100
     },
     settlement() {
       setTimeout(() => {
         if (this.canAmount[0] === '.') {
-          const num = 0;
-          const cun = '.';
-          this.canAmount = num + cun;
+          const num = 0
+          const cun = '.'
+          this.canAmount = num + cun
         }
         this.canAmount = this.canAmount
           .replace(/[^\d.]/g, '')
@@ -184,37 +184,37 @@ export default {
           .replace(/\./g, '')
           .replace('$#$', '.')
           .replace(/^(-)*(\d+)\.(\d\d).*$/, '$1$2.$3')
-          .replace(/^\./g, '');
+          .replace(/^\./g, '')
         if (Number(this.canAmount) > Number(this.balance)) {
-          this.canAmount = this.canAmount.slice(0, this.canAmount.length - 1);
-          this.$message.warning(this.$t('modify.greaterthan'));
+          this.canAmount = this.canAmount.slice(0, this.canAmount.length - 1)
+          this.$message.warning(this.$t('modify.greaterthan'))
         }
         if (this.canAmount.length > 0) {
-          this.length = true;
-          const number = this.canAmount - (this.canAmount * this.cost);
+          this.length = true
+          const number = this.canAmount - (this.canAmount * this.cost)
           if (number) {
-            this.contint = `${number.toFixed(2)}`;
-            const casnumber = this.canAmount * this.cost;
-            this.procedures = casnumber.toFixed(2);
+            this.contint = `${number.toFixed(2)}`
+            const casnumber = this.canAmount * this.cost
+            this.procedures = casnumber.toFixed(2)
           } else {
-            this.contint = '';
-            this.procedures = '';
+            this.contint = ''
+            this.procedures = ''
           }
         } else if (this.canAmount.length <= 0) {
           // this.length = false;
-          this.contint = '';
-          const casnumber = this.canAmount * this.cost;
-          this.procedures = casnumber.toFixed(2);
+          this.contint = ''
+          const casnumber = this.canAmount * this.cost
+          this.procedures = casnumber.toFixed(2)
         }
-      }, 5);
+      }, 5)
     },
     // 发送验证码
     sendsms() {
       if (this.forums.qcloud.qcloud_captcha) {
-        this.tcaptcha();
+        this.tcaptcha()
       } else {
-        this.second = 60;
-        this.sendVerifyCode();
+        this.second = 60
+        this.sendVerifyCode()
       }
     },
     // 腾讯验证码
@@ -222,117 +222,117 @@ export default {
       // eslint-disable-next-line no-undef
       this.captcha = new TencentCaptcha(this.forums.qcloud.qcloud_captcha_app_id, (res) => {
         if (res.ret === 0) {
-          this.ticket = res.ticket;
-          this.randstr = res.randstr;
+          this.ticket = res.ticket
+          this.randstr = res.randstr
           // 验证通过后发布
           // 修改手机验证码发送
-          this.sendVerifyCode();
+          this.sendVerifyCode()
         }
-      });
+      })
       // 显示验证码
-      this.captcha.show();
+      this.captcha.show()
     },
     sendVerifyCode() {
       const params = {
         _jv: {
-          type: 'sms/send',
+          type: 'sms/send'
         },
         mobile: this.userphon,
         type: 'verify',
         captcha_ticket: this.ticket,
-        captcha_rand_str: this.randstr,
-      };
-      const postphon = status.run(() => this.$store.dispatch('jv/post', params));
+        captcha_rand_str: this.randstr
+      }
+      const postphon = status.run(() => this.$store.dispatch('jv/post', params))
       postphon
         .then((res) => {
-          if (res.interval) this.countDown(res.interval);
-          this.ticket = '';
-          this.randstr = '';
-        }, e => this.handleError(e));
+          if (res.interval) this.countDown(res.interval)
+          this.ticket = ''
+          this.randstr = ''
+        }, e => this.handleError(e))
     },
     btncash() {
-      this.verifytitle();
+      this.verifytitle()
     },
     // 验证短信
     verifytitle() {
       const params = {
         _jv: {
-          type: 'sms/verify',
+          type: 'sms/verify'
         },
         code: this.verifycode,
-        type: 'verify',
-      };
+        type: 'verify'
+      }
       this.$store
         .dispatch('jv/post', params)
         .then((res) => {
           if (res) {
-            this.cashwithdrawal();
+            this.cashwithdrawal()
           }
         }, (e) => {
           // eslint-disable-next-line object-curly-spacing
-          const { response: { data: { errors } } } = e;
+          const { response: { data: { errors } } } = e
           if (errors[0]) {
             if (errors[0].status === '422') {
-              this.$message.error(errors[0].detail[0]);
+              this.$message.error(errors[0].detail[0])
             } else if (errors[0].status === 500) {
-              this.$message.error(this.$t(`core.${errors[0].code}`));
+              this.$message.error(this.$t(`core.${errors[0].code}`))
             }
           }
-        });
+        })
     },
     // 提现申请
     cashwithdrawal() {
       const params = {
         _jv: {
           type: 'wallet/cash',
-          include: ['user', 'userWallet'],
+          include: ['user', 'userWallet']
         },
         cash_apply_amount: this.canAmount,
         cash_mobile: this.userphon,
-        cash_type: 1,
-      };
-      const postcash = status.run(() => this.$store.dispatch('jv/post', params));
+        cash_type: 1
+      }
+      const postcash = status.run(() => this.$store.dispatch('jv/post', params))
       postcash
         .then((res) => {
           if (res) {
-            this.canAmount = '';
-            this.contint = '';
-            this.procedures = 0;
+            this.canAmount = ''
+            this.contint = ''
+            this.procedures = 0
             // 重新更新数据
             // this.$store.dispatch('user/getUserInfo', this.userId)
-            this.$message.success(this.$t('modify.withdrawal'));
-            this.$emit('close');
+            this.$message.success(this.$t('modify.withdrawal'))
+            this.$emit('close')
             // this.$router.go(0)
           }
         }, (e) => {
           // eslint-disable-next-line object-curly-spacing
-          const { response: { data: { errors } } } = e;
+          const { response: { data: { errors } } } = e
           if (errors[0]) {
             if (errors[0].status === '422') {
-              this.$message.error(errors[0].detail[0]);
-              this.canAmount = '';
-              this.contint = '';
-              this.procedures = 0;
+              this.$message.error(errors[0].detail[0])
+              this.canAmount = ''
+              this.contint = ''
+              this.procedures = 0
             } else if (errors[0].status === 500) {
               if (errors[0].code === 'unbind_wechat') {
-                this.$message.error(errors[0].detail);
+                this.$message.error(errors[0].detail)
               } else if (errors[0].code === 'cash_mch_invalid') {
-                this.$message.error(errors[0].detail);
+                this.$message.error(errors[0].detail)
               } else {
-                this.$message.error(this.$t(`core.${errors[0].code}`));
-                this.canAmount = '';
-                this.contint = '';
-                this.procedures = 0;
+                this.$message.error(this.$t(`core.${errors[0].code}`))
+                this.canAmount = ''
+                this.contint = ''
+                this.procedures = 0
               }
             }
           }
-        });
+        })
     },
     tomy() {
-      this.$router.push('/pages/my/profile');
-    },
-  },
-};
+      this.$router.push('/pages/my/profile')
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
