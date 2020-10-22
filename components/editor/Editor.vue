@@ -4,7 +4,7 @@
       <input :placeholder="$t('post.pleaseInputPostTitle')" class="input-title" type="text" :value="post && post.title" @input="e => onPostContentChange('title', e.target.value)">
     </label>
     <editor-payment v-if="typeInformation && typeInformation.showPayment && canCreateThreadPaid" :payment="payment || {}" :type="typeInformation && typeInformation.type" @paymentChange="e => onPaymentChange(e.key, e.value)" />
-    <attached-upload v-if="typeInformation.showAttached" :on-upload-attached.sync="onUploadAttached" :attached-list="post && post.attachedList" :header="header" :is-edit="isEdit" :url="url" @attachedChange="e => onPostContentChange(e.key, e.value)" />
+    <attached-upload v-if="typeInformation && typeInformation.showAttached" :on-upload-attached.sync="onUploadAttached" :attached-list="post && post.attachedList" :header="header" :is-edit="isEdit" :url="url" @attachedChange="e => onPostContentChange(e.key, e.value)" />
     <Vditor
       v-if="typeInformation && typeInformation.type === 1"
       :show-caller="showCaller"

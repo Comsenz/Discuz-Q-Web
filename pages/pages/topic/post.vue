@@ -256,6 +256,8 @@ export default {
   > .category-list {
     min-height: 25px;
     margin-top: 50px;
+    border-bottom: 1px solid #F5F5F5;
+    padding-bottom: 20px;
     > .category {
       display: inline-block;
       height: 25px;
