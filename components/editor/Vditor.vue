@@ -1,9 +1,11 @@
 <template>
-  <div v-loading="onUploadImage || onUploadAttached" element-loading-background="hsla(0,0%,100%,0.6)" class="vditor-container">
+  <div v-loading="onUploadImage" element-loading-background="hsla(0,0%,100%,0.6)" class="vditor-container">
     <div id="vditor" style="margin-top: 20px" />
-    <caller v-if="showCaller" @close="showCaller = false" @selectedCaller="selectActions" />
+    <span v-if="textLimit" class="tip">{{ textLimit>= textLength ? $t('post.note', { num: textLimit - textLength }) : $t('post.exceed', { num: textLength - typeInformation.textLimit }) }}</span>
+    <caller v-if="showCaller" @close="$emit('close')" @selectedCaller="selectActions" />
     <topic-list v-show="showTopic" class="action-vditor" @selectedTopic="selectActions" />
     <emoji-list v-show="showEmoji" class="action-vditor" @selectEmoji="selectActions" />
+    <el-button class="button-publish" :loading="onPublish" type="primary" size="small" @click="$emit('publish')">{{ $t('post.post') }}</el-button>
   </div>
 </template>
 
@@ -31,6 +33,14 @@ export default {
       type: String,
       default: ''
     },
+    textLimit: {
+      type: [Number, String],
+      default: 450
+    },
+    textLength: {
+      type: [Number, String],
+      default: 0
+    },
     isEdit: {
       type: Boolean,
       default: false
@@ -38,10 +48,6 @@ export default {
     attachmentSizeLimit: {
       type: Number,
       default: 999999999999999999999
-    },
-    attachmentAccept: {
-      type: String,
-      default: ''
     },
     imageAccept: {
       type: String,
@@ -51,7 +57,11 @@ export default {
       type: Boolean,
       default: false
     },
-    onUploadAttached: {
+    placeholder: {
+      type: String,
+      default: ''
+    },
+    onPublish: {
       type: Boolean,
       default: false
     }
@@ -65,7 +75,6 @@ export default {
   watch: {
     isEdit: {
       handler(isEdit) {
-        console.log(isEdit, 'is edit')
         if (isEdit && this.text && this.vditor) this.vditor.setValue(this.text, false)
       },
       immediate: true
@@ -78,31 +87,26 @@ export default {
     initVditor() {
       this.vditor = new Vditor('vditor', {
         minHeight: 450,
-        placeholder: '请输入',
+        placeholder: this.placeholder,
         mode: 'wysiwyg',
-        blur: (value) => { this.$emit('textChange', value) },
+        input: (value) => { this.$emit('textChange', value) },
         toolbar: [
           { hotkey: '', name: '@', tipPosition: 'ne', tip: '@ 好友', className: 'right', icon: call, click: () => { this.$emit('onActions', 'showCaller') } },
           { hotkey: '', name: '#', tipPosition: 'ne', tip: '新增话题', className: 'right', icon: topic, click: () => { this.$emit('onActions', 'showTopic') } },
           { hotkey: '', name: 'my-emoji', tipPosition: 'ne', tip: '插入表情', className: 'right', icon: emoji, click: () => { this.$emit('onActions', 'showEmoji') } },
           'headings', 'bold', 'italic', 'strike', 'link', 'list', 'ordered-list', 'check', 'outdent', 'indent', 'quote',
-          { hotkey: '', name: 'picture', tipPosition: 'ne', tip: '插入图片', className: 'right', icon: picture, click: () => { this.uploader('image') } },
-          // { 不需要文件上传 //   hotkey: '', //   name: 'file', //   tipPosition: 'ne', //   tip: '插入文件', //   className: 'right', //   icon: file, //   click: () => { //     this.uploader('attachment') //   } // },
+          { hotkey: '', name: 'picture', tipPosition: 'ne', tip: '插入图片', className: 'right', icon: picture, click: () => { this.uploader() } },
           'line', 'code', 'inline-code', 'table', 'both', 'br', 'undo', 'redo'],
         toolbarConfig: { pin: true },
-        cache: { enable: false },
-        after: () => {
-          // this.contentEditor.setValue('hello, Vditor + Vue!')
-        }
+        cache: { enable: false }
       })
     },
-    uploader(type) {
+    uploader() {
       if (this.onUploadImage) return this.$message.warning('请等待上传中的图片完成上传')
-      if (this.onUploadAttached) return this.$message.warning('请等待上传中的文件完成上传')
       this.input = document.createElement('input')
       this.input.type = 'file'
       this.input.multiple = true
-      this.input.accept = type === 'image' ? this.imageAccept : this.attachmentAccept
+      this.input.accept = this.imageAccept
       this.input.dispatchEvent(new MouseEvent('click'))
       this.input.oninput = (e) => {
         const files = e.target.files
@@ -111,27 +115,23 @@ export default {
         if (!this.checkSizeLimit(files)) return // 文件大小检查
         for (let i = 0; i < files.length; i++) { fileArray.push(files[i]) }
         const promiseList = fileArray.reduce((result, file) => {
-          result.push(this.uploadFile(file, type))
+          result.push(this.uploadFile(file))
           return result
         }, [])
-        this.uploadFiles(promiseList, type)
+        this.uploadFiles(promiseList)
       }
     },
-    uploadFile(file, type) {
+    uploadFile(file) {
       const formData = new FormData()
-      formData.append('type', type === 'image' ? 1 : 0) // image 1 attachment 0
+      formData.append('type', 1) // image 1
       formData.append('file', file)
       return service.post('/attachments', formData)
     },
-    uploadFiles(promiseList, type) {
-      type === 'image' ? this.$emit('update:onUploadImage', true) : this.$emit('update:onUploadAttached', true)
+    uploadFiles(promiseList) {
+      this.$emit('update:onUploadImage', true)
       Promise.all(promiseList).then(resList => {
         const files = resList.map(item => item.data.data)
-        if (type === 'image') {
-          files.forEach(item => { this.vditor.insertValue(`![${item.attributes.fileName}](${item.attributes.url})`) })
-        } else if (type === 'attachment') {
-          files.forEach(item => { this.vditor.insertValue(`[${item.attributes.fileName}](${item.attributes.url})`) })
-        }
+        files.forEach(item => { this.vditor.insertValue(`![${item.attributes.fileName}](${item.attributes.url})`) })
         this.input.value = ''
       }, (e) => {
         this.input.value = ''
@@ -141,7 +141,7 @@ export default {
           this.$message.error('图片上传失败，请稍后再试')
         }
       }).finally(() => {
-        type === 'image' ? this.$emit('update:onUploadImage', false) : this.$emit('update:onUploadAttached', false)
+        this.$emit('update:onUploadImage', false)
       })
     },
     selectActions(code) {
@@ -163,10 +163,33 @@ export default {
 <style lang="scss" scoped>
 .vditor-container {
   position: relative;
+  > .tip {
+    position: absolute;
+    color: #D0D4DC;
+    top: 8px;
+    z-index: 10;
+    right: 26px;
+  }
   > .action-vditor {
     position: absolute;
     top: 35px;
     left: 2px;
+  }
+  > .button-publish {
+    margin-top: 20px;
+  }
+  ::v-deep.vditor-toolbar {
+    background: #F5F6F7;
+    //height: 45px;
+    //background: white;
+    //padding-left: 14px !important;
+    //> .vditor-toolbar__item {
+    //  line-height: 45px;
+    //  svg {
+    //    width: 20px;
+    //    height: 20px;
+    //  }
+    //}
   }
 }
 

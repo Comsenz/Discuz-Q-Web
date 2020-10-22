@@ -7,19 +7,23 @@
     <attached-upload v-if="typeInformation && typeInformation.showAttached" :on-upload-attached.sync="onUploadAttached" :attached-list="post && post.attachedList" :header="header" :is-edit="isEdit" :url="url" @attachedChange="e => onPostContentChange(e.key, e.value)" />
     <Vditor
       v-if="typeInformation && typeInformation.type === 1"
-      :is-edit="isEdit"
+      :text-limit="typeInformation && typeInformation.textLimit"
+      :text-length="post && post.text && post.text.length"
+      :placeholder="typeInformation && typeInformation.placeholder"
+      :image-accept="imageTypeLimit"
       :text="post && post.text"
       :show-caller="showCaller"
       :show-topic="showTopic"
       :show-emoji="showEmoji"
-      :image-accept="imageTypeLimit"
-      :attachment-accept="attachedTypeLimit"
+      :is-edit="isEdit"
+      :on-publish="onPublish"
       :attachment-size-limit="attachedSizeLimit"
-      :on-upload-attached.sync="onUploadAttached"
       :on-upload-image.sync="onUploadImage"
       @textChange="value => onPostContentChange('text', value)"
+      @close="showCaller = false"
       @hideActions="hideActions"
       @onActions="onActions"
+      @publish="publish"
     />
     <!--my editor 除了帖子以外，不使用 vditor-->
     <div v-if="typeInformation && typeInformation.type !== 1" :class="['container-textarea', editorStyle]">
@@ -72,7 +76,6 @@
         />
       </div>
     </div>
-    <el-button class="button-publish" :loading="onPublish" type="primary" size="small" @click="publish">{{ $t('post.post') }}</el-button>
   </div>
 </template>
 
@@ -265,7 +268,7 @@ export default {
     },
     onActions(toggle) {
       this.hideActions()
-      this.$nextTick(() => { this[toggle] = !this[toggle] })
+      setTimeout(() => { this[toggle] = !this[toggle] })
     },
     addResource(toggle) {
       this[toggle] = true
