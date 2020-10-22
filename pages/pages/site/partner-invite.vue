@@ -18,15 +18,15 @@
           <span class="img">
             <Avatar
               :user="{
-                username: forums.set_site && forums.set_site.site_author.username,
-                avatarUrl: forums.set_site && forums.set_site.site_author.avatar,
+                username: forums.set_site && forums.set_site.site_author && forums.set_site.site_author.username || '',
+                avatarUrl: forums.set_site && forums.set_site.site_author && forums.set_site.site_author.avatar || '',
               }"
               :size="30"
               :round="true"
               class="avatar"
             />
           </span>
-          <span class="workdate">{{ forums.set_site && forums.set_site.site_author.username }}</span>
+          <span class="workdate">{{ forums.set_site && forums.set_site.site_author && forums.set_site.site_author.username || '' }}</span>
         </p>
         <!-- 用户 -->
         <p>
@@ -34,17 +34,8 @@
           <span class="workdate bold">{{ forums.other && forums.other.count_users }}</span>
         </p>
         <p class="member-img">
-          <span
-            v-for="(item, index) in forums.users"
-            :key="index"
-            class="img"
-          >
-            <Avatar
-              :user="item"
-              :size="30"
-              :round="true"
-              class="avatar"
-            />
+          <span v-for="(item, index) in forums.users" :key="index" class="img">
+            <Avatar :user="item" :size="30" :round="true" class="avatar" />
           </span>
         </p>
         <!-- 内容数量 -->
@@ -86,32 +77,17 @@
         {{ $t('site.site') }}
       </p>
       <div>
-        <el-button
-          type="primary"
-          class="r-button"
-          @click="check"
-        >
+        <el-button type="primary" class="r-button" @click="check">
           {{ $t('site.accepttheinvitationandbecome') }}
           {{ inviteData.group && inviteData.group.name }}
         </el-button>
       </div>
       <!-- 验证提示 -->
-      <el-dialog
-        title="提示"
-        :visible.sync="dialogVisible"
-        width="30%"
-        :before-close="handleClose"
-      >
+      <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
         <span>{{ codeTips }}</span>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
+        <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button
-            type="primary"
-            @click="submit"
-          >确 定</el-button>
+          <el-button type="primary" @click="submit">确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -257,19 +233,16 @@ export default {
         case 2: {
           this.codeTitle = this.$t('site.codeused2')
           this.codeTips = this.$t('site.codeused')
-
           break
         }
         case 3: {
           this.codeTitle = this.$t('site.codeexpired2')
           this.codeTips = this.$t('site.codeexpired')
-
           break
         }
         case 'error': {
           this.codeTitle = this.$t('site.codenotfound2')
           this.codeTips = this.$t('site.codenotfound')
-
           break
         }
         default:
@@ -344,6 +317,9 @@ export default {
   width: 400px;
   margin-top: 62px;
   flex-direction: column;
+  @media screen and (max-width: 1005px) {
+    width: 292px;
+  }
   .info-title {
     height: 35px;
     font-size: 26px;
@@ -451,6 +427,9 @@ export default {
   height: 477px;
   background: #fbfbfb;
   margin-left: 35px;
+  @media screen and (max-width: 1005px) {
+    width: 395px;
+  }
   .threadtitle{
     font-size: 14px;
     color: #000000;

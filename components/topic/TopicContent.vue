@@ -1,7 +1,9 @@
 <template>
   <article class="global">
     <div class="title">{{ title }}</div>
-    <div class="content-html" v-html="$xss(formatTopicHTML(article.contentHtml || ''))" />
+    <viewer :trigger="$xss(formatTopicHTML(article.contentHtml || ''))" :options="options">
+      <div class="content-html" v-html="$xss(formatTopicHTML(article.contentHtml || ''))" />
+    </viewer>
     <div v-if="video.cover_url" class="container-video-img-cover">
       <div class="warp-video-img-cover">
         <img class="video-img-cover" :src="video.cover_url" :alt="video.file_name" @click.stop="openVideo">
@@ -53,9 +55,12 @@
 <script>
 import s9e from '@/utils/s9e'
 import isLogin from '@/mixin/isLogin'
+import 'viewerjs/dist/viewer.css'
+import Viewer from 'v-viewer/src/component.vue'
 
 export default {
   name: 'TopicContent',
+  components: { Viewer },
   mixins: [isLogin],
   props: {
     article: {
@@ -91,6 +96,11 @@ export default {
   data() {
     return {
       showVideoPop: false,
+      options: {
+        filter(image) {
+          return [...image.classList].indexOf('qq-emotion') < 0
+        }
+      },
       currentAudio: {
         id: '',
         url: '',
@@ -213,7 +223,8 @@ export default {
       max-width: 650px;
     }
 
-    > .content-html {
+    .content-html {
+      max-width: 650px;
       margin-top: 22px;
       /*font-size: 16px;*/
       /*word-break: break-all;*/
