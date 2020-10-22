@@ -1,29 +1,74 @@
 <template>
-  <div class="attachment-item" @click="downloadAttachment(file.url)">
-    <div class="info">
+  <div class="attachment-item">
+    <div class="info" @click="downloadAttachment(file.url)">
       <svg-icon :type="extensionValidate(file.extension)" style="font-size: 18px" />
       <span class="file-name">{{ file.fileName }}</span>
     </div>
-    <div class="download">{{ $t('post.download') }}</div>
+    <template v-if="!unpaid">
+      <div
+        v-if="forums && forums.qcloud && forums.qcloud.qcloud_cos
+          && isPreviewType(file.extension)
+          && ((parseFloat(price) === 0 && parseFloat(attachmentPrice) > 0 && isPaidAttachment) || parseFloat(price) > 0 && isPaid)
+          && file.isRemote"
+        class="download"
+      >
+        {{ $t('post.preview') }}
+      </div>
+      <div v-else class="download" @click="downloadAttachment(file.url)">{{ $t('post.download') }}</div>
+    </template>
   </div>
 </template>
 
 <script>
 const extensionList = ['7Z', 'AI', 'APK', 'CAD', 'CDR', 'DOC', 'DOCX', 'EPS', 'EXE', 'IPA', 'MP3', 'MP4', 'PDF', 'PPT', 'PSD', 'RAR', 'TXT', 'XLS', 'XLSX', 'ZIP']
+const previewList = ['DOC', 'DOCX', 'PDF', 'PPT', 'TXT', 'XLS', 'XLSX'] // 支持预览的文件格式
 export default {
   name: 'AttachmentList',
   props: {
     file: {
       type: Object,
       default: () => {}
+    },
+    isPaid: {
+      type: Boolean,
+      default: false
+    },
+    price: {
+      type: [Number, String],
+      default: 0
+    },
+    isPaidAttachment: {
+      type: Boolean,
+      default: false
+    },
+    attachmentPrice: {
+      type: [Number, String],
+      default: 0
+    }
+  },
+  data() {
+    return {
+      previewList: ['DOC', 'DOCX', 'PDF', 'PPT', 'TXT', 'XLS', 'XLSX'] // 支持预览的文件格式
+    }
+  },
+  computed: {
+    forums() {
+      return this.$store.state.site.info.attributes || {}
+    },
+    unpaid() {
+      return (parseFloat(this.price) > 0 && !this.isPaid) || (parseFloat(this.attachmentPrice) > 0 && !this.isPaidAttachment)
     }
   },
   methods: {
     downloadAttachment(url) {
+      if (!this.unpaid) return
       if (process.client) window.open(url, '_self')
     },
     extensionValidate(extension) {
       return extensionList.indexOf(extension.toUpperCase()) > 0 ? extension.toUpperCase() : 'UNKNOWN'
+    },
+    isPreviewType(extension) {
+      return previewList.indexOf(this.extensionValidate(extension)) !== -1
     }
   }
 }

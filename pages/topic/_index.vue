@@ -97,7 +97,7 @@ export default {
         { text: this.$t('topic.collection'), command: 'isFavorite', canOpera: false, isStatus: false, icon: 'favor' },
         { text: this.$t('topic.share'), command: 'showLink', canOpera: true, icon: 'link' }
       ],
-      paidInformation: { price: '0', paid: false, paidUsers: [], paidCount: 0 },
+      paidInformation: { price: '0', paid: false, paidUsers: [], paidCount: 0, isPaidAttachment: false, attachmentPrice: '0' },
       payment: { orderNo: '', payment_type: 0, status: 0, wechat_qrcode: '', rewardAmount: '' },
       location: { location: '', latitude: '', longitude: '' },
       managementList: [

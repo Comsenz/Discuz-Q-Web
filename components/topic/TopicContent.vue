@@ -24,7 +24,14 @@
       </div>
       <div>
         <template v-for="(file, index) in attachmentList">
-          <attachment-list :key="index" :file="file" />
+          <attachment-list
+            :key="index"
+            :file="file"
+            :price="paidInformation.price"
+            :is-paid="paidInformation.isPaid"
+            :is-paid-attachment="paidInformation.isPaidAttachment"
+            :attachment-price="paidInformation.attachmentPrice"
+          />
         </template>
       </div>
     </div>
