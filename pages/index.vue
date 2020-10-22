@@ -67,7 +67,7 @@ export default {
       include: 'firstPost'
     }
     const threadsParams = {
-      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
+      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser',
       'filter[isSticky]': 'no',
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no',

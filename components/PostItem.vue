@@ -27,6 +27,7 @@
           {{ $t("topic.publishAt") }} {{ item.createdAt | formatDate }}
         </div>
       </div>
+      <!-- 问答贴 -->
       <div v-if="item.type === 5">
         <!-- 未回答 -->
         <template v-if="item.question && item.question.is_answer === 0">
@@ -71,9 +72,11 @@
               />
               <span class="blue ">{{ item.title }}</span></div>
             <div v-else class="content">
-              <svg-icon v-show="parseFloat(item.price) > 0" type="pay-yuan" class="icon-pay-yuan" />
+              <svg-icon v-if="item.type === 5" type="question-icon" class="icon-pay-yuan blue" />
+              <svg-icon v-else-if="item.type === 6" type="product-icon" class="icon-pay-yuan blue" />
+              <svg-icon v-else-if="parseFloat(item.price) > 0" type="pay-yuan" class="icon-pay-yuan grey" />
               <div
-                :class="{'content-block': parseFloat(item.price) > 0}"
+                :class="{'content-block': item.type === 5 || item.type === 6 || parseFloat(item.price) > 0, 'blue': item.type === 5}"
                 v-html="$xss(formatTopicHTML(item.firstPost.summary))"
               />
             </div>
@@ -442,7 +445,9 @@ export default {
       position: absolute;
       top: 0;
       left: 0;
-      color: #8590A6;
+    }
+    .grey{
+      color: $font-color-grey;
     }
     .content-block{
       text-indent: 20px;
