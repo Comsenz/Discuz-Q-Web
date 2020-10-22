@@ -1,85 +1,92 @@
 <template>
-  <div v-if="forums && forums.users" class="info">
-    <!-- 有偿加入 -->
-    <h2 class="info-title">{{ $t('manage.payJoin') }}</h2>
-    <!-- 付费信息部分 -->
-    <div class="payinfo">
-      <p class="payinfo-title">{{ $t('manage.payInfoTitle') }}</p>
-      <p>
-        <span class="color">{{ $t('post.paymentAmount') }}</span>
-        <span class="paymoney">{{ '¥' + ` ${site_price} ` }}元</span></p>
-      <p>
-        <span class="date color">{{ $t('site.periodvalidity') }}</span>
-        <span class="workdate">自加入起 {{ forums.set_site && forums.set_site.site_expire
-          ? (forums.set_site && forums.set_site.site_expire ) + ` ${$t('site.day')}`
-          : $t('site.permanent') }}</span>
-      </p>
-    </div>
-    <!-- 站点内容部分-->
-    <div class="content-info abs">
-      <p>
-        <span class="color">{{ $t('site.creationtime') }}</span>
-        <span class="workdate">{{ forums.set_site && time2YearMonthDay(forums.set_site.site_install) }}</span>
-      </p>
-      <p>
-        <span class="date color">{{ $t('site.circlemaster') }}</span>
-        <span class="img">
-          <Avatar
-            :user="{
-              username: forums.set_site && forums.set_site.site_author && forums.set_site.site_author.username || '',
-              avatarUrl: forums.set_site && forums.set_site.site_author && forums.set_site.site_author.avatar || '',
-            }"
-            :size="30"
-            :round="true"
-            class="avatar"
-          />
+  <div v-loading="loading" class="infocontainer">
+    <div v-if="forums && forums.users" class="info">
+      <!-- 有偿加入 -->
+      <h2 class="info-title">{{ $t('manage.payJoin') }}</h2>
+      <!-- 付费信息部分 -->
+      <div class="payinfo">
+        <p class="payinfo-title">{{ $t('manage.payInfoTitle') }}</p>
+        <p>
+          <span class="color">{{ $t('post.paymentAmount') }}</span>
+          <span class="paymoney">{{ '¥' + ` ${site_price} ` }}元</span></p>
+        <p>
+          <span class="date color">{{ $t('site.periodvalidity') }}</span>
+          <span class="workdate">自加入起 {{ forums.set_site && forums.set_site.site_expire
+            ? (forums.set_site && forums.set_site.site_expire ) + ` ${$t('site.day')}`
+            : $t('site.permanent') }}</span>
+        </p>
+      </div>
+      <!-- 站点内容部分-->
+      <div class="content-info abs">
+        <p>
+          <span class="color">{{ $t('site.creationtime') }}</span>
+          <span class="workdate">{{ forums.set_site && time2YearMonthDay(forums.set_site.site_install) }}</span>
+        </p>
+        <p>
+          <span class="date color">{{ $t('site.circlemaster') }}</span>
+          <span class="img">
+            <Avatar
+              :user="{
+                username: forums.set_site && forums.set_site.site_author && forums.set_site.site_author.username || '',
+                avatarUrl: forums.set_site && forums.set_site.site_author && forums.set_site.site_author.avatar || '',
+              }"
+              :size="30"
+              :round="true"
+              class="avatar"
+            />
+          </span>
+          <span class="workdate3">
+            {{ forums.set_site && forums.set_site.site_author && forums.set_site.site_author.username || '' }}
+          </span>
+        </p>
+        <p>
+          <span class="date color">{{ $t('home.theme') }}</span>
+          <span class="workdate bold">{{ forums.other && forums.other.count_users }}</span>
+        </p>
+        <p class="member-img">
+          <span v-for="(item, index) in forums.users" :key="index" class="img">
+            <Avatar :user="item" :size="30" :round="true" class="avatar" />
+          </span>
+        </p>
+        <p>
+          <span class="date color ">{{ $t('manage.contents') }}</span>
+          <span class="workdate bold">{{ forums.other && forums.other.count_threads }}</span>
+        </p>
+        <p>
+          <span class="date color rel">{{ $t('manage.siteintroduction') }}</span>
+          <span class="workdate2">{{ forums.set_site && forums.set_site.site_introduction }}</span>
+        </p>
+      </div>
+      <p v-if="isLogin" class="joinnow">
+        <span>{{ $t('site.justonelaststepjoinnow') }}</span>
+        <span class="bold">
+          {{ forums.set_site && forums.set_site.site_name }}
         </span>
-        <span class="workdate3">
-          {{ forums.set_site && forums.set_site.site_author && forums.set_site.site_author.username || '' }}
-        </span>
+        <span>{{ $t('site.site') }}</span>
+        <el-button type="primary" :class="isLogin ? 'r-button islogin' :'r-button'" @click="paysureShow">
+          {{ $t('site.paynow') }}，¥{{ ` ${site_price} ` || 0 }}
+          {{
+            forums.set_site && forums.set_site.site_expire
+              ? `  / ${$t('site.periodvalidity')}${forums.set_site &&
+                forums.set_site.site_expire}${$t('site.day')}`
+              : ` / ${$t('site.permanent')}`
+          }}
+        </el-button>
       </p>
-      <p>
-        <span class="date color">{{ $t('home.theme') }}</span>
-        <span class="workdate bold">{{ forums.other && forums.other.count_users }}</span>
-      </p>
-      <p class="member-img">
-        <span v-for="(item, index) in forums.users" :key="index" class="img">
-          <Avatar :user="item" :size="30" :round="true" class="avatar" />
-        </span>
-      </p>
-      <p>
-        <span class="date color ">{{ $t('manage.contents') }}</span>
-        <span class="workdate bold">{{ forums.other && forums.other.count_threads }}</span>
-      </p>
-      <p>
-        <span class="date color rel">{{ $t('manage.siteintroduction') }}</span>
-        <span class="workdate2">{{ forums.set_site && forums.set_site.site_introduction }}</span>
-      </p>
+      <div v-if="!isLogin">
+        <el-button type="primary" class="r-button" @click="tologin">{{ $t('site.joinnow') }}</el-button>
+      </div>
+      <topic-wx-pay v-if="qrcodeShow" :qr-code="codeUrl" @close="qrcodeShow = false" />
     </div>
-    <p v-if="isLogin" class="joinnow">
-      <span>{{ $t('site.justonelaststepjoinnow') }}</span>
-      <span class="bold">
-        {{ forums.set_site && forums.set_site.site_name }}
-      </span>
-      <span>{{ $t('site.site') }}</span>
-      <el-button type="primary" :class="isLogin ? 'r-button islogin' :'r-button'" @click="paysureShow">
-        {{ $t('site.paynow') }}，¥{{ ` ${site_price} ` || 0 }}
-        {{
-          forums.set_site && forums.set_site.site_expire
-            ? `  / ${$t('site.periodvalidity')}${forums.set_site &&
-              forums.set_site.site_expire}${$t('site.day')}`
-            : ` / ${$t('site.permanent')}`
-        }}
-      </el-button>
-    </p>
-    <div v-if="!isLogin">
-      <el-button type="primary" class="r-button" @click="tologin">{{ $t('site.joinnow') }}</el-button>
+    <div v-if="threadsData.length > 0" class="thread">
+      <div class="threadtitle">部分内容预览</div>
+      <post-item v-for="(item, index) in threadsData" :key="index" :item="item" :infoimage="true" />
     </div>
-    <topic-wx-pay v-if="qrcodeShow" :qr-code="codeUrl" @close="qrcodeShow = false" />
   </div>
 </template>
 
 <script>
+import { status } from '@/library/jsonapi-vuex/index'
 import handleError from '@/mixin/handleError'
 let payWechat = null
 export default {
@@ -92,7 +99,9 @@ export default {
       orderSn: '', // 订单编号
       codeUrl: '', // 二维码支付url，base64
       userId: this.$store.getters['session/get']('userId'),
-      site_price: 0
+      site_price: 0,
+      threadsData: [],
+      loading: true
     }
   },
   computed: {
@@ -102,6 +111,7 @@ export default {
   },
   mounted() {
     this.userinfo()
+    this.loadThreads()
     this.site_price = this.forums && this.forums.set_site && this.forums.set_site.site_price
       ? (1 * this.forums.set_site.site_price).toFixed(2) : 0
   },
@@ -190,6 +200,30 @@ export default {
         .catch(() => {
           this.$message.success(this.$t('pay.payFail'))
         })
+    },
+    // 加载当前主题数据
+    loadThreads() {
+      this.loading = true
+      const params = {
+        'filter[isDeleted]': 'no',
+        sort: '-createdAt',
+        include: 'user,user.groups,firstPost,firstPost.images,firstPost.postGoods,category,threadVideo,threadAudio',
+        'page[number]': 1,
+        'page[limit]': 10,
+        'filter[isApproved]': 1,
+        'filter[isSite]': 'yes'
+      }
+      status
+        .run(() => this.$store.dispatch('jv/get', ['threads', { params }]))
+        .then((res) => {
+          this.loading = false
+          this.threadsData = [...this.threadsData, ...res]
+        }, (e) => {
+          this.handleError(e)
+        })
+        .finally(() => {
+          this.loading = false
+        })
     }
   },
   head() {
@@ -212,6 +246,11 @@ export default {
 .color {
   color: #909399;
   margin-right: 15px;
+}
+.infocontainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
 }
 .info {
   display: flex;
@@ -297,5 +336,32 @@ export default {
   .islogin {
     margin-top: 10px;
   }
+}
+.thread{
+  margin-top: 145px;
+  overflow-y: auto;
+  width: 500px;
+  height: 475px;
+  background: #fbfbfb;
+  margin-left: 35px;
+  .threadtitle{
+    font-size: 14px;
+    color: #000000;
+    margin-left: 20px;
+    margin-top: 13px;
+  }
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color:white;
+  border-radius:100px;
+  -webkit-border-radius: 100px;
+}
+scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color:white;
+  border-radius:100px;
 }
 </style>

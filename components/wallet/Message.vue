@@ -9,12 +9,11 @@
       <slot />
     </div>
   </div>
-
 </template>
 
 <script>
 export default {
-  name: 'TopicCheckoutCounter',
+  name: 'Message',
   props: {
     title: {
       type: String,
@@ -53,10 +52,4 @@ export default {
       }
     }
   }
-  @media screen and ( max-width: 1005px ) {
-    .checkout-counter {
-      width: 750px;
-    }
-  }
-
 </style>

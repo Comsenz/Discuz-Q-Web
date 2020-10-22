@@ -341,15 +341,6 @@ export default {
           })
       }
     },
-    // qq登录
-    qqLogin() {
-      const params = {
-        _jv: { type: '/oauth/qq' }
-      }
-      this.$store.dispatch('jv/get', params).then((res) => {
-        console.log('qq登陆', res)
-      })
-    },
     toRegister() {
       this.$router.push(`/pages/user/register?code=${this.code}`)
     },

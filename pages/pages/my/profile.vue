@@ -79,7 +79,20 @@
             <form>
               <el-input ref="sign" v-model="inputVal" type="textarea" :rows="5" :placeholder="$t('modify.inputsignautre')" @input="fun" />
               <div class="cannum">{{ $t('modify.canalsoinput')+ `${num-wordnumber}` + $t('modify.wordnumber') }}</div>
-              <el-button type="primary" class="sigbutton" @click="sigComfirm">{{ $t('profile.confirmModify') }}</el-button>
+              <div class="confirmbtn">
+                <div class="allbtn">
+                  <el-button
+                    class="comfirm"
+                    type="small"
+                    @click="sigComfirm"
+                  >{{ this.$t('report.confirm') }}</el-button>
+                  <el-button
+                    class="cancel"
+                    type="small"
+                    @click="signModify"
+                  >{{ this.$t('report.cancel') }}</el-button>
+                </div>
+              </div>
             </form>
           </el-dialog>
         </div>
@@ -98,23 +111,34 @@
         <!-- 修改手机号 -->
         <div v-show="(isMobileModify && userInfo.mobile)" class="myprofile-btom">
           <div class="pmobile">{{ userInfo.mobile }}</div>
-          <div>
-            <el-input ref="oldphone" v-model="oldVerifyCode" :placeholder="$t('modify.oldverifycode')" class="phone-input" />
-            <el-button class="count-b" size="middle" @click="sendsms2">{{ content }}</el-button>
-            <el-input v-model="newphon" :placeholder="$t('modify.newphonnumber')" :class="isChange ? 'passbtom phonechange': 'passbtom'" @input="changeinput" />
-            <el-input v-model="newVerifyCode" :placeholder="$t('modify.inputnewverifycode')" class="phone-input" />
-            <el-button class="count-b" :class="{disabled: !canClick2}" :disabled="!canClick2" size="middle" @click="sendsms">{{ content2 }}</el-button>
-          </div>
-          <el-button type="primary" class="ebutton" @click="mobileComfirm">{{ $t('profile.submitchange') }}</el-button>
+          <verify-phone
+            v-if="isMobileModify"
+            ref="verifyphone"
+            :error="phoneError"
+            :mobile="userInfo.mobile"
+            @close="isMobileModify = false"
+            @password="oldVerify"
+            @sendsms="sendsms2"
+          />
         </div>
+        <el-dialog :title="$t('profile.bindingmobile')" :visible.sync="isMobileVerify" width="620px" :before-close="mobileVerify">
+          <form class="form">
+            <el-input v-model="newphon" :placeholder="$t('modify.newphonnumber')" :class="isChange ? 'phone-input phonechange': 'phone-input'" @input="changeinput" />
+            <el-button class="count-b" :class="{disabled: !canClick2}" :disabled="!canClick2" size="middle" @click="sendsms">{{ content2 }}</el-button>
+            <el-input v-model="newVerifyCode" :placeholder="$t('modify.inputnewverifycode')" class="passbtom" />
+            <el-button type="primary" class="ebutton" @click="newVerify">{{ $t('profile.submitchange') }}</el-button>
+          </form>
+        </el-dialog>
         <!-- 新用户绑定手机号 -->
-        <div v-show="(isMobileModify && !userInfo.mobile)" class="myprofile-btom">
-          <div>
-            <el-input ref="oldphone" v-model="newphon" maxlength="11" :placeholder="$t('modify.newphon')" :class="isChange ? 'passbtom phonechange': 'passbtom'" @input="changeinput" />
-            <el-input v-model="setnum" :placeholder="$t('modify.newverifycode')" class="phone-input" />
-            <el-button class="count-b" :class="{disabled: !canClick}" :disabled="!canClick" size="middle" @click="sendsms">{{ content }}</el-button>
-          </div>
-          <el-button type="primary" class="ebutton" @click="dingphon">{{ $t('profile.submitchange') }}</el-button>
+        <div v-if="(isMobileModify && !userInfo.mobile)" class="myprofile-btom">
+          <el-dialog :title="$t('profile.bindingmobile')" :visible.sync="isMobileModify" width="620px" :before-close="mobileModify">
+            <form class="form">
+              <el-input ref="oldphone" v-model="newphon" maxlength="11" :placeholder="$t('modify.newphon')" :class="isChange ? 'phone-input phonechange': 'phone-input'" @input="changeinput" />
+              <el-button class="count-b" :class="{disabled: !canClick}" :disabled="!canClick" size="middle" @click="sendsms">{{ content }}</el-button>
+              <el-input v-model="setnum" :placeholder="$t('modify.newverifycode')" class="passbtom" />
+              <el-button type="primary" class="ebutton" @click="dingphon">{{ $t('profile.submitchange') }}</el-button>
+            </form>
+          </el-dialog>
         </div>
       </div>
     </div>
@@ -272,7 +296,6 @@ export default {
       ticket: '',
       randstr: '',
       newVerifyCode: '', // 新手机验证码
-      oldVerifyCode: '', // 旧手机验证码
       newPhoneNumber: '', // 新绑定的手机
       newphon: '', // 初始绑定的手机号
       setnum: '', // 初始绑定手机号时收到的验证码
@@ -289,11 +312,13 @@ export default {
       isWechatModify: false,
       isRealModify: false,
       isNameModify: false,
+      isMobileVerify: false, // 旧手机是否验证成功
       loading: true,
       rebind: false, // 是否修改手机号
       isShowAvatar: false, // 是否设置头像
       passerror: false,
-      isChange: false
+      isChange: false,
+      phoneError: false
     }
   },
   computed: {
@@ -547,9 +572,12 @@ export default {
     // 修改手机号
     mobileModify() {
       this.isMobileModify = !this.isMobileModify
-      this.$nextTick(() => {
-        this.$refs.oldphone.focus()
-      })
+      // this.$nextTick(() => {
+      //   this.$refs.oldphone.focus()
+      // })
+    },
+    mobileVerify() {
+      this.isMobileVerify = !this.isMobileVerify
     },
     // 旧手机验证码发送
     sendVerifyCode() {
@@ -601,21 +629,21 @@ export default {
     mobileComfirm() {
       this.oldVerify()
     },
-    oldVerify() {
+    oldVerify(oldVerifyCode = '') {
       const params = {
         _jv: { type: 'sms/verify' },
-        code: this.oldVerifyCode,
+        code: oldVerifyCode,
         type: 'verify'
       }
       this.$store.dispatch('jv/post', params).then(
         (res) => {
           if (res) {
-            this.newVerify()
+            this.isMobileModify = false
+            this.isMobileVerify = true
           }
         }, (e) => {
-          this.newVerifyCode = ''
-          this.newphon = ''
-          this.oldVerifyCode = ''
+          this.$refs.verifyphone.empty()
+          this.phoneError = true
           this.handleError(e)
         })
     },
@@ -635,11 +663,11 @@ export default {
       postphon.then(
         (res) => {
           if (res) {
-            this.isMobileModify = !this.isMobileModify
+            this.isMobileModify = false
+            this.isMobileVerify = false
             this.$message.success(this.$t('modify.phontitle'))
             this.newVerifyCode = ''
             this.newphon = ''
-            this.oldVerifyCode = ''
             this.userinfo()
             this.$store.dispatch('user/getUserInfo', this.userId)
           }
@@ -648,7 +676,6 @@ export default {
           this.handleError(e)
           this.newVerifyCode = ''
           this.newphon = ''
-          this.oldVerifyCode = ''
         })
     },
     // 修改密码
@@ -862,6 +889,35 @@ export default {
     margin-right: 100px;
     .cannum {
       text-align: right;
+      margin: 10px 0;
+    }
+    .confirmbtn {
+      background: #f5f6f7;
+      display: flex;
+      justify-content: flex-end;
+      position: absolute;
+      width: 100%;
+      left: 0;
+      .allbtn {
+        margin: 10px 19px;
+      }
+      .comfirm {
+        width: 70px;
+        height: 35px;
+        background: #1878f3;
+        color: #ffffff;
+        border-radius: 2px;
+        border: none;
+        &:hover{
+          background:$color-blue-deep;
+        }
+      }
+      .cancel {
+        width: 70px;
+        height: 35px;
+        border-radius: 2px;
+        margin-left: 5px;
+      }
     }
   }
   .sigbutton {
@@ -949,6 +1005,10 @@ export default {
       }
     }
   }
+  .form{
+    width:300px;
+    margin: 0 auto;
+  }
   .myprofile-btom {
     margin-left: 17px;
     font-size: 16px;
@@ -1014,7 +1074,7 @@ export default {
     width: 90px;
     height: 40px;
     padding: 0;
-    margin-left: -5px;
+    margin-left: -4px;
     color: #606162;
     vertical-align: top;
     border-bottom-left-radius: 0px;
