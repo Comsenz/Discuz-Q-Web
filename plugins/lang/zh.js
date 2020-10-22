@@ -229,6 +229,7 @@ export default {
   post: {
     attachmentList: '附件列表:',
     addAttachment: '+添加附件',
+    preview: '预览',
     download: '下载',
     free: '免费',
     callFriends: '@圈友',
@@ -472,6 +473,9 @@ export default {
     invitation: '帖子',
     video: '视频',
     picture: '图片',
+    voice: '语音',
+    question: '问答',
+    product: '商品',
     essence: '精华',
     followed: '已关注',
     follow: '+ 关注',

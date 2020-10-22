@@ -103,7 +103,9 @@
       <div class="profileborder">
         <div class="myprofile-top">
           <span class="sig">{{ $t('profile.mobile') }}</span>
-          <span class="setavatar" @click="mobileModify">{{ (!isMobileModify ?!userInfo.mobile ? $t('profile.bindingmobile'): $t('profile.modify') : $t('profile.cancelModify')) }}</span>
+          <span class="setavatar" @click="mobileModify">
+            {{ (!isMobileModify ?!userInfo.mobile ? $t('profile.bindingmobile'): $t('profile.modify') : $t('profile.cancelModify')) }}
+          </span>
         </div>
         <div v-show="!isMobileModify" class="myprofile-btom2">
           <div :class="userInfo.mobile ? 'pmobile' : ''">{{ userInfo.mobile ? userInfo.mobile : $t('modify.setphontitle') }}</div>
@@ -202,25 +204,21 @@
       <div class="profileborder">
         <div class="myprofile-top">
           <span class="sig">{{ $t('profile.wechat') }}</span>
-        <!-- <span
-          class="setavatar"
-          @click="wechatModify"
-        >{{ (!isWechatModify ? $t('profile.modify') : $t('profile.cancelModify')) }}</span> -->
+          <el-button type="text" class="setavatar" @click="wechatModify">{{ (!isWechatModify ? $t('profile.modify') : $t('profile.cancelModify')) }}</el-button>
         </div>
-        <div
-          v-show="!isWechatModify"
-          class="myprofile-btom2"
-        >{{ userInfo && userInfo.wechat ?userInfo.wechat.nickname : $t('profile.withoutbindwechat') }}</div>
-        <div
-          v-show="isWechatModify"
-          class="wehcat-bind"
-        >
-          <!-- <el-image
-            :src="wechatBind.base64_img"
-            class="qr-code"
-          /> -->
-          <div>请用微信扫一扫</div>
-          <div>扫码上方二维码</div>
+        <div class="myprofile-btom2">
+          {{ userInfo && userInfo.wechat ? userInfo.wechat.nickname : $t('profile.withoutbindwechat') }}
+        </div>
+        <div v-if="isWechatModify && userInfo && !userInfo.wechat" class="wehcat-bind">
+          <el-dialog :visible.sync="isWechatModify" width="180px" :before-close="wechatModify">
+            <div class="qrcode-text">
+              <svg-icon type="wechat-logo" class="wechat-logo" />
+              <span class="qrtext">微信扫码绑定</span>
+            </div>
+            <el-image :src="wechatBind.base64_img" class="qr-code" />
+            <div>请用微信扫一扫</div>
+            <div class="scanqr">扫码上方二维码</div>
+          </el-dialog>
         </div>
       </div>
     </div>
@@ -267,7 +265,9 @@
         <div class="myprofile-top">
           <span class="sig">{{ $t('modify.realnametitle') }}</span>
         </div>
-        <div class="myprofile-btom2 myprofile-btom3">{{ userInfo && userInfo.realname ?userInfo.realname +` (${userInfo.identity})`:'' }}</div>
+        <div class="myprofile-btom2 myprofile-btom3">
+          {{ userInfo && userInfo.realname ? userInfo.realname +` (${userInfo.identity})`:'' }}
+        </div>
       </div>
     </div>
   </div>
@@ -389,6 +389,7 @@ export default {
             ? this.userInfo.groups[0].name
             : ''
           this.wordnumber = this.signcontent.length
+          console.log(this.userInfo)
         },
         (e) => {
           const { response: { data: { errors }}} = e
@@ -737,8 +738,34 @@ export default {
       if (this.wehcatTimer) {
         window.clearInterval(this.wehcatTimer)
       }
-      if (this.isWechatModify) {
+      if (this.isWechatModify && !this.userInfo.wechat) {
         this.createQRcode()
+      } else {
+        this.$confirm(`
+        <i class="el-icon-warning" style=" width: 25px;height: 25px;font-size: 25px;color: #E6A23C;position: absolute;left: 0px;"></i>
+        <p style="margin-left:40px;">确定解除微信绑定?</p>
+        <p style="margin-bottom:50px;margin-left:40px;margin-top:10px;">您确定要解除微信${this.userInfo.wechat.nickname}和用户账号的绑定么？</p>`, {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          dangerouslyUseHTMLString: true
+        }).then(() => {
+          this.$store.dispatch('jv/delete', [`users/${this.userId}/wechat`]).then((res) => {
+            if (res) {
+              this.isWechatModify = false
+              this.userinfo()
+              this.$message({
+                type: 'success',
+                message: '解绑成功!'
+              })
+            }
+          }, e => this.handleError(e))
+        }).catch(() => {
+          this.isWechatModify = false
+          this.$message({
+            type: 'info',
+            message: '已取消解绑'
+          })
+        })
       }
     },
     // 实名认证
@@ -1129,21 +1156,50 @@ export default {
 }
 ::v-deep .el-textarea__inner {
   font-family: inherit;
-  // margin-left: 17px;
-  // margin-top: 15px;
 }
 .wehcat-bind {
   padding-top: 20px;
   width: 155px;
   text-align: center;
+  ::v-deep .el-dialog__header{
+    padding: 0;
+  }
+  ::v-deep .el-dialog__body{
+    padding: 0;
+  }
+  ::v-deep .el-icon-close{
+    display:none;
+  }
+  .qrcode-text{
+    padding-top: 15px;
+    .qrtext{
+      vertical-align: super;
+    }
+  }
+  .wechat-logo{
+    width:25.5px;
+    height: 25.5px;
+  }
+  .scanqr{
+    padding-bottom:22px;
+  }
 }
 .qr-code {
   width: 155px;
   height: 155px;
-  margin-bottom: 10px;
+  margin-bottom: -5px;
   img {
     width: 100%;
     height: 100%;
   }
 }
+::v-deep.warningicon{
+  width: 25px;
+  height: 25px;
+  font-size: 25px;
+  color: #E6A23C;
+  position: absolute;
+  left: 0px;
+}
+
 </style>

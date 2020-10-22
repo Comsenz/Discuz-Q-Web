@@ -257,6 +257,9 @@ export default {
   width: 400px;
   margin-top: 62px;
   flex-direction: column;
+  @media screen and (max-width: 1005px) {
+    width: 292px;
+  }
   .joinnow {
     margin-top: 40px;
   }
@@ -344,6 +347,9 @@ export default {
   height: 475px;
   background: #fbfbfb;
   margin-left: 35px;
+  @media screen and (max-width: 1005px) {
+    width: 395px;
+  }
   .threadtitle{
     font-size: 14px;
     color: #000000;
