@@ -242,6 +242,7 @@ $em: 16px;
 
 /* html */
 .content-html {
+  overflow: auto;
   font-size: $em;
   line-height: 1.5 * $em;
   //user-select: none;
@@ -283,7 +284,7 @@ $em: 16px;
   del { display: inline; }
   .figure { overflow: hidden; }
   .tablebox { padding: 8px; overflow: auto; font-size: 13px; background: #f5f5f5; background-color: #f5f5f5; }
-  table table, table { overflow: auto; white-space: pre; border-collapse: collapse; box-sizing: border-box; }
+  table table, table { overflow: auto; white-space: pre; border-collapse: collapse; box-sizing: border-box;}
   table thead, table tfoot, table th { font-weight: bold; background: #ececec; border-collapse: collapse; box-sizing: border-box; }
   table tr { overflow: auto; border-collapse: collapse; box-sizing: border-box; }
   table th, table td { overflow: auto; border: 2px solid #dadada; border-collapse: collapse; box-sizing: border-box; }

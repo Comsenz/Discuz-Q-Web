@@ -1,5 +1,5 @@
 <template>
-  <div class="container-search-list">
+  <div class="container-search-list" @click.self="() => {}">
     <label>
       <input type="text" :value="searchValue" class="input-topic" :placeholder="$t('post.topicInputTip')" @input="searchTopics">
     </label>
@@ -109,6 +109,7 @@ export default {
     min-width: 300px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, .3);
     border-radius: 6px;
+    background: white;
     .input-topic {
       height: 45px;
       line-height: 45px;
