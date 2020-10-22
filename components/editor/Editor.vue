@@ -7,6 +7,8 @@
     <attached-upload v-if="typeInformation && typeInformation.showAttached" :on-upload-attached.sync="onUploadAttached" :attached-list="post && post.attachedList" :header="header" :is-edit="isEdit" :url="url" @attachedChange="e => onPostContentChange(e.key, e.value)" />
     <Vditor
       v-if="typeInformation && typeInformation.type === 1"
+      :is-edit="isEdit"
+      :text="post && post.text"
       :show-caller="showCaller"
       :show-topic="showTopic"
       :show-emoji="showEmoji"

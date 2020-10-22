@@ -9,7 +9,7 @@
 
 <script>
 const Vditor = process.client ? require('vditor') : ''
-import { call, emoji, topic, picture, file } from '@/assets/svg-icons/vditor-icon'
+import { call, emoji, topic, picture } from '@/assets/svg-icons/vditor-icon'
 import service from '@/api/request'
 
 export default {
@@ -24,6 +24,14 @@ export default {
       default: false
     },
     showEmoji: {
+      type: Boolean,
+      default: false
+    },
+    text: {
+      type: String,
+      default: ''
+    },
+    isEdit: {
       type: Boolean,
       default: false
     },
@@ -54,6 +62,15 @@ export default {
       input: {}
     }
   },
+  watch: {
+    isEdit: {
+      handler(isEdit) {
+        console.log(isEdit, 'is edit')
+        if (isEdit && this.text && this.vditor) this.vditor.setValue(this.text, false)
+      },
+      immediate: true
+    }
+  },
   mounted() {
     Vditor && this.initVditor()
   },
@@ -63,66 +80,14 @@ export default {
         minHeight: 450,
         placeholder: '请输入',
         mode: 'wysiwyg',
-        blur: (value) => {
-          this.$emit('textChange', value)
-        },
+        blur: (value) => { this.$emit('textChange', value) },
         toolbar: [
-          {
-            hotkey: '',
-            name: '@',
-            tipPosition: 'ne',
-            tip: '@ 好友',
-            className: 'right',
-            icon: call,
-            click: () => {
-              this.$emit('onActions', 'showCaller')
-            }
-          },
-          {
-            hotkey: '',
-            name: '#',
-            tipPosition: 'ne',
-            tip: '新增话题',
-            className: 'right',
-            icon: topic,
-            click: () => {
-              this.$emit('onActions', 'showTopic')
-            }
-          },
-          {
-            hotkey: '',
-            name: 'my-emoji',
-            tipPosition: 'ne',
-            tip: '插入表情',
-            className: 'right',
-            icon: emoji,
-            click: () => {
-              this.$emit('onActions', 'showEmoji')
-            }
-          },
+          { hotkey: '', name: '@', tipPosition: 'ne', tip: '@ 好友', className: 'right', icon: call, click: () => { this.$emit('onActions', 'showCaller') } },
+          { hotkey: '', name: '#', tipPosition: 'ne', tip: '新增话题', className: 'right', icon: topic, click: () => { this.$emit('onActions', 'showTopic') } },
+          { hotkey: '', name: 'my-emoji', tipPosition: 'ne', tip: '插入表情', className: 'right', icon: emoji, click: () => { this.$emit('onActions', 'showEmoji') } },
           'headings', 'bold', 'italic', 'strike', 'link', 'list', 'ordered-list', 'check', 'outdent', 'indent', 'quote',
-          {
-            hotkey: '',
-            name: 'picture',
-            tipPosition: 'ne',
-            tip: '插入图片',
-            className: 'right',
-            icon: picture,
-            click: () => {
-              this.uploader('image')
-            }
-          },
-          {
-            hotkey: '',
-            name: 'file',
-            tipPosition: 'ne',
-            tip: '插入文件',
-            className: 'right',
-            icon: file,
-            click: () => {
-              this.uploader('attachment')
-            }
-          },
+          { hotkey: '', name: 'picture', tipPosition: 'ne', tip: '插入图片', className: 'right', icon: picture, click: () => { this.uploader('image') } },
+          // { 不需要文件上传 //   hotkey: '', //   name: 'file', //   tipPosition: 'ne', //   tip: '插入文件', //   className: 'right', //   icon: file, //   click: () => { //     this.uploader('attachment') //   } // },
           'line', 'code', 'inline-code', 'table', 'both', 'br', 'undo', 'redo'],
         toolbarConfig: { pin: true },
         cache: { enable: false },

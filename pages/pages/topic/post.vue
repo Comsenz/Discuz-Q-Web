@@ -85,8 +85,8 @@ export default {
       if (!this.threadId) return
       return this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include: threadInclude }}]).then(data => {
         if (data.isDeleted) return this.$router.push('/')
-        this.isEditor = true
         this.initData(data)
+        this.isEditor = true
         if (this.textarea) this.$nextTick(() => { this.textarea.style.height = this.textarea.scrollHeight + 'px' }) // TODO 重置textarea 待优
         if (data.firstPost.images.length > 0) {
           this.editResourceShow.showUploadImg = true
@@ -115,7 +115,7 @@ export default {
       if (parseFloat(data.price) === 0 && parseFloat(data.attachmentPrice) === 0) {
         this.payment.paidType = 'free'
       } else if (parseFloat(data.price) > 0 && parseFloat(data.attachmentPrice) === 0) {
-        this.payment.paidType = 'Paid'
+        this.payment.paidType = 'paid'
       } else if (parseFloat(data.price) === 0 && parseFloat(data.attachmentPrice) > 0) {
         this.payment.paidType = 'attachmentPaid'
       }
