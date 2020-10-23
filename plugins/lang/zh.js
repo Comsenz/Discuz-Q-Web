@@ -1004,7 +1004,7 @@ export default {
     phonelogin: '手机号码登录',
     phonenumber: '手机号码',
     phoneregister: '手机号码注册',
-    quicklogin: '快速登录',
+    quicklogin: '微信登录',
     login: '登录',
     register: '注册',
     registerReason: '注册原因',

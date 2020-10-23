@@ -389,7 +389,6 @@ export default {
             ? this.userInfo.groups[0].name
             : ''
           this.wordnumber = this.signcontent.length
-          console.log(this.userInfo)
         },
         (e) => {
           const { response: { data: { errors }}} = e
@@ -740,7 +739,7 @@ export default {
       }
       if (this.isWechatModify && !this.userInfo.wechat) {
         this.createQRcode()
-      } else {
+      } else if (this.isWechatModify && this.userInfo.wechat && this.userInfo.wechat) {
         this.$confirm(`
         <i class="el-icon-warning" style=" width: 25px;height: 25px;font-size: 25px;color: #E6A23C;position: absolute;left: 0px;"></i>
         <p style="margin-left:40px;">确定解除微信绑定?</p>

@@ -100,11 +100,11 @@
 
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
-import loginAuth from '@/mixin/loginAuth'
+import loginAbout from '@/mixin/loginAbout'
 import handleError from '@/mixin/handleError'
 
 export default {
-  mixins: [loginAuth, handleError],
+  mixins: [loginAbout, handleError],
   data() {
     return {
       isLogin: this.$store.getters['session/get']('isLogin'),

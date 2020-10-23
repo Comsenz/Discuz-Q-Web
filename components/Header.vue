@@ -80,8 +80,11 @@
 </template>
 
 <script>
+import loginAbout from '@/mixin/loginAbout'
+
 export default {
   name: 'Header',
+  mixins: [loginAbout],
   props: {
     headImg: {
       type: String,
@@ -171,11 +174,11 @@ export default {
     },
     // 跳往注册页面
     register() {
-      this.$router.push(`/pages/user/register?validate=${this.forums && this.forums.set_reg && this.forums.set_reg.register_validate}&code=${this.code}`)
+      this.toregister(this.code)
     },
     // 跳转登录页面
     login() {
-      this.$router.push('/pages/user/login')
+      this.headerTologin()
     },
     // 跳转搜索页面
     onClickSearch() {

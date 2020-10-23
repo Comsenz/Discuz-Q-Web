@@ -2,8 +2,12 @@
   <div v-if="forums" v-loading="loading" class="register">
     <el-tabs v-model="activeName" type="border-card" class="register-select">
       <!-- 用户名登录 login register phone-login   -->
-      <el-tab-pane :label="$t('user.userlogin')" name="0">
+      <el-tab-pane label="登录并绑定微信号" name="0">
         <form>
+          <div class="bindtext">
+            <div>亲爱的 <b>{{ userInfo && userInfo.wechat && userInfo.wechat.nickname || '' }}</b> 用户</div>
+            <div>您正在更换微信绑定的账号为登录的账号</div>
+          </div>
           <span class="title">{{ $t('user.usrname') }}</span>
           <el-input v-model="userName" :placeholder="$t('user.username')" class="reg-input" />
           <span class="title2">{{ $t('user.pwd') }}</span>
@@ -19,21 +23,11 @@
             <el-checkbox v-model="checked" />
             <span class="agree">{{ $t('user.status') }} </span>
           </div>
-          <el-button type="primary" class="r-button" @click="UserLogin">{{ $t('user.login') }}</el-button>
+          <el-button type="primary" class="r-button" @click="UserLogin">登录并绑定</el-button>
           <div class="logorreg">
             <span v-if="canReg">
               {{ $t('user.noexist') }}
-              <span class="agreement_text" @click="toRegister"> {{ $t('user.register') }}</span></span>
-            <nuxt-link
-              v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms"
-              to="/pages/modify/findpwd"
-              :class="['findpass',iscanReg()]"
-            >
-              {{ $t('modify.findpawdtitle') }}</nuxt-link>
-          </div>
-          <div class="otherlogin">
-            <svg-icon v-if="forums && forums.passport && forums.passport.oplatform_close" class="wechat-icon" type="wechatlogin" @click="toWechat" />
-            <svg-icon v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms" class="phone-icon" type="phonelogin" @click="toPhonelogin" />
+              <span class="agreement_text" @click="toRegister"> 注册并绑定</span></span>
           </div>
         </form>
       </el-tab-pane>
@@ -64,6 +58,9 @@ export default {
   computed: {
     forums() {
       return this.$store.state.site.info.attributes || {}
+    },
+    userInfo() {
+      return this.$store.state.user.info.attributes || {}
     }
   },
   mounted() {
@@ -96,7 +93,8 @@ export default {
           data: {
             attributes: {
               username: this.userName,
-              password: this.passWord
+              password: this.passWord,
+              rebind: 1
             }
           }
         }
@@ -135,20 +133,10 @@ export default {
       }
     },
     toRegister() {
-      this.$router.push(`/pages/user/register?code=${this.code}`)
+      this.$router.push(`/pages/user/register-bind`)
     },
     iscanReg() {
       return [this.canReg ? '' : 'noreg']
-    },
-    toWechat() {
-      this.$router.push(`/pages/user/wechat?code=${this.code}`)
-    },
-    toPhonelogin() {
-      if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
-        this.$router.push(`/pages/user/phone-login-register?code=${this.code}`)
-      } else {
-        this.$router.push(`/pages/user/phone-login?code=${this.code}`)
-      }
     }
   },
   head() {
@@ -181,6 +169,10 @@ export default {
     border: none;
     background: transparent;
     box-shadow: none;
+    .bindtext{
+      font-size: 16px;
+      margin-bottom: 40px;
+    }
     .title {
       width: 66px;
       text-align: center;

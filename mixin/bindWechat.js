@@ -29,6 +29,8 @@ module.exports = {
           this.$store.commit('session/SET_USER_ID', res._jv.id)
           this.$store.commit('session/CHECK_SESSION', true)
           this.$store.commit('session/SET_ACCESS_TOKEN', res.access_token)
+          const userId = this.$store.getters['session/get']('userId')
+          this.$store.dispatch('user/getUserInfo', userId)
           this.userinfo()
           this.isWechatModify = false
           this.$message.success('绑定成功')
