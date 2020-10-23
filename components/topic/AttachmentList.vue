@@ -11,23 +11,30 @@
           && ((parseFloat(price) === 0 && parseFloat(attachmentPrice) > 0 && isPaidAttachment) || parseFloat(price) > 0 && isPaid)
           && file.isRemote"
         class="download"
-        @click="preview(file.url)"
       >
-        {{ $t('post.preview') }}
+        <span class="download" @click="preview(file.url)">{{ $t('post.preview') }}</span>
+        /
+        <span class="download" @click="downloadAttachment(file.url)">{{ $t('post.download') }}</span>
       </div>
       <div v-else class="download" @click="downloadAttachment(file.url)">{{ $t('post.download') }}</div>
     </template>
+    <div v-else>
+      {{ $t('post.paidAfterDownload') }}
+    </div>
     <el-dialog
+      v-loading="loading"
       :visible.sync="dialogVisible"
       :show-close="false"
-      width="60%"
+      top="5vh"
+      width="800px"
+      element-loading-background="transparent"
     >
-      <div slot="title" class="pagination">
+      <div class="dialog-cont"><img :src="previewData.image" class="img"></div>
+      <div slot="footer" class="pagination">
         <el-button :class="{'hidden': previewPage === 1}" type="primary" size="medium" @click="prev">{{ $t('post.prev') }}</el-button>
         <div class="pages">{{ previewPage }} / {{ previewTotal }}</div>
         <el-button :class="{'hidden': previewPage >= +previewTotal}" type="primary" size="medium" @click="next">{{ $t('post.next') }}</el-button>
       </div>
-      <el-image :src="previewData.image" />
     </el-dialog>
   </div>
 </template>
@@ -68,7 +75,8 @@ export default {
       previewData: {},
       previewUrl: '',
       previewPage: 1,
-      previewTotal: 1
+      previewTotal: 1,
+      loading: false
     }
   },
   computed: {
@@ -95,22 +103,22 @@ export default {
       this.getPreviewData()
     },
     getPreviewData() {
-      const loading = this.$loading({
-        lock: true,
-        background: 'transparent'
-      })
+      this.dialogVisible = true
+      this.loading = true
       service({
         url: `${this.previewUrl}&page=${this.previewPage}`,
         method: 'get'
       }).then((res) => {
-        loading.close()
+        this.loading = false
         if (res.status === 200 && res.data && res.data.data && +res.data.data['X-Total-Page'] > 0) {
-          this.dialogVisible = true
           this.previewData = res.data.data
           this.previewTotal = res.data.data['X-Total-Page']
+        } else {
+          this.dialogVisible = false
         }
       }, (e) => {
-        loading.close()
+        this.dialogVisible = false
+        this.loading = false
         this.handleError(e)
       })
     },
@@ -145,7 +153,7 @@ export default {
       border: 1px solid #E5F2FF;
     }
 
-    > .download {
+    .download {
       color: $color-blue-base
     }
 
@@ -177,6 +185,16 @@ export default {
     }
     .pages{
       color: $font-color-grey;
+    }
+  }
+  ::v-deep .el-dialog__header{
+    padding: 0;
+  }
+  .dialog-cont{
+    overflow-y: auto;
+    height: calc(100vh - 10vh - 130px);
+    .img{
+      max-width: 100%;
     }
   }
 </style>
