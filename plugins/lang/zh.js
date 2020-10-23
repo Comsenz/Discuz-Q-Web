@@ -335,6 +335,7 @@ export default {
     noMoreData: '没有更多数据了',
     whole: '全部',
     paymentViewPicture: '查看图片',
+    paymentViewAttachment: '查看附件',
     paymentViewRemainingContent: '查看剩余内容',
     paymentViewVideo: '查看视频',
     publishExamineTip: '您发布的内容正在审核中哦',
