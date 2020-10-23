@@ -2,7 +2,7 @@
   <div v-if="forums" class="register">
     <el-tabs v-model="activeName" type="border-card" class="register-select">
       <!-- 快捷登录 -->
-      <el-tab-pane v-if="forums && forums.passport && forums.passport.oplatform_close" :label="$t('user.quicklogin')" name="0">
+      <el-tab-pane v-if="forums && forums.passport && forums.passport.oplatform_close" :label="forums && forums.set_reg && forums.set_reg.register_type !== 2 ? $t('user.quicklogin') : $t('user.quicklogin')/注册" name="0">
         <div class="quick">
           <div class="quick-container">
             <div class="qrcode">
@@ -10,9 +10,9 @@
             </div>
             <div class="quick-title">
               <img src="@/assets/wechat.png">
-              <span>{{ $t('user.wechatlogin') }}</span>
+              <span>{{ forums && forums.set_reg && forums.set_reg.register_type !== 2 ? $t('user.wechatlogin') : $t('user.wechatlogin')/注册 }}</span>
             </div>
-            <div class="otherlogin">
+            <div v-if="forums && forums.set_reg && forums.set_reg.register_type !== 2" class="otherlogin">
               <svg-icon v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms" class="phone-icon" type="phonelogin" @click="toPhonelogin" />
               <svg-icon class="wechat-icon" type="userlogin" @click="toUserlogin" />
             </div>
@@ -86,7 +86,6 @@ export default {
               this.$router.push(`/pages/user/register-bind`)
             }
           })
-          this.logind()
           this.$message.success('登录成功')
         }
       }, (e) => {
