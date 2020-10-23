@@ -232,6 +232,7 @@ export default {
     addAttachment: '+添加附件',
     preview: '预览',
     download: '下载',
+    paidAfterDownload: '请付费后下载',
     free: '免费',
     prev: '上一页',
     next: '下一页',
