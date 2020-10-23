@@ -56,7 +56,7 @@ export default {
   },
   data() {
     return {
-      payButtonText: ['', this.$t('topic.paymentViewRemainingContent'), this.$t('topic.paymentViewVideo'), this.$t('topic.paymentViewPicture') ],
+      payButtonText: ['', this.$t('topic.paymentViewRemainingContent'), this.$t('topic.paymentViewVideo'), this.$t('topic.paymentViewPicture')],
       command: [
         {
           value: 24, // value 是每次加载的头像数量

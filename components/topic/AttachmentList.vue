@@ -1,39 +1,26 @@
 <template>
   <div class="attachment-item">
-    <div class="info" @click="downloadAttachment(file.url)">
-      <svg-icon :type="extensionValidate(file.extension)" style="font-size: 18px" />
-      <span class="file-name">{{ file.fileName }}</span>
+    <div class="info">
+      <div>
+        <svg-icon :type="extensionValidate(file.extension)" style="font-size: 18px" />
+        <span class="file-name">{{ file.fileName }}</span>
+      </div>
+      <span class="size">{{ file.fileSize }} KB</span>
     </div>
-    <template v-if="!unpaid">
-      <div
-        v-if="forums && forums.qcloud && forums.qcloud.qcloud_cos
-          && isPreviewType(file.extension)
-          && ((parseFloat(price) === 0 && parseFloat(attachmentPrice) > 0 && isPaidAttachment) || parseFloat(price) > 0 && isPaid)
-          && file.isRemote"
-        class="download"
-      >
-        <span class="download" @click="preview(file.url)">{{ $t('post.preview') }}</span>
-        /
+    <div class="action">
+      <div v-if="!unpaid">
+        <span v-if="canReview" class="download" @click="preview(file.url)">{{ $t('post.preview') }}</span>
         <span class="download" @click="downloadAttachment(file.url)">{{ $t('post.download') }}</span>
       </div>
-      <div v-else class="download" @click="downloadAttachment(file.url)">{{ $t('post.download') }}</div>
-    </template>
-    <div v-else>
-      {{ $t('post.paidAfterDownload') }}
+      <span v-else>{{ $t('post.paidAfterDownload') }}</span>
     </div>
-    <el-dialog
-      v-loading="loading"
-      :visible.sync="dialogVisible"
-      :show-close="false"
-      top="5vh"
-      width="800px"
-      element-loading-background="transparent"
-    >
+    <!--TODO 放在外面-->
+    <el-dialog v-loading="loading" :visible.sync="dialogVisible" :show-close="false" top="5vh" width="800px" element-loading-background="transparent">
       <div class="dialog-cont"><img :src="previewData.image" class="img"></div>
       <div slot="footer" class="pagination">
         <el-button :class="{'hidden': previewPage === 1}" type="primary" size="medium" @click="prev">{{ $t('post.prev') }}</el-button>
         <div class="pages">{{ previewPage }} / {{ previewTotal }}</div>
-        <el-button :class="{'hidden': previewPage >= +previewTotal}" type="primary" size="medium" @click="next">{{ $t('post.next') }}</el-button>
+        <el-button :class="{'hidden': parseInt(previewPage)>=parseInt(previewTotal)}" size="medium" type="primary" @click="next">{{ $t('post.next') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -42,7 +29,7 @@
 <script>
 import service from '@/api/request'
 import handleError from '@/mixin/handleError'
-const extensionList = ['7Z', 'AI', 'APK', 'CAD', 'CDR', 'DOC', 'DOCX', 'EPS', 'EXE', 'IPA', 'MP3', 'MP4', 'PDF', 'PPT', 'PSD', 'RAR', 'TXT', 'XLS', 'XLSX', 'ZIP']
+const extensionList = ['7Z', 'AI', 'APK', 'CAD', 'CDR', 'DOC', 'DOCX', 'EPS', 'EXE', 'IPA', 'MP3', 'MP4', 'PDF', 'PPT', 'PSD', 'RAR', 'TXT', 'XLS', 'XLSX', 'ZIP', 'JPG', 'WAV']
 const previewList = ['DOC', 'DOCX', 'PDF', 'PPT', 'TXT', 'XLS', 'XLSX'] // 支持预览的文件格式
 export default {
   name: 'AttachmentList',
@@ -84,7 +71,18 @@ export default {
       return this.$store.state.site.info.attributes || {}
     },
     unpaid() {
+      console.log('price', this.price)
+      console.log('attachmentPrice', this.attachmentPrice)
+      console.log('isPaidAttachment', this.isPaidAttachment)
+      console.log('isPaid', this.isPaid)
       return (parseFloat(this.price) > 0 && !this.isPaid) || (parseFloat(this.attachmentPrice) > 0 && !this.isPaidAttachment)
+    },
+    canReview() {
+      return this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_cos &&
+        // this.forums.qcloud_cos_doc_preview && TODO
+        this.isPreviewType(this.file.extension) &&
+        ((parseFloat(this.price) === 0 && parseFloat(this.attachmentPrice) > 0 && this.isPaidAttachment) || parseFloat(this.price) > 0 && this.isPaid) &&
+        this.file.isRemote
     }
   },
   methods: {
@@ -139,43 +137,48 @@ export default {
   .attachment-item {
     cursor: pointer;
     margin-top: 10px;
+    padding: 8px 10px;
+    width: 100%;
+    height: 60px;
     display: flex;
     justify-content: space-between;
-    width: 100%;
-    height: 40px;
+    align-items: center;
     border-radius: 5px;
     border: 1px solid $border-color-base;
-    padding: 0 10px;
-    align-items: center;
+    > .info {
+      > .size {
+        color: #B7B7B7;
+        font-size: 12px;
+        margin-left: 20px;
+      }
 
+      .file-name {
+        max-width: 380px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        white-space: nowrap;
+        vertical-align: middle;
+        line-height: 18px;
+      }
+    }
+
+    > .action {
+      .download {
+        font-size: 14px;
+        margin-left: 10px;
+        color: #343434;
+      }
+    }
     &:hover {
       background: #F7FBFF;
       border: 1px solid #E5F2FF;
-    }
-
-    .download {
-      color: $color-blue-base
-    }
-
-    > span {
-      font-size: 16px;
-      width: 400px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-left: 10px;
-      white-space: nowrap;
-    }
-
-    .file-name {
-      max-width: 380px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: inline-block;
-      white-space: nowrap;
-      vertical-align: middle;
-      line-height: 18px;
+      .download {
+        color: $color-blue-base
+      }
     }
   }
+
   .pagination{
     display: flex;
     align-items: center;

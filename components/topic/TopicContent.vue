@@ -19,18 +19,18 @@
     </div>
     <div v-if="(article.attachments || []).length > 0" class="container-attachment">
       <h3 class="name">{{ $t('topic.attachment') }}</h3>
+      <!--      <div>-->
+      <!--        <template v-for="(file, index) in audioList">-->
+      <!--          <audio-player :key="index" :file="file" :current-audio="currentAudio" @play="play" @pause="pause" @seek="seek" @seeking="seeking" />-->
+      <!--        </template>-->
+      <!--      </div>-->
       <div>
-        <template v-for="(file, index) in audioList">
-          <audio-player :key="index" :file="file" :current-audio="currentAudio" @play="play" @pause="pause" @seek="seek" @seeking="seeking" />
-        </template>
-      </div>
-      <div>
-        <template v-for="(file, index) in attachmentList">
+        <template v-for="(file, index) in article.attachments">
           <attachment-list
             :key="index"
             :file="file"
             :price="paidInformation.price"
-            :is-paid="paidInformation.isPaid"
+            :is-paid="paidInformation.paid"
             :is-paid-attachment="paidInformation.isPaidAttachment"
             :attachment-price="paidInformation.attachmentPrice"
           />
@@ -117,14 +117,15 @@ export default {
     unpaid() {
       if (process.client && this.paidInformation.paid) this.removeTextHideCover()
       return !(this.paidInformation.paid || parseFloat(this.paidInformation.price) === 0)
-    },
-    audioList() {
-      // MP3/M4A/WAV/AAC
-      return this.article.attachments.filter(item => this.isAudio(item))
-    },
-    attachmentList() {
-      return this.article.attachments.filter(item => !this.isAudio(item))
     }
+    // 只有音频帖才区分 音频和普通附件
+    // audioList() {
+    //   // MP3/M4A/WAV/AAC
+    //   return this.article.attachments.filter(item => this.isAudio(item))
+    // },
+    // attachmentList() {
+    //   return this.article.attachments.filter(item => !this.isAudio(item))
+    // }
   },
   watch: {
     article: {
@@ -135,13 +136,14 @@ export default {
     }
   },
   mounted() {
+    console.log(this.paidInformation)
     this.currentAudio.audio = document.getElementById('audio-player')
   },
   methods: {
-    isAudio(item) {
-      const audio = ['MP3', 'M4A', 'WAV', 'AAC']
-      return audio.indexOf(item.extension.toUpperCase()) >= 0
-    },
+    // isAudio(item) {
+    //   const audio = ['MP3', 'M4A', 'WAV', 'AAC']
+    //   return audio.indexOf(item.extension.toUpperCase()) >= 0
+    // },
     formatTopicHTML(html) {
       return s9e.parse(html)
     },

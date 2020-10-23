@@ -30,7 +30,7 @@ module.exports = {
       // free 免费， paid 全部付费，attachmentPaid 文章免费，附件付费
       params.price = 0
       params.free_words = 0
-      params.attachmentPrice = 0
+      params.attachment_price = 0
       if (payment.paidType === 'attachmentPaid') {
         params.attachment_price = payment.attachmentPrice
       } else if (payment.paidType === 'paid') {
