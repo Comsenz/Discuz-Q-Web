@@ -56,19 +56,28 @@ export default {
   },
   data() {
     return {
-      payButtonText: ['', this.$t('topic.paymentViewRemainingContent'), this.$t('topic.paymentViewVideo'), this.$t('topic.paymentViewPicture')],
+      payButtonText: ['', this.$t('topic.paymentViewRemainingContent'), this.$t('topic.paymentViewVideo'), this.$t('topic.paymentViewPicture') ],
       command: [
         {
-          value: 24,
-          title: 'pay',
+          value: 24, // value 是每次加载的头像数量
+          title: 'pay', // 支付文章
           buttonText: this.$t('topic.pay'),
+          showButton: false,
           icon: 'pay'
         },
         {
           value: 24,
           title: 'reward',
           buttonText: this.$t('topic.reward'),
+          showButton: false,
           icon: 'heart'
+        },
+        {
+          value: 24,
+          title: 'pay', // 支付付费附件
+          buttonText: this.$t('topic.pay'),
+          showButton: false,
+          icon: 'pay'
         },
         {
           value: 24,
@@ -79,8 +88,11 @@ export default {
   watch: {
     paidInformation: {
       handler(val) {
-        this.command[0].showButton = parseFloat(val.price) > 0 && !val.paid
-        this.command[1].showButton = parseFloat(val.price) === 0
+        this.command[0].showButton = parseFloat(val.price) > 0 && !val.paid // 支付
+        this.command[2].showButton = parseFloat(val.attachmentPrice) > 0 && !val.isPaidAttachment // 支付附件
+        this.command[1].showButton = parseFloat(val.price) === 0 && parseFloat(val.attachmentPrice) === 0 // 打赏
+
+        this.command[2].buttonText = this.$t('topic.pay') + this.paidInformation.attachmentPrice + this.$t('topic.paymentViewAttachment')
       },
       deep: true
     },

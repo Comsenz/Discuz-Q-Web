@@ -223,7 +223,8 @@ export default {
     wechat_mobile_unbound: '微信未绑定手机号',
     unable_to_get_location: '无法获取地理位置',
     '二维码已失效，扫码超时': '二维码已失效，扫码超时',
-    no_edit_self: '不可编辑自己'
+    no_edit_self: '不可编辑自己',
+    qcloud_file_preview_unset: '腾讯云对象存储文件预览未开启'
   },
   // 发布页
   post: {
@@ -231,7 +232,10 @@ export default {
     addAttachment: '+添加附件',
     preview: '预览',
     download: '下载',
+    paidAfterDownload: '请付费后下载',
     free: '免费',
+    prev: '上一页',
+    next: '下一页',
     callFriends: '@圈友',
     myFriends: '我的好友',
     chosen: '已选择',
@@ -332,6 +336,7 @@ export default {
     noMoreData: '没有更多数据了',
     whole: '全部',
     paymentViewPicture: '查看图片',
+    paymentViewAttachment: '查看附件',
     paymentViewRemainingContent: '查看剩余内容',
     paymentViewVideo: '查看视频',
     publishExamineTip: '您发布的内容正在审核中哦',
