@@ -2,8 +2,12 @@
   <div v-if="forums" v-loading="loading" class="register">
     <el-tabs v-model="activeName" type="border-card" class="register-select">
       <!-- 用户名注册 -->
-      <el-tab-pane label="用户名注册" name="0">
+      <el-tab-pane label="注册并绑定微信号" name="0">
         <form>
+          <div class="bindtext">
+            <div>亲爱的 <b>{{ userInfo && userInfo.wechat && userInfo.wechat.nickname || '' }}</b> 用户</div>
+            <div>您的微信账号<b>未绑定账号</b>，<b>注册</b>即可完成绑定</div>
+          </div>
           <div>
             <span class="title">{{ $t('profile.username') }}</span>
             <el-input v-model="userName" :placeholder="$t('user.username')" class="reg-input" />
@@ -43,11 +47,11 @@
           <div class="agreement">
             <reg-agreement @check="check" />
           </div>
-          <el-button type="primary" class="r-button" @click="register">{{ $t('user.register') }}</el-button>
+          <el-button type="primary" class="r-button" @click="register">注册并绑定</el-button>
           <div class="tologin">
             <span
               @click="jump2Login"
-            >{{ $t('user.exist') }}<nuxt-link to="/pages/user/login">{{ $t('user.login') }}</nuxt-link> </span>
+            >{{ $t('user.exist') }}<nuxt-link to="/pages/user/login-bind">登录并绑定</nuxt-link> </span>
           </div>
         </form>
       </el-tab-pane>
@@ -87,6 +91,9 @@ export default {
   computed: {
     forums() {
       return this.$store.state.site.info.attributes || {}
+    },
+    userInfo() {
+      return this.$store.state.user.info.attributes || {}
     }
   },
   mounted() {
@@ -157,7 +164,8 @@ export default {
         data: {
           attributes: {
             username: this.userName,
-            password: this.passWord
+            password: this.passWord,
+            rebind: 1
           }
         }
       }
@@ -213,7 +221,7 @@ export default {
         })
     },
     jump2Login() {
-      this.$router.push(`/pages/user/login?&validate=${this.validate}&code=${this.code}`)
+      this.$router.push(`/pages/user/login-bind`)
     }
   },
   head() {
@@ -243,6 +251,10 @@ export default {
     border: none;
     background: transparent;
     box-shadow: none;
+    .bindtext{
+      font-size: 16px;
+      margin-bottom: 40px;
+    }
     .rep {
       position: relative;
       .passerror {

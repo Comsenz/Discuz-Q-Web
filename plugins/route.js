@@ -2,7 +2,7 @@
 // client执行顺序 => beforeEach - middleware - afterEach
 // server执行顺序 => beforeEach - afterEach - middleware
 import cookie from '../utils/parserCookie'
-const freePath = ['/pages/user/login', '/pages/user/register', '/pages/site/info', '/pages/user/warning', '/pages/user/agreement', '/pages/user/agreement', '/pages/modify/findpwd', '/pages/site/partner-invite']
+const freePath = ['/pages/user/login-bind-phone', '/pages/user/login-bind', '/pages/user/phone-login-register', '/pages/user/phone-login', '/pages/user/register-bind-phone', '/pages/user/register-bind', '/pages/user/wechat', '/pages/user/login', '/pages/user/register', '/pages/site/info', '/pages/user/warning', '/pages/user/agreement', '/pages/user/agreement', '/pages/modify/findpwd', '/pages/site/partner-invite']
 export default ({ app }) => {
   const { store, router } = app
   router.beforeEach(async(to, from, next) => {
