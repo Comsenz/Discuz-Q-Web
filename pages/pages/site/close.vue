@@ -15,10 +15,15 @@ export default {
     }
   },
   computed: {
-
+    forums() {
+      return this.$store.state.site.info.attributes || {}
+    }
   },
   mounted() {
     this.getSiteInfo()
+    if (this.forums) {
+      window.location.replace('/')
+    }
   },
   methods: {
     async getSiteInfo() {

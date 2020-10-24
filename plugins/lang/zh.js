@@ -156,6 +156,7 @@ export default {
     route_not_found: '路由未找到',
     unbind_wechat: '微信未绑定',
     no_bind_user: '未绑定用户',
+    user_has_mobile: '该用户已绑定手机号',
     account_has_been_bound: '用户或微信已绑定',
     thread_count_fail: '主题数操作错误',
     thread_behavior_fail: '主题状态异常',

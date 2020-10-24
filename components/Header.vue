@@ -28,7 +28,6 @@
       <div v-if="siteClose || !islogin ">
         <el-button
           v-if="siteClose || !userId"
-          :disabled="siteClose"
           size="small"
           class="h-button h-button1"
           @click="login"

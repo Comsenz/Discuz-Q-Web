@@ -183,20 +183,18 @@ export default {
     },
     // 查询订单支状 browserType: 0是小程序，1是微信浏览器，2是h5，3是pc
     getOrderStatus(orderSn, browserType) {
-      this.$store
-        .dispatch('jv/get', [`orders/${orderSn}`])
-        .then((res) => {
-          this.payStatus = res.status
-          if (this.payStatus === 1) {
-            this.payShowStatus = false
-            if (browserType === '3') {
-              // 这是pc扫码支付完成
-              this.qrcodeShow = false
-            }
-            window.location.href = '/'
-            this.$message.success(this.$t('pay.paySuccess'))
+      this.$store.dispatch('jv/get', `orders/${orderSn}`).then((res) => {
+        this.payStatus = res.status
+        if (this.payStatus === 1) {
+          this.payShowStatus = false
+          if (browserType === '3') {
+            // 这是pc扫码支付完成
+            this.qrcodeShow = false
           }
-        })
+          window.location.href = '/'
+          this.$message.success(this.$t('pay.paySuccess'))
+        }
+      })
         .catch(() => {
           this.$message.success(this.$t('pay.payFail'))
         })
