@@ -42,7 +42,8 @@ export default {
         45: 'font-size: 22px;line-height: 45px;border-radius: 2px',
         40: 'font-size: 20px;line-height: 40px;border-radius: 2px',
         30: 'font-size: 18px;line-height: 30px;border-radius: 2px',
-        35: 'font-size: 18px;line-height: 30px;border-radius: 2px'
+        35: 'font-size: 18px;line-height: 30px;border-radius: 2px',
+        20: 'font-size: 10px;line-height: 20px;border-radius: 2px'
       }
     }
   },
@@ -117,6 +118,11 @@ export default {
 .avatar-size-30 {
   width: 30px;
   height: 30px;
+  border-radius: 2px;
+}
+.avatar-size-20 {
+  width: 20px;
+  height: 20px;
   border-radius: 2px;
 }
 

@@ -2,7 +2,7 @@
   <div v-if="forums" v-loading="loading" class="register">
     <el-tabs v-model="activeName" type="border-card" class="register-select">
       <!-- 手机号登录/注册 -->
-      <el-tab-pane v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms" :label="$t('user.phonelogin')/注册" name="0">
+      <el-tab-pane v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms" :label="$t('user.phonelogin')+'/注册'" name="0">
         <span class="title2">{{ $t('profile.mobile') }}</span>
         <el-input v-model="phoneNumber" :placeholder="$t('user.phoneNumber')" class="phone-input" maxlength="11" />
         <el-button

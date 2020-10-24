@@ -5,7 +5,18 @@
       <el-tab-pane label="登录并绑定微信号" name="0">
         <form>
           <div class="bindtext">
-            <div>亲爱的 <b>{{ userInfo && userInfo.wechat && userInfo.wechat.nickname || '' }}</b> 用户</div>
+            <div>亲爱的
+              <avatar
+                :user="{ id: userInfo.id,
+                         username: userInfo.username,
+                         avatarUrl: userInfo.avatarUrl,
+                         isReal: userInfo.isReal
+                }"
+                :size="20"
+                :round="true"
+                style="display:inline-block;"
+              />
+              <b>{{ userInfo && userInfo.wechat && userInfo.wechat.nickname || '' }}</b> 用户</div>
             <div>您正在更换微信绑定的账号为登录的账号</div>
           </div>
           <span class="title">{{ $t('user.usrname') }}</span>
