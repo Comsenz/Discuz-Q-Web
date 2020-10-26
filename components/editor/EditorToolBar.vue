@@ -12,8 +12,6 @@
         </popover>
         <svg-icon v-else-if="action.show && action.icon === 'call'" :key="index" :type="action.icon" class="svg" style="font-size: 20px" @click="$emit('onActions', action.toggle)" />
       </template>
-      <!--@人弹窗-->
-      <caller v-if="showCaller" @close="$emit('closeCaller')" @selectedCaller="e => $emit('selectActions', e)" />
     </div>
     <div class="block">
       <template v-for="(resource, index) in resources">
@@ -40,10 +38,6 @@ export default {
       default: false
     },
     showTopic: {
-      type: Boolean,
-      default: false
-    },
-    showCaller: {
       type: Boolean,
       default: false
     },

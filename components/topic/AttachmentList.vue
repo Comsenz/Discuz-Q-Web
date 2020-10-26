@@ -2,7 +2,7 @@
   <div class="attachment-item">
     <div class="info">
       <div>
-        <svg-icon :type="extensionValidate(file.extension)" style="font-size: 18px" />
+        <svg-icon :type="extensionValidate(file.extension)" style="font-size: 18px; vertical-align: middle;" />
         <span class="file-name">{{ file.fileName }}</span>
       </div>
       <span class="size">{{ file.fileSize }} KB</span>

@@ -168,7 +168,7 @@ export default {
     color: #D0D4DC;
     top: 8px;
     z-index: 10;
-    right: 26px;
+    right: 10px;
   }
   > .action-vditor {
     position: absolute;
@@ -181,6 +181,7 @@ export default {
   ::v-deep.vditor-toolbar {
     background: #F5F6F7;
     top: 65px;
+    padding-left: 10px !important;
     //height: 45px;
     //background: white;
     //padding-left: 14px !important;

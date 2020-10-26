@@ -14,7 +14,7 @@
       <div class="tip">{{ $t('post.searchFriends') }}</div>
       <div class="container-search-list">
         <label>
-          <input :placeholder="$t('post.pleaseInput')" type="text" class="input-caller" @input="searchUser">
+          <input ref="inputCaller" :placeholder="$t('post.pleaseInput')" type="text" class="input-caller" @input="searchUser">
         </label>
         <div class="infinite-list-wrapper" style="overflow:auto">
           <ul v-infinite-scroll="load" infinite-scroll-disabled="disabled">
@@ -22,7 +22,7 @@
               v-for="(user, index) in searchList"
               :key="index"
               :class="{ 'infinite-list-item': true, selected: selectedFriends.indexOf(user.username) >= 0 }"
-              @click="selectedFriends.indexOf(user.username) < 0 && selectedFriends.push(user.username)"
+              @click="selectFriendFromUl(user)"
             >{{ user.username }}</li>
           </ul>
           <p v-if="loading" class="loading-tip">{{ $t('core.loading') }}</p>
@@ -125,7 +125,7 @@ export default {
       }, e => this.handleError(e))
     },
     load() {
-      // bug 避免无 searchList 是触发
+      // bug 避免无 searchList 时触发
       if (this.searchValue && this.searchList.length > 0) {
         this.loading = true
         this.pageNumber += 1
@@ -136,6 +136,15 @@ export default {
       let callerList = [...this.selectedFriends]
       callerList = callerList.map(item => item + ' ')
       return ' @' + callerList.join('@')
+    },
+    selectFriendFromUl(user) {
+      this.selectedFriends.indexOf(user.username) < 0 && this.selectedFriends.push(user.username)
+      this.clear()
+    },
+    clear() {
+      this.$refs.inputCaller.value = ''
+      this.searchValue = ''
+      this.searchList = []
     }
   }
 }
@@ -251,7 +260,7 @@ export default {
           font-size: 14px;
           border-radius: 20px;
           > span {
-            margin-left: 5px;
+            margin: 0 5px;
           }
 
           &.selected {
