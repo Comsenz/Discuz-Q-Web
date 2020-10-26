@@ -93,7 +93,7 @@
     </div>
     <div v-if="threadsData.length > 0" class="thread">
       <div class="threadtitle">部分内容预览</div>
-      <post-item v-for="(item, index) in threadsData" :key="index" :item="item" :infoimage="true" />
+      <post-item v-for="(item, index) in threadsData" :key="index" :item="item" :infoimage="true" :can-detail="canDetail" />
     </div>
   </div>
 </template>
@@ -120,7 +120,8 @@ export default {
       codeTitle: '',
       inviteCode: '', // 邀请码,
       normal: false,
-      loading: true
+      loading: true,
+      canDetail: false
     }
   },
   computed: {
@@ -133,6 +134,9 @@ export default {
     this.inviteCode = code
     this.getInviteInfo(this.inviteCode)
     this.loadThreads()
+    if (this.forums.set_site.site_mode || !this.userId) {
+      this.canDetail = true
+    }
   },
   methods: {
     handleClose(done) {

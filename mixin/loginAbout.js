@@ -21,14 +21,14 @@ module.exports = {
       if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 0) {
         // 用户名模式
         this.$router.push(`/pages/user/login`)
-      }
-      if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
+      } else if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
         // 手机模式
         this.$router.push(`/pages/user/phone-login-register`)
-      }
-      if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 2) {
+      } else if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 2) {
         //  微信模式
         this.$router.push(`/pages/user/wechat`)
+      } else {
+        this.$router.push(`/pages/user/login`)
       }
     },
     logind() {

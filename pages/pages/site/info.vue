@@ -80,7 +80,7 @@
     </div>
     <div v-if="threadsData.length > 0" class="thread">
       <div class="threadtitle">部分内容预览</div>
-      <post-item v-for="(item, index) in threadsData" :key="index" :item="item" :infoimage="true" />
+      <post-item v-for="(item, index) in threadsData" :key="index" :item="item" :infoimage="true" :can-detail="canDetail" />
     </div>
   </div>
 </template>
@@ -101,7 +101,8 @@ export default {
       userId: this.$store.getters['session/get']('userId'),
       site_price: 0,
       threadsData: [],
-      loading: true
+      loading: true,
+      canDetail: false
     }
   },
   computed: {
@@ -114,6 +115,9 @@ export default {
     this.loadThreads()
     this.site_price = this.forums && this.forums.set_site && this.forums.set_site.site_price
       ? (1 * this.forums.set_site.site_price).toFixed(2) : 0
+    if (this.forums.set_site.site_mode || !this.userId) {
+      this.canDetail = true
+    }
   },
   methods: {
     time2YearMonthDay(date) {

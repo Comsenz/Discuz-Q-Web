@@ -97,6 +97,7 @@
               :alt="image.filename"
               fit="cover"
               :lazy="lazy"
+              :preview-src-list="!canDetail"
               @click.self="onClickImage"
             >
               <div slot="placeholder" class="image-slot">
@@ -255,7 +256,13 @@ export default {
     infoimage: {
       type: Boolean,
       default: false
+    },
+    // 付费站点是否可查看详情
+    canDetail: {
+      type: Boolean,
+      default: false
     }
+
   },
   data() {
     return {
@@ -323,16 +330,28 @@ export default {
     },
     // 跳转详情页
     toDetail() {
+      if (this.canDetail) {
+        this.$message.warning('加入站点后才可以预览')
+        return
+      }
       if (!this.canViewPostsFn()) return
       this.routerLink()
     },
     // 点击图片 判断是否付费， 未付费跳转详情页
     onClickImage() {
+      if (this.canDetail) {
+        this.$message.warning('加入站点后才可以预览')
+        return
+      }
       if (!this.unpaid || !this.canViewPostsFn()) return
       this.routerLink()
     },
     // 点击视频 判断是否付费， 未付费跳转详情页
     openVideo() {
+      if (this.canDetail) {
+        this.$message.warning('加入站点后才可以预览')
+        return
+      }
       if (!this.canViewPostsFn()) return
       if (this.unpaid) {
         this.routerLink()
