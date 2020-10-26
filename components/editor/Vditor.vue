@@ -1,10 +1,12 @@
 <template>
   <div v-loading="onUploadImage" element-loading-background="hsla(0,0%,100%,0.6)" class="vditor-container">
-    <div id="vditor" style="margin-top: 20px" />
+    <div class="sticky-box">
+      <topic-list v-show="showTopic" class="action-vditor" @selectedTopic="selectActions" />
+      <emoji-list v-show="showEmoji" class="action-vditor" @selectEmoji="selectActions" />
+    </div>
+    <div id="vditor" />
     <span v-if="textLimit" class="tip">{{ textLimit>= textLength ? $t('post.note', { num: textLimit - textLength }) : $t('post.exceed', { num: textLength - typeInformation.textLimit }) }}</span>
     <caller v-if="showCaller" @close="$emit('close')" @selectedCaller="selectActions" />
-    <topic-list v-show="showTopic" class="action-vditor" @selectedTopic="selectActions" />
-    <emoji-list v-show="showEmoji" class="action-vditor" @selectEmoji="selectActions" />
     <el-button class="button-publish" :loading="onPublish" type="primary" size="small" @click="$emit('publish')">{{ $t('post.post') }}</el-button>
   </div>
 </template>
@@ -163,23 +165,34 @@ export default {
 <style lang="scss" scoped>
 .vditor-container {
   position: relative;
+  margin-top: 20px;
+
+  > .sticky-box { // 保证 topicList 和 emojiList 的定位正确
+    position: sticky;
+    background: rgba(0,0,0,0);
+    top: 65px;
+    z-index: 1000;
+    height: 1px;
+    > .action-vditor {
+      position: absolute;
+      top: 38px;
+      left: 2px;
+    }
+  }
   > .tip {
     position: absolute;
     color: #D0D4DC;
     top: 8px;
     z-index: 10;
-    right: 26px;
-  }
-  > .action-vditor {
-    position: absolute;
-    top: 35px;
-    left: 2px;
+    right: 10px;
   }
   > .button-publish {
     margin-top: 20px;
   }
   ::v-deep.vditor-toolbar {
     background: #F5F6F7;
+    top: 65px;
+    padding-left: 10px !important;
     //height: 45px;
     //background: white;
     //padding-left: 14px !important;

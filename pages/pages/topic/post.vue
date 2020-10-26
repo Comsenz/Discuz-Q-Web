@@ -149,6 +149,10 @@ export default {
       if (this.type === '2' && this.post.videoList.length === 0) return this.$message.warning(this.$t('post.videoCannotBeEmpty'))
       if (this.type === '3' && this.post.imageList.length === 0) return this.$message.warning(this.$t('post.imageCannotBeEmpty'))
       if (this.type === '4' && !this.post.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
+
+      if (this.payment.paidType === 'paid' && this.payment.price === 0) return this.$message.warning(this.$t('post.paidTypePaidPriceCanNotBeZero'))
+      if (this.payment.paidType === 'attachmentPaid' && this.payment.attachmentPrice === 0) return this.$message.warning(this.$t('post.paidTypeAttachmentPaidPriceCanNotBeZero'))
+
       return 'success'
     },
     async publish() {

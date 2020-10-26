@@ -12,8 +12,6 @@
         </popover>
         <svg-icon v-else-if="action.show && action.icon === 'call'" :key="index" :type="action.icon" class="svg" style="font-size: 20px" @click="$emit('onActions', action.toggle)" />
       </template>
-      <!--@人弹窗-->
-      <caller v-if="showCaller" @close="$emit('closeCaller')" @selectedCaller="e => $emit('selectActions', e)" />
     </div>
     <div class="block">
       <template v-for="(resource, index) in resources">
@@ -21,7 +19,7 @@
       </template>
     </div>
     <div class="publish-container">
-      <span v-if="textLimit" class="tip">{{ textLimit>=textLength ? $t('post.note', { num: textLimit - textLength }) : $t('post.exceed', { num: textLength - typeInformation.textLimit }) }}</span>
+      <span v-if="textLimit" class="tip">{{ textLimit>=textLength ? $t('post.note', { num: textLimit - textLength }) : $t('post.exceed', { num: textLength - textLimit }) }}</span>
       <el-button class="button-publish" :loading="onPublish" type="primary" size="small" @click="$emit('publish')">{{ $t('post.post') }}</el-button>
     </div>
   </div>
@@ -40,10 +38,6 @@ export default {
       default: false
     },
     showTopic: {
-      type: Boolean,
-      default: false
-    },
-    showCaller: {
       type: Boolean,
       default: false
     },
@@ -81,6 +75,10 @@ export default {
   padding: 0 10px;
   align-items: center;
   background: #ffffff;
+  position: sticky;
+  top: 65px;
+  z-index: 6;
+  border-bottom: 1px solid $border-color-base;
 
   &.chat {
     background: $background-color-grey

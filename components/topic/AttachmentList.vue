@@ -2,7 +2,7 @@
   <div class="attachment-item">
     <div class="info">
       <div>
-        <svg-icon :type="extensionValidate(file.extension)" style="font-size: 18px" />
+        <svg-icon :type="extensionValidate(file.extension)" style="font-size: 18px; vertical-align: middle;" />
         <span class="file-name">{{ file.fileName }}</span>
       </div>
       <span class="size">{{ file.fileSize }} KB</span>
@@ -29,7 +29,7 @@
 <script>
 import service from '@/api/request'
 import handleError from '@/mixin/handleError'
-const extensionList = ['7Z', 'AI', 'APK', 'CAD', 'CDR', 'DOC', 'DOCX', 'EPS', 'EXE', 'IPA', 'MP3', 'MP4', 'PDF', 'PPT', 'PSD', 'RAR', 'TXT', 'XLS', 'XLSX', 'ZIP', 'JPG', 'WAV']
+import { extensionList } from '@/constant/extensionList'
 const previewList = ['DOC', 'DOCX', 'PDF', 'PPT', 'TXT', 'XLS', 'XLSX'] // 支持预览的文件格式
 export default {
   name: 'AttachmentList',
@@ -71,15 +71,11 @@ export default {
       return this.$store.state.site.info.attributes || {}
     },
     unpaid() {
-      console.log('price', this.price)
-      console.log('attachmentPrice', this.attachmentPrice)
-      console.log('isPaidAttachment', this.isPaidAttachment)
-      console.log('isPaid', this.isPaid)
       return (parseFloat(this.price) > 0 && !this.isPaid) || (parseFloat(this.attachmentPrice) > 0 && !this.isPaidAttachment)
     },
     canReview() {
       return this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_cos &&
-        // this.forums.qcloud_cos_doc_preview && TODO
+        this.forums.qcloud_cos_doc_preview &&
         this.isPreviewType(this.file.extension) &&
         ((parseFloat(this.price) === 0 && parseFloat(this.attachmentPrice) > 0 && this.isPaidAttachment) || parseFloat(this.price) > 0 && this.isPaid) &&
         this.file.isRemote

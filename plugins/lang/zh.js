@@ -272,6 +272,8 @@ export default {
     yuanItem: '￥',
     yuan: '元',
     customize: '自定义',
+    paidTypePaidPriceCanNotBeZero: '当前付费模式为“付费”，价格不能为0',
+    paidTypeAttachmentPaidPriceCanNotBeZero: '当前付费模式为文章免费，附件付费，价格不能为0',
     attachmentListCanNotBeEmptyWhileAttachmentPaid: '当前付费模式为文章免费，附件付费，附件不能为空',
     messageLengthCannotOver: '内容字数超出限制',
     titleLengthCannotOver: '文章标题不可超出 150 个字符',

@@ -6,7 +6,7 @@
     <editor-payment v-if="typeInformation && typeInformation.showPayment && canCreateThreadPaid" :payment="payment || {}" :type="typeInformation && typeInformation.type" @paymentChange="e => onPaymentChange(e.key, e.value)" />
     <attached-upload v-if="typeInformation && typeInformation.showAttached" :on-upload-attached.sync="onUploadAttached" :attached-list="post && post.attachedList" :header="header" :is-edit="isEdit" :url="url" @attachedChange="e => onPostContentChange(e.key, e.value)" />
     <Vditor
-      v-if="typeInformation && typeInformation.type === 1"
+      v-if="isPost"
       :text-limit="typeInformation && typeInformation.textLimit"
       :text-length="post && post.text && post.text.length"
       :placeholder="typeInformation && typeInformation.placeholder"
@@ -26,7 +26,7 @@
       @publish="publish"
     />
     <!--my editor 除了帖子以外，不使用 vditor-->
-    <div v-if="typeInformation && typeInformation.type !== 1" :class="['container-textarea', editorStyle]">
+    <div v-if="!isPost" :class="['container-textarea', editorStyle]">
       <!--bar-->
       <editor-tool-bar
         v-if="editorStyle === 'post'"
@@ -40,7 +40,6 @@
         :on-publish="onPublish"
         :editor-style="editorStyle"
         @publish="publish"
-        @closeCaller="showCaller = false"
         @selectActions="selectActions"
         @addResource="addResource"
         @hidePop="hideActions"
@@ -68,7 +67,6 @@
           :on-publish="onPublish"
           :editor-style="editorStyle"
           @publish="publish"
-          @closeCaller="showCaller = false"
           @selectActions="selectActions"
           @addResource="addResource"
           @hidePop="hideActions"
@@ -76,6 +74,7 @@
         />
       </div>
     </div>
+    <caller v-if="showCaller && !isPost" @close="showCaller = false" @selectedCaller="selectActions" />
   </div>
 </template>
 
@@ -192,6 +191,9 @@ export default {
         return limitText.split(',').map(item => '.' + item).join(',')
       }
       return ''
+    },
+    isPost() { // 帖子类型 type 1
+      return this.typeInformation && this.typeInformation.type === 1 || false
     }
   },
   watch: {
