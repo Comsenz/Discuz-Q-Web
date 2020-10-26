@@ -129,6 +129,7 @@ export default {
           name: key === 'videoList' ? item.file_name : item.fileName,
           url: key === 'videoList' ? item.media_url : item.thumbUrl,
           id: key === 'videoList' ? item.file_id : item._jv.id,
+          size: key === 'videoList' ? '' : item.fileSize,
           deleted: false // 用于图片 upload 组件的样式
         }
         target.push(attached)

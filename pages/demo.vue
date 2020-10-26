@@ -20,8 +20,11 @@
 
     <p>store commit</p>
     <el-button type="primary" @click="storeCommit">store commit</el-button>
+    <!--    <div style="margin-top: 100px">-->
+    <!--      <image-upload accept="image/*" action="/attachments" :file-list="imageList" :size-limit="1048576" :limit="9" @success="onSuccess" @remove="onRemove" />-->
+    <!--    </div>-->
     <div style="margin-top: 100px">
-      <Upload accept="image/*" action="/attachments" :file-list="imageList" :size-limit="1048576" :limit="9" @success="onSuccess" @remove="onRemove" />
+      <my-upload accept="image/*" action="/attachments" :file-list="imageList" :size-limit="1048576" :limit="9" @success="onSuccess" @remove="onRemove" />
     </div>
   </div>
 </template>

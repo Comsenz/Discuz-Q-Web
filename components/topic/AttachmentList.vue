@@ -16,7 +16,7 @@
     </div>
     <!--TODO 放在外面-->
     <el-dialog v-loading="loading" :visible.sync="dialogVisible" :show-close="false" top="5vh" width="800px" element-loading-background="transparent">
-      <div class="dialog-cont"><img :src="previewData.image" class="img"></div>
+      <div class="dialog-cont"><img :src="previewData.image" alt="" class="img"></div>
       <div slot="footer" class="pagination">
         <el-button :class="{'hidden': previewPage === 1}" type="primary" size="medium" @click="prev">{{ $t('post.prev') }}</el-button>
         <div class="pages">{{ previewPage }} / {{ previewTotal }}</div>
