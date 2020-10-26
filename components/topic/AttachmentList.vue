@@ -29,7 +29,7 @@
 <script>
 import service from '@/api/request'
 import handleError from '@/mixin/handleError'
-const extensionList = ['7Z', 'AI', 'APK', 'CAD', 'CDR', 'DOC', 'DOCX', 'EPS', 'EXE', 'IPA', 'MP3', 'MP4', 'PDF', 'PPT', 'PSD', 'RAR', 'TXT', 'XLS', 'XLSX', 'ZIP', 'JPG', 'WAV']
+import { extensionList } from '@/constant/extensionList'
 const previewList = ['DOC', 'DOCX', 'PDF', 'PPT', 'TXT', 'XLS', 'XLSX'] // 支持预览的文件格式
 export default {
   name: 'AttachmentList',

@@ -206,29 +206,8 @@
 <script>
 import s9e from '@/utils/s9e'
 import { time2MinuteOrHour } from '@/utils/time'
+import { extensionList } from '@/constant/extensionList'
 import handleError from '@/mixin/handleError'
-const extensionList = [
-  '7Z',
-  'AI',
-  'APK',
-  'CAD',
-  'CDR',
-  'DOC',
-  'DOCX',
-  'EPS',
-  'EXE',
-  'IPA',
-  'MP3',
-  'MP4',
-  'PDF',
-  'PPT',
-  'PSD',
-  'RAR',
-  'TXT',
-  'XLS',
-  'XLSX',
-  'ZIP'
-]
 export default {
   filters: {
     formatDate(date) {
