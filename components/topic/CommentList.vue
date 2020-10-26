@@ -64,7 +64,7 @@
               <span v-if="reply.canHide" class="delete-reply" @click.stop="$emit('deleteReply', { replyId: reply._jv.id, commentId: comment._jv.id })">{{ $t('topic.delete') }}</span>
             </div>
           </div>
-          <div class="content-html" @click="showAll($event, replyIndex, replyList)" v-html="$xss(formatSummary(reply))" />
+          <div class="content-html" @click="showAll($event, replyIndex, replyList)" v-html="$xss(reply.summary)" />
           <div v-if="reply.images && reply.images.length > 0" v-viewer="{url: 'data-source'}" class="images" @click.stop="() => {}">
             <el-image
               v-for="(image, imageIndex) in reply.images"
