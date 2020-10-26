@@ -71,15 +71,11 @@ export default {
       return this.$store.state.site.info.attributes || {}
     },
     unpaid() {
-      console.log('price', this.price)
-      console.log('attachmentPrice', this.attachmentPrice)
-      console.log('isPaidAttachment', this.isPaidAttachment)
-      console.log('isPaid', this.isPaid)
       return (parseFloat(this.price) > 0 && !this.isPaid) || (parseFloat(this.attachmentPrice) > 0 && !this.isPaidAttachment)
     },
     canReview() {
       return this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_cos &&
-        // this.forums.qcloud_cos_doc_preview && TODO
+        this.forums.qcloud_cos_doc_preview &&
         this.isPreviewType(this.file.extension) &&
         ((parseFloat(this.price) === 0 && parseFloat(this.attachmentPrice) > 0 && this.isPaidAttachment) || parseFloat(this.price) > 0 && this.isPaid) &&
         this.file.isRemote

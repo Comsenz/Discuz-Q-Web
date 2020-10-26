@@ -180,6 +180,7 @@ export default {
   }
   ::v-deep.vditor-toolbar {
     background: #F5F6F7;
+    top: 65px;
     //height: 45px;
     //background: white;
     //padding-left: 14px !important;

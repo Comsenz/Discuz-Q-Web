@@ -74,14 +74,14 @@ export default {
         },
         {
           value: 24,
+          title: 'like'
+        },
+        {
+          value: 24,
           title: 'pay', // 支付付费附件
           buttonText: this.$t('topic.pay'),
           showButton: false,
           icon: 'pay'
-        },
-        {
-          value: 24,
-          title: 'like'
         }]
     }
   },
@@ -89,10 +89,10 @@ export default {
     paidInformation: {
       handler(val) {
         this.command[0].showButton = parseFloat(val.price) > 0 && !val.paid // 支付
-        this.command[2].showButton = parseFloat(val.attachmentPrice) > 0 && !val.isPaidAttachment // 支付附件
+        this.command[3].showButton = parseFloat(val.attachmentPrice) > 0 && !val.isPaidAttachment // 支付附件
         this.command[1].showButton = parseFloat(val.price) === 0 && parseFloat(val.attachmentPrice) === 0 // 打赏
 
-        this.command[2].buttonText = this.$t('topic.pay') + this.paidInformation.attachmentPrice + this.$t('topic.paymentViewAttachment')
+        this.command[3].buttonText = this.$t('topic.pay') + this.paidInformation.attachmentPrice + this.$t('topic.paymentViewAttachment')
       },
       deep: true
     },
