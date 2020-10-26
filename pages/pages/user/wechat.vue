@@ -10,7 +10,7 @@
             </div>
             <div class="quick-title">
               <img src="@/assets/wechat.png">
-              <span :class="forums && forums.set_reg && forums.set_reg.register_type !== 2 ? 'wctext' : ''">
+              <span>
                 {{ forums && forums.set_reg && forums.set_reg.register_type !== 2 ? $t('user.wechatlogin') : $t('user.wechatlogin')+'/注册' }}
               </span>
             </div>
@@ -153,17 +153,12 @@ export default {
         }
         span {
           display: inline-block;
-          width: 111px;
         }
       }
       .quick-title {
         font-size: 14px;
         span {
-          width: 120px;
           line-height: 25px;
-        }
-        .wctext {
-          width: 90px;
         }
         img {
           width: 26px;
