@@ -753,6 +753,7 @@ export default {
   permission: {
     viewThreads: '查看主题列表',
     canBeAsked: '允许提问',
+    canBeOnlooker: '设置围观',
     thread: {
       viewPosts: '查看主题',
       reply: '回复主题',
@@ -767,6 +768,9 @@ export default {
       deletePosts: '删除回复'
     },
     createThreadImage: '发布图片',
+    createThreadAudio: '发布语音',
+    createThreadGoods: '发布商品',
+    createThreadQuestion : '发布问答',
     createThread: '发布文本',
     createThreadLong: '发布帖子',
     createThreadVideo: '发布视频',
@@ -794,7 +798,8 @@ export default {
       agreementRegister: '注册协议',
       agreementPrivacy: '隐私政策',
       edit: {
-        status: '编辑用户状态'
+        status: '编辑用户状态',
+        group: '编辑用户用户组',
       }
     },
     userFollow: {
