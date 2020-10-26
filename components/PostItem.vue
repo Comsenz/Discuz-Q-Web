@@ -97,7 +97,6 @@
               :alt="image.filename"
               fit="cover"
               :lazy="lazy"
-              :preview-src-list="!canDetail"
               @click.self="onClickImage"
             >
               <div slot="placeholder" class="image-slot">
