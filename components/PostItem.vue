@@ -1,5 +1,5 @@
 <template>
-  <div class="post-container">
+  <div v-if="item.type < 4" class="post-container">
     <div v-if="item.isEssence" class="essence">
       <svg-icon type="index-essence" />
     </div>
