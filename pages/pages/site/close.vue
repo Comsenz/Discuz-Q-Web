@@ -21,9 +21,9 @@ export default {
   },
   mounted() {
     this.getSiteInfo()
-    if (this.forums) {
-      window.location.replace('/')
-    }
+    // if (this.forums) {
+    //   window.location.replace('/')
+    // }
   },
   methods: {
     async getSiteInfo() {
