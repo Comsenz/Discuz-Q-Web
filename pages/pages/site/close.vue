@@ -11,19 +11,18 @@ export default {
   // layout: 'error_layout',
   data() {
     return {
-      close_tips: ''
-    }
-  },
-  computed: {
-    forums() {
-      return this.$store.state.site.info.attributes || {}
+      close_tips: '',
+      forums: ''
     }
   },
   mounted() {
     this.getSiteInfo()
-    // if (this.forums) {
-    //   window.location.replace('/')
-    // }
+    this.$store.dispatch('jv/get', '/forum').then((res) => {
+      this.forums = res
+      if (this.forums && this.forums.set_site && !this.forums.set_site.site_close) {
+        window.location.replace('/')
+      }
+    })
   },
   methods: {
     async getSiteInfo() {
