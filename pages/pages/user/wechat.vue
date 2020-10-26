@@ -10,7 +10,9 @@
             </div>
             <div class="quick-title">
               <img src="@/assets/wechat.png">
-              <span>{{ forums && forums.set_reg && forums.set_reg.register_type !== 2 ? $t('user.wechatlogin') : $t('user.wechatlogin')+'/注册' }}</span>
+              <span>
+                {{ forums && forums.set_reg && forums.set_reg.register_type !== 2 ? $t('user.wechatlogin') : $t('user.wechatlogin')+'/注册' }}
+              </span>
             </div>
             <div v-if="forums && forums.set_reg && forums.set_reg.register_type !== 2" class="otherlogin">
               <svg-icon v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms" class="phone-icon" type="phonelogin" @click="toPhonelogin" />
@@ -151,13 +153,11 @@ export default {
         }
         span {
           display: inline-block;
-          width: 111px;
         }
       }
       .quick-title {
         font-size: 14px;
         span {
-          width: 120px;
           line-height: 25px;
         }
         img {

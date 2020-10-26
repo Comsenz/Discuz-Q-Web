@@ -2,11 +2,11 @@
   <div v-if="forums" v-loading="loading" class="register">
     <el-tabs v-model="activeName" type="border-card" class="register-select">
       <!-- 用户名注册 -->
-      <el-tab-pane label="注册并绑定手机号" name="0">
+      <el-tab-pane :label="$t('user.registerBindPhone')" name="0">
         <form>
           <div class="bindtext">
-            <div>亲爱的手机号 <b>{{ phoneNumber }}</b> 用户</div>
-            <div>您的手机号<b>未绑定账号</b>，<b>注册</b>即可完成绑定</div>
+            <div>{{ $t('user.phoneuser') }} <b>{{ phoneNumber }}</b> {{ $t('user.user') }}</div>
+            <div>{{ $t('user.yourPhone') }}<b>{{ $t('user.withoutBind') }}</b>，<b>{{ $t('user.register') }}</b>{{ $t('user.readyBInd') }}</div>
           </div>
           <div>
             <span class="title">{{ $t('profile.username') }}</span>

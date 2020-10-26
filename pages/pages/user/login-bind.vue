@@ -2,10 +2,10 @@
   <div v-if="forums" v-loading="loading" class="register">
     <el-tabs v-model="activeName" type="border-card" class="register-select">
       <!-- 用户名登录 login register phone-login   -->
-      <el-tab-pane label="登录并绑定微信号" name="0">
+      <el-tab-pane :label="$t('user.loginBindWechat')" name="0">
         <form>
           <div class="bindtext">
-            <div>亲爱的
+            <div>{{ $t('user.dear') }}
               <avatar
                 :user="{ id: userInfo.id,
                          username: userInfo.username,
@@ -16,8 +16,8 @@
                 :round="true"
                 style="display:inline-block;"
               />
-              <b>{{ userInfo && userInfo.wechat && userInfo.wechat.nickname || '' }}</b> 用户</div>
-            <div>您正在更换微信绑定的账号为登录的账号</div>
+              <b>{{ userInfo && userInfo.wechat && userInfo.wechat.nickname || '' }}</b> {{ $t('user.user') }}</div>
+            <div>{{ $t('user.changeWechat') }}</div>
           </div>
           <span class="title">{{ $t('user.usrname') }}</span>
           <el-input v-model="userName" :placeholder="$t('user.username')" class="reg-input" />
@@ -34,11 +34,11 @@
             <el-checkbox v-model="checked" />
             <span class="agree">{{ $t('user.status') }} </span>
           </div>
-          <el-button type="primary" class="r-button" @click="UserLogin">登录并绑定</el-button>
+          <el-button type="primary" class="r-button" @click="UserLogin">{{ $t('user.loginbind') }}</el-button>
           <div class="logorreg">
             <span v-if="canReg">
               {{ $t('user.noexist') }}
-              <span class="agreement_text" @click="toRegister"> 注册并绑定</span></span>
+              <span class="agreement_text" @click="toRegister"> {{ $t('user.registerbind') }}</span></span>
           </div>
         </form>
       </el-tab-pane>
