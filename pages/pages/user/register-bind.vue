@@ -2,10 +2,10 @@
   <div v-if="forums" v-loading="loading" class="register">
     <el-tabs v-model="activeName" type="border-card" class="register-select">
       <!-- 用户名注册 -->
-      <el-tab-pane label="注册并绑定微信号" name="0">
+      <el-tab-pane :label="$t('user.registerBindWechat')" name="0">
         <form>
           <div class="bindtext">
-            <div>亲爱的
+            <div>{{ $t('user.dear') }}
               <avatar
                 :user="{ id: userInfo.id,
                          username: userInfo.username,
@@ -16,8 +16,8 @@
                 :round="true"
                 style="display:inline-block;"
               />
-              <b>{{ userInfo && userInfo.wechat && userInfo.wechat.nickname || '' }}</b> 用户</div>
-            <div>您的微信账号<b>未绑定账号</b>，<b>注册</b>即可完成绑定</div>
+              <b>{{ userInfo && userInfo.wechat && userInfo.wechat.nickname || '' }}</b> {{ $t('user.user') }}</div>
+            <div>{{ $t('user.yourWechat') }}<b>{{ $t('user.withoutBind') }}</b>，<b>{{ $t('user.register') }}</b>{{ $t('user.readyBInd') }}</div>
           </div>
           <div>
             <span class="title">{{ $t('profile.username') }}</span>
@@ -58,11 +58,11 @@
           <div class="agreement">
             <reg-agreement @check="check" />
           </div>
-          <el-button type="primary" class="r-button" @click="register">注册并绑定</el-button>
+          <el-button type="primary" class="r-button" @click="register">{{ $t('user.registerbind') }}</el-button>
           <div class="tologin">
             <span
               @click="jump2Login"
-            >{{ $t('user.exist') }}<nuxt-link to="/pages/user/login-bind">登录并绑定</nuxt-link> </span>
+            >{{ $t('user.exist') }}<nuxt-link to="/pages/user/login-bind">{{ $t('user.loginbind') }}</nuxt-link> </span>
           </div>
         </form>
       </el-tab-pane>

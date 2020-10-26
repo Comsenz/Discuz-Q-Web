@@ -2,11 +2,11 @@
   <div v-if="forums" v-loading="loading" class="register">
     <el-tabs v-model="activeName" type="border-card" class="register-select">
       <!-- 用户名登录 login register phone-login   -->
-      <el-tab-pane label="登录并绑定手机号" name="0">
+      <el-tab-pane :label="$t('user.loginBindPhone')" name="0">
         <form>
           <div class="bindtext">
-            <div>亲爱的手机号 <b>{{ phoneNumber }}</b> 用户</div>
-            <div>请您登录，即可完成手机号和账号的绑定</div>
+            <div>{{ $t('user.phoneuser') }} <b>{{ phoneNumber }}</b> {{ $t('user.user') }}</div>
+            <div>{{ $t('user.loginToBind') }}</div>
           </div>
           <span class="title">{{ $t('user.usrname') }}</span>
           <el-input v-model="userName" :placeholder="$t('user.username')" class="reg-input" />
@@ -23,11 +23,11 @@
             <el-checkbox v-model="checked" />
             <span class="agree">{{ $t('user.status') }} </span>
           </div>
-          <el-button type="primary" class="r-button" @click="UserLogin">登录并绑定</el-button>
+          <el-button type="primary" class="r-button" @click="UserLogin">{{ $t('user.loginbind') }}</el-button>
           <div class="logorreg">
             <span v-if="canReg">
               {{ $t('user.noexist') }}
-              <span class="agreement_text" @click="toRegister"> 注册并绑定</span></span>
+              <span class="agreement_text" @click="toRegister"> {{ $t('user.registerbind') }}</span></span>
           </div>
         </form>
       </el-tab-pane>

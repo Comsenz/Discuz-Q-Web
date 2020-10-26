@@ -10,7 +10,9 @@
             </div>
             <div class="quick-title">
               <img src="@/assets/wechat.png">
-              <span>{{ forums && forums.set_reg && forums.set_reg.register_type !== 2 ? $t('user.wechatlogin') : $t('user.wechatlogin')+'/注册' }}</span>
+              <span :class="forums && forums.set_reg && forums.set_reg.register_type !== 2 ? 'wctext' : ''">
+                {{ forums && forums.set_reg && forums.set_reg.register_type !== 2 ? $t('user.wechatlogin') : $t('user.wechatlogin')+'/注册' }}
+              </span>
             </div>
             <div v-if="forums && forums.set_reg && forums.set_reg.register_type !== 2" class="otherlogin">
               <svg-icon v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms" class="phone-icon" type="phonelogin" @click="toPhonelogin" />
@@ -159,6 +161,9 @@ export default {
         span {
           width: 120px;
           line-height: 25px;
+        }
+        .wctext {
+          width: 90px;
         }
         img {
           width: 26px;

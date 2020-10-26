@@ -1044,7 +1044,23 @@ export default {
     loginBindSuccess: '登录绑定成功',
     pleaseLogin: '请登录',
     wechatlogin: '微信扫码登录',
-    qrtext: '请用微信扫一扫扫码上方二维码'
+    qrtext: '请用微信扫一扫扫码上方二维码',
+    loginBindPhone: '登录并绑定手机号',
+    loginBindWechat: '登录并绑定微信号',
+    registerBindPhone: '注册并绑定手机号',
+    registerBindWechat: '注册并绑定微信号',
+    phoneuser: '亲爱的手机号',
+    dear: '亲爱的',
+    user: '用户',
+    loginToBind: '请您登录，即可完成手机号和账号的绑定',
+    loginbind: '登录并绑定',
+    registerbind: '注册并绑定',
+    changeWechat: '您正在更换微信绑定的账号为登录的账号',
+    yourPhone: '您的手机号',
+    yourWechat: '您的微信账号',
+    withoutBind: '未绑定账号',
+    readyBInd: '即可完成绑定'
+
   },
   // 举报
   report: {
