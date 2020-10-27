@@ -1,16 +1,16 @@
 <template>
-  <div class="attachment-item">
+  <div class="attachment-item" @click.self="downloadAttachment(file.url)">
     <div class="info">
       <div>
         <svg-icon :type="extensionValidate(file.extension)" style="font-size: 18px; vertical-align: middle;" />
         <span class="file-name">{{ file.fileName }}</span>
       </div>
-      <span class="size">{{ file.fileSize }} KB</span>
+      <span class="size">{{ parseInt(file.fileSize).toLocaleString() }} KB</span>
     </div>
     <div class="action">
       <div v-if="!unpaid">
-        <span v-if="canReview" class="download" @click="preview(file.url)">{{ $t('post.preview') }}</span>
-        <span class="download" @click="downloadAttachment(file.url)">{{ $t('post.download') }}</span>
+        <span v-if="canReview" class="download" @click.self="preview(file.url)">{{ $t('post.preview') }}</span>
+        <span class="download" @click.self="downloadAttachment(file.url)">{{ $t('post.download') }}</span>
       </div>
       <span v-else>{{ $t('post.paidAfterDownload') }}</span>
     </div>
@@ -75,7 +75,7 @@ export default {
     },
     canReview() {
       return this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_cos &&
-        this.forums.qcloud_cos_doc_preview &&
+        this.forums.qcloud.qcloud_cos_doc_preview &&
         this.isPreviewType(this.file.extension) &&
         ((parseFloat(this.price) === 0 && parseFloat(this.attachmentPrice) > 0 && this.isPaidAttachment) || parseFloat(this.price) > 0 && this.isPaid) &&
         this.file.isRemote
@@ -145,7 +145,7 @@ export default {
       > .size {
         color: #B7B7B7;
         font-size: 12px;
-        margin-left: 20px;
+        margin-left: 25px;
       }
 
       .file-name {
@@ -156,6 +156,7 @@ export default {
         white-space: nowrap;
         vertical-align: middle;
         line-height: 18px;
+        margin-left: 5px;
       }
     }
 
