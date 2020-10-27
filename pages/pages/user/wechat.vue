@@ -72,7 +72,7 @@ export default {
     getLoginStatus() {
       if (this.wechatLogin && !this.wechatLogin.session_token) return
       this.$store.dispatch('jv/get', `/oauth/wechat/pc/login/${this.wechatLogin.session_token}`).then((res) => {
-        if (res.pc_login) {
+        if (res) {
           clearInterval(this.wehcatLoginTimer)
           this.$store.commit('session/SET_USER_ID', res._jv.id)
           this.$store.commit('session/CHECK_SESSION', true)
@@ -83,17 +83,29 @@ export default {
           }
           this.$store.dispatch('jv/get', [`users/${userId}`, { params }]).then((res) => {
             if (res.username) {
+              this.$message.success('登录成功')
               this.logind()
-            } else {
-              this.$router.push(`/pages/user/register-bind`)
             }
           })
-          this.$message.success('登录成功')
         }
       }, (e) => {
-        clearInterval(this.wehcatLoginTimer)
-        this.handleError(e)
-        this.createQRcode()
+        const { response: { data: { errors }}} = e
+        if (Array.isArray(errors) && errors.length > 0) {
+          const error = errors[0].detail && errors[0].detail.length > 0 ? errors[0].detail[0] : errors[0].code
+          const errorText = errors[0].detail && errors[0].detail.length > 0 ? errors[0].detail[0] : this.$t(`core.${error}`)
+          if (error === 'pc_qrcode_scanning_code') {
+            return
+          } else if (error === 'no_bind_user') {
+            const nickname = errors[0].user.nickname
+            const headimgurl = errors[0].user.headimgurl
+            const token = errors[0].token
+            this.$router.push(`/pages/user/register-bind?nickname=${nickname}&headimgurl=${headimgurl}&token=${token}`)
+          } else {
+            clearInterval(this.wehcatLoginTimer)
+            this.$message.error(errorText)
+            this.createQRcode()
+          }
+        }
       })
     },
     toUserlogin() {

@@ -7,16 +7,16 @@
           <div class="bindtext">
             <div>{{ $t('user.dear') }}
               <avatar
-                :user="{ id: userInfo.id,
-                         username: userInfo.username,
-                         avatarUrl: userInfo.avatarUrl,
-                         isReal: userInfo.isReal
+                :user="{
+                  username: nickname,
+                  avatarUrl: headimgurl
                 }"
                 :size="20"
                 :round="true"
-                style="display:inline-block;"
+                style="display:inline-block;
+                vertical-align:text-top;"
               />
-              <b>{{ userInfo && userInfo.wechat && userInfo.wechat.nickname || '' }}</b> {{ $t('user.user') }}</div>
+              <b>{{ nickname || '' }}</b> {{ $t('user.user') }}</div>
             <div>{{ $t('user.yourWechat') }}<b>{{ $t('user.withoutBind') }}</b>，<b>{{ $t('user.register') }}</b>{{ $t('user.readyBInd') }}</div>
           </div>
           <div>
@@ -96,7 +96,10 @@ export default {
       randstr: '',
       ischeck: true,
       loading: false,
-      passerror: false
+      passerror: false,
+      nickname: '',
+      headimgurl: '',
+      token: '' // 微信绑定token
     }
   },
   computed: {
@@ -108,7 +111,16 @@ export default {
     }
   },
   mounted() {
-    const { validate, code } = this.$route.query
+    const { validate, code, nickname, headimgurl, token } = this.$route.query
+    if (token) {
+      this.token = token
+    }
+    if (nickname) {
+      this.nickname = nickname
+    }
+    if (headimgurl) {
+      this.headimgurl = headimgurl
+    }
     if (validate) {
       this.validate = JSON.parse(validate)
     }
@@ -176,7 +188,7 @@ export default {
           attributes: {
             username: this.userName,
             password: this.passWord,
-            rebind: 1
+            token: this.token
           }
         }
       }
@@ -232,7 +244,7 @@ export default {
         })
     },
     jump2Login() {
-      this.$router.push(`/pages/user/login-bind`)
+      this.$router.push(`/pages/user/login-bind?nickname=${this.nickname}&headimgurl=${this.headimgurl}&token=${this.token}`)
     }
   },
   head() {
