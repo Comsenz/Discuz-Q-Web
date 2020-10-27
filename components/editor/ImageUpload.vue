@@ -52,6 +52,10 @@ export default {
     onUpload: {
       type: Boolean,
       default: false
+    },
+    type: {
+      type: String,
+      default: ''
     }
   },
   data() {

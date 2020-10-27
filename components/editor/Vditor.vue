@@ -93,8 +93,18 @@ export default {
         mode: 'wysiwyg',
         input: (value) => { this.$emit('textChange', value) },
         toolbar: [
-          { hotkey: '', name: '@', tipPosition: 'ne', tip: '@ 好友', className: 'right', icon: call, click: () => { this.$emit('onActions', 'showCaller') } },
-          { hotkey: '', name: '#', tipPosition: 'ne', tip: '新增话题', className: 'right', icon: topic, click: () => { this.$emit('onActions', 'showTopic') } },
+          { hotkey: '', name: '@', tipPosition: 'ne', tip: '@ 好友', className: 'right', icon: call,
+            click: () => {
+              // this.setCursorPosition()
+              this.$emit('onActions', 'showCaller')
+            }
+          },
+          { hotkey: '', name: '#', tipPosition: 'ne', tip: '新增话题', className: 'right', icon: topic,
+            click: () => {
+              // this.setCursorPosition()
+              this.$emit('onActions', 'showTopic')
+            }
+          },
           { hotkey: '', name: 'my-emoji', tipPosition: 'ne', tip: '插入表情', className: 'right', icon: emoji, click: () => { this.$emit('onActions', 'showEmoji') } },
           'headings', 'bold', 'italic', 'strike', 'link', 'list', 'ordered-list', 'check', 'outdent', 'indent', 'quote',
           { hotkey: '', name: 'picture', tipPosition: 'ne', tip: '插入图片', className: 'right', icon: picture, click: () => { this.uploader() } },
@@ -103,6 +113,16 @@ export default {
         cache: { enable: false }
       })
     },
+    // setCursorPosition() {
+    //   window.xxx = this.vditor
+    //   const position = this.vditor.getCursorPosition()
+    //   console.log('left => ', position.left)
+    //   console.log('right => ', position.left)
+    //   console.log('position => ', position)
+    //   if (position.left === 0 && position.top === 0) {
+    //     this.vditor.focus()
+    //   }
+    // },
     uploader() {
       if (this.onUploadImage) return this.$message.warning('请等待上传中的图片完成上传')
       this.input = document.createElement('input')

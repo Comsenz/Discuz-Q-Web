@@ -62,7 +62,18 @@
       <div>
         <!--uploader-->
         <div v-if="showUploadImg || showUploadVideo" class="resources-list">
-          <image-upload v-if="showUploadImg" :file-list="post && post.imageList" :on-upload.sync="onUploadImage" action="/attachments" :accept="imageTypeLimit" :limit="9" type="Image" :size-limit="attachedSizeLimit" @success="imageList => onPostContentChange('imageList', imageList)" @remove="imageList => onPostContentChange('imageList', imageList)" />
+          <image-upload
+            v-if="showUploadImg"
+            type="Image"
+            :file-list="post && post.imageList"
+            :on-upload.sync="onUploadImage"
+            action="/attachments"
+            :accept="imageTypeLimit"
+            :limit="9"
+            :size-limit="attachedSizeLimit"
+            @success="imageList => onPostContentChange('imageList', imageList)"
+            @remove="imageList => onPostContentChange('imageList', imageList)"
+          />
           <video-upload v-if="showUploadVideo" :on-upload-video.sync="onUploadVideo" :video-list="post && post.videoList" @videoChange="e => onPostContentChange(e.key, e.value)" />
         </div>
         <!--bar-->
