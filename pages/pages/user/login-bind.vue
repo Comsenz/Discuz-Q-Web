@@ -7,16 +7,16 @@
           <div class="bindtext">
             <div>{{ $t('user.dear') }}
               <avatar
-                :user="{ id: userInfo.id,
-                         username: userInfo.username,
-                         avatarUrl: userInfo.avatarUrl,
-                         isReal: userInfo.isReal
+                :user="{
+                  username: nickname,
+                  avatarUrl: headimgurl
                 }"
                 :size="20"
                 :round="true"
-                style="display:inline-block;"
+                style="display:inline-block;
+                vertical-align:text-top;"
               />
-              <b>{{ userInfo && userInfo.wechat && userInfo.wechat.nickname || '' }}</b> {{ $t('user.user') }}</div>
+              <b>{{ nickname || '' }}</b> {{ $t('user.user') }}</div>
             <div>{{ $t('user.changeWechat') }}</div>
           </div>
           <span class="title">{{ $t('user.usrname') }}</span>
@@ -63,7 +63,10 @@ export default {
       code: '', // 注册邀请码
       loading: false,
       canReg: false,
-      ischeck: true
+      ischeck: true,
+      nickname: '',
+      headimgurl: '',
+      token: '' // 微信绑定token
     }
   },
   computed: {
@@ -75,7 +78,16 @@ export default {
     }
   },
   mounted() {
-    const { code } = this.$route.query
+    const { code, nickname, headimgurl, token } = this.$route.query
+    if (token) {
+      this.token = token
+    }
+    if (nickname) {
+      this.nickname = nickname
+    }
+    if (headimgurl) {
+      this.headimgurl = headimgurl
+    }
     if (code !== 'undefined') {
       this.code = code
     }
@@ -105,7 +117,7 @@ export default {
             attributes: {
               username: this.userName,
               password: this.passWord,
-              rebind: 1
+              token: this.token
             }
           }
         }
@@ -144,7 +156,7 @@ export default {
       }
     },
     toRegister() {
-      this.$router.push(`/pages/user/register-bind`)
+      this.$router.push(`/pages/user/register-bind?nickname=${this.nickname}&headimgurl=${this.headimgurl}&token=${this.token}`)
     },
     iscanReg() {
       return [this.canReg ? '' : 'noreg']
