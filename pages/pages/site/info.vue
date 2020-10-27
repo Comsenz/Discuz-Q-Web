@@ -26,6 +26,7 @@
           <span class="date color">{{ $t('site.circlemaster') }}</span>
           <span class="img">
             <Avatar
+              v-if="forums.set_site && forums.set_site.site_author"
               :user="{
                 username: forums.set_site && forums.set_site.site_author && forums.set_site.site_author.username || '',
                 avatarUrl: forums.set_site && forums.set_site.site_author && forums.set_site.site_author.avatar || '',
@@ -34,6 +35,7 @@
               :round="true"
               class="avatar"
             />
+            <avatar v-else :user="{ id: 0, username: '无', avatarUrl: ''}" :prevent-jump="true" :size="30" :round="true" />
           </span>
           <span class="workdate3">
             {{ forums.set_site && forums.set_site.site_author && forums.set_site.site_author.username || '' }}
