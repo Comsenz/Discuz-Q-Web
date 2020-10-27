@@ -152,7 +152,9 @@ export default {
       if (this.type === '4' && !this.post.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
 
       if (this.payment.paidType === 'paid' && this.payment.price === 0) return this.$message.warning(this.$t('post.paidTypePaidPriceCanNotBeZero'))
+      if (this.payment.paidType === 'paid' && this.payment.price < 0.1) return this.$message.warning(this.$t('post.paidAmountTooLow'))
       if (this.payment.paidType === 'attachmentPaid' && this.payment.attachmentPrice === 0) return this.$message.warning(this.$t('post.paidTypeAttachmentPaidPriceCanNotBeZero'))
+      if (this.payment.paidType === 'attachmentPaid' && this.payment.attachmentPrice < 0.1) return this.$message.warning(this.$t('post.paidAmountTooLow'))
 
       return 'success'
     },

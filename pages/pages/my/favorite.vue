@@ -5,8 +5,8 @@
     </el-tabs>
     <div class="post-list">
       <post-item v-for="(item, index) in favoriteList" :key="index" :item="item" :show-share="false">
-        <div slot="bottom-right" class="delete" @click="handleFavorite(item,index)">
-          <svg-icon type="delete" />{{ $t('topic.delete') }}
+        <div slot="bottom-right" class="delete-container">
+          <span class="delete" @click="handleFavorite(item,index)"><svg-icon type="delete" />{{ $t('topic.delete') }}</span>
         </div>
       </post-item>
       <list-load-more
@@ -134,17 +134,19 @@ export default {
     }
   }
   .post-list{
-    .delete{
+    .delete-container{
       color: $font-color-grey;
-      cursor: pointer;
       flex: 2;
       text-align: right;
-      .svg-icon-delete{
-        margin-right: 6px;
-        font-size: 14px;
-      }
-      &:hover{
-        color: $color-blue-deep;
+      > .delete{
+        cursor: pointer;
+        .svg-icon-delete{
+          margin-right: 6px;
+          font-size: 14px;
+        }
+        &:hover{
+          color: $color-blue-deep;
+        }
       }
     }
   }

@@ -15,9 +15,11 @@
 const Vditor = process.client ? require('vditor') : ''
 import { call, emoji, topic, picture } from '@/assets/svg-icons/vditor-icon'
 import service from '@/api/request'
+import handleError from '@/mixin/handleError'
 
 export default {
   name: 'Vditor',
+  mixins: [handleError],
   props: {
     showCaller: {
       type: Boolean,
@@ -157,11 +159,7 @@ export default {
         this.input.value = ''
       }, (e) => {
         this.input.value = ''
-        if (e && e.message) {
-          this.$message.error(`core.${e.message}`)
-        } else {
-          this.$message.error('图片上传失败，请稍后再试')
-        }
+        this.handleError(e).then(() => {})
       }).finally(() => {
         this.$emit('update:onUploadImage', false)
       })
