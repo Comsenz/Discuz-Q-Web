@@ -1,5 +1,5 @@
 <template>
-  <div v-if="item.type < 4" class="topic-container">
+  <div class="topic-container">
     <div class="main-cont">
       <div class="top-flex">
         <div class="topic-title">

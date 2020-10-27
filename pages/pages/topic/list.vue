@@ -21,7 +21,9 @@
           </div>
         </div>
         <div class="topic-list">
-          <topic-item v-for="(item, index) in topicsData" :key="index" :item="item" />
+          <template v-for="(item, index) in topicsData">
+            <topic-item :key="index" :item="item" />
+          </template>
           <list-load-more
             :loading="loading"
             :has-more="hasMore"

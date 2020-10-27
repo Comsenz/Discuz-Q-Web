@@ -26,7 +26,7 @@
           :paid-information="paidInformation"
           :can-reward-or-paid="forums && forums.paycenter && forums.paycenter.wxpay_close && canRewardOrPaid"
           :thread-type="thread.type || 0"
-          :user-lists="[thread.paidUsers || [], thread.rewardedUsers || [], article.likedUsers || []]"
+          :user-lists="[thread.paidUsers || [], thread.rewardedUsers || [], article.likedUsers || [], []]"
           @payOrReward="showCheckoutCounter = true"
         />
         <topic-actions :thread-id="threadId" :actions="actions || []" @clickAction="postCommand" />
