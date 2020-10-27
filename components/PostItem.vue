@@ -174,7 +174,7 @@
         <!-- 操作 -->
         <div v-if="!canDetail" class="bottom-handle">
           <div class="left">
-            <div v-permission:handleLike="''" class="btn like" :class="{ liked: isLiked }" >
+            <div v-permission:handleLike="''" class="btn like" :class="{ liked: isLiked }">
               <svg-icon v-permission:handleLike="''" type="like" class="icon" />
               {{ isLiked ? $t("topic.liked") : $t("topic.like") }}
               {{ likeCount > 0 ? likeCount : "" }}
@@ -184,7 +184,7 @@
               {{ $t("topic.comment") }}
               {{ item.postCount - 1 > 0 ? item.postCount - 1 : "" }}
             </div>
-            <share-popover v-if="item._jv && item._jv.id && showShare" :threads-id="item._jv.id" >
+            <share-popover v-if="item._jv && item._jv.id && showShare" :threads-id="item._jv.id">
               <div class="btn share">
                 <svg-icon type="link" class="icon" />
                 {{ $t("topic.share") }}

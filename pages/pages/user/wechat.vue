@@ -99,7 +99,8 @@ export default {
             const nickname = errors[0].user.nickname
             const headimgurl = errors[0].user.headimgurl
             const token = errors[0].token
-            this.$router.push(`/pages/user/register-bind?nickname=${nickname}&headimgurl=${headimgurl}&token=${token}`)
+            if (process.client) localStorage.setItem('wechat', token)
+            this.$router.push(`/pages/user/register-bind?nickname=${nickname}&headimgurl=${headimgurl}`)
           } else {
             clearInterval(this.wehcatLoginTimer)
             this.$message.error(errorText)
