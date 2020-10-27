@@ -5,10 +5,17 @@
       <header v-if="detail && detail.user" class="detail-header">
         <div class="title">{{ $t('invite.userDetail' ) }}</div>
         <div class="user">
-          <avatar :user="{ id: detail.user.id, username: detail.user.username, avatarUrl: detail.user.avatarUrl}" :size="50" />
+          <avatar
+            :user="{ id: detail.user.id, username: detail.user.username, avatarUrl: detail.user.avatarUrl}"
+            :size="50"
+          />
           <div class="user-info">
-            <nuxt-link :to="`/pages/profile/index?userId=${detail.user.id}`" class="user-name">{{ detail.user.username }}</nuxt-link>
-            <div class="create-at">{{ $t('invite.createdAt') + $t('discuzq.symbol.colon') }} {{ detail.created_at | formatDate }}</div>
+            <nuxt-link :to="`/pages/profile/index?userId=${detail.user.id}`" class="user-name">
+              {{ detail.user.username }}
+            </nuxt-link>
+            <div class="create-at">
+              {{ $t('invite.createdAt') + $t('discuzq.symbol.colon') }} {{ detail.created_at | formatDate }}
+            </div>
           </div>
           <div class="total-money">
             <div class="label">{{ $t('invite.allIncome') }}</div>
@@ -18,12 +25,25 @@
       </header>
       <main>
         <div class="main">
-          <el-table v-loading="loading" :data="incomeDetailList" :default-sort="{prop: 'created_at', order: 'descending'}" @sort-change="sortChange">
+          <el-table
+            v-loading="loading"
+            :data="incomeDetailList"
+            :default-sort="{prop: 'created_at', order: 'descending'}"
+            @sort-change="sortChange"
+          >
             <el-table-column :label="$t('invite.inviteUserName')">
               <template slot-scope="scope">
                 <div v-if="scope.row.sourceUser" class="flex">
-                  <avatar :user="{ id: scope.row.sourceUser.id, username: scope.row.sourceUser.username, avatarUrl: scope.row.sourceUser.avatarUrl}" :size="30" :round="true" />
-                  <nuxt-link :to="`/pages/profile/index?userId=${scope.row.sourceUser.id}`" class="user-name">{{ scope.row.sourceUser.username }}</nuxt-link>
+                  <avatar
+                    :user="{ id: scope.row.sourceUser.id,
+                             username: scope.row.sourceUser.username,
+                             avatarUrl: scope.row.sourceUser.avatarUrl
+                    }"
+                    :size="30"
+                    :round="true"
+                  />
+                  <nuxt-link :to="`/pages/profile/index?userId=${scope.row.sourceUser.id}`" class="user-name">
+                    {{ scope.row.sourceUser.username }}</nuxt-link>
                 </div>
               </template>
             </el-table-column>
@@ -58,8 +78,12 @@
     <div v-else class="invite-cont">
       <main>
         <el-tabs v-model="activeName">
-          <el-tab-pane :label="$t('invite.invitedUser')" name="invited"><invited @view-detail="viewDetail" /></el-tab-pane>
-          <el-tab-pane :label="$t('invite.incomeDetail')" name="income"><income /></el-tab-pane>
+          <el-tab-pane :label="$t('invite.invitedUser')" name="invited">
+            <invited @view-detail="viewDetail" />
+          </el-tab-pane>
+          <el-tab-pane :label="$t('invite.incomeDetail')" name="income">
+            <income />
+          </el-tab-pane>
         </el-tabs>
       </main>
     </div>
@@ -114,21 +138,21 @@ export default {
         'filter[change_type]': '33, 62, 34',
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
-        'sort': this.sort,
+        sort: this.sort,
         'filter[source_user_id]': this.detailUserId
       }
-      this.$store.dispatch('jv/get', ['wallet/log', { params }]).then(res => {
+      this.$store.dispatch('jv/get', ['wallet/log', { params }]).then((res) => {
         if (res && res._jv && res._jv.json && res._jv.json.meta) {
           this.detailTotalMoney = res._jv.json.meta.sumChangeAvailableAmount
           this.total = res._jv.json.meta.total
-          delete res._jv
         }
         this.incomeDetailList = res
-      }, e => {
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.loading = false
       })
+        .finally(() => {
+          this.loading = false
+        })
     },
     // 排序
     sortChange(val) {

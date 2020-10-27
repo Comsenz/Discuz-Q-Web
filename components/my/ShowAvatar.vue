@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-loading="loading"
-    class="showAvatar"
-  >
+  <div v-loading="loading" class="showAvatar">
     <el-dialog
       title="头像"
       :visible.sync="dialogVisible"
@@ -27,9 +24,10 @@
             :http-request="httpRequest"
           >
             <el-button>{{ $t('profile.showavatar') }}</el-button>
-
           </el-upload>
-          <p class="uptext">{{ $t('profile.supportupload') }} <span>{{ $t('profile.jpgorpng') }} </span> {{ $t('profile.filemost') }} <span>500kb</span></p>
+          <p class="uptext">
+            {{ $t('profile.supportupload') }}
+            <span>{{ $t('profile.jpgorpng') }} </span> {{ $t('profile.filemost') }} <span>500kb</span></p>
         </div>
         <!-- 裁剪框 -->
         <div
@@ -66,7 +64,10 @@
       <!-- 方形预览图 -->
       <div
         class="show-preview"
-        :style="{'width': previews.w + 'px', 'height': previews.h + 'px', 'overflow': 'hidden', 'display':'inline-block','position':'absolute','margin-left':'17px','margin-top':'7px'}"
+        :style="{
+          'width': previews.w + 'px',
+          'height': previews.h + 'px',
+          'overflow': 'hidden', 'display':'inline-block','position':'absolute','margin-left':'17px','margin-top':'7px'}"
       >
         <div
           :style="previews.div"
@@ -81,7 +82,11 @@
       <!-- 圆形预览图 -->
       <div
         class="show-preview"
-        :style="{'width': 100 + 'px', 'height': 100 + 'px', 'overflow': 'hidden', 'display':'inline-block','position':'absolute','margin-left':'17px','border-radius':'50%','top':'51%'}"
+        :style="{
+          'width': 100 + 'px',
+          'height': 100 + 'px',
+          'overflow': 'hidden',
+          'display':'inline-block','position':'absolute','margin-left':'17px','border-radius':'50%','top':'51%'}"
       >
         <div
           :style="previewCycle"
@@ -173,11 +178,11 @@ export default {
   methods: {
     handleClose(done) {
       this.$confirm('确认关闭？')
-        .then(_ => {
+        .then(() => {
           done()
           this.$emit('change', this.dialogVisible)
         })
-        .catch(_ => { })
+        .catch(() => { })
     },
     handleClose2() {
       this.dialogVisible = false
@@ -197,11 +202,11 @@ export default {
     fileChange(file) {
       const files = file
       if (/.(png|jpg|jpeg|JPG|JPEG)$/.test(files.name)) {
-        var reader = new FileReader()
+        const reader = new FileReader()
         reader.readAsDataURL(files)
-        var self = this
+        const self = this
         // eslint-disable-next-line space-before-function-paren
-        reader.onload = function (e) {
+        reader.onload = function() {
           // 图片base64化
           const newUrl = this.result // 图片路径
           self.$nextTick(() => {
@@ -223,8 +228,8 @@ export default {
     realTime(data) {
       this.previews = data
       this.previewCycle = {
-        width: this.previews.w + 'px',
-        height: this.previews.h + 'px',
+        width: `${this.previews.w}px`,
+        height: `${this.previews.h}px`,
         overflow: 'hidden',
         margin: '0',
         zoom: 0.66666666666
@@ -243,6 +248,7 @@ export default {
       const { action, data, filename } = request
       // 新建formDate对象
       const formData = new FormData()
+      // eslint-disable-next-line no-restricted-syntax
       for (const key in data) {
         formData.append(key, data[key])
       }
@@ -267,7 +273,7 @@ export default {
           this.$emit('change', this.dialogVisible)
           // this.$router.go(0)
         }
-      }, e => {
+      }, (e) => {
         this.loading = false
         this.handleError(e)
       })

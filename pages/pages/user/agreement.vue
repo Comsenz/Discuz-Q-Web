@@ -28,7 +28,7 @@ export default {
         include: 'users',
         'filter[tag]': 'agreement'
       }
-      this.$store.dispatch('jv/get', [`forum`, { params }]).then(res => {
+      this.$store.dispatch('jv/get', ['forum', { params }]).then((res) => {
         this.forums = res
         this.open(this.type)
       })

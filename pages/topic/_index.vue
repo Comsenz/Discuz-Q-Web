@@ -26,7 +26,7 @@
           :paid-information="paidInformation"
           :can-reward-or-paid="forums && forums.paycenter && forums.paycenter.wxpay_close && canRewardOrPaid"
           :thread-type="thread.type || 0"
-          :user-lists="[thread.paidUsers || [], thread.rewardedUsers || [], article.likedUsers || []]"
+          :user-lists="[thread.paidUsers || [], thread.rewardedUsers || [], article.likedUsers || [], []]"
           @payOrReward="showCheckoutCounter = true"
         />
         <topic-actions :thread-id="threadId" :actions="actions || []" @clickAction="postCommand" />
@@ -34,7 +34,7 @@
           v-if="showCheckoutCounter"
           :thread-type="thread.type || 0"
           :user="thread.user || {}"
-          :amount="thread.price || 0"
+          :amount="payOrRewardAmount"
           :content="article.summaryText || ''"
           :reward-or-pay="rewardOrPay"
           @close="showCheckoutCounter = false"
@@ -42,7 +42,7 @@
         />
         <topic-password
           v-if="showPasswordInput"
-          :price="parseInt(thread.price) === 0 ? payment.rewardAmount : (thread.price || 0)"
+          :price="payOrRewardAmount"
           :password-error.sync="passwordError"
           :password-error-tip="passwordErrorTip"
           @close="showPasswordInput = passwordError = false"
@@ -97,7 +97,7 @@ export default {
         { text: this.$t('topic.collection'), command: 'isFavorite', canOpera: false, isStatus: false, icon: 'favor' },
         { text: this.$t('topic.share'), command: 'showLink', canOpera: true, icon: 'link' }
       ],
-      paidInformation: { price: '0', paid: false, paidUsers: [], paidCount: 0 },
+      paidInformation: { price: '0', paid: false, paidUsers: [], paidCount: 0, isPaidAttachment: false, attachmentPrice: '0' },
       payment: { orderNo: '', payment_type: 0, status: 0, wechat_qrcode: '', rewardAmount: '' },
       location: { location: '', latitude: '', longitude: '' },
       managementList: [
@@ -128,10 +128,26 @@ export default {
       return this.$store.state.user.info.attributes || {}
     },
     rewardOrPay() {
-      return parseFloat(this.paidInformation.price) > 0 ? 'pay' : 'reward'
+      return parseFloat(this.paidInformation.price) > 0 || parseFloat(this.paidInformation.attachmentPrice) > 0 ? 'pay' : 'reward'
     },
     forums() {
       return this.$store.state.site.info.attributes || {}
+    },
+    payOrRewardAmount() {
+      const price = parseFloat(this.paidInformation.price || '0')
+      const attachmentPrice = parseFloat(this.paidInformation.attachmentPrice || '0')
+      return price || attachmentPrice || this.payment.rewardAmount
+    },
+    payOrderType() {
+      const price = parseFloat(this.paidInformation.price || '0')
+      const attachmentPrice = parseFloat(this.paidInformation.attachmentPrice || '0')
+      if (price > 0) {
+        return 3
+      } else if (attachmentPrice > 0) {
+        return 7
+      } else {
+        return 2
+      }
     }
   },
   mounted() {
@@ -150,6 +166,7 @@ export default {
       }, e => this.handleError(e, 'thread'))
     },
     initData() {
+      console.log('thread => ', this.thread)
       if (this.thread.user && this.thread.user.groups[0] && this.thread.user.groups[0].permissionWithoutCategories) {
         this.canRewardOrPaid = this.thread.user.groups[0].permissionWithoutCategories.filter(item => item.permission === 'createThreadPaid').length > 0
         if (this.thread.user.groups[0]._jv.id === '1') this.canRewardOrPaid = true
@@ -209,11 +226,11 @@ export default {
       if (payWay === 'walletPay') {
         this.payment.payment_type = 20
         this.showPasswordInput = true
-        this.createOrder(hideAvatar, this.rewardOrPay === 'reward' ? rewardAmount : this.thread.price).finally(() => { this.defaultLoading = false })
+        this.createOrder(hideAvatar, this.payOrRewardAmount).finally(() => { this.defaultLoading = false })
       } else if (payWay === 'wxPay') {
         this.payment.payment_type = 10
         if (!this.forums.paycenter.wxpay_close) return this.$message.warning(this.$t('pay.wxPayClose'))
-        this.createOrder(hideAvatar, this.rewardOrPay === 'reward' ? rewardAmount : this.thread.price).then(() => this.payOrder()).finally(() => { this.defaultLoading = false })
+        this.createOrder(hideAvatar, this.payOrRewardAmount).then(() => this.payOrder()).finally(() => { this.defaultLoading = false })
       }
     },
     createOrder(hideAvatar, amount = 0) {
@@ -221,7 +238,7 @@ export default {
       this.defaultLoading = true
       const params = {
         _jv: { type: `/orders` },
-        type: this.rewardOrPay === 'reward' ? '2' : '3',
+        type: this.payOrderType,
         thread_id: this.threadId,
         is_anonymous: hideAvatar,
         amount

@@ -12,7 +12,13 @@
         <div class="thread-count">{{ $t('home.threadCount',{total}) }}</div>
         <div class="post-list">
           <post-item v-for="(item, index) in threadsData" :key="index" :item="item" />
-          <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="threadsData.length" @loadMore="loadMore" />
+          <list-load-more
+            :loading="loading"
+            :has-more="hasMore"
+            :page-num="pageNum"
+            :length="threadsData.length"
+            @loadMore="loadMore"
+          />
         </div>
       </main>
       <aside class="cont-right">
@@ -36,7 +42,7 @@ export default {
   name: 'Index',
   mixins: [handleError],
   // 异步数据用法
-  async asyncData({ params, store, query }, callback) {
+  async asyncData({ store, query }, callback) {
     if (!env.isSpider) {
       callback(null, {})
     }
@@ -46,11 +52,11 @@ export default {
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no',
       'page[limit]': 10,
-      'filter[location]': query.longitude + ',' + query.latitude
+      'filter[location]': `${query.longitude},${query.latitude}`
     }
     const userParams = {
       include: 'groups',
-      'limit': 4
+      limit: 4
     }
     try {
       const resData = {}
@@ -60,9 +66,16 @@ export default {
       if (Array.isArray(threadsData)) {
         resData.threadsData = threadsData.slice(0, 10)
       } else if (threadsData && threadsData._jv && threadsData._jv.json) {
-        var _threadsData = threadsData._jv.json.data || []
+        const _threadsData = threadsData._jv.json.data || []
         _threadsData.forEach((item, index) => {
-          _threadsData[index] = { ...item, ...item.attributes, 'firstPost': item.relationships.firstPost.data, 'user': item.relationships.user.data, 'groups': item.relationships.groups.data, '_jv': { 'id': item.id }}
+          _threadsData[index] = {
+            ...item,
+            ...item.attributes,
+            firstPost: item.relationships.firstPost.data,
+            user: item.relationships.user.data,
+            groups: item.relationships.groups.data,
+            _jv: { id: item.id }
+          }
         })
         resData.threadsData = _threadsData
       }
@@ -102,7 +115,7 @@ export default {
     }
   },
   watch: {
-    '$route': 'init'
+    $route: 'init'
   },
   mounted() {
     this.init()
@@ -127,7 +140,7 @@ export default {
         'page[limit]': this.pageSize,
         'filter[location]': `${this.longitude},${this.latitude}`
       }
-      this.$store.dispatch('jv/get', ['threads', { params }]).then(res => {
+      this.$store.dispatch('jv/get', ['threads', { params }]).then((res) => {
         this.hasMore = res.length === this.pageSize
         this.total = res._jv.json.meta.threadCount
         if (this.pageNum === 1) {
@@ -141,16 +154,17 @@ export default {
         } else {
           this.threadsData = [...this.threadsData, ...res]
         }
-        this.pageNum++
+        this.pageNum += 1
         if (res._jv) {
           this.hasMore = this.threadsData.length < res._jv.json.meta.threadCount
         }
-      }, e => {
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.loading = false
-        this.index_loading = false
       })
+        .finally(() => {
+          this.loading = false
+          this.index_loading = false
+        })
     },
     loadMore() {
       this.getThreadsList()

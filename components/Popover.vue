@@ -6,7 +6,7 @@
       :value="visible"
       trigger="manual"
       popper-class="popover"
-      @hide="$emit('hidePop')"
+      @hide="$emit('hide-pop')"
     >
       <slot name="pop" />
       <template slot="reference">

@@ -11,16 +11,7 @@
         >{{ category.name }}</span>
       </template>
     </div>
-    <editor
-      :type-information="typeInformation[type]"
-      :edit-resource-show="editResourceShow"
-      :location.sync="location"
-      :payment.sync="payment"
-      :on-publish="onPublish"
-      :is-edit="isEditor"
-      :post.sync="post"
-      @publish="publish"
-    />
+    <editor :type-information="typeInformation[type]" :edit-resource-show="editResourceShow" :payment.sync="payment" :on-publish="onPublish" :is-edit="isEditor" :post.sync="post" @publish="publish" />
   </div>
 </template>
 
@@ -39,7 +30,7 @@ export default {
       editThread: {}, // 被编辑的主题
       categoryList: [],
       post: { id: '', title: '', text: '', imageList: [], videoList: [], attachedList: [] },
-      payment: { isPaid: false, price: 0, freeWords: 0 },
+      payment: { paidType: 'free', price: 0, freeWords: 0, attachmentPrice: 0 }, // free 免费， paid 全部付费，attachmentPaid 文章免费，附件付费
       location: { latitude: '', location: '', longitude: '' },
       editResourceShow: { showUploadImg: false, showUploadVideo: false, showUploadAttached: false },
       typeInformation: {
@@ -94,10 +85,9 @@ export default {
       if (!this.threadId) return
       return this.$store.dispatch('jv/get', [`threads/${this.threadId}`, { params: { include: threadInclude }}]).then(data => {
         if (data.isDeleted) return this.$router.push('/')
-        this.isEditor = true
         this.initData(data)
-        this.$nextTick(() => { this.textarea.style.height = this.textarea.scrollHeight + 'px' }) // TODO 重置textarea 待优
-
+        this.isEditor = true
+        if (this.textarea) this.$nextTick(() => { this.textarea.style.height = this.textarea.scrollHeight + 'px' }) // TODO 重置textarea 待优
         if (data.firstPost.images.length > 0) {
           this.editResourceShow.showUploadImg = true
           this.initThreadResource(this.post.imageList, data.firstPost.images)
@@ -120,8 +110,15 @@ export default {
       this.post.text = data.firstPost.content
       this.post.id = data.firstPost._jv.id
       this.payment.price = parseFloat(data.price)
+      this.payment.attachmentPrice = parseFloat(data.attachmentPrice)
       this.payment.freeWords = parseInt(data.freeWords)
-      this.payment.isPaid = parseFloat(data.price) > 0
+      if (parseFloat(data.price) === 0 && parseFloat(data.attachmentPrice) === 0) {
+        this.payment.paidType = 'free'
+      } else if (parseFloat(data.price) > 0 && parseFloat(data.attachmentPrice) === 0) {
+        this.payment.paidType = 'paid'
+      } else if (parseFloat(data.price) === 0 && parseFloat(data.attachmentPrice) > 0) {
+        this.payment.paidType = 'attachmentPaid'
+      }
       this.location.location = data.location
       this.location.latitude = data.latitude
       this.location.longitude = data.longitude
@@ -132,6 +129,7 @@ export default {
           name: key === 'videoList' ? item.file_name : item.fileName,
           url: key === 'videoList' ? item.media_url : item.thumbUrl,
           id: key === 'videoList' ? item.file_id : item._jv.id,
+          size: key === 'videoList' ? '' : item.fileSize,
           deleted: false // 用于图片 upload 组件的样式
         }
         target.push(attached)
@@ -143,11 +141,21 @@ export default {
       if (!this.categorySelectedId) return this.$message.warning(this.$t('post.theClassifyCanNotBeBlank'))
       if (this.post.text.length > this.typeInformation[this.type].textLimit) return this.$message.warning(this.$t('post.messageLengthCannotOver'))
       if (this.type === '0' && !this.post.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
+
       if (this.type === '1' && !this.post.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
       if (this.type === '1' && !this.post.title) return this.$message.warning(this.$t('post.theTitleCanNotBeBlank'))
+      if (this.type === '1' && this.post.title && this.post.title.length > 150) return this.$message.warning(this.$t('post.titleLengthCannotOver'))
+      if (this.type === '1' && this.payment.paidType === 'attachmentPaid' && this.post.attachedList.length === 0) return this.$message.warning(this.$t('post.attachmentListCanNotBeEmptyWhileAttachmentPaid'))
+
       if (this.type === '2' && this.post.videoList.length === 0) return this.$message.warning(this.$t('post.videoCannotBeEmpty'))
       if (this.type === '3' && this.post.imageList.length === 0) return this.$message.warning(this.$t('post.imageCannotBeEmpty'))
       if (this.type === '4' && !this.post.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
+
+      if (this.payment.paidType === 'paid' && this.payment.price === 0) return this.$message.warning(this.$t('post.paidTypePaidPriceCanNotBeZero'))
+      if (this.payment.paidType === 'paid' && this.payment.price < 0.1) return this.$message.warning(this.$t('post.paidAmountTooLow'))
+      if (this.payment.paidType === 'attachmentPaid' && this.payment.attachmentPrice === 0) return this.$message.warning(this.$t('post.paidTypeAttachmentPaidPriceCanNotBeZero'))
+      if (this.payment.paidType === 'attachmentPaid' && this.payment.attachmentPrice < 0.1) return this.$message.warning(this.$t('post.paidAmountTooLow'))
+
       return 'success'
     },
     async publish() {
@@ -155,7 +163,7 @@ export default {
       this.onPublish = true
       if (this.isEditor) {
         return Promise.all([this.editThreadPublish(), this.editPostPublish()]).then(dataArray => {
-          this.$router.push(`/pages/topic/index?id=${dataArray[0]._jv.id}`)
+          this.$router.push(`/topic/index?id=${dataArray[0]._jv.id}`)
         }, e => this.handleError(e)).finally(() => {
           this.onPublish = false
         })
@@ -186,7 +194,7 @@ export default {
         }
       }
       return this.$store.dispatch('jv/post', params).then(data => {
-        this.$router.push(`/pages/topic/index?id=${data._jv.id}`)
+        this.$router.push(`/topic/index?id=${data._jv.id}`)
       }, e => this.handleError(e)).finally(() => {
         this.onPublish = false
       })
@@ -255,6 +263,8 @@ export default {
   > .category-list {
     min-height: 25px;
     margin-top: 50px;
+    border-bottom: 1px solid #F5F5F5;
+    padding-bottom: 20px;
     > .category {
       display: inline-block;
       height: 25px;

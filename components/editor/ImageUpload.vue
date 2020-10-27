@@ -1,170 +1,172 @@
 <template>
-  <div>
-    <el-upload
-      :action="url + '/attachments'"
-      :headers="header"
-      :data="{ type: 1 }"
-      name="file"
-      with-credentials
-      :accept="attachedTypeLimit"
-      :file-list="imageList"
-      :limit="9"
-      :disabled="imageList.length > 9"
-      list-type="picture-card"
-      class="resources-upload"
-      :before-upload="checkSize"
-      :on-progress="() => $emit('update:onUploadImage', true)"
-      :on-success="handleSuccess"
-      :on-preview="handlePictureCardPreview"
-      :before-remove="handleRemoveConfirm"
-      :on-remove="handlePictureRemove"
-      :on-error="handleError"
-    >
-      <i class="el-icon-plus" />
-    </el-upload>
-    <el-dialog :visible.sync="dialogVisible">
-      <img width="100%" :src="dialogImageUrl" alt="">
-    </el-dialog>
+  <div v-viewer class="container-upload">
+    <template>
+      <div v-for="(image, index) in previewFiles" :key="index" :class="{ 'preview-item': true, 'deleted': image.deleted }">
+        <img :src="image.url" alt="">
+        <el-progress v-show="image.progress < 100" :percentage="image.progress" color="#25A9F6" :show-text="false" class="progress" />
+        <div v-show="image.progress < 100" class="cover">图片上传中...</div>
+        <div :class="{ 'upload-delete': true, 'show-delete': image.progress === 100}" @click="removeItem(index)">
+          <svg-icon type="delete" style="font-size: 14px; fill: white" />
+        </div>
+      </div>
+    </template>
+    <div v-show="previewFiles.length < limit" class="upload" @click="onClick">
+      <input id="upload" :accept="accept" type="file" multiple @input="onInput">
+      <svg-icon class="upload-icon" type="add" style="fill: #1878F3" />
+    </div>
   </div>
 </template>
 
 <script>
-import handleAttachmentError from '@/mixin/handleAttachmentError.js'
+import handleError from '@/mixin/handleError'
+import handleAttachmentError from '@/mixin/handleAttachmentError'
+import uploader from '@/mixin/uploader'
+import service from '@/api/request'
+
 export default {
   name: 'ImageUpload',
-  mixins: [handleAttachmentError],
+  mixins: [handleError, handleAttachmentError, uploader],
   props: {
-    imageList: {
+    action: {
+      type: String,
+      default: '',
+      required: true
+    },
+    fileList: {
       type: Array,
-      default: () => []
+      default: () => [],
+      required: true
     },
-    onUploadImage: {
-      type: Boolean,
-      default: false
-    },
-    url: {
+    accept: {
       type: String,
       default: ''
     },
-    isEdit: {
+    limit: {
+      type: Number,
+      default: 9999
+    },
+    sizeLimit: {
+      type: Number,
+      default: 99999999999999999
+    },
+    onUpload: {
       type: Boolean,
       default: false
     },
-    header: {
-      type: Object,
-      default: () => {
-      }
+    type: {
+      type: String,
+      default: ''
     }
   },
   data() {
     return {
-      dialogImageUrl: '',
-      dialogVisible: false,
-      overSize: false
+      previewFiles: []
     }
   },
   computed: {
-    forums() {
-      return this.$store.state.site.info.attributes || {}
+    input() {
+      return process.client ? document.getElementById('upload') : ''
     },
-    attachedTypeLimit() {
-      if (this.forums.set_attach) {
-        const limitText = this.forums.set_attach.support_img_ext
-        return limitText.split(',').map(item => '.' + item).join(',')
-      }
-      return ''
-    },
-    attachedSizeLimit() {
-      if (this.forums.set_attach) {
-        return this.forums.set_attach.support_max_size * 1024 * 1024
-      }
-      return 10485760
-    }
-  },
-  watch: {
-    imageList: {
-      handler(val) {
-        this.handleExceed(val)
-      },
-      deep: true
-    }
-  },
-  mounted() {
-    this.handleExceed(this.imageList)
-  },
-  methods: {
-    checkSize(file) {
-      const result = file.size < this.attachedSizeLimit
-      if (!result) {
-        this.overSize = true
-        this.$message.error(this.$t('profile.filesizecannotexceed') + ` ${this.forums.set_attach.support_max_size} MB`)
-      } else this.overSize = false
-      return result
-    },
-    handleRemoveConfirm() {
-      if (this.overSize) return
-      return this.$confirm(this.$t('topic.confirmDelete'), this.$t('discuzq.msgBox.title'), {
-        confirmButtonText: this.$t('discuzq.msgBox.confirm'),
-        cancelButtonText: this.$t('discuzq.msgBox.cancel'),
-        type: 'warning'
-      })
-    },
-    handlePictureRemove(file) {
-      if (this.overSize) return
-      const id = file.id
-      const _imageList = [...this.imageList]
-      const deleteImage = _imageList.filter(item => item.id === id)[0]
-      const index = _imageList.indexOf(deleteImage)
-      _imageList.splice(index, 1)
-      this.$emit('imageChange', { key: 'imageList', value: _imageList })
-      // 编辑主题时，图片在延后到发布时删除，发布主题时图片立即删除
-      !this.isEdit && this.$store.dispatch('jv/delete', [`/attachments/${id}`, {}]).catch(() => '')
-    },
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url
-      this.dialogVisible = true
-    },
-    handleSuccess(response, file) {
-      const _imageList = [...this.imageList]
-      _imageList.push({ name: file.name, url: file.url, id: response.data.id })
-      this.$emit('imageChange', { key: 'imageList', value: _imageList })
-      this.$emit('update:onUploadImage', false)
-    },
-    handleError(e) {
-      this.$emit('update:onUploadImage', false)
-      this.handleAttachmentError(e)
-    },
-    handleExceed(fileList) {
-      // el-upload--picture-card 是图片上传框的特定样式, 和 附件上传 区分
-      const elUpload = document.querySelector('.el-upload.el-upload--picture-card')
-      elUpload.style.display = fileList.length >= 9 ? 'none' : 'inline-flex'
+    service() {
+      return service
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .resources-upload {
-    ::v-deep .el-upload-list {
-      > li {
-        width: 100px;
-        height: 100px;
-      }
+@import '@/assets/css/variable/color.scss';
 
-      .el-progress-circle {
-        height: 80px !important;
-        width: 80px !important;
-        margin: 0 auto !important;
-      }
+.container-upload {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 660px;
+
+  > .preview-item {
+    position: relative;
+    border-radius: 5px;
+    border: 1px solid $border-color-base;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    width: 100px;
+    height: 100px;
+
+    &.deleted {
+      transition: 1s all;
+      transform: translateY(-100%);
+      opacity: 0;
     }
 
-    ::v-deep .el-upload {
-      width: 100px;
-      height: 100px;
-      display: inline-flex;
+    > img {
+      cursor: pointer;
+      border-radius: 5px;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    > .progress {
+      position: absolute;
+      top: 80px;
+      left: 10px;
+      width: 80px;
+      height: 1px;
+    }
+
+    > .cover {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      color: #6D6D6D;
+      background: rgba(255, 255, 255, 0.5);
+      font-size: 12px;
+      display: flex;
       justify-content: center;
       align-items: center;
-      margin-bottom: 8px;
+    }
+
+    > .upload-delete {
+      cursor: pointer;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: 20px;
+      width: 100%;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0,0 ,0.3);
+    }
+
+    &:hover {
+      .upload-delete.show-delete {
+        display: flex;
+      }
     }
   }
+
+  > .upload {
+    cursor: pointer;
+    width: 100px;
+    height: 100px;
+    border-radius: 5px;
+    border: 1px dashed $color-blue-base;
+    position: relative;
+
+    > #upload {
+      cursor: pointer;
+      display: none;
+    }
+
+    > .upload-icon {
+      font-size: 30px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+}
 </style>

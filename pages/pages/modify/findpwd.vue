@@ -120,9 +120,9 @@ export default {
       }
       params = await this.checkCaptcha(params)
       status.run(() => this.$store.dispatch('jv/post', params))
-        .then(res => {
+        .then((res) => {
           if (res.interval) this.countDown(res.interval)
-        }, e => {
+        }, (e) => {
           const { response:
             {
               data: { errors }
@@ -149,7 +149,7 @@ export default {
           type: 'reset_pwd'
         }
         status.run(() => this.$store.dispatch('jv/post', params))
-          .then(res => {
+          .then((res) => {
             if (process.client) window.localStorage.setItem('username', res.username)
             this.$router.push('/pages/modify/resetpwdsuccess')
           }, e => this.handleError(e))

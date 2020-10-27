@@ -1,7 +1,9 @@
 <template>
   <article class="global">
-    <h2 class="title">{{ title }}</h2>
-    <div class="content-html" v-html="$xss(formatTopicHTML(article.contentHtml || ''))" />
+    <div class="title">{{ title }}</div>
+    <viewer :trigger="$xss(formatTopicHTML(article.contentHtml || ''))" :options="options">
+      <div class="content-html" v-html="$xss(formatTopicHTML(article.contentHtml || ''))" />
+    </viewer>
     <div v-if="video.cover_url" class="container-video-img-cover">
       <div class="warp-video-img-cover">
         <img class="video-img-cover" :src="video.cover_url" :alt="video.file_name" @click.stop="openVideo">
@@ -17,14 +19,21 @@
     </div>
     <div v-if="(article.attachments || []).length > 0" class="container-attachment">
       <h3 class="name">{{ $t('topic.attachment') }}</h3>
+      <!--      <div>-->
+      <!--        <template v-for="(file, index) in audioList">-->
+      <!--          <audio-player :key="index" :file="file" :current-audio="currentAudio" @play="play" @pause="pause" @seek="seek" @seeking="seeking" />-->
+      <!--        </template>-->
+      <!--      </div>-->
       <div>
-        <template v-for="(file, index) in audioList">
-          <audio-player :key="index" :file="file" :current-audio="currentAudio" @play="play" @pause="pause" @seek="seek" @seeking="seeking" />
-        </template>
-      </div>
-      <div>
-        <template v-for="(file, index) in attachmentList">
-          <attachment-list :key="index" :file="file" />
+        <template v-for="(file, index) in article.attachments">
+          <attachment-list
+            :key="index"
+            :file="file"
+            :price="paidInformation.price"
+            :is-paid="paidInformation.paid"
+            :is-paid-attachment="paidInformation.isPaidAttachment"
+            :attachment-price="paidInformation.attachmentPrice"
+          />
         </template>
       </div>
     </div>
@@ -46,9 +55,12 @@
 <script>
 import s9e from '@/utils/s9e'
 import isLogin from '@/mixin/isLogin'
+import 'viewerjs/dist/viewer.css'
+import Viewer from 'v-viewer/src/component.vue'
 
 export default {
   name: 'TopicContent',
+  components: { Viewer },
   mixins: [isLogin],
   props: {
     article: {
@@ -84,6 +96,11 @@ export default {
   data() {
     return {
       showVideoPop: false,
+      options: {
+        filter(image) {
+          return [...image.classList].indexOf('qq-emotion') < 0
+        }
+      },
       currentAudio: {
         id: '',
         url: '',
@@ -100,14 +117,15 @@ export default {
     unpaid() {
       if (process.client && this.paidInformation.paid) this.removeTextHideCover()
       return !(this.paidInformation.paid || parseFloat(this.paidInformation.price) === 0)
-    },
-    audioList() {
-      // MP3/M4A/WAV/AAC
-      return this.article.attachments.filter(item => this.isAudio(item))
-    },
-    attachmentList() {
-      return this.article.attachments.filter(item => !this.isAudio(item))
     }
+    // 只有音频帖才区分 音频和普通附件
+    // audioList() {
+    //   // MP3/M4A/WAV/AAC
+    //   return this.article.attachments.filter(item => this.isAudio(item))
+    // },
+    // attachmentList() {
+    //   return this.article.attachments.filter(item => !this.isAudio(item))
+    // }
   },
   watch: {
     article: {
@@ -118,13 +136,14 @@ export default {
     }
   },
   mounted() {
+    console.log(this.paidInformation)
     this.currentAudio.audio = document.getElementById('audio-player')
   },
   methods: {
-    isAudio(item) {
-      const audio = ['MP3', 'M4A', 'WAV', 'AAC']
-      return audio.indexOf(item.extension.toUpperCase()) >= 0
-    },
+    // isAudio(item) {
+    //   const audio = ['MP3', 'M4A', 'WAV', 'AAC']
+    //   return audio.indexOf(item.extension.toUpperCase()) >= 0
+    // },
     formatTopicHTML(html) {
       return s9e.parse(html)
     },
@@ -200,10 +219,14 @@ export default {
     margin-top: 20px;
 
     > .title {
+      font-weight: bold;
       font-size: 20px;
+      word-break: break-all;
+      max-width: 650px;
     }
 
-    > .content-html {
+    .content-html {
+      max-width: 650px;
       margin-top: 22px;
       /*font-size: 16px;*/
       /*word-break: break-all;*/

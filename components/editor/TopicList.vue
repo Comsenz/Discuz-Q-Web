@@ -1,7 +1,7 @@
 <template>
-  <div class="container-search-list">
-    <label>
-      <input type="text" :value="searchValue" class="input-topic" :placeholder="$t('post.topicInputTip')" @input="searchTopics">
+  <div class="container-search-list" @click.stop="() => {}">
+    <label @click.self="() => {}">
+      <input type="text" :value="searchValue" class="input-topic" :placeholder="$t('post.topicInputTip')" @input="searchTopics" @click.self="() => {}">
     </label>
     <div class="infinite-list-wrapper" style="overflow:auto">
       <ul v-infinite-scroll="load" infinite-scroll-disabled="disabled">
@@ -109,6 +109,8 @@ export default {
     min-width: 300px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, .3);
     border-radius: 6px;
+    background: white;
+    z-index: 1000;
     .input-topic {
       height: 45px;
       line-height: 45px;

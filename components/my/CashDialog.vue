@@ -123,20 +123,16 @@
 import { status } from '@/library/jsonapi-vuex/index'
 import { time2MinuteOrHour } from '@/utils/time'
 import handleError from '@/mixin/handleError'
+
 export default {
   mixins: [
     handleError
   ],
   data() {
-    const date = new Date()
-    const year = date.getFullYear()
-    let month = date.getMonth() + 1
-    month = month < 10 ? `0${month}` : month
-    const currentDate = `${year}-${month}`
     return {
       loading: false,
       hasMore: false,
-      date: currentDate, // 提现记录日期
+      date: '', // 提现记录日期
       value: '', // 提现记录被选择到的类型id
       pageSize: 10, // 提现记录每页展示的数目
       pageNum: 1, // 提现当前页数
@@ -179,10 +175,18 @@ export default {
     }
   },
   mounted() {
+    this.setCurrentTime()
     this.getUserInfo()
     this.getList()
   },
   methods: {
+    setCurrentTime() {
+      const date = window.currentTime || new Date()
+      const year = date.getFullYear()
+      let month = date.getMonth() + 1
+      month = month < 10 ? `0${month}` : month
+      this.date = `${year}-${month}`
+    },
     // 用户信息
     getUserInfo() {
       this.userInfo = this.$store.state.user.info.attributes
@@ -211,14 +215,15 @@ export default {
       }
       status
         .run(() => this.$store.dispatch('jv/get', ['wallet/cash', { params }]))
-        .then(res => {
+        .then((res) => {
           // 处理钱
           this.sumMoney = this.handlemoney(res)
           this.dataList = res
           this.total = res._jv.json.meta.total
-        }, e => {
+        }, (e) => {
           this.handleError(e)
-        }).finally(() => {
+        })
+        .finally(() => {
           this.loading = false
         })
     },
@@ -274,6 +279,7 @@ export default {
       const res = JSON.parse(JSON.stringify(result))
       let sum = 0
       res.forEach((item, index) => {
+        // eslint-disable-next-line no-useless-escape
         res[index] = parseFloat(item.cash_apply_amount.replace(/\+|\-|\*|\?/g, ''))
         sum = sum + res[index]
       })

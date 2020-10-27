@@ -8,7 +8,13 @@
         :lazy="false"
         @change="changelike"
       />
-      <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="threadsData.length" @loadMore="loadMore" />
+      <list-load-more
+        :loading="loading"
+        :has-more="hasMore"
+        :page-num="pageNum"
+        :length="threadsData.length"
+        @loadMore="loadMore"
+      />
     </div>
   </div>
 </template>
@@ -47,12 +53,12 @@ export default {
   },
   methods: {
     // 加载当前主题数据
-    loadThreads(type) {
+    loadThreads() {
       this.loading = true
       const params = {
         'filter[isDeleted]': 'no',
         sort: '-createdAt',
-        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
+        include: 'user,user.groups,firstPost,firstPost.images,firstPost.postGoods,category,threadVideo,threadAudio',
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         'filter[isApproved]': 1,
@@ -60,7 +66,7 @@ export default {
       }
       status
         .run(() => this.$store.dispatch('jv/get', ['threads', { params }]))
-        .then(res => {
+        .then((res) => {
           this.loading = false
           this.hasMore = res.length === this.pageSize
           this.threadsData = [...this.threadsData, ...res]
@@ -68,9 +74,10 @@ export default {
             this.hasMore = this.threadsData.length < res._jv.json.meta.threadCount
           }
           this.pageNum += 1
-        }, e => {
+        }, (e) => {
           this.handleError(e)
-        }).finally(() => {
+        })
+        .finally(() => {
           this.loading = false
         })
     },
@@ -80,7 +87,6 @@ export default {
       }
     },
     changelike() {
-      console.log('hhh')
       this.$emit('changeLike', { userId: this.userId })
     },
     changetopiclike() {

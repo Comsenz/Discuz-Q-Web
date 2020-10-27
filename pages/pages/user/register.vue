@@ -1,33 +1,15 @@
 <template>
-  <div
-    v-if="forums"
-    v-loading="loading"
-    class="register"
-  >
-
-    <h2 class="register-title">{{ $t('user.register') }}{{ forums && forums.set_site && forums.set_site.site_name ? forums.set_site.site_name : '' }}</h2>
-    <el-tabs
-      v-model="activeName"
-      type="border-card"
-      class="register-select"
-      @tab-click="changeactive"
-    >
+  <div v-if="forums" v-loading="loading" class="register">
+    <el-tabs v-model="activeName" type="border-card" class="register-select">
       <!-- 用户名注册 -->
-      <el-tab-pane
-        label="用户名注册"
-        name="0"
-      >
+      <el-tab-pane label="用户名注册" name="0">
         <form>
           <div>
             <span class="title">{{ $t('profile.username') }}</span>
-            <el-input
-              v-model="userName"
-              :placeholder="$t('user.username')"
-              class="reg-input"
-            />
+            <el-input v-model="userName" :placeholder="$t('user.username')" class="reg-input" />
           </div>
           <div>
-            <span class="title2">输入密码</span>
+            <span class="title2">{{ $t('user.passwd') }}</span>
             <el-input
               v-model="passWord"
               :placeholder="$t('user.password')"
@@ -38,7 +20,7 @@
             />
           </div>
           <div :class="passerror ?'rep passerr':'rep'">
-            <span class="title2">重复密码</span>
+            <span class="title2">{{ $t('user.repeatpasswd') }}</span>
             <el-input
               v-model="repeatPassWord"
               :placeholder="$t('user.password')"
@@ -47,13 +29,10 @@
               show-password
               @keyup.enter.native="register"
             />
-            <div
-              v-if="passerror"
-              class="passerror"
-            >{{ $t('modify.reenter') }}</div>
+            <div v-if="passerror" class="passerror">{{ $t('modify.reenter') }}</div>
           </div>
           <div v-if="validate">
-            <span class="title2">注册原因</span>
+            <span class="title2">{{ $t('user.registerReason') }}</span>
             <el-input
               v-model="Reason"
               :placeholder="$t('user.reason')"
@@ -61,106 +40,36 @@
               @keyup.enter.native="register"
             />
           </div>
-
           <div class="agreement">
             <reg-agreement @check="check" />
           </div>
-          <el-button
-            type="primary"
-            class="r-button"
-            @click="register"
-          >{{ $t('user.register') }}</el-button>
+          <el-button type="primary" class="r-button" @click="register">{{ $t('user.register') }}</el-button>
           <div class="tologin">
             <span
-              v-if="register"
               @click="jump2Login"
-            >已有帐号，立即<nuxt-link to="/pages/user/login">{{ $t('user.login') }}</nuxt-link> </span>
+            >{{ $t('user.exist') }}<nuxt-link to="/pages/user/login">{{ $t('user.login') }}</nuxt-link> </span>
           </div>
         </form>
       </el-tab-pane>
-      <!-- 手机号注册 -->
-      <el-tab-pane
-        v-if="forums.qcloud && forums.qcloud.qcloud_sms"
-        :label="$t('user.phoneregister')"
-        name="1"
-      >
-        <span class="title2">{{ $t('user.phonenumber') }}</span>
-        <el-input
-          v-model="phoneNumber"
-          :placeholder="$t('user.phoneNumber')"
-          class="phone-input"
-          maxlength="11"
-        />
-        <el-button
-          class="count-b"
-          :class="{disabled: !canClick}"
-          :disabled="!canClick"
-          @click="phoneRegister"
-        >{{ content }}</el-button>
-        <span class="title">{{ $t('user.verification') }}</span>
-        <el-input
-          v-model="verifyCode"
-          :placeholder="$t('user.verificationCode')"
-          class="reg-input"
-          @keyup.enter.native="PhoneLogin"
-        />
-        <div class="agreement">
-          <reg-agreement @check="check" />
-        </div>
-        <el-button
-          type="primary"
-          class="r-button"
-          @click="PhoneLogin"
-        >{{ $t('user.register') }}</el-button>
-      </el-tab-pane>
-      <!-- 快速注册 -->
-      <!-- <el-tab-pane label="快速注册">
-        <div class="quick">
-          <div class="quick-container">
-            <div class="quick-title">
-              <img src="@/assets/wechat.png">
-              <span>微信扫码注册</span>
-            </div>
-            <div class="qrcode">
-              <img :src="info.img">
-            </div>
-            <span class="qrtext">请用微信扫一扫扫码上方二维码</span>
-          </div>
-           <div class="quick-container">
-            <div class="quick-title">
-              <img src="@/assets/qq.png">
-              <span>qq一键注册</span>
-            </div>
-            <div class="qrcode2">
-              <img src="@/assets/qq-big.png">
-            </div>
-            <span>点击用QQ号码登陆注册</span>
-          </div>
-        </div>
-      </el-tab-pane> -->
     </el-tabs>
   </div>
 </template>
 
 <script>
 import handleError from '@/mixin/handleError'
-import { status } from '@/library/jsonapi-vuex/index'
-
+import loginAbout from '@/mixin/loginAbout'
 const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
-let QuickLogin = null
+
 export default {
   mixins: [
-    handleError, tcaptchs
+    handleError, tcaptchs, loginAbout
   ],
   data() {
     return {
       userName: '',
       passWord: '',
       repeatPassWord: '',
-      phoneNumber: '',
-      verifyCode: '',
       activeName: '0', // 默认激活tab
-      info: '', // 微信二维码数据
       Reason: '', // 注册原因
       validate: false, // 默认不开启注册审核
       code: '', // 注册邀请码
@@ -171,12 +80,8 @@ export default {
       ticket: '',
       randstr: '',
       ischeck: true,
-      content: this.$t('modify.sendVerifyCode'),
-      canClick: true,
       loading: false,
-      passerror: false,
-      loginStatus: false
-
+      passerror: false
     }
   },
   computed: {
@@ -185,12 +90,9 @@ export default {
     }
   },
   mounted() {
-    const { validate, register, code } = this.$route.query
+    const { validate, code } = this.$route.query
     if (validate) {
       this.validate = JSON.parse(validate)
-    }
-    if (register) {
-      this.register = JSON.parse(register)
     }
     if (code !== 'undefined') {
       this.code = code
@@ -205,69 +107,10 @@ export default {
     if (this.forums && this.forums.set_reg) {
       this.validate = this.forums.set_reg.register_validate
     }
-    this.changeactive()
-  },
-  destroyed() {
-    clearInterval(QuickLogin)
   },
   methods: {
     check(value) {
       this.ischeck = value
-    },
-    countDown(interval) {
-      if (!this.canClick) return
-      this.canClick = false
-      this.content = interval + this.$t('modify.retransmission')
-      const clock = window.setInterval(() => {
-        interval--
-        this.content = interval + this.$t('modify.retransmission')
-        if (interval < 0) {
-          window.clearInterval(clock)
-          this.content = this.$t('modify.sendVerifyCode')
-          // this.totalTime = 60
-          this.canClick = true
-        }
-      }, 1000)
-    },
-    // 注册成功后
-    logind() {
-      const userId = this.$store.getters['session/get']('userId')
-      if (!userId) return
-      const params = {
-        include: 'groups,wechat'
-      }
-      // 登录成功重新获取一下站点信息
-      this.$store.dispatch('site/getSiteInfo')
-      this.$store.dispatch('jv/get', [`users/${userId}`, { params }]).then(val => {
-        this.user = val
-        if (this.user && this.user.paid) {
-          this.isPaid = this.user.paid
-        }
-        if (this.site_mode !== 'pay' || this.isPaid) {
-          this.$router.push('/')
-        }
-        if (this.site_mode === 'pay' && !this.isPaid) {
-          this.$router.push('/pages/site/info')
-        }
-      })
-    },
-    // tab激活
-    changeactive(tab) {
-      this.passWord = ''
-      this.activeName = this.forums ? this.forums.set_reg.register_type.toString() : ''
-      if (this.activeName === '2' || this.forums && this.forums.qcloud && !this.forums.qcloud.qcloud_sms) {
-        this.activeName = '0'
-      }
-    },
-    changeinput() {
-      setTimeout(() => {
-        this.phoneNumber = this.phoneNumber.replace(/[^\d]/g, '')
-      }, 30)
-      if (this.phoneNumber.length === 11) {
-        this.canClick = true
-      } else {
-        this.canClick = false
-      }
     },
     // 用户名注册
     register() {
@@ -292,30 +135,15 @@ export default {
         this.registerClick()
       }
     },
-    // 手机号
-    phoneRegister() {
-      if (this.phoneNumber === '') {
-        this.$message.error('手机号不能为空')
-      } else if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha) {
-        this.toTCaptcha()
-      } else {
-        this.sendVerifyCode()
-      }
-    },
-
     // 验证码
     toTCaptcha() {
       if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha_app_id) {
         // eslint-disable-next-line no-undef
-        this.captcha = new TencentCaptcha(this.forums.qcloud.qcloud_captcha_app_id, res => {
+        this.captcha = new TencentCaptcha(this.forums.qcloud.qcloud_captcha_app_id, (res) => {
           if (res.ret === 0) {
             this.ticket = res.ticket
             this.randstr = res.randstr
-            if (this.passWord) {
-              this.registerClick()
-            } else {
-              this.sendVerifyCode()
-            }
+            this.registerClick()
           }
         })
         // 显示验证码
@@ -350,7 +178,7 @@ export default {
       }
       this.$store
         .dispatch('session/h5Register', params)
-        .then(res => {
+        .then((res) => {
           this.loading = false
           if (res && res.data && res.data.data && res.data.data.id) {
             this.logind()
@@ -377,134 +205,15 @@ export default {
             this.$message.error(errorText)
           }
         })
-        .catch(err => {
+        .catch((err) => {
           this.loading = false
           this.passWord = ''
           this.repeatPassWord = ''
           console.log(err)
         })
     },
-    // 手机号注册
-    sendVerifyCode() {
-      const params = {
-        _jv: { type: 'sms/send' },
-        mobile: this.phoneNumber,
-        type: 'login'
-      }
-
-      if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha_app_id) {
-        params.captcha_rand_str = this.randstr
-        params.captcha_ticket = this.ticket
-      }
-      status.run(() => this.$store.dispatch('jv/post', params))
-        .then(res => {
-          if (res.interval) this.countDown(res.interval)
-        }, e => this.handleError(e))
-    },
-    PhoneLogin() {
-      this.loading = true
-      if (this.phoneNumber === '') {
-        this.$message.error('手机号不能为空')
-        this.loading = false
-      } else if (this.verifyCode === '') {
-        this.$message.error('验证码不能为空')
-        this.loading = false
-      } else if (!this.ischeck) {
-        this.$message.error('请同意协议')
-        this.loading = false
-      } else {
-        const params = {
-          data: {
-            attributes: {
-              mobile: this.phoneNumber,
-              code: this.verifyCode,
-              type: 'login'
-            }
-          }
-        }
-        if (this.register_captcha && this.validate) {
-          params.data.attributes.register_reason = this.reason
-          params.data.attributes.captcha_ticket = this.ticket
-          params.data.attributes.captcha_rand_str = this.randstr
-        }
-        if (this.validate) {
-          params.data.attributes.register_reason = this.reason
-        }
-        if (this.register_captcha) {
-          params.data.attributes.captcha_ticket = this.ticket
-          params.data.attributes.captcha_rand_str = this.randstr
-        }
-        if (this.code && this.code !== 'undefined') {
-          params.data.attributes.inviteCode = this.code
-        }
-        this.$store
-          .dispatch('session/verificationCodeh5Login', params)
-          .then(res => {
-            this.loading = false
-            if (res && res.data && res.data.data && res.data.data.id) {
-              this.logind()
-              this.$message.success(this.$t('user.registerSuccess'))
-            }
-            if (
-              res &&
-              res.data &&
-              res.data.errors &&
-              res.data.errors[0].code === 'register_validate'
-            ) {
-              // this.$message.error('帐号审核中，请等管理员审核通过')
-              this.$router.push(`/pages/user/warning?username=${this.phoneNumber}`)
-              return
-            }
-            if (
-              res &&
-              res.data &&
-              res.data.errors &&
-              res.data.errors[0]
-            ) {
-              const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code
-              const errorText = res.data.errors[0].detail ? res.data.errors[0].detail[0] : this.$t(`core.${error}`)
-              this.$message.error(errorText)
-            }
-          })
-          .catch(err => {
-            this.loading = false
-            console.log(err)
-          })
-      }
-    },
-    // 微信二维码
-    QRcode() {
-      const _params = {
-        _jv: {
-          type: '/oauth/wechat/web/user'
-        }
-      }
-      this.$store.dispatch('jv/get', _params).then(data => {
-        if (data) {
-          this.info = data
-          this.scene_str = data.scene_str
-          QuickLogin = setInterval(() => {
-            if (this.loginStatus) {
-              clearInterval(QuickLogin)
-              return
-            }
-            this.getLoginStatus(this.scene_str)
-          }, 10000)
-        }
-      })
-    },
-    // 微信扫码登录状态
-    getLoginStatus(scene_str) {
-      this.$store.dispatch('jv/get', `/oauth/wechat/web/user/search?scene_str=${scene_str}`).then(data => {
-        if (data.id) {
-          this.loginStatus = true
-        }
-      })
-    },
     jump2Login() {
-      this.$router.push(
-        `/pages/user/login?&validate=${this.validate}`
-      )
+      this.$router.push(`/pages/user/login?&validate=${this.validate}&code=${this.code}`)
     }
   },
   head() {
@@ -522,17 +231,15 @@ export default {
 .register {
   display: flex;
   width: 415px;
-  margin-top: 62px;
   flex-direction: column;
   .register-title {
-    // width: 130px;
     height: 35px;
     font-size: 26px;
   }
   .register-select {
     display: flex;
     flex-direction: column;
-    margin-top: 58px;
+    margin-top: 62px;
     border: none;
     background: transparent;
     box-shadow: none;
@@ -572,56 +279,6 @@ export default {
         color: #fa5151;
       }
     }
-    .quick {
-      display: flex;
-      flex-direction: row;
-      align-content: space-between;
-      .quick-container {
-        flex: 1;
-        text-align: center;
-        .qrtext {
-          margin-top: 5px;
-        }
-        span {
-          display: inline-block;
-          width: 111px;
-        }
-      }
-      .quick-title {
-        margin-top: 10px;
-        font-size: 14px;
-        span {
-          margin-left: -10px;
-          line-height: 25px;
-        }
-        img {
-          width: 26px;
-          height: 26px;
-          vertical-align: middle;
-        }
-      }
-      .qrcode {
-        margin: 0 auto;
-        width: 155px;
-        height: 155px;
-        border: 1px dashed black;
-        margin-top: 26px;
-        img {
-          width: 100%;
-        }
-      }
-      .qrcode2 {
-        margin: 0 auto;
-        width: 155px;
-        height: 155px;
-        border: 1px solid #ededed;
-        margin-top: 26px;
-        img {
-          width: 40px;
-          margin: 50px;
-        }
-      }
-    }
   }
   .agreement {
     margin-left: 70px;
@@ -654,33 +311,6 @@ export default {
       color: $color-blue-base;
     }
   }
-  .phone-input {
-    width: 209px;
-    margin-bottom: 20px;
-    ::v-deep.el-input__inner {
-      border-right: none;
-      border-bottom-right-radius: 0px;
-      border-top-right-radius: 0px;
-    }
-    ::v-deep.el-input__inner:focus {
-      border-color: #dcdfe6;
-    }
-  }
-  .count-b {
-    width: 90px;
-    height: 40px;
-    color: #000000;
-    padding: 0;
-    margin-left: -4px;
-    border-bottom-left-radius: 0px !important;
-    border-top-left-radius: 0px !important;
-  }
-  .disabled {
-    background-color: #ededed;
-    border-color: #ddd;
-    color: #b5b5b5;
-    cursor: not-allowed; // 鼠标变化
-  }
 }
 ::v-deep.el-tabs {
   .el-tabs__header {
@@ -703,7 +333,8 @@ export default {
     background: transparent;
     border: none;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 26px;
+    margin-bottom: 19px;
   }
   .el-tabs__header .el-tabs__item:hover {
     color: $color-blue-deep;

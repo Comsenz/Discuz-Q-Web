@@ -44,7 +44,10 @@
               class="flex"
             >
               <avatar
-                :user="{ id: scope.row.sourceUser.id, username: scope.row.sourceUser.username, avatarUrl: scope.row.sourceUser.avatarUrl}"
+                :user="{ id: scope.row.sourceUser.id,
+                         username: scope.row.sourceUser.username,
+                         avatarUrl: scope.row.sourceUser.avatarUrl
+                }"
                 :size="30"
                 :round="true"
               />
@@ -108,9 +111,7 @@ export default {
     // 用户组
     groupMap: {
       type: Object,
-      default: () => {
-        return {}
-      }
+      default: () => ({})
     }
   },
   data() {
@@ -147,25 +148,25 @@ export default {
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         'filter[source_username]': this.searchText,
-        'sort': this.sort
+        sort: this.sort
       }
-      this.$store.dispatch('jv/get', ['wallet/log', { params }]).then(res => {
+      this.$store.dispatch('jv/get', ['wallet/log', { params }]).then((res) => {
         if (res && res._jv && res._jv.json && res._jv.json.meta) {
           this.totalMoney = res._jv.json.meta.sumChangeAvailableAmount
           this.total = res._jv.json.meta.total
-          delete res._jv
         }
         this.incomeList = res
-      }, e => {
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.loading = false
       })
+        .finally(() => {
+          this.loading = false
+        })
     },
     // 普通用户邀请
     createUserInvite() {
-      const _can_invite_user_scale = this.forums && this.forums.other && this.forums.other.can_invite_user_scale
-      if (!_can_invite_user_scale) {
+      const canInviteUserScale = this.forums && this.forums.other && this.forums.other.can_invite_user_scale
+      if (!canInviteUserScale) {
         return this.$message.error(this.$t('core.permission_denied'))
       }
       const params = {
@@ -177,11 +178,12 @@ export default {
         if (res && res._jv) {
           this.copyLink(res._jv.code)
         }
-      }, e => {
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.loading = false
       })
+        .finally(() => {
+          this.loading = false
+        })
     },
     /**
      * 复制链接
@@ -192,7 +194,7 @@ export default {
     copyLink(code) {
       const oInput = document.createElement('input')
       if (process.client) {
-        oInput.value = window.location.host + '/pages/site/partner-invite?code=' + code
+        oInput.value = `${window.location.protocol}//${window.location.host}/pages/site/partner-invite?code=${code}`
         oInput.id = 'copyInput'
         document.body.appendChild(oInput)
         oInput.select()

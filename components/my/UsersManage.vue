@@ -55,10 +55,18 @@
         />
       </el-select>
       <!-- 邀请链接 -->
-      <el-dropdown v-if="forums && forums.other && forums.other.can_create_invite" class="handle-dropdown" placement="bottom" trigger="click" @command="handleCommandInvite">
+      <el-dropdown
+        v-if="forums && forums.other && forums.other.can_create_invite"
+        class="handle-dropdown"
+        placement="bottom"
+        trigger="click"
+        @command="handleCommandInvite"
+      >
         <el-button type="primary" size="medium" class="create-url">{{ $t('manage.generateInvitationUrl') }}</el-button>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item v-for="(item,index) in groupInviteList" :key="index" :command="item.value">{{ item.label + $t('manage.invitationUrl') }}</el-dropdown-item>
+          <el-dropdown-item v-for="(item,index) in groupInviteList" :key="index" :command="item.value">
+            {{ item.label + $t('manage.invitationUrl') }}
+          </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -92,7 +100,9 @@
         </template>
       </el-table-column>
       <el-table-column :label="$t('manage.identity')">
-        <template slot-scope="scope">{{ scope.row.groups && scope.row.groups.length > 0 && scope.row.groups[0] ? scope.row.groups[0].name : '' }}</template>
+        <template slot-scope="scope">
+          {{ scope.row.groups && scope.row.groups.length > 0 && scope.row.groups[0] ? scope.row.groups[0].name : '' }}
+        </template>
       </el-table-column>
       <el-table-column
         :label="$t('profile.status')"
@@ -186,9 +196,7 @@ export default {
   props: {
     groupInviteList: {
       type: Array,
-      default: () => {
-        return []
-      }
+      default: () => []
     }
   },
   data() {
@@ -224,9 +232,9 @@ export default {
   methods: {
     // 获取用户组
     getGroupList() {
-      this.$store.dispatch('jv/get', ['groups', { }]).then(res => {
+      this.$store.dispatch('jv/get', ['groups', { }]).then((res) => {
         if (res && Array.isArray(res) && res.length > 0) {
-          res.forEach(item => {
+          res.forEach((item) => {
             this.groupList.push({
               label: item.name,
               value: item._jv.id
@@ -251,11 +259,12 @@ export default {
           this.userList = res
           this.reloadForums()
         }
-      }, e => {
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.loading = false
       })
+        .finally(() => {
+          this.loading = false
+        })
     },
     // 刷新一下站点信息
     async reloadForums() {
@@ -351,7 +360,7 @@ export default {
         }
       ]
       this.loading = true
-      this.$store.dispatch('jv/patch', params).then(res => {
+      this.$store.dispatch('jv/patch', params).then((res) => {
         if (res) {
           if (res._jv && res._jv.json && res._jv.json.data && res._jv.json.data.length > 0 && res._jv.json.data[0].attributes && res._jv.json.data[0].attributes.error === 'Permission Denied') {
             return this.$message.error(this.$t('manage.modifyFail'))
@@ -359,11 +368,12 @@ export default {
           this.$message.success(this.$t('discuzq.msgBox.modifySuccess'))
           this.getUserList()
         }
-      }, e => {
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.loading = false
       })
+        .finally(() => {
+          this.loading = false
+        })
     },
     // 修改用户状态
     modifyUserStatus(status, userId) {
@@ -378,21 +388,22 @@ export default {
       const params = {
         data: {
           attributes: {
-            status: status
+            status
           }
         }
       }
       this.loading = true
-      this.$store.dispatch('jv/patch', [{ _jv: { type: `users/${userId}` }}, { data: params }]).then(res => {
+      this.$store.dispatch('jv/patch', [{ _jv: { type: `users/${userId}` }}, { data: params }]).then((res) => {
         if (res) {
           this.$message.success(this.$t('discuzq.msgBox.modifySuccess'))
           this.getUserList()
         }
-      }, e => {
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.loading = false
       })
+        .finally(() => {
+          this.loading = false
+        })
     },
     // 生成邀请链接
     handleCommandInvite(command) {
@@ -409,7 +420,7 @@ export default {
       }
       this.$store.dispatch('jv/post', [{ _jv: { type: 'invite' }}, { data: params }]).then((res) => {
         this.copyLink(res.code)
-      }, e => {
+      }, (e) => {
         this.handleError(e)
       })
     },
@@ -417,7 +428,7 @@ export default {
     copyLink(code) {
       const oInput = document.createElement('input')
       if (process.client) {
-        oInput.value = window.location.host + '/pages/site/partner-invite?code=' + code
+        oInput.value = `${window.location.protocol}//${window.location.host}/pages/site/partner-invite?code=${code}`
         oInput.id = 'copyInput'
         document.body.appendChild(oInput)
         oInput.select()

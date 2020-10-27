@@ -3,7 +3,8 @@
     <main class="cont-left">
       <div class="search-header">
         <div class="result-count">
-          {{ $t('search.find') }} <span v-if="value" class="keyword">"{{ value }}"</span>{{ $t('search.searchuserresult') }} {{ userCount }} {{ $t('topic.item') }}
+          {{ $t('search.find') }} <span v-if="value" class="keyword">"{{ value }}"</span>
+          {{ $t('search.searchuserresult') }} {{ userCount }} {{ $t('topic.item') }}
         </div>
         <create-post-popover />
       </div>
@@ -11,7 +12,14 @@
         <div class="user-flex">
           <user-item v-for="(item, index) in userList" :key="index" :item="item" />
         </div>
-        <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="userList.length" :load-more-text="$t('topic.showMore') + $t('search.users')" @loadMore="loadMore" />
+        <list-load-more
+          :loading="loading"
+          :has-more="hasMore"
+          :page-num="pageNum"
+          :length="userList.length"
+          :load-more-text="$t('topic.showMore') + $t('search.users')"
+          @loadMore="loadMore"
+        />
       </div>
     </main>
     <aside class="cont-right">
@@ -32,7 +40,7 @@ export default {
   name: 'Index',
   mixins: [handleError],
   // 异步数据用法
-  async asyncData({ params, store }, callback) {
+  async asyncData({ store }, callback) {
     if (!env.isSpider) {
       callback(null, {})
     }
@@ -44,7 +52,7 @@ export default {
       } else if (categoryData && categoryData._jv && categoryData._jv.json) {
         const _categoryData = categoryData._jv.json.data || []
         _categoryData.forEach((item, index) => {
-          _categoryData[index] = { ...item, ...item.attributes, '_jv': { 'id': item.id }}
+          _categoryData[index] = { ...item, ...item.attributes, _jv: { id: item.id }}
         })
         resData.categoryData = _categoryData
       }
@@ -72,7 +80,7 @@ export default {
     }
   },
   watch: {
-    '$route': 'init'
+    $route: 'init'
   },
   mounted() {
     this.init()
@@ -97,26 +105,28 @@ export default {
         'page[number]': this.pageNum,
         'filter[username]': `*${this.value}*`
       }
-      this.$store.dispatch('jv/get', ['users', { params }]).then(res => {
-        res.forEach((v, i) => {
-          res[i].groupName = v.groups[0] ? v.groups[0].name : ''
+      this.$store.dispatch('jv/get', ['users', { params }]).then((res) => {
+        const data = res
+        data.forEach((v, i) => {
+          data[i].groupName = v.groups[0] ? v.groups[0].name : ''
         })
-        this.userCount = res._jv.json.meta.total
-        this.hasMore = res.length === this.pageSize
+        this.userCount = data._jv.json.meta.total
+        this.hasMore = data.length === this.pageSize
         if (this.pageNum === 1) {
-          this.userList = res
+          this.userList = data
         } else {
-          this.userList = [...this.userList, ...res]
+          this.userList = [...this.userList, ...data]
         }
-        this.pageNum++
-        if (res._jv) {
-          this.hasMore = this.userList.length < res._jv.json.meta.total
+        this.pageNum += 1
+        if (data._jv) {
+          this.hasMore = this.userList.length < data._jv.json.meta.total
         }
-      }, e => {
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.loading = false
       })
+        .finally(() => {
+          this.loading = false
+        })
     },
 
     loadMore() {

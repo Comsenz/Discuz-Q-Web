@@ -19,13 +19,14 @@
             {{ timerDiff(thread.createdAt) + $t('topic.before') }} ..
           </avatar-component>
           <div v-show="thread && thread.firstPost" class="content-html" v-html="thread && thread.firstPost && $xss(thread.firstPost.summary) || ''" />
-          <nuxt-link :to="`/pages/topic/index?id=${thread._jv ? thread._jv.id : ''}`" class="view-more">{{ $t('topic.viewDetail') }}</nuxt-link>
+          <nuxt-link :to="`/topic/index?id=${thread._jv ? thread._jv.id : ''}`" class="view-more">{{ $t('topic.viewDetail') }}</nuxt-link>
           <svg-icon v-if="thread && thread.isEssence" style="font-size: 50px;" type="essence-comment" class="essence" />
         </div>
         <div id="reply" class="container-reply">
           <comment-header v-if="replyCount" :comment-count="replyCount" :is-positive-sort="isPositiveSort" @changeSort="changeSort" />
           <div v-else class="without-comment">{{ $t('topic.noComment') }}</div>
           <editor
+            v-if="afterPushReply"
             style="margin-top: 20px; margin-bottom: 20px"
             editor-style="comment"
             class="reply-editor"
@@ -42,7 +43,7 @@
             :loading="scrollLoading"
             :length="replyList.length"
             :has-more="replyCount > replyList.length"
-            :page-num="pageLimit < growthFactor ? 1 : Math.floor(pageLimit / growthFactor)"
+            :page-num="pageNumber"
             @loadMore="getReplyList('scroll')"
           />
         </div>
@@ -91,7 +92,6 @@ export default {
       // if (comment && commentIncluded) comment.user = commentIncluded.filter(item => item.type === 'users')[0].attributes
       return { thread, comment }
     } catch (e) {
-      console.log('ssr err', e)
       return { loading: true }
     }
   },
@@ -99,8 +99,9 @@ export default {
     return {
       thread: {},
       comment: {},
+      afterPushReply: true,
       pageLimit: 5,
-      growthFactor: 5,
+      pageNumber: 1,
       replyCount: 0,
       isPositiveSort: false,
       replyList: [],
@@ -148,21 +149,21 @@ export default {
         params: {
           'filter[thread]': this.threadId,
           'filter[reply]': this.commentId,
-          'page[number]': 1,
+          'page[number]': this.pageNumber,
           'page[limit]': this.pageLimit,
           'filter[isDeleted]': 'no',
           'filter[isComment]': 'yes',
           sort: this.isPositiveSort ? 'createdAt' : '-createdAt',
           include: replyInclude
         }
-      }]).then(response => {
-        this.replyList = response
-        this.pageLimit += this.growthFactor
+      }]).then(data => {
+        this.replyList.push(...data)
+        this.pageNumber += 1
       }, e => this.handleError(e)).finally(() => { this.replyLoading = this.scrollLoading = false })
     },
     changeSort(value) {
       this.scrollLoading = true
-      this.pageLimit = this.growthFactor
+      this.pageNumber = 1
       this.replyList = []
       this.isPositiveSort = value
       this.getReplyList('commit')
@@ -178,8 +179,13 @@ export default {
         type: 'warning'
       }).then(() => {
         return this.$store.dispatch('jv/patch', params).then(() => {
-          type === 'comment' ? this.$router.push(`/pages/topic/index?id=${this.thread._jv.id}`) : this.getReplyList('commit')
-          this.replyCount -= 1
+          if (type === 'comment') {
+            this.$router.push(`/topic/index?id=${this.thread._jv.id}`)
+          } else if (type === 'reply') {
+            const deleteReply = this.replyList.filter(item => item._jv.id === id)[0]
+            this.replyList.splice(this.replyList.indexOf(deleteReply), 1)
+            this.replyCount -= 1
+          }
           this.$message.success(this.$t('topic.deleteSuccess'))
         }, e => this.handleError(e))
       }, () => console.log('取消删除'))
@@ -212,10 +218,17 @@ export default {
       }
       this.publishPostResource(replyParams, this.replyPost)
       return this.$store.dispatch('jv/post', replyParams).then(response => {
+        this.afterPushReply = false // 重置编辑器
+        this.$nextTick(() => { this.afterPushReply = true })
         this.replyPost.text = ''
         this.replyPost.imageList = []
         this.replyCount += 1
-        this.getReplyList('commit')
+        // false 倒序 true 正序， 倒叙是从最新到最旧
+        if (this.isPositiveSort) {
+          this.replyList.length === this.replyCount ? this.replyList.push(response) : ''
+        } else {
+          this.replyList.unshift(response)
+        }
         this.postLegalityCheck(response, this.$t('topic.replyPublishSuccess'))
       }, e => this.handleError(e)).finally(() => { this.onReplyPublish = false })
     }

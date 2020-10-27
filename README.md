@@ -68,7 +68,7 @@ npm run generate
 | |-- request.js              api: 请求之前或者之后处理函数
 |-- assets                    资源存放目录
 | |-- css                     公共样式存放目录
-| | |-- variable              styles: 变量
+| | |-- variable              公共样式变量目录
 | | | |-- color.scss          styles: 颜色
 | | | |-- mixin.scss          styles: mixin函数
 | | |-- reset.scss            styles: 重置页面样式
@@ -110,7 +110,10 @@ npm run generate
 3. [vuex](https://vuex.vuejs.org/zh/)：状态管理
 4. [vue-i18n](https://kazupon.github.io/vue-i18n/zh/)：国际化
 5. [jsonapi-vuex](https://github.com/mrichar1/jsonapi-vuex)：允许通过 vuex store 访问 [JSON:API](https://jsonapi.org/) web 服务中的数据。Discuz Q 接口使用的是 JSON:API 规范，所以使用这个库更加方便处理该请求和数据。
-6. [element](https://element.eleme.cn/)：UI框架
-7. [cropper](https://www.npmjs.com/package/cropperjs)：图片裁剪插件
-8. [v-viewer](https://github.com/mirari/v-viewer)：图片点击放大预览插件
-8. [xss](https://www.npmjs.com/package/xss)：防xss注入插件
+6. [nuxtjs-axios](http://www.axios-js.com/zh-cn/docs/nuxtjs-axios.html)：基于 promise 的 HTTP 库
+7. [element-ui](https://element.eleme.cn/)：UI框架
+8. [vue-cropper](https://www.npmjs.com/package/cropperjs)：图片裁剪插件
+9. [v-viewer](https://github.com/mirari/v-viewer)：图片点击放大预览插件
+10. [xss](https://www.npmjs.com/package/xss)：防xss注入插件
+11. [dayjs](https://www.npmjs.com/package/dayjs)：处理时间和日期的 JavaScript 库
+12. [babel-plugin-transform-remove-console](https://www.npmjs.com/package/babel-plugin-transform-remove-console)：用来移除项目中所有的 console 代码的插件

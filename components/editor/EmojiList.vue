@@ -38,6 +38,7 @@ export default {
     padding: 15px;
     overflow: auto;
     background: #ffffff;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, .3);
   }
 
   img {

@@ -61,10 +61,10 @@
               <span class="text reply">{{ $t('topic.reply') }}</span>
               <span class="text comment-author">{{ comment.user ? comment.user.username : '' }}   </span>
               <span class="timer">{{ formatDate(reply.updatedAt) }}</span>
-              <span v-if="reply.canHide" class="delete-reply" @click.stop="$emit('deleteComment', reply._jv.id)">{{ $t('topic.delete') }}</span>
+              <span v-if="reply.canHide" class="delete-reply" @click.stop="$emit('deleteReply', { replyId: reply._jv.id, commentId: comment._jv.id })">{{ $t('topic.delete') }}</span>
             </div>
           </div>
-          <div class="content-html" @click="showAll($event, replyIndex, replyList)" v-html="$xss(formatSummary(reply))" />
+          <div class="content-html" @click="showAll($event, replyIndex, replyList)" v-html="$xss(reply.summary)" />
           <div v-if="reply.images && reply.images.length > 0" v-viewer="{url: 'data-source'}" class="images" @click.stop="() => {}">
             <el-image
               v-for="(image, imageIndex) in reply.images"
@@ -168,12 +168,11 @@ export default {
       }
       this.publishPostResource(replyParams, this.replyPost)
       return this.$store.dispatch('jv/post', replyParams).then(response => {
-        this.$emit('publish')
         this.replyPost.text = ''
         this.replyPost.imageList = []
         this.showReplyEditorForIndex = -1
         this.postLegalityCheck(response, this.$t('topic.replyPublishSuccess'))
-        this.$emit('replyPublish')
+        this.$emit('replyPublish', id)
       }, e => this.handleError(e)).finally(() => { this.onReplyPublish = false })
     },
     toShield(commentId) {
@@ -228,7 +227,6 @@ export default {
         word-break: break-all;
         margin-top: 10px;
         font-size: 14px !important;
-        margin-bottom: 20px;
         ::v-deep p {
           font-size: 14px !important;
         }
@@ -245,7 +243,7 @@ export default {
       }
 
       > .actions {
-        margin-bottom: 20px;
+        margin: 20px 0;
         width: 100%;
         display: flex;
         justify-content: space-between;

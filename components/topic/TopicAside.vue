@@ -115,7 +115,7 @@ export default {
       })
     },
     goToPage(item) {
-      process.client && window.open(`/pages/topic/index?id=${item._jv.id}`)
+      process.client && window.open(`/topic/index?id=${item._jv.id}`)
     }
   }
 }

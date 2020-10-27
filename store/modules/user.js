@@ -24,7 +24,7 @@ const actions = {
         if (res.status === 200 && res.data && res.data.data) {
           const _data = res.data.data
           // 头像修改的时候路径没改变
-          _data.attributes.avatarUrl = _data.attributes.avatarUrl + '?t=' + new Date().getTime()
+          // _data.attributes.avatarUrl = _data.attributes.avatarUrl ? _data.attributes.avatarUrl + '?t=' + new Date().getTime() : ''
           commit('SET_USER_INFO', _data)
           resolve(_data)
         } else {

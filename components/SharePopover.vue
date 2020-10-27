@@ -58,7 +58,7 @@ export default {
           // 话题详情
           oInput.value = window.location.href
         } else {
-          oInput.value = window.location.protocol + '//' + window.location.host + '/pages/topic/index?id=' + this.threadsId
+          oInput.value = `${window.location.protocol}//${window.location.host}/topic/index?id=${this.threadsId}`
         }
         oInput.id = 'copyInput'
         document.body.appendChild(oInput)
@@ -71,14 +71,14 @@ export default {
       }, 100)
     },
     // 弹出框显示时触发
-    onShowPopover(e) {
+    onShowPopover() {
       this.currentType = this.type
       let path = window.location.href
       if (this.type === 'topic') {
         // 话题详情
         path = window.location.href
       } else {
-        path = window.location.protocol + '//' + window.location.host + `/pages/topic/index?id=${this.threadsId}`
+        path = `${window.location.protocol}//${window.location.host}/topic/index?id=${this.threadsId}`
       }
       this.createQrcode(path)
     },

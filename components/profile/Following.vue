@@ -82,26 +82,13 @@
         }}
       </el-button>
     </div>
-    <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="followingList.length" @loadMore="loadMore" />
-
-    <!-- <loading v-if="loading" />
-    <template v-else>
-      <div
-        v-if="hasMore"
-        class="load-more"
-        @click="loadMore"
-      >查看更多</div>
-      <div
-        v-else
-        :class="followingList.length === 0 ? 'no-more2':'no-more'"
-      >
-        <svg-icon
-          v-if="followingList.length === 0"
-          type="empty"
-          class="empty-icon"
-        />{{ followingList.length > 0 ? '没有更多了' : '暂无信息' }}
-      </div>
-    </template> -->
+    <list-load-more
+      :loading="loading"
+      :has-more="hasMore"
+      :page-num="pageNum"
+      :length="followingList.length"
+      @loadMore="loadMore"
+    />
   </div>
 </template>
 <script>
@@ -148,7 +135,7 @@ export default {
       const params = {
         include: 'toUser,toUser.groups',
         'filter[type]': 1,
-        'sort': this.sort,
+        sort: this.sort,
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         'filter[user_id]': this.userId,
@@ -156,7 +143,7 @@ export default {
       }
       status
         .run(() => this.$store.dispatch('jv/get', ['follow', { params }]))
-        .then(res => {
+        .then((res) => {
           this.loading = false
           this.hasMore = res.length === this.pageSize
           if (type === 'change') {
@@ -168,9 +155,10 @@ export default {
             this.hasMore = this.followingList.length < res._jv.json.meta.total
           }
           this.pageNum += 1
-        }, e => {
+        }, (e) => {
           this.handleError(e)
-        }).finally(() => {
+        })
+        .finally(() => {
           this.loading = false
         })
     },
@@ -191,7 +179,7 @@ export default {
         to_user_id: userInfo.id
       }
       this.$store.dispatch('jv/post', params)
-        .then(res => {
+        .then((res) => {
           if (this.userId === this.currentLoginId) {
             this.$emit('changeFollow', { userId: this.userId })
           }
@@ -233,7 +221,6 @@ export default {
       this.pageNum = 1
       this.followingList = []
       this.getFollowingList('change')
-      console.log(e)
     },
     onClickSearch() {
       this.pageNum = 1

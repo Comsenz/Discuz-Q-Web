@@ -1,13 +1,18 @@
 <template>
-  <message
-    :title="$t('profile.towithdrawal')"
-    @close="$emit('close')"
-  >
+  <message :title="$t('profile.towithdrawal')" @close="$emit('close')">
     <div class="top">
       <div class="row">
-        <div class="head">{{ $t('modify.payee') }}</div>
-        <div class="body product-information">
-          <span class="title"> {{ name }}</span>
+        <div class="head">{{ $t('modify.wechatpayee') }}</div>
+        <div class="body reward">
+          <label>
+            <input
+              v-model="withdrawlNumber"
+              :placeholder="$t('modify.enterwechat')"
+              type="text"
+              class="rinput ript"
+            >
+          </label>
+          <div class="cashtext">{{ $t('pay.cashtext') }}</div>
         </div>
       </div>
       <div class="row">
@@ -35,7 +40,8 @@
         <div class="head">{{ $t('modify.actualamout') }}</div>
         <div class="body product-information">
           <span class="title3"> ￥ {{ contint || 0 }}</span>
-          <span class="title4"> {{ $t('modify.servicechaege') }}{{ procedures }}{{ $t('modify.percentage') }} {{ percentage }}%)</span>
+          <span class="title4">
+            {{ $t('modify.servicechaege') }}{{ procedures }}{{ $t('modify.percentage') }} {{ percentage }}%)</span>
         </div>
       </div>
       <div class="row">
@@ -54,14 +60,13 @@
               :disabled="!canClick"
               @click="sendsms"
             >{{ content }}</el-button>
-
           </label>
           <span
             v-if="usertestphon"
             class="phone"
-            style="margin-left:20px;"
           >
-            {{ $t('profile.codesend') }}  <span style="font-weight:bold;color:#000000; ">{{ usertestphon }}</span> {{ $t('profile.phonesms') }}
+            {{ $t('profile.codesend') }}
+            <span style="font-weight:bold;color:#000000; ">{{ usertestphon }}</span> {{ $t('profile.phonesms') }}
           </span>
           <span
             v-else
@@ -76,13 +81,10 @@
       </div>
     </div>
     <div class="bottom">
-      <span style="font-size:14px">￥{{ contint || 0 }}{{ $t('pay.rmb') + $t('profile.withdrawalto') + '，' + name || '' }} {{ $t('pay.ofAccount') }}</span>
-      <el-button
-        size="medium"
-        type="primary"
-        class="border"
-        @click="btncash"
-      >{{ $t('profile.comfirmwithdrawal' ) }}</el-button>
+      <span style="font-size:14px">
+        ￥{{ contint || 0 }}{{ $t('pay.rmb') + $t('profile.withdrawalto') + withdrawlNumber || '' }}{{ $t('pay.ofAccount') }}
+      </span>
+      <el-button size="medium" type="primary" class="border" @click="btncash">{{ $t('profile.comfirmwithdrawal' ) }}</el-button>
     </div>
   </message>
 </template>
@@ -128,7 +130,9 @@ export default {
       ticket: '', // 腾讯云验证码返回票据
       randstr: '', // 腾讯云验证码返回随机字符串
       captchaResult: {},
-      forums: ''
+      forums: '',
+      withdrawlNumber: '',
+      cashtype: 0
     }
   },
   mounted() {
@@ -138,15 +142,15 @@ export default {
   methods: {
     countDown(interval) {
       if (!this.canClick) return
+      let intervals = interval
       this.canClick = false
-      this.content = interval + this.$t('modify.retransmission')
-      const clock = window.setInterval(() => {
-        interval--
-        this.content = interval + this.$t('modify.retransmission')
+      this.content = intervals + this.$t('modify.retransmission')
+      const clock = setInterval(() => {
+        intervals = intervals - 1
+        this.content = intervals + this.$t('modify.retransmission')
         if (interval < 0) {
-          window.clearInterval(clock)
+          clearInterval(clock)
           this.content = this.$t('modify.sendVerifyCode')
-          // this.totalTime = 60
           this.canClick = true
         }
       }, 1000)
@@ -157,6 +161,7 @@ export default {
       this.balance = this.userInfo.attributes.walletBalance
       this.usertestphon = this.userInfo.attributes.mobile
       this.userphon = this.userInfo.attributes.originalMobile
+      this.withdrawlNumber = this.userphon
       if (!this.usertestphon) {
         this.disabtype = true
       }
@@ -165,6 +170,7 @@ export default {
       this.forums = this.$store.state.site.info.attributes
       this.cost = this.forums.set_cash.cash_rate
       this.percentage = this.forums.set_cash.cash_rate * 100
+      this.cashtype = this.forums.paycenter && this.forums.paycenter.wxpay_mchpay_close ? 1 : 0
     },
     settlement() {
       setTimeout(() => {
@@ -187,7 +193,7 @@ export default {
         }
         if (this.canAmount.length > 0) {
           this.length = true
-          const number = this.canAmount - this.canAmount * this.cost
+          const number = this.canAmount - (this.canAmount * this.cost)
           if (number) {
             this.contint = `${number.toFixed(2)}`
             const casnumber = this.canAmount * this.cost
@@ -216,7 +222,7 @@ export default {
     // 腾讯验证码
     tcaptcha() {
       // eslint-disable-next-line no-undef
-      this.captcha = new TencentCaptcha(this.forums.qcloud.qcloud_captcha_app_id, res => {
+      this.captcha = new TencentCaptcha(this.forums.qcloud.qcloud_captcha_app_id, (res) => {
         if (res.ret === 0) {
           this.ticket = res.ticket
           this.randstr = res.randstr
@@ -240,7 +246,7 @@ export default {
       }
       const postphon = status.run(() => this.$store.dispatch('jv/post', params))
       postphon
-        .then(res => {
+        .then((res) => {
           if (res.interval) this.countDown(res.interval)
           this.ticket = ''
           this.randstr = ''
@@ -260,11 +266,11 @@ export default {
       }
       this.$store
         .dispatch('jv/post', params)
-        .then(res => {
+        .then((res) => {
           if (res) {
             this.cashwithdrawal()
           }
-        }, e => {
+        }, (e) => {
           // eslint-disable-next-line object-curly-spacing
           const { response: { data: { errors } } } = e
           if (errors[0]) {
@@ -284,12 +290,12 @@ export default {
           include: ['user', 'userWallet']
         },
         cash_apply_amount: this.canAmount,
-        cash_mobile: this.userphon,
-        cash_type: 1
+        cash_mobile: this.withdrawlNumber,
+        cash_type: this.cashtype
       }
       const postcash = status.run(() => this.$store.dispatch('jv/post', params))
       postcash
-        .then(res => {
+        .then((res) => {
           if (res) {
             this.canAmount = ''
             this.contint = ''
@@ -300,7 +306,7 @@ export default {
             this.$emit('close')
             // this.$router.go(0)
           }
-        }, e => {
+        }, (e) => {
           // eslint-disable-next-line object-curly-spacing
           const { response: { data: { errors } } } = e
           if (errors[0]) {
@@ -346,11 +352,11 @@ export default {
     }
 
     > .head {
-      width: 101px;
+      width: 142px;
       color: #000000;
 
       &.reward {
-        line-height: 50px;
+        line-height: 40px;
       }
     }
 
@@ -395,10 +401,11 @@ export default {
           &:active{
             border-color: #dcdfe6;
           }
-          .rinput {
-            font-size: 16px;
-            color: #000000;
-          }
+        }
+        .cashtext{
+          font-size: 11px;
+          color:#777777;
+          width:395px;
         }
         .phone {
           margin-top: 10px;
@@ -423,10 +430,16 @@ export default {
           > input {
             flex: 1;
             border: none;
-            color: #c0c4cc;
+            // color: #c0c4cc;
+          }
+          > .rinput {
+            font-size: 16px;
+            color: #000000;
+          }
+          > .ript {
+            margin-left: 3px;
           }
         }
-
         > .default-amounts {
           max-width: 660px;
           display: flex;

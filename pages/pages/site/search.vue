@@ -3,14 +3,20 @@
     <main class="cont-left">
       <div class="search-header">
         <div class="result-count">
-          {{ $t('search.find') }} <span v-if="q" class="keyword">"{{ q }}"</span>{{ $t('search.searchresult') }} {{ userCount + threadCount }} {{ $t('topic.item') }}
+          {{ $t('search.find') }} <span v-if="q" class="keyword">"{{ q }}"</span>
+          {{ $t('search.searchresult') }} {{ userCount + threadCount }} {{ $t('topic.item') }}
         </div>
         <create-post-popover />
       </div>
       <div class="count">{{ $t('search.users') + userCount + $t('search.usercount') }} </div>
       <div class="user-list">
         <div class="user-flex">
-          <nuxt-link v-for="(item, index) in userList.slice(0, userPageSize)" :key="index" :to="`/pages/profile/index?userId=${item.id}`" class="user-item">
+          <nuxt-link
+            v-for="(item, index) in userList.slice(0, userPageSize)"
+            :key="index"
+            :to="`/pages/profile/index?userId=${item.id}`"
+            class="user-item"
+          >
             <avatar :user="item" :size="45" />
             <div class="info">
               <div class="name text-hidden">{{ item.username }}</div>
@@ -20,14 +26,24 @@
         </div>
         <loading v-if="userLoading" />
         <template v-else>
-          <div v-if="userCount > userPageSize" class="user-load-more" @click="toUserList">{{ $t('topic.showMore') }}{{ $t('search.users') }}</div>
-          <div v-if="userList.length === 0" class="no-more"><svg-icon type="empty" class="empty-icon" />{{ $t('search.norelatedusersfound') }}</div>
+          <div v-if="userCount > userPageSize" class="user-load-more" @click="toUserList">
+            {{ $t('topic.showMore') }}{{ $t('search.users') }}
+          </div>
+          <div v-if="userList.length === 0" class="no-more">
+            <svg-icon type="empty" class="empty-icon" />{{ $t('search.norelatedusersfound') }}
+          </div>
         </template>
       </div>
       <div class="count">{{ $t('home.invitation') }} {{ threadCount }} {{ $t('topic.item') }}</div>
       <div class="post-list">
         <post-item v-for="(item, index) in threadsList" :key="index" :item="item" />
-        <list-load-more :loading="loading" :has-more="hasMore" :page-num="pageNum" :length="threadsList.length" @loadMore="loadMore" />
+        <list-load-more
+          :loading="loading"
+          :has-more="hasMore"
+          :page-num="pageNum"
+          :length="threadsList.length"
+          @loadMore="loadMore"
+        />
       </div>
     </main>
     <aside class="cont-right">
@@ -48,7 +64,7 @@ export default {
   name: 'Index',
   mixins: [handleError],
   // 异步数据用法
-  async asyncData({ params, store }, callback) {
+  async asyncData({ store }, callback) {
     if (!env.isSpider) {
       callback(null, {})
     }
@@ -60,7 +76,7 @@ export default {
       } else if (categoryData && categoryData._jv && categoryData._jv.json) {
         const _categoryData = categoryData._jv.json.data || []
         _categoryData.forEach((item, index) => {
-          _categoryData[index] = { ...item, ...item.attributes, '_jv': { 'id': item.id }}
+          _categoryData[index] = { ...item, ...item.attributes, _jv: { id: item.id }}
         })
         resData.categoryData = _categoryData
       }
@@ -92,7 +108,7 @@ export default {
     }
   },
   watch: {
-    '$route': 'init'
+    $route: 'init'
   },
   mounted() {
     this.init()
@@ -119,17 +135,19 @@ export default {
         'filter[status]': 'normal',
         'filter[username]': `*${this.q}*`
       }
-      this.$store.dispatch('jv/get', ['users', { params }]).then(res => {
-        res.forEach((v, i) => {
-          res[i].groupName = v.groups[0] ? v.groups[0].name : ''
+      this.$store.dispatch('jv/get', ['users', { params }]).then((res) => {
+        const data = res
+        data.forEach((v, i) => {
+          data[i].groupName = v.groups[0] ? v.groups[0].name : ''
         })
-        this.userCount = res._jv.json.meta.total
-        this.userList = res
-      }, e => {
+        this.userCount = data._jv.json.meta.total
+        this.userList = data
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.userLoading = false
       })
+        .finally(() => {
+          this.userLoading = false
+        })
     },
     // 非置顶主题
     getThreadsList() {
@@ -143,7 +161,7 @@ export default {
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize
       }
-      this.$store.dispatch('jv/get', ['threads', { params }]).then(res => {
+      this.$store.dispatch('jv/get', ['threads', { params }]).then((res) => {
         this.hasMore = res.length === this.pageSize
         this.threadCount = res._jv.json.meta.threadCount
         if (this.pageNum === 1) {
@@ -151,15 +169,16 @@ export default {
         } else {
           this.threadsList = [...this.threadsList, ...res]
         }
-        this.pageNum++
+        this.pageNum += 1
         if (res._jv) {
           this.hasMore = this.threadsList.length < res._jv.json.meta.threadCount
         }
-      }, e => {
+      }, (e) => {
         this.handleError(e)
-      }).finally(() => {
-        this.loading = false
       })
+        .finally(() => {
+          this.loading = false
+        })
     },
     loadMore() {
       this.getThreadsList()
@@ -177,7 +196,7 @@ export default {
     },
     toUserList() {
       if (this.$route.query.q) {
-        this.$router.push('/pages/site/search-user?value=' + this.$route.query.q)
+        this.$router.push(`/pages/site/search-user?value=${this.$route.query.q}`)
       }
     }
   },

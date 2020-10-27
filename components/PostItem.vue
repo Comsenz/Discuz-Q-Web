@@ -1,49 +1,85 @@
 <template>
-  <div class="post-container">
+  <div v-if="item.type < 4" class="post-container">
     <div v-if="item.isEssence" class="essence">
       <svg-icon type="index-essence" />
     </div>
     <avatar
       v-if="item.user"
-      :user="{
-        id: item.user.id,
-        username: item.user.username,
-        avatarUrl: item.user.avatarUrl,
-        isReal: item.user.isReal
+      :user="{ id: item.user.id,
+               username: item.user.username,
+               avatarUrl: item.user.avatarUrl,
+               isReal: item.user.isReal
       }"
+      :prevent-jump="canDetail"
       class="avatar"
     />
     <div class="main-cont">
       <div class="top-flex">
-        <nuxt-link
-          v-if="item.user"
-          :to="`/pages/profile/index?userId=${item.user.id}`"
-          class="user-info"
-        >
+        <nuxt-link v-if="item.user" :to="`/pages/profile/index?userId=${item.user.id}`" class="user-info">
           <span class="user-name">{{ item.user.username }}</span>
           <span
-            v-if="
-              item.user &&
-                item.user.groups &&
-                item.user.groups.length > 0 &&
-                item.user.groups[0].isDisplay
-            "
+            v-if="item.user && item.user.groups && item.user.groups.length > 0 && item.user.groups[0].isDisplay"
             class="admin"
-          >({{ item.user.groups[0].name }})</span>
+          >
+            ({{ item.user.groups[0].name }})
+          </span>
         </nuxt-link>
         <div v-if="item.createdAt" class="time">
           {{ $t("topic.publishAt") }} {{ item.createdAt | formatDate }}
         </div>
       </div>
+      <!-- 问答贴 -->
+      <div v-if="item.type === 5">
+        <!-- 未回答 -->
+        <template v-if="item.question && item.question.is_answer === 0">
+          <nuxt-link
+            v-if="item.user"
+            :to="`/pages/profile/index?userId=${item.user.id}`"
+            class="blue"
+          >@{{ item.user.username }}</nuxt-link>
+          {{ $t('topic.be') }}
+          <nuxt-link
+            v-if="item.question && item.question.beUser"
+            :to="`/pages/profile/index?userId=${item.question.beUser.id}`"
+            class="blue"
+          >@{{ item.question.beUser.username }}</nuxt-link>
+          {{ $t('topic.question') }}
+        </template>
+        <!-- 已回答 -->
+        <template v-if="item.question && item.question.is_answer === 1">
+          <nuxt-link
+            v-if="item.question && item.question.beUser"
+            :to="`/pages/profile/index?userId=${item.question.beUser.id}`"
+            class="blue"
+          >@{{ item.question.beUser.username }}</nuxt-link>
+          {{ $t('topic.answer') }}
+          <nuxt-link
+            v-if="item.user"
+            :to="`/pages/profile/index?userId=${item.user.id}`"
+            class="blue"
+          >@{{ item.user.username }}</nuxt-link>
+          {{ $t('topic.of') }}{{ $t('topic.question') }}
+        </template>
+      </div>
       <template v-if="item.firstPost">
         <div class="first-post" @click.self="toDetail">
           <div @click="onClickContent">
             <div v-if="item.type === 1" class="title">{{ $t('home.released') }}
-              <svg-icon v-show="parseFloat(item.price) > 0" type="pay-yuan" class="blue" style="font-size: 17px; display: inline-block; margin-right: 5px;" />
+              <svg-icon
+                v-show="parseFloat(item.price) > 0 || parseFloat(item.attachmentPrice) > 0"
+                type="pay-yuan"
+                class="blue"
+                style="font-size: 17px; display: inline-block; margin-right: 5px;"
+              />
               <span class="blue ">{{ item.title }}</span></div>
             <div v-else class="content">
-              <svg-icon v-show="parseFloat(item.price) > 0" type="pay-yuan" class="icon-pay-yuan" />
-              <span :class="{'content-block': parseFloat(item.price) > 0}" v-html="$xss(formatTopicHTML(item.firstPost.summary))" />
+              <svg-icon v-if="item.type === 5" type="question-icon" class="icon-pay-yuan blue" />
+              <svg-icon v-else-if="item.type === 6" type="product-icon" class="icon-pay-yuan blue" />
+              <svg-icon v-else-if="parseFloat(item.price) > 0 || parseFloat(item.attachmentPrice) > 0" type="pay-yuan" class="icon-pay-yuan grey" />
+              <div
+                :class="{'content-block': item.type === 5 || item.type === 6 || parseFloat(item.price) > 0, 'blue': item.type === 5}"
+                v-html="$xss(formatTopicHTML(item.firstPost.summary))"
+              />
             </div>
           </div>
           <!-- 图片 -->
@@ -56,7 +92,7 @@
             <el-image
               v-for="(image, index) in item.firstPost.images.slice(0, 3)"
               :key="index"
-              class="image"
+              :class="{'image': true,'infoimage': infoimage}"
               :src="image.thumbUrl"
               :data-source="unpaid ? '' : image.url"
               :alt="image.filename"
@@ -136,13 +172,9 @@
           </span>
         </nuxt-link>
         <!-- 操作 -->
-        <div class="bottom-handle">
+        <div v-if="!canDetail" class="bottom-handle">
           <div class="left">
-            <div
-              v-permission:handleLike="''"
-              class="btn like"
-              :class="{ liked: isLiked }"
-            >
+            <div v-permission:handleLike="''" class="btn like" :class="{ liked: isLiked }" >
               <svg-icon v-permission:handleLike="''" type="like" class="icon" />
               {{ isLiked ? $t("topic.liked") : $t("topic.like") }}
               {{ likeCount > 0 ? likeCount : "" }}
@@ -152,10 +184,7 @@
               {{ $t("topic.comment") }}
               {{ item.postCount - 1 > 0 ? item.postCount - 1 : "" }}
             </div>
-            <share-popover
-              v-if="item._jv && item._jv.id && showShare"
-              :threads-id="item._jv.id"
-            >
+            <share-popover v-if="item._jv && item._jv.id && showShare" :threads-id="item._jv.id" >
               <div class="btn share">
                 <svg-icon type="link" class="icon" />
                 {{ $t("topic.share") }}
@@ -171,29 +200,8 @@
 <script>
 import s9e from '@/utils/s9e'
 import { time2MinuteOrHour } from '@/utils/time'
+import { extensionList } from '@/constant/extensionList'
 import handleError from '@/mixin/handleError'
-const extensionList = [
-  '7Z',
-  'AI',
-  'APK',
-  'CAD',
-  'CDR',
-  'DOC',
-  'DOCX',
-  'EPS',
-  'EXE',
-  'IPA',
-  'MP3',
-  'MP4',
-  'PDF',
-  'PPT',
-  'PSD',
-  'RAR',
-  'TXT',
-  'XLS',
-  'XLSX',
-  'ZIP'
-]
 export default {
   filters: {
     formatDate(date) {
@@ -216,7 +224,17 @@ export default {
     lazy: {
       type: Boolean,
       default: true
+    },
+    infoimage: {
+      type: Boolean,
+      default: false
+    },
+    // 付费站点是否可查看详情
+    canDetail: {
+      type: Boolean,
+      default: false
     }
+
   },
   data() {
     return {
@@ -259,17 +277,17 @@ export default {
             this.item.firstPost._jv &&
             this.item.firstPost._jv.id
         },
-        isLiked: isLiked
+        isLiked
       }
       return this.$store
         .dispatch('jv/patch', params)
         .then(
-          (data) => {
+          () => {
             this.$message.success(isLiked ? this.$t('discuzq.msgBox.likeSuccess') : this.$t('discuzq.msgBox.cancelLikeSuccess'))
             if (isLiked) {
-              this.likeCount++
+              this.likeCount += 1
             } else {
-              this.likeCount--
+              this.likeCount -= 1
             }
             this.isLiked = isLiked
             this.$emit('change')
@@ -284,32 +302,41 @@ export default {
     },
     // 跳转详情页
     toDetail() {
+      if (this.canDetail) {
+        this.$message.warning('加入站点后才可以预览')
+        return
+      }
       if (!this.canViewPostsFn()) return
-      // this.$router.push({ path: `/pages/topic/${this.item._jv && this.item._jv.id}` })
-      window.open(
-        `/pages/topic/index?id=${this.item._jv && this.item._jv.id}`,
-        '_blank'
-      )
+      this.routerLink()
     },
     // 点击图片 判断是否付费， 未付费跳转详情页
     onClickImage() {
+      if (this.canDetail) {
+        this.$message.warning('加入站点后才可以预览')
+        return
+      }
       if (!this.unpaid || !this.canViewPostsFn()) return
-      window.open(
-        `/pages/topic/index?id=${this.item._jv && this.item._jv.id}`,
-        '_blank'
-      )
+      this.routerLink()
     },
     // 点击视频 判断是否付费， 未付费跳转详情页
     openVideo() {
+      if (this.canDetail) {
+        this.$message.warning('加入站点后才可以预览')
+        return
+      }
       if (!this.canViewPostsFn()) return
       if (this.unpaid) {
-        window.open(
-          `/pages/topic/index?id=${this.item._jv && this.item._jv.id}`,
-          '_blank'
-        )
+        this.routerLink()
       } else {
         this.showVideoPop = true
       }
+    },
+    // 详情路由
+    routerLink() {
+      window.open(
+        `/topic/index?id=${this.item._jv && this.item._jv.id}`,
+        '_blank'
+      )
     },
     // 点击正文，使用事件委托判断a标签
     onClickContent(e) {
@@ -351,6 +378,9 @@ export default {
   &:hover {
     background: rgba(229, 242, 255, 0.3);
     border-bottom: 1px solid #e7ecf2;
+  }
+  .blue{
+    color: $color-blue-base;
   }
   .essence {
     position: absolute;
@@ -398,9 +428,7 @@ export default {
       margin-bottom: 6px;
       @include text-hidden();
       flex: 0 0 60%;
-      .blue{
-        color: $color-blue-base;
-      }
+
     }
     .icon-pay-yuan {
       height: 24px;
@@ -408,11 +436,12 @@ export default {
       position: absolute;
       top: 0;
       left: 0;
-      color: #8590A6;
+    }
+    .grey{
+      color: $font-color-grey;
     }
     .content-block{
       text-indent: 20px;
-      display: block;
     }
     ::v-deep .content {
       position: relative;
@@ -439,7 +468,8 @@ export default {
       }
       .qq-emotion {
         height: 22px;
-        margin: 0
+        vertical-align: middle;
+        margin-top: -2px;
       }
       a {
         color: $color-blue-base;
@@ -452,8 +482,8 @@ export default {
         line-height: 20px;
         max-width: 410px;
         .qq-emotion {
-          height: 22px;
-          margin: 0
+          height: 20px;
+          margin-top: -1px;
         }
       }
     }
@@ -467,6 +497,28 @@ export default {
         @media screen and (max-width: 1005px) {
           width: 130px;
           height: 130px;
+        }
+        &:nth-child(3n) {
+          margin-right: 0;
+        }
+        .image-slot {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          height: 100%;
+          background: #f5f7fa;
+          color: #909399;
+          font-size: 22px;
+        }
+      }
+      .infoimage {
+        width: 125px;
+        height: 125px;
+        margin-right: 10px;
+        @media screen and (max-width: 1005px) {
+          width: 70px;
+          height: 70px;
         }
         &:nth-child(3n) {
           margin-right: 0;

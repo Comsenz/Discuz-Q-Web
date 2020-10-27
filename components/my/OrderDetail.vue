@@ -118,18 +118,13 @@ export default {
     handleError
   ],
   data() {
-    const date = new Date()
-    const year = date.getFullYear()
-    let month = date.getMonth() + 1
-    month = month < 10 ? `0${month}` : month
-    const currentDate = `${year}-${month}`
     return {
       loading: false,
       hasMore: false,
       value: '',
       pageSize4: 10, // 订单每页展示的数目
       pageNum4: 1, // 订单当前页数
-      date4: currentDate, // 订单日期
+      date4: '', // 订单日期
       filterSelected4: '', // 订单状态过滤内容的id
       dataList4: [], // 订单数据
       total4: 0, // 订单记录总记录数
@@ -158,12 +153,20 @@ export default {
     }
   },
   mounted() {
+    this.setCurrentTime()
     this.getList4()
   },
   methods: {
+    setCurrentTime() {
+      const date = window.currentTime || new Date()
+      const year = date.getFullYear()
+      let month = date.getMonth() + 1
+      month = month < 10 ? `0${month}` : month
+      this.date4 = `${year}-${month}`
+    },
     // 金额排序
     sortAmount(str1, str2) {
-      return str1.amount * 1 - str2.amount * 1
+      return (str1.amount * 1) - (str2.amount * 1)
     },
     // 处理时间
     timeHandle(time) {
@@ -193,9 +196,8 @@ export default {
       }
       if (row > 0) {
         return `<font color="09BB07">+￥${row}</font>`
-      } else {
-        return `<font style="color:#FA5151">-￥${row.substr(1)}</font>`
       }
+      return `<font style="color:#FA5151">-￥${row.substr(1)}</font>`
     },
     // 订单日期选中
     bindDateChange4(e) {
@@ -232,16 +234,17 @@ export default {
       }
       status
         .run(() => this.$store.dispatch('jv/get', ['orders', { params }]))
-        .then(res => {
+        .then((res) => {
           // 处理文字
           const result = this.handleHandle4(res)
           // 处理钱
           this.sumMoney4 = this.handlemoney4(result)
           this.dataList4 = result
           this.total4 = res._jv.json.meta.total
-        }, e => {
+        }, (e) => {
           this.handleError(e)
-        }).finally(() => {
+        })
+        .finally(() => {
           this.loading = false
         })
     },
@@ -250,6 +253,7 @@ export default {
       const res = JSON.parse(JSON.stringify(result))
       let sum = 0
       res.forEach((item, index) => {
+        // eslint-disable-next-line no-useless-escape
         res[index] = parseFloat(item.amount.replace(/\+|\-|\*|\?/g, ''))
         sum = sum + res[index]
       })

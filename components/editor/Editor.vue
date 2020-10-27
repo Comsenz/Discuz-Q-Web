@@ -1,123 +1,107 @@
 <template>
   <div class="editor">
     <label v-if="typeInformation && typeInformation.showTitle">
-      <input
-        :placeholder="$t('post.pleaseInputPostTitle')"
-        class="input-title"
-        type="text"
-        :value="post && post.title"
-        @input="e => onPostContentChange('title', e.target.value)"
-      >
+      <input :placeholder="$t('post.pleaseInputPostTitle')" class="input-title" type="text" :value="post && post.title" @input="e => onPostContentChange('title', e.target.value)">
     </label>
-    <editor-payment
-      v-if="typeInformation && typeInformation.showPayment && canCreateThreadPaid"
-      :payment="payment || {}"
-      :type="typeInformation && typeInformation.type"
-      @paymentChange="e => onPaymentChange(e.key, e.value)"
+    <editor-payment v-if="typeInformation && typeInformation.showPayment && canCreateThreadPaid" :payment="payment || {}" :type="typeInformation && typeInformation.type" @paymentChange="e => onPaymentChange(e.key, e.value)" />
+    <attachment-upload
+      v-if="isPost"
+      :file-list="post && post.attachedList"
+      :on-upload.sync="onUploadAttached"
+      action="/attachments"
+      :accept="attachedTypeLimit"
+      :limit="99999"
+      type="Attached"
+      :size-limit="attachedSizeLimit"
+      @success="files => onPostContentChange('attachedList', files)"
+      @remove="files => onPostContentChange('attachedList', files)"
     />
-    <div v-if="typeInformation && typeInformation.showLocation && lbs" class="location-picker">
-      <div class="location-title">{{ $t('post.location') }}:</div>
-      <div class="location-input" @click="getLocation">
-        <svg-icon type="location" style="font-size: 17px" />
-        <span class="value">{{ location && location.location || $t('post.pleaseSelectLocation') }}</span>
-        <span v-show="location.location" class="icon-close" @click.stop="$emit('update:location', { location: '', latitude: '', longitude: '' })">
-          <svg-icon type="close" style="font-size: 12px" />
-        </span>
-      </div>
-    </div>
-    <!--    <div id="vditor" style="margin-top: 20px" />-->
-    <div :class="['container-textarea', editorStyle]">
+    <Vditor
+      v-if="isPost"
+      :text-limit="typeInformation && typeInformation.textLimit"
+      :text-length="post && post.text && post.text.length"
+      :placeholder="typeInformation && typeInformation.placeholder"
+      :image-accept="imageTypeLimit"
+      :text="post && post.text"
+      :show-caller="showCaller"
+      :show-topic="showTopic"
+      :show-emoji="showEmoji"
+      :is-edit="isEdit"
+      :on-publish="onPublish"
+      :attachment-size-limit="attachedSizeLimit"
+      :on-upload-image.sync="onUploadImage"
+      @textChange="value => onPostContentChange('text', value)"
+      @close="showCaller = false"
+      @hideActions="hideActions"
+      @onActions="onActions"
+      @publish="publish"
+    />
+    <!--my editor 除了帖子以外，不使用 vditor-->
+    <div v-if="!isPost" :class="['container-textarea', editorStyle]">
+      <!--bar-->
+      <editor-tool-bar
+        v-if="editorStyle === 'post'"
+        :text-limit="typeInformation && typeInformation.textLimit"
+        :text-length="post && post.text && post.text.length"
+        :actions="actions"
+        :show-emoji="showEmoji"
+        :show-topic="showTopic"
+        :show-caller="showCaller"
+        :resources="resources"
+        :on-publish="onPublish"
+        :editor-style="editorStyle"
+        @publish="publish"
+        @selectActions="selectActions"
+        @addResource="addResource"
+        @hidePop="hideActions"
+        @onActions="onActions"
+      />
       <label>
-        <textarea
-          id="textarea"
-          :value="post && post.text"
-          :class="['input-text', editorStyle]"
-          :placeholder="typeInformation ? typeInformation.placeholder : ''"
-          :maxlength="post && post.textLimit"
-          @input="e => onPostContentChange('text', e.target.value)"
-        />
+        <textarea id="textarea" :value="post && post.text" :class="['input-text', editorStyle]" :placeholder="typeInformation ? typeInformation.placeholder : ''" :maxlength="post && post.textLimit" @input="e => onPostContentChange('text', e.target.value)" />
       </label>
       <div>
-        <div v-if="showUploadImg || showUploadVideo || showUploadAttached" class="resources-list">
-          <!--          <image-upload-->
-          <!--            v-if="showUploadImg"-->
-          <!--            :image-list="post && post.imageList"-->
-          <!--            :on-upload-image.sync="onUploadImage"-->
-          <!--            :header="header"-->
-          <!--            :is-edit="isEdit"-->
-          <!--            :url="url"-->
-          <!--            @imageChange="e => onPostContentChange(e.key, e.value)"-->
-          <!--          />-->
-          <Upload
+        <!--uploader-->
+        <div v-if="showUploadImg || showUploadVideo" class="resources-list">
+          <image-upload
             v-if="showUploadImg"
+            type="Image"
             :file-list="post && post.imageList"
-            :on-upload-image.sync="onUploadImage"
+            :on-upload.sync="onUploadImage"
             action="/attachments"
-            accept="image/*"
+            :accept="imageTypeLimit"
             :limit="9"
             :size-limit="attachedSizeLimit"
             @success="imageList => onPostContentChange('imageList', imageList)"
             @remove="imageList => onPostContentChange('imageList', imageList)"
           />
-          <video-upload
-            v-if="showUploadVideo"
-            :on-upload-video.sync="onUploadVideo"
-            :video-list="post && post.videoList"
-            @videoChange="e => onPostContentChange(e.key, e.value)"
-          />
-          <attached-upload
-            v-if="showUploadAttached"
-            :on-upload-attached.sync="onUploadAttached"
-            :attached-list="post && post.attachedList"
-            :header="header"
-            :is-edit="isEdit"
-            :url="url"
-            @attachedChange="e => onPostContentChange(e.key, e.value)"
-          />
+          <video-upload v-if="showUploadVideo" :on-upload-video.sync="onUploadVideo" :video-list="post && post.videoList" @videoChange="e => onPostContentChange(e.key, e.value)" />
         </div>
-        <span v-if="typeInformation && typeInformation.textLimit" class="tip">
-          {{ typeInformation.textLimit>=(post.text.length || 0) ? $t('post.note', { num: typeInformation.textLimit - (post.text.length || 0) }) : $t('post.exceed', { num: (post.text.length || 0 ) - typeInformation.textLimit }) }}
-        </span>
-        <div :class="['actions', editorStyle]">
-          <div class="block">
-            <template v-for="(action, index) in actions">
-              <popover v-if="action.show && action.icon === 'emoji'" :key="index" :visible="showEmoji" class="svg" @hidePop="hideActions">
-                <template v-slot:pop> <emoji-list @selectEmoji="selectActions" /> </template>
-                <template v-slot:activeNode><svg-icon :type="action.icon" style="font-size: 20px" @click="onActions(action.toggle)" /></template>
-              </popover>
-              <popover v-if="action.show && action.icon === 'topic'" :key="index" :visible="showTopic" class="svg" @hidePop="hideActions">
-                <template v-slot:pop> <topic-list @selectedTopic="selectActions" /> </template>
-                <template v-slot:activeNode> <svg-icon :type="action.icon" style="font-size: 20px" @click="onActions(action.toggle)" /> </template>
-              </popover>
-              <svg-icon v-else-if="action.show && action.icon === 'call'" :key="index" :type="action.icon" class="svg" style="font-size: 20px" @click="onActions(action.toggle)" />
-            </template>
-          </div>
-          <div class="block">
-            <template v-for="(resource, index) in resources">
-              <svg-icon v-if="resource.show" :key="index" :type="resource.icon" class="svg" style="font-size: 20px" @click="addResource(resource.toggle)" />
-            </template>
-          </div>
-          <editor-markdown
-            v-if="typeInformation && typeInformation.showMarkdown"
-            :selector="selector"
-            :text="post && post.text"
-            class="block"
-            @changeText="text => onPostContentChange('text', text)"
-          />
-          <el-button class="button-publish" :loading="onPublish" type="primary" size="small" @click="publish">
-            {{ $t('post.post') }}
-          </el-button>
-        </div>
-        <caller v-if="showCaller" @close="showCaller = false" @selectedCaller="selectActions" />
+        <!--bar-->
+        <editor-tool-bar
+          v-if="editorStyle !== 'post'"
+          :text-limit="typeInformation && typeInformation.textLimit || 450"
+          :text-length="post && post.text && post.text.length || 0"
+          :actions="actions"
+          :show-emoji="showEmoji"
+          :show-topic="showTopic"
+          :show-caller="showCaller"
+          :resources="resources"
+          :on-publish="onPublish"
+          :editor-style="editorStyle"
+          @publish="publish"
+          @selectActions="selectActions"
+          @addResource="addResource"
+          @hidePop="hideActions"
+          @onActions="onActions"
+        />
       </div>
     </div>
-    <get-location v-if="pickingLocation" @close="pickingLocation = false" />
+    <caller v-if="showCaller && !isPost" @close="showCaller = false" @selectedCaller="selectActions" />
   </div>
 </template>
 
 <script>
 import handleError from '@/mixin/handleError'
-// const Vditor = process.client ? require('vditor') : ''
 
 export default {
   name: 'Editor',
@@ -128,10 +112,6 @@ export default {
       default: () => {}
     },
     payment: {
-      type: Object,
-      default: () => {}
-    },
-    location: {
       type: Object,
       default: () => {}
     },
@@ -151,7 +131,7 @@ export default {
       type: Boolean,
       default: false
     },
-    editorStyle: {
+    editorStyle: { // post chat comment reply 代表不同的编辑器风格
       type: String,
       default: 'post'
     },
@@ -162,10 +142,10 @@ export default {
   },
   data() {
     return {
-      contentEditor: {},
+      input: {},
+      vditor: {},
       selectionStart: 0,
       selectionEnd: 0,
-      pickingLocation: false,
       // 是否显示弹窗
       showEmoji: false,
       showCaller: false,
@@ -186,8 +166,8 @@ export default {
       ],
       resources: [
         { icon: 'picture', toggle: 'showUploadImg', show: false },
-        { icon: 'video', toggle: 'showUploadVideo', show: false },
-        { icon: 'attached', toggle: 'showUploadAttached', show: false }
+        { icon: 'video', toggle: 'showUploadVideo', show: false }
+        // { icon: 'attached', toggle: 'showUploadAttached', show: false }
       ]
     }
   },
@@ -200,11 +180,7 @@ export default {
         const token = window.localStorage.getItem('access_token')
         return { authorization: `Bearer ${token}` }
       }
-      return ''
-    },
-    lbs() {
-      const forums = this.$store.state.site.info.attributes || {}
-      return forums.lbs && forums.lbs.lbs
+      return {}
     },
     textarea() {
       return process.client ? document.querySelector(`.${this.selector} #textarea`) : ''
@@ -223,6 +199,23 @@ export default {
         return this.forums.set_attach.support_max_size * 1024 * 1024
       }
       return 10485760
+    },
+    imageTypeLimit() {
+      if (this.forums.set_attach) {
+        const limitText = this.forums.set_attach.support_img_ext
+        return limitText.split(',').map(item => '.' + item).join(',')
+      }
+      return ''
+    },
+    attachedTypeLimit() {
+      if (this.forums.set_attach) {
+        const limitText = this.forums.set_attach.support_file_ext
+        return limitText.split(',').map(item => '.' + item).join(',')
+      }
+      return ''
+    },
+    isPost() { // 帖子类型 type 1
+      return this.typeInformation && this.typeInformation.type === 1 || false
     }
   },
   watch: {
@@ -242,32 +235,17 @@ export default {
         this.actions[2].show = val.showTopic
         this.resources[0].show = val.showImage
         this.resources[1].show = val.showVideo
-        this.resources[2].show = val.showAttached
+        // this.resources[2].show = val.showAttached
       },
       deep: true,
       immediate: true
     }
   },
   mounted() {
-    // Vditor && this.initVditor()
-    this.autoHeight()
+    this.textarea && this.autoHeight()
     this.emojiListener()
   },
   methods: {
-    // TODO 等图文混排编辑器的需求
-    // initVditor() {
-    //   this.contentEditor = new Vditor('vditor', {
-    //     minHeight: 450,
-    //     placeholder: '请输入',
-    //     mode: 'wysiwyg',
-    //     toolbar: ['emoji', 'headings', 'bold', 'italic', 'strike', 'link', 'list', 'ordered-list', 'check', 'outdent', 'indent', 'quote', 'upload', 'line', 'code', 'inline-code', 'table', 'both', 'br', 'undo', 'redo'],
-    //     toolbarConfig: { pin: true },
-    //     cache: { enable: false },
-    //     after: () => {
-    //       // this.contentEditor.setValue('hello, Vditor + Vue!')
-    //     }
-    //   })
-    // },
     onPostContentChange(key, value) {
       const _post = Object.assign({}, this.post)
       _post[key] = value
@@ -303,7 +281,7 @@ export default {
         const path = e.path || (e.composedPath && e.composedPath())
         path.forEach(item => {
           if (item.classList) {
-            if (item.classList.contains('emoji-list') || item.classList.contains('topic-list') || item.classList.contains('actions')) pass = false
+            if (item.classList.contains('emoji-list') || item.classList.contains('topic-list') || item.classList.contains('editor-bar')) pass = false
           }
         })
         if (pass) {
@@ -314,7 +292,7 @@ export default {
     },
     onActions(toggle) {
       this.hideActions()
-      this.$nextTick(() => { this[toggle] = !this[toggle] })
+      setTimeout(() => { this[toggle] = !this[toggle] })
     },
     addResource(toggle) {
       this[toggle] = true
@@ -329,21 +307,6 @@ export default {
       this.showEmoji = false
       this.showTopic = false
       this.showCaller = false
-    },
-    getLocation() {
-      this.pickingLocation = true
-      window.addEventListener('message', this.onMessage, false)
-    },
-    onMessage(event) {
-      const loc = event.data
-      // 防止其他应用也会向该页面post信息，需判断module是否为'locationPicker'
-      if (loc && loc.module === 'locationPicker') {
-        const latitude = loc.latlng.lat
-        const longitude = loc.latlng.lng
-        const location = loc.poiname === '我的位置' ? loc.poiaddress : loc.poiname
-        this.pickingLocation = false
-        this.$emit('update:location', { latitude, longitude, location })
-      }
     },
     publish() {
       if (this.onUploadAttached) return this.$message.warning(this.$t('post.pleaseWaitForTheAttachedUploadToComplete'))
@@ -360,40 +323,12 @@ export default {
   @import '@/assets/css/variable/color.scss';
 
   /* editor placeholder */
-  ::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.3);
-    -webkit-border-radius: 100px;
-  }
-
-  ::-webkit-scrollbar-thumb:active {
-    font-family: inherit;
-    background: rgba(0, 0, 0, 0.4);
-    -webkit-border-radius: 100px;
-  }
-
-  ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-    font-family: inherit;
-    font-size: 16px;
-    color: #8590A6;
-  }
-
-  ::-moz-placeholder { /* Firefox 19+ */
-    font-family: inherit;
-    font-size: 16px;
-    color: #8590A6;
-  }
-
-  :-ms-input-placeholder { /* IE 10+ */
-    font-family: inherit;
-    font-size: 16px;
-    color: #8590A6;
-  }
-
-  :-moz-placeholder { /* Firefox 18- */
-    font-family: inherit;
-    font-size: 16px;
-    color: #8590A6;
-  }
+  ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.3); -webkit-border-radius: 100px; }
+  ::-webkit-scrollbar-thumb:active { font-family: inherit; background: rgba(0, 0, 0, 0.4); -webkit-border-radius: 100px; }
+  ::-webkit-input-placeholder { /* Chrome/Opera/Safari */ font-family: inherit; font-size: 16px; color: #DDD; }
+  ::-moz-placeholder { /* Firefox 19+ */ font-family: inherit; font-size: 16px; color: #DDD; }
+  :-ms-input-placeholder { /* IE 10+ */ font-family: inherit; font-size: 16px; color: #DDD; }
+  :-moz-placeholder { /* Firefox 18- */ font-family: inherit; font-size: 16px; color: #DDD; }
 
   .editor {
     width: 100%;
@@ -435,35 +370,6 @@ export default {
 
     }
 
-    > .location-picker {
-      margin-top: 10px;
-      min-width: 230px;
-      display: inline-block;
-      color: #6D6D6D;
-      font-size: 14px;
-      line-height: 20px;
-      > .location-input {
-        cursor: pointer;
-        margin-top: 10px;
-        width: 100%;
-        height: 35px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 15px;
-        border: 1px solid $border-color-base;
-        border-radius: 4px;
-        background: $background-color-editor;
-        > .value {
-          white-space: nowrap;
-          margin: 0 auto 0 10px;
-        }
-        > .icon-close {
-          margin-left: 10px;
-        }
-      }
-    }
-
     > .container-textarea {
       border: 1px solid $border-color-base;
       border-radius: 3px;
@@ -478,49 +384,5 @@ export default {
       background: $background-color-grey;
       padding: 20px 20px 30px;
     }
-
-    .actions {
-      width: 100%;
-      height: 45px;
-      display: flex;
-      padding: 0 10px;
-      align-items: center;
-      background: #ffffff;
-      &.chat { background: $background-color-grey }
-
-      > .block {
-        display: flex;
-        padding: 0 10px;
-
-        &:first-child {
-          border: 0;
-        }
-
-        .svg {
-          cursor: pointer;
-          margin-left: 20px;
-
-          &:first-child {
-            margin-left: 0;
-          }
-        }
-      }
-
-      > .button-publish {
-        margin-left: auto;
-        ::v-deep span {
-          font-size: 14px;
-        }
-      }
-    }
-
-    .tip {
-      position: absolute;
-      // bottom: 50px;
-      bottom: 45px;
-      right: 10px;
-      color: #D0D4DC;
-    }
-
   }
 </style>
