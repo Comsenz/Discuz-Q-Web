@@ -67,11 +67,6 @@ module.exports = {
         this.$emit(`update:onUpload${this.type}`, false)
         this.previewFiles.splice(this.previewFiles.length - length, length)
         this.handleError(e).then(() => {})
-        // if (e && e.message) {
-        //   this.$message.error(`core.${e.message}`)
-        // } else {
-        //   this.$message.error('图片上传失败，请稍后再试')
-        // }
       })
     },
     removeItem(index) {
