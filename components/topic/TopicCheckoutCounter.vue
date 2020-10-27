@@ -101,7 +101,7 @@
       </el-button>
       <el-button
         v-show="payWay === 'walletPay'"
-        :disabled="!enoughBalance && !userWallet.canWalletPay"
+        :disabled="!enoughBalance || !userWallet.canWalletPay"
         type="primary"
         class="checkout-button"
         @click="$emit('paying', { payWay, hideAvatar, rewardAmount: formatToFixed(rewardAmount) })"
