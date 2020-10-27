@@ -10,6 +10,7 @@
                avatarUrl: item.user.avatarUrl,
                isReal: item.user.isReal
       }"
+      :prevent-jump="canDetail"
       class="avatar"
     />
     <div class="main-cont">
@@ -65,7 +66,7 @@
           <div @click="onClickContent">
             <div v-if="item.type === 1" class="title">{{ $t('home.released') }}
               <svg-icon
-                v-show="parseFloat(item.price) > 0"
+                v-show="parseFloat(item.price) > 0 || parseFloat(item.attachmentPrice) > 0"
                 type="pay-yuan"
                 class="blue"
                 style="font-size: 17px; display: inline-block; margin-right: 5px;"
@@ -74,7 +75,7 @@
             <div v-else class="content">
               <svg-icon v-if="item.type === 5" type="question-icon" class="icon-pay-yuan blue" />
               <svg-icon v-else-if="item.type === 6" type="product-icon" class="icon-pay-yuan blue" />
-              <svg-icon v-else-if="parseFloat(item.price) > 0" type="pay-yuan" class="icon-pay-yuan grey" />
+              <svg-icon v-else-if="parseFloat(item.price) > 0 || parseFloat(item.attachmentPrice) > 0" type="pay-yuan" class="icon-pay-yuan grey" />
               <div
                 :class="{'content-block': item.type === 5 || item.type === 6 || parseFloat(item.price) > 0, 'blue': item.type === 5}"
                 v-html="$xss(formatTopicHTML(item.firstPost.summary))"
