@@ -171,7 +171,7 @@
           </span>
         </nuxt-link>
         <!-- 操作 -->
-        <div class="bottom-handle">
+        <div v-if="!canDetail" class="bottom-handle">
           <div class="left">
             <div
               v-permission:handleLike="''"

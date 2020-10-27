@@ -192,10 +192,14 @@ export default {
         this.forums.user.groups &&
         this.forums.user.groups.length > 0 &&
         this.forums.user.groups[0].id
+        let list = []
         res.forEach((item) => {
           if (+item._jv.id === +groupsId) {
-            this.permissionList = item.permission
+            list = item.permission
           }
+        })
+        this.permissionList = list.filter((item) => {
+          return item.permission !== 'user.edit'
         })
       })
     },

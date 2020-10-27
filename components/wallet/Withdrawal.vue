@@ -5,12 +5,11 @@
         <div class="head">{{ $t('modify.wechatpayee') }}</div>
         <div class="body reward">
           <label>
-            <span />
             <input
               v-model="withdrawlNumber"
               :placeholder="$t('modify.enterwechat')"
               type="text"
-              class="rinput"
+              class="rinput ript"
             >
           </label>
           <div class="cashtext">{{ $t('pay.cashtext') }}</div>
@@ -65,7 +64,6 @@
           <span
             v-if="usertestphon"
             class="phone"
-            style="margin-left:20px;"
           >
             {{ $t('profile.codesend') }}
             <span style="font-weight:bold;color:#000000; ">{{ usertestphon }}</span> {{ $t('profile.phonesms') }}
@@ -358,7 +356,7 @@ export default {
       color: #000000;
 
       &.reward {
-        line-height: 50px;
+        line-height: 40px;
       }
     }
 
@@ -437,6 +435,9 @@ export default {
           > .rinput {
             font-size: 16px;
             color: #000000;
+          }
+          > .ript {
+            margin-left: 3px;
           }
         }
         > .default-amounts {
