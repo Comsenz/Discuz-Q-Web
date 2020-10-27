@@ -21,7 +21,7 @@
           </div>
           <el-button type="primary" class="r-button" @click="UserLogin">{{ $t('user.login') }}</el-button>
           <div class="logorreg">
-            <span v-if="canReg">
+            <span v-if="canReg && forums && forums.set_reg && forums.set_reg.register_type === 0">
               {{ $t('user.noexist') }}
               <span class="agreement_text" @click="toRegister"> {{ $t('user.register') }}</span></span>
             <nuxt-link
@@ -138,7 +138,7 @@ export default {
       this.$router.push(`/pages/user/register?code=${this.code}`)
     },
     iscanReg() {
-      return [this.canReg ? '' : 'noreg']
+      return [this.canReg && this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 0 ? '' : 'noreg']
     },
     toWechat() {
       this.$router.push(`/pages/user/wechat?code=${this.code}`)
