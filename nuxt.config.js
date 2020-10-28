@@ -68,7 +68,7 @@ export default {
       routes.unshift({
         name: 'h5',
         path: '/topic/index',
-        component: resolve(__dirname, 'pages/pages/topic/_index.vue')
+        component: path.resolve() + '/pages/pages/topic/_index.vue'
       })
     }
   },
