@@ -45,7 +45,19 @@ export default {
           showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
         3: { type: 3, headerText: 'postImage', textLimit: 450, showPayment: true, showTitle: false, showImage: true, showVideo: false,
-          showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' }
+          showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
+
+        // 语音帖不需要发帖
+        // 4: { type: 3, headerText: 'postImage', textLimit: 450, showPayment: true, showTitle: false, showImage: true, showVideo: false,
+        //   showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
+
+        // TODO 问答帖
+        // 5: { type: 5, headerText: 'postQA', textLimit: 450, showPayment: true, showTitle: false, showImage: true, showVideo: false,
+        //   showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
+
+        // TODO 商品帖
+        // 6: { type: 6, headerText: 'postProduct', textLimit: 450, showPayment: true, showTitle: false, showImage: true, showVideo: false,
+        //   showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' }
       },
       categorySelectedId: '',
       isEditor: false,
@@ -70,6 +82,7 @@ export default {
     }
   },
   mounted() {
+    // if (['0', '1', '2', '3', '5', '6'].indexOf(this.type) < 0) return this.$router.replace('/error')
     if (['0', '1', '2', '3'].indexOf(this.type) < 0) return this.$router.replace('/error')
     this.getCategoryList()
     this.getThread()

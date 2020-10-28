@@ -34,7 +34,8 @@ import {
   Progress,
   Badge,
   RadioGroup,
-  Radio
+  Radio,
+  Switch
 } from 'element-ui'
 
 Vue.use(Button, { locale })
@@ -67,6 +68,7 @@ Vue.use(Progress, { locale })
 Vue.use(Badge, { locale })
 Vue.use(RadioGroup, { locale })
 Vue.use(Radio, { locale })
+Vue.use(Switch, { locale })
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
