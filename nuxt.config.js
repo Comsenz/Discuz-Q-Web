@@ -7,7 +7,6 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-console.log('patch =>', path.resolve(__dirname, './pages/pages/topic/_index.vue'))
 // const API_URL = 'https://discuz.chat'
 const API_URL_DEV = 'https://dq.comsenz-service.com'
 
