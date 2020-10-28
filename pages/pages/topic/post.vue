@@ -34,18 +34,18 @@ export default {
       location: { latitude: '', location: '', longitude: '' },
       editResourceShow: { showUploadImg: false, showUploadVideo: false, showUploadAttached: false },
       typeInformation: {
-        // 0 文字帖 1 帖子 2 视频 3 图片
-        0: { type: 0, headerText: 'postText', textLimit: 450, showPayment: false, showLocation: false, showTitle: false, showImage: false, showVideo: false,
-          showAttached: false, showMarkdown: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
+        // 0 文字帖 1 帖子 2 视频 3 图片 4 语音 5 问答 6 商品
+        0: { type: 0, headerText: 'postText', textLimit: 450, showPayment: false, showTitle: false, showImage: false, showVideo: false,
+          showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
-        1: { type: 1, headerText: 'postPost', textLimit: 10000, showPayment: true, showLocation: false, showTitle: true, showImage: true, showVideo: false,
-          showAttached: true, showMarkdown: true, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
+        1: { type: 1, headerText: 'postPost', textLimit: 10000, showPayment: true, showTitle: true, showImage: true, showVideo: false,
+          showAttached: true, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
-        2: { type: 2, headerText: 'postVideo', textLimit: 450, showPayment: true, showLocation: false, showTitle: false, showImage: false, showVideo: true,
-          showAttached: false, showMarkdown: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
+        2: { type: 2, headerText: 'postVideo', textLimit: 450, showPayment: true, showTitle: false, showImage: false, showVideo: true,
+          showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
-        3: { type: 3, headerText: 'postImage', textLimit: 450, showPayment: true, showLocation: false, showTitle: false, showImage: true, showVideo: false,
-          showAttached: false, showMarkdown: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' }
+        3: { type: 3, headerText: 'postImage', textLimit: 450, showPayment: true, showTitle: false, showImage: true, showVideo: false,
+          showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' }
       },
       categorySelectedId: '',
       isEditor: false,

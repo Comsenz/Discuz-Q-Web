@@ -84,8 +84,8 @@ export default {
       editResourceShow: { showUploadImg: false, showUploadVideo: false, showUploadAttached: false },
       editCommentPost: { text: '', imageList: [], attachedList: [] },
       editComment: {},
-      commentType: { type: 4, textLimit: 450, showPayment: false, showLocation: false, showTitle: false, showImage: true, showVideo: false,
-        showAttached: false, showMarkdown: false, showEmoji: true, showTopic: false, showCaller: true, placeholder: '写下我的评论 ...' },
+      commentType: { type: 10, textLimit: 450, showPayment: false, showTitle: false, showImage: true, showVideo: false,
+        showAttached: false, showEmoji: true, showTopic: false, showCaller: true, placeholder: '写下我的评论 ...' },
       commitLoading: false,
       scrollLoading: false,
       afterPushComment: true // 临时用了重置编辑器
