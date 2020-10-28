@@ -17,9 +17,9 @@ module.exports = {
         if (this.forums && this.forums.passport && this.forums.passport.oplatform_close && this.forums.passport.offiaccount_close) {
           this.$router.push(`/pages/user/wechat?code=${code}`)
         } else if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_sms) {
-          this.$router.push(`/pages/user/phone-login?code=${this.code}`)
+          this.$router.push(`/pages/user/phone-login-register?code=${code}`)
         } else {
-          this.$router.push(`/pages/user/login?code=${this.code}`)
+          this.$router.push(`/pages/user/register?code=${code}`)
         }
       }
     },
@@ -35,7 +35,7 @@ module.exports = {
         if (this.forums && this.forums.passport && this.forums.passport.oplatform_close && this.forums.passport.offiaccount_close) {
           this.$router.push(`/pages/user/wechat`)
         } else if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_sms) {
-          this.$router.push(`/pages/user/phone-login`)
+          this.$router.push(`/pages/user/phone-login-register`)
         } else {
           this.$router.push(`/pages/user/login`)
         }
