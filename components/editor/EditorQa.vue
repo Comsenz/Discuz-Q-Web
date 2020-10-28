@@ -14,25 +14,38 @@
       <el-switch v-model="canLooker" active-color="#1878F3" />
     </div>
     <div class="qa-answerer block">
-      <div class="title">{{ $t('post.questionHim') }}:</div>
+      <div class="title">
+        <span>{{ $t('post.questionHim') }}:</span>
+        <span class="select-answerer" @click="showQACaller = true">+选择回答者</span>
+      </div>
     </div>
+    <qa-caller v-if="showQACaller" @close="showQACaller = false" />
   </div>
 </template>
 
 <script>
 export default {
   name: 'EditorQa',
+  props: {
+    question: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data() {
     return {
       paymentRadio: 'free',
       isAnonymous: false,
-      canLooker: false
+      canLooker: false,
+      showQACaller: false
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/css/variable/color.scss';
+
 .qa {
   > .block {
     margin-top: 20px;
@@ -41,6 +54,12 @@ export default {
       font-weight: bold;
       margin-bottom: 10px;
       color: #6D6D6D;
+      > .select-answerer {
+        font-weight: normal;
+        color: $color-blue-base;
+        margin-left: 10px;
+        cursor: pointer;
+      }
     }
   }
 }

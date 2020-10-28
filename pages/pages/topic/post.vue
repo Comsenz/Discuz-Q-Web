@@ -11,7 +11,7 @@
         >{{ category.name }}</span>
       </template>
     </div>
-    <editor :type-information="typeInformation[type]" :edit-resource-show="editResourceShow" :payment.sync="payment" :on-publish="onPublish" :is-edit="isEditor" :post.sync="post" @publish="publish" />
+    <editor :type-information="typeInformation[type]" :edit-resource-show="editResourceShow" :question.sync="question" :payment.sync="payment" :on-publish="onPublish" :is-edit="isEditor" :post.sync="post" @publish="publish" />
   </div>
 </template>
 
@@ -32,6 +32,7 @@ export default {
       post: { id: '', title: '', text: '', imageList: [], videoList: [], attachedList: [] },
       payment: { paidType: 'free', price: 0, freeWords: 0, attachmentPrice: 0 }, // free 免费， paid 全部付费，attachmentPaid 文章免费，附件付费
       location: { latitude: '', location: '', longitude: '' },
+      question: { be_user_id: '', order_id: '', price: '', is_onlooker: false },
       editResourceShow: { showUploadImg: false, showUploadVideo: false, showUploadAttached: false },
       typeInformation: {
         // 0 文字帖 1 帖子 2 视频 3 图片 4 语音 5 问答 6 商品
