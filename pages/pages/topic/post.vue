@@ -45,7 +45,7 @@ export default {
           showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
         3: { type: 3, headerText: 'postImage', textLimit: 450, showPayment: true, showTitle: false, showImage: true, showVideo: false,
-          showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
+          showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' }
 
         // 语音帖不需要发帖
         // 4: { type: 3, headerText: 'postImage', textLimit: 450, showPayment: true, showTitle: false, showImage: true, showVideo: false,
@@ -176,7 +176,7 @@ export default {
       this.onPublish = true
       if (this.isEditor) {
         return Promise.all([this.editThreadPublish(), this.editPostPublish()]).then(dataArray => {
-          this.$router.push(`/topic/index?id=${dataArray[0]._jv.id}`)
+          this.$router.push(`/pages/topic/index?id=${dataArray[0]._jv.id}`)
         }, e => this.handleError(e)).finally(() => {
           this.onPublish = false
         })
@@ -207,7 +207,7 @@ export default {
         }
       }
       return this.$store.dispatch('jv/post', params).then(data => {
-        this.$router.push(`/topic/index?id=${data._jv.id}`)
+        this.$router.push(`/pages/topic/index?id=${data._jv.id}`)
       }, e => this.handleError(e)).finally(() => {
         this.onPublish = false
       })

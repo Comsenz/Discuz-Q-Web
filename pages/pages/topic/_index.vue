@@ -72,7 +72,7 @@ import isLogin from '@/mixin/isLogin'
 import env from '@/utils/env'
 
 export default {
-  name: 'Post',
+  name: 'Topic',
   layout: 'custom_layout',
   mixins: [handleError, isLogin],
   async asyncData({ query, store }) {

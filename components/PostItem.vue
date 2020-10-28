@@ -334,7 +334,7 @@ export default {
     // 详情路由
     routerLink() {
       window.open(
-        `/topic/index?id=${this.item._jv && this.item._jv.id}`,
+        `/pages/topic/index?id=${this.item._jv && this.item._jv.id}`,
         '_blank'
       )
     },

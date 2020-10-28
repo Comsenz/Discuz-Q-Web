@@ -63,7 +63,20 @@ export default {
   },
   router: {
     middleware: 'header',
-    routeNameSplitter: '/'
+    routeNameSplitter: '/',
+    extendRoutes(routes, resolve) {
+      routes.push({
+        name: 'h5',
+        path: '/topic/index',
+        component: resolve(__dirname, 'pages/pages/topic/_index.vue')
+      })
+      // routes.push({
+      //   path: '/topic/index',
+      //   redirect: {
+      //     name: 'Topic'
+      //   }
+      // })
+    }
   },
   /*
   ** Global CSS
