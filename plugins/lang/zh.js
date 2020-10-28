@@ -225,7 +225,8 @@ export default {
     unable_to_get_location: '无法获取地理位置',
     '二维码已失效，扫码超时': '二维码已失效，扫码超时',
     no_edit_self: '不可编辑自己',
-    qcloud_file_preview_unset: '腾讯云对象存储文件预览未开启'
+    qcloud_file_preview_unset: '腾讯云对象存储文件预览未开启',
+    pc_qrcode_scanning_code: '扫码中'
   },
   // 发布页
   post: {

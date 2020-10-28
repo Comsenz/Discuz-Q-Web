@@ -21,7 +21,7 @@
         <div class="agreement"><reg-agreement @check="check" /></div>
         <el-button type="primary" class="r-button" @click="PhoneLogin">{{ $t('user.login') }}</el-button>
         <div class="otherlogin">
-          <svg-icon v-if="forums && forums.passport && forums.passport.oplatform_close" class="wechat-icon" type="wechatlogin" @click="toWechat" />
+          <svg-icon v-if="forums && forums.passport && forums.passport.oplatform_close && forums.passport.offiaccount_close" class="wechat-icon" type="wechatlogin" @click="toWechat" />
           <svg-icon class="wechat-icon" type="userlogin" @click="toUserlogin" />
         </div>
       </el-tab-pane>

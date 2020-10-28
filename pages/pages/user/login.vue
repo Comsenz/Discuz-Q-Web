@@ -32,7 +32,7 @@
               {{ $t('modify.findpawdtitle') }}</nuxt-link>
           </div>
           <div class="otherlogin">
-            <svg-icon v-if="forums && forums.passport && forums.passport.oplatform_close" class="wechat-icon" type="wechatlogin" @click="toWechat" />
+            <svg-icon v-if="forums && forums.passport && forums.passport.oplatform_close && forums.passport.offiaccount_close" class="wechat-icon" type="wechatlogin" @click="toWechat" />
             <svg-icon v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms" class="phone-icon" type="phonelogin" @click="toPhonelogin" />
           </div>
         </form>

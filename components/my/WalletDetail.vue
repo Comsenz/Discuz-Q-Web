@@ -175,6 +175,7 @@ export default {
     }
   },
   mounted() {
+    this.setCurrentTime()
     this.getList2()
   },
   methods: {
@@ -212,6 +213,7 @@ export default {
     },
     // 金额格式化
     amountFormat(row) {
+      console.log(row)
       // 订单
       if (row.amount > 0) {
         return `<font color="09BB07">-￥${row.amount}</font>`
