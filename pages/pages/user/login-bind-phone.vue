@@ -63,9 +63,9 @@ export default {
     }
   },
   mounted() {
-    const { mobileToken, phoneNumber, code } = this.$route.query
-    if (mobileToken) {
-      this.mobileToken = mobileToken
+    const { phoneNumber, code } = this.$route.query
+    if (process.client) {
+      this.mobileToken = localStorage.getItem('mobileToken')
     }
     if (phoneNumber) {
       this.phoneNumber = phoneNumber
@@ -138,7 +138,7 @@ export default {
       }
     },
     toRegister() {
-      this.$router.push(`/pages/user/register-bind-phone?code=${this.code}&mobileToken=${this.mobileToken}&phoneNumber=${this.phoneNumber}`)
+      this.$router.push(`/pages/user/register-bind-phone?code=${this.code}&phoneNumber=${this.phoneNumber}`)
     },
     iscanReg() {
       return [this.canReg ? '' : 'noreg']

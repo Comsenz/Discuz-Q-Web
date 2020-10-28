@@ -111,10 +111,8 @@ export default {
     }
   },
   mounted() {
-    const { validate, code, nickname, headimgurl, token } = this.$route.query
-    if (token) {
-      this.token = token
-    }
+    const { validate, code, nickname, headimgurl } = this.$route.query
+    if (process.client) this.token = localStorage.getItem('wechat')
     if (nickname) {
       this.nickname = nickname
     }
@@ -244,7 +242,7 @@ export default {
         })
     },
     jump2Login() {
-      this.$router.push(`/pages/user/login-bind?nickname=${this.nickname}&headimgurl=${this.headimgurl}&token=${this.token}`)
+      this.$router.push(`/pages/user/login-bind?nickname=${this.nickname}&headimgurl=${this.headimgurl}`)
     }
   },
   head() {

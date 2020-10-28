@@ -22,7 +22,7 @@
           </span>
           <span class="usrid">{{ userInfo && userInfo.groupsName ? userInfo.groupsName : '' }}</span>
         </div>
-        <span class="setavatar" @click="setAvatar">{{ $t('modify.setavatar') }}</span>
+        <span class="setavatar"><span class="setbutton" @click="setAvatar">{{ $t('modify.setavatar') }}</span></span>
         <show-avatar v-if="isShowAvatar" :user-id="userId" @change="changeShow" />
       </div>
       <div class="myprofile-bottom">
@@ -52,8 +52,7 @@
           <span
             v-show="userInfo && userInfo.canEditUsername"
             class="setavatar"
-            @click="usernameModify"
-          >{{ (!isNameModify ? $t('profile.modify') : $t('profile.cancelModify')) }}</span>
+          ><span class="setbutton" @click="usernameModify">{{ (!isNameModify ? $t('profile.modify') : $t('profile.cancelModify')) }}</span></span>
         </div>
         <div v-show="!isNameModify" class="myprofile-btom2">{{ userInfo && userInfo.username ? userInfo.username:'' }}</div>
         <div v-show="isNameModify" class="myprofile-btom">
@@ -71,7 +70,7 @@
       <div class="profileborder">
         <div class="myprofile-top">
           <span class="sig">{{ $t('modify.signaturetitle') }}</span>
-          <span class="setavatar" @click="signModify">{{ (!isSignModify ? $t('profile.modify') : $t('profile.cancelModify')) }}</span>
+          <span class="setavatar"><span class="setbutton" @click="signModify">{{ (!isSignModify ? $t('profile.modify') : $t('profile.cancelModify')) }}</span></span>
         </div>
         <div v-show="!isSignModify" :class="userInfo.signature !=='' ?'myprofile-btom-sign':'myprofile-btom-sign signcolor'">{{ userInfo.signature ? userInfo.signature : $t('modify.nosignature') }}</div>
         <div v-show="isSignModify" class="text">
@@ -103,8 +102,10 @@
       <div class="profileborder">
         <div class="myprofile-top">
           <span class="sig">{{ $t('profile.mobile') }}</span>
-          <span class="setavatar" @click="mobileModify">
-            {{ (!isMobileModify ?!userInfo.mobile ? $t('profile.bindingmobile'): $t('profile.modify') : $t('profile.cancelModify')) }}
+          <span class="setavatar">
+            <span class="setbutton" @click="mobileModify">
+              {{ (!isMobileModify ?!userInfo.mobile ? $t('profile.bindingmobile'): $t('profile.modify') : $t('profile.cancelModify')) }}
+            </span>
           </span>
         </div>
         <div v-show="!isMobileModify" class="myprofile-btom2">
@@ -149,7 +150,9 @@
       <div class="profileborder">
         <div class="myprofile-top">
           <span class="sig">{{ $t('profile.password') }}</span>
-          <span class="setavatar" @click="passModify">{{ (!isPassModify ? $t('profile.modify') : $t('profile.cancelModify')) }}</span>
+          <span class="setavatar">
+            <span class="setbutton" @click="passModify">{{ (!isPassModify ? $t('profile.modify') : $t('profile.cancelModify')) }}</span>
+          </span>
         </div>
         <div v-show="!isPassModify" class="myprofile-btom2">{{ userInfo && userInfo.hasPassword ? $t('profile.isset') : $t('profile.withoutsetpass') }}</div>
         <div v-show="isPassModify" class="myprofile-btom">
@@ -204,7 +207,11 @@
       <div class="profileborder">
         <div class="myprofile-top">
           <span class="sig">{{ $t('profile.wechat') }}</span>
-          <!-- <el-button type="text" class="setavatar" @click="wechatModify">{{ (!isWechatModify ? $t('profile.modify') : $t('profile.cancelModify')) }}</el-button>-->
+          <!-- <el-button type="text" class="setavatar">
+            <span class="setbutton" @click="wechatModify">
+              {{ (!isWechatModify ? $t('profile.modify') : $t('profile.cancelModify')) }}
+            </span>
+          </el-button>-->
         </div>
         <div class="myprofile-btom2">
           {{ userInfo && userInfo.wechat ? userInfo.wechat.nickname : $t('profile.withoutbindwechat') }}
@@ -228,7 +235,11 @@
       <div class="profileborder">
         <div class="myprofile-top">
           <span class="sig">{{ $t('modify.realnametitle') }}</span>
-          <span class="setavatar" @click="realModify">{{ (!isRealModify ? $t('profile.tocertification') : $t('profile.cancelcertification')) }}</span>
+          <span class="setavatar">
+            <span class="setbutton" @click="realModify">
+              {{ (!isRealModify ? $t('profile.tocertification') : $t('profile.cancelcertification')) }}
+            </span>
+          </span>
         </div>
         <div v-show="!isRealModify" class="myprofile-btom2 myprofile-btom3">{{ userInfo && userInfo.realname ? $t('profile.isset') : $t('profile.withoutcertification') }}</div>
         <div v-show="isRealModify" class="myprofile-btom">
@@ -814,6 +825,8 @@ export default {
           } = e
           if (errors[0].statusCode === 422 && errors[0].detail) {
             this.$message.error(errors[0].detail[0])
+          } else if (errors[0].status === '422' && errors[0].detail) {
+            this.$message.error(errors[0].detail[0])
           } else if (errors[0].detail) {
             this.$message.error(errors[0].detail)
           }
@@ -1003,7 +1016,9 @@ export default {
       text-align: right;
       margin-right: 30px;
       color: #1878f3;
-      cursor: pointer;
+      .setbutton {
+        cursor: pointer;
+      }
     }
   }
   .mtop {

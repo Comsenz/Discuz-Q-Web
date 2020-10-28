@@ -38,15 +38,13 @@
       </div>
       <div class="mywallet-topitem mywallet-r">
         <div class="margbtm">{{ $t('pay.payPassword') }}</div>
-        <div
-          v-if="hasPassword"
-          class="changepas"
-          @click="changePassword"
-        >
-          <svg-icon
-            type="shield"
-            class="shield-icon"
-          />{{ $t('profile.walletpasset') }}
+        <div v-if="hasPassword">
+          <span class="changepas" @click="changePassword">
+            <svg-icon
+              type="shield"
+              class="shield-icon"
+            />{{ $t('profile.walletpasset') }}
+          </span>
         </div>
         <div
           v-else

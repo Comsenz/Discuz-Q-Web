@@ -78,10 +78,8 @@ export default {
     }
   },
   mounted() {
-    const { code, nickname, headimgurl, token } = this.$route.query
-    if (token) {
-      this.token = token
-    }
+    const { code, nickname, headimgurl } = this.$route.query
+    if (process.client) this.token = localStorage.getItem('wechat')
     if (nickname) {
       this.nickname = nickname
     }
@@ -156,7 +154,7 @@ export default {
       }
     },
     toRegister() {
-      this.$router.push(`/pages/user/register-bind?nickname=${this.nickname}&headimgurl=${this.headimgurl}&token=${this.token}`)
+      this.$router.push(`/pages/user/register-bind?nickname=${this.nickname}&headimgurl=${this.headimgurl}`)
     },
     iscanReg() {
       return [this.canReg ? '' : 'noreg']

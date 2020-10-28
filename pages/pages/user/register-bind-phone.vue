@@ -96,9 +96,9 @@ export default {
     }
   },
   mounted() {
-    const { validate, code, mobileToken, phoneNumber } = this.$route.query
-    if (mobileToken) {
-      this.mobileToken = mobileToken
+    const { validate, code, phoneNumber } = this.$route.query
+    if (process.client) {
+      this.mobileToken = localStorage.getItem('mobileToken')
     }
     if (phoneNumber) {
       this.phoneNumber = phoneNumber
@@ -226,7 +226,7 @@ export default {
         })
     },
     jump2Login() {
-      this.$router.push(`/pages/user/login-bind-phone?&validate=${this.validate}&code=${this.code}&mobileToken=${this.mobileToken}&phoneNumber=${this.phoneNumber}`)
+      this.$router.push(`/pages/user/login-bind-phone?&validate=${this.validate}&code=${this.code}&phoneNumber=${this.phoneNumber}`)
     }
   },
   head() {
