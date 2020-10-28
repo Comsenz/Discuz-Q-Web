@@ -19,7 +19,7 @@ module.exports = {
         } else if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_sms) {
           this.$router.push(`/pages/user/phone-login?code=${this.code}`)
         } else {
-          this.$router.push(`/pages/user/login?code=${this.code}`)
+          this.$router.push(`/pages/user/register?code=${this.code}`)
         }
       }
     },
