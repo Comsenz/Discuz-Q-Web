@@ -128,7 +128,11 @@ export default {
               res.data.errors &&
               res.data.errors[0].code === 'no_bind_user'
             ) {
-              this.$router.push(`/pages/user/register-bind-phone?mobileToken=${res.data.errors[0].token}&phoneNumber=${this.phoneNumber}`)
+              if (process.client) {
+                const mobileToken = res.data.errors[0].token
+                localStorage.setItem('mobileToken', mobileToken)
+              }
+              this.$router.push(`/pages/user/register-bind-phone?phoneNumber=${this.phoneNumber}`)
               return
             }
             if (
