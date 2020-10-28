@@ -16,7 +16,7 @@
                 {{ $t("topic.share") }}
               </div>
             </share-popover>
-            <nuxt-link to="/pages/topic/list" class="item hover">{{ $t('topic.allTopics') }}</nuxt-link>
+            <nuxt-link to="/topic/list" class="item hover">{{ $t('topic.allTopics') }}</nuxt-link>
           </div>
         </div>
         <div class="thread-list">

@@ -47,14 +47,14 @@
       </div>
       <nuxt-link
         v-if="item.post_content"
-        :to="`/pages/topic/comment?threadId=${item.thread_id}&commentId=${item.reply_post_id !== 0
+        :to="`/topic/comment?threadId=${item.thread_id}&commentId=${item.reply_post_id !== 0
           ? item.reply_post_id : item.post_id}`"
         class="post-content"
         v-html="$xss(item.post_content)"
       />
       <nuxt-link
         v-if="(item.thread_title || item.content) && item.type !== 'system'"
-        :to="`/pages/topic/index?id=${item.thread_id}`"
+        :to="`/topic/index?id=${item.thread_id}`"
         class="thread"
         target="_blank"
       >

@@ -163,7 +163,7 @@
         <!-- 位置 -->
         <nuxt-link
           v-if="item.location"
-          :to="`/pages/topic/position?longitude=${item.longitude}&latitude=${item.latitude}`"
+          :to="`/topic/position?longitude=${item.longitude}&latitude=${item.latitude}`"
           class="location"
         >
           <span class="flex">
@@ -334,7 +334,7 @@ export default {
     // 详情路由
     routerLink() {
       window.open(
-        `/pages/topic/index?id=${this.item._jv && this.item._jv.id}`,
+        `/topic/index?id=${this.item._jv && this.item._jv.id}`,
         '_blank'
       )
     },

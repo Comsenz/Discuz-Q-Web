@@ -65,17 +65,11 @@ export default {
     middleware: 'header',
     routeNameSplitter: '/',
     extendRoutes(routes, resolve) {
-      routes.push({
+      routes.unshift({
         name: 'h5',
         path: '/topic/index',
         component: resolve(__dirname, 'pages/pages/topic/_index.vue')
       })
-      // routes.push({
-      //   path: '/topic/index',
-      //   redirect: {
-      //     name: 'Topic'
-      //   }
-      // })
     }
   },
   /*

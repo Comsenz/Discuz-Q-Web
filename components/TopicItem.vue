@@ -140,7 +140,7 @@ export default {
     // 详情路由
     routerLink() {
       window.open(
-        `/pages/topic/index?id=${this.thread && this.thread._jv && this.thread._jv.id}`,
+        `/topic/index?id=${this.thread && this.thread._jv && this.thread._jv.id}`,
         '_blank'
       )
     },
