@@ -5,16 +5,11 @@
     </label>
     <div class="infinite-list-wrapper" style="overflow:auto">
       <ul v-infinite-scroll="load" infinite-scroll-disabled="disabled">
-        <li v-if="searchList.length === 0 && searchValue && !loading" @click="emitValue(searchValue)">
+        <li v-if="searchValue && searchList.map(item => item.content).indexOf(searchValue) < 0 && !loading" @click="emitValue(searchValue)">
           <span>#{{ searchValue }}#</span>
           <span>{{ $t('topic.newTopic') }}</span>
         </li>
-        <li
-          v-for="(topic, index) in searchList"
-          :key="index"
-          class="infinite-list-item"
-          @click="emitValue(topic.content)"
-        >
+        <li v-for="(topic, index) in searchList" :key="index" class="infinite-list-item" @click="emitValue(topic.content)">
           <span>#{{ topic.content }}#</span>
           <svg-icon v-show="topic.recommended === 1" type="recommend" style="font-size: 16px" />
           <span>{{ topic.view_count + $t('topic.hot') }}</span>
