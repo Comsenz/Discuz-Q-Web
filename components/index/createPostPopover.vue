@@ -104,7 +104,7 @@ export default {
     },
     // 跳往发帖页
     toRouter(val) {
-      this.$router.push(`/topic/post?type=${val}${this.categoryId ? `&categoryId=${this.categoryId}` : ''}`)
+      this.$router.push(`/pages/topic/post?type=${val}${this.categoryId ? `&categoryId=${this.categoryId}` : ''}`)
     }
   }
 }
