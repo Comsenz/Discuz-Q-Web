@@ -69,12 +69,13 @@
 const threadInclude = 'posts.replyUser,user.groups,user,user.groups.permissionWithoutCategories,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers'
 import handleError from '@/mixin/handleError'
 import isLogin from '@/mixin/isLogin'
+import payment from '@/mixin/payment'
 import env from '@/utils/env'
 
 export default {
   name: 'Topic',
   layout: 'custom_layout',
-  mixins: [handleError, isLogin],
+  mixins: [handleError, isLogin, payment],
   async asyncData({ query, store }) {
     if (!env.isSpider) {
       return {}
@@ -98,7 +99,7 @@ export default {
         { text: this.$t('topic.share'), command: 'showLink', canOpera: true, icon: 'link' }
       ],
       paidInformation: { price: '0', paid: false, paidUsers: [], paidCount: 0, isPaidAttachment: false, attachmentPrice: '0' },
-      payment: { orderNo: '', payment_type: 0, status: 0, wechat_qrcode: '', rewardAmount: '' },
+      payment: { wechat_qrcode: '', rewardAmount: '' },
       location: { location: '', latitude: '', longitude: '' },
       managementList: [
         { name: 'canEdit', command: 'toEdit', isStatus: false, canOpera: false, text: this.$t('topic.edit'), type: '0' },
@@ -224,84 +225,12 @@ export default {
       if (this.rewardOrPay === 'reward' && (!rewardAmount || parseFloat(rewardAmount) === 0)) return this.$message.error(this.$t('pay.AmountCannotBeLessThan0'))
       this.showCheckoutCounter = false
       if (payWay === 'walletPay') {
-        this.payment.payment_type = 20
         this.showPasswordInput = true
-        this.createOrder(hideAvatar, this.payOrRewardAmount).finally(() => { this.defaultLoading = false })
+        this.createOrder(hideAvatar, this.payOrRewardAmount, this.payOrderType, 20).finally(() => { this.defaultLoading = false })
       } else if (payWay === 'wxPay') {
-        this.payment.payment_type = 10
         if (!this.forums.paycenter.wxpay_close) return this.$message.warning(this.$t('pay.wxPayClose'))
-        this.createOrder(hideAvatar, this.payOrRewardAmount).then(() => this.payOrder()).finally(() => { this.defaultLoading = false })
+        this.createOrder(hideAvatar, this.payOrRewardAmount, this.payOrderType, 10).then(() => this.payOrder()).finally(() => { this.defaultLoading = false })
       }
-    },
-    createOrder(hideAvatar, amount = 0) {
-      if (this.defaultLoading) return
-      this.defaultLoading = true
-      const params = {
-        _jv: { type: `/orders` },
-        type: this.payOrderType,
-        thread_id: this.threadId,
-        is_anonymous: hideAvatar,
-        amount
-      }
-      return this.$store.dispatch('jv/post', params).then(data => {
-        this.payment.orderNo = data.order_sn
-      }, e => this.handleError(e))
-    },
-    payOrder(password = '') {
-      const params = {
-        _jv: { type: `/trade/pay/order/${this.payment.orderNo}` },
-        order_sn: this.payment.orderNo,
-        payment_type: this.payment.payment_type,
-        pay_password: password
-      }
-      return this.$store.dispatch('jv/post', params).then(data => {
-        if (this.payment.payment_type === 10) {
-          this.wxPayActive(data)
-        } else {
-          this.$message.success(this.$t('pay.paySuccess'))
-          this.passwordError = false
-          this.showPasswordInput = false
-          this.getThread()
-        }
-      }, e => {
-        const { response: { data: { errors }}} = e
-        if (errors[0].code === 'pay_password_failures_times_toplimit') {
-          this.passwordError = true
-          this.passwordErrorTip = this.$t('core.pay_password_failures_times_toplimit')
-          return
-        }
-        if (errors[0].code === 'validation_error') {
-          this.passwordError = true
-          this.passwordErrorTip = errors[0].detail[0]
-          return
-        }
-        this.handleError(e)
-      })
-    },
-    wxPayActive(data) {
-      this.payment.wechat_qrcode = data.wechat_qrcode
-      this.showWxPay = true
-      if (process.client) {
-        const id = setInterval(() => {
-          if (this.payment.status === 1) {
-            clearInterval(id)
-            this.$message.success(this.$t('pay.paySuccess'))
-            this.showWxPay = false
-            this.getThread()
-          }
-          if (!this.showWxPay) clearInterval(id)
-          this.getOrderStatus()
-        }, 3000)
-      }
-    },
-    getOrderStatus() {
-      const params = { _jv: { type: `/orders/${this.payment.orderNo}` }, orderNo: this.payment.orderNo }
-      return this.$store.dispatch('jv/get', params).then(data => { this.payment.status = data.status }, e => this.handleError(e))
-    },
-    onFindPassword() {
-      this.showPasswordInput = this.passwordError = false
-      this.passwordErrorTip = ''
-      this.findPassword = true
     },
     postCommand(item) {
       if (this.defaultLoading) return

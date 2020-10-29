@@ -19,7 +19,6 @@
       :amount="0"
       :be-asked-user="question.beUser || {}"
       :show-anonymous="false"
-      content="fuck"
       reward-or-pay="reward"
       @close="showCheckoutCounter = false"
       @paying="paying"
@@ -75,7 +74,8 @@ export default {
       categorySelectedId: '',
       isEditor: false,
       onPublish: false,
-      showCheckoutCounter: false
+      showCheckoutCounter: false,
+      defaultLoading: false
     }
   },
   computed: {
@@ -196,48 +196,47 @@ export default {
     },
     async publish() {
       if (this.checkPublish() !== 'success') return
-      console.log('question => ', this.question)
       if (this.type === '5' && this.question.paymentType === 'paid') { // 付费问答帖，开启收银台
         this.showCheckoutCounter = true
       }
-      // this.onPublish = true
-      // if (this.isEditor) {
-      //   return Promise.all([this.editThreadPublish(), this.editPostPublish()]).then(dataArray => {
-      //     this.$router.push(`/topic/index?id=${dataArray[0]._jv.id}`)
-      //   }, e => this.handleError(e)).finally(() => {
-      //     this.onPublish = false
-      //   })
-      // }
-      // let params = {
-      //   _jv: {
-      //     type: `threads`,
-      //     relationships: {
-      //       category: {
-      //         data: { type: 'categories', id: this.categorySelectedId }
-      //       }
-      //     }
-      //   },
-      //   content: this.post.text
-      // }
-      // this.post.title ? params.title = this.post.title : ''
-      // params.type = this.type
-      // params = this.publishPayment(params, this.payment)
-      // params = this.publishLocation(params, this.location)
-      // params = this.publishThreadResource(params, this.post)
-      // params = this.publishPostResource(params, this.post)
-      // if (this.forums.other.create_thread_with_captcha) {
-      //   try {
-      //     params = await this.checkCaptcha(params)
-      //   } catch (e) {
-      //     this.onPublish = false
-      //     return
-      //   }
-      // }
-      // return this.$store.dispatch('jv/post', params).then(data => {
-      //   this.$router.push(`/topic/index?id=${data._jv.id}`)
-      // }, e => this.handleError(e)).finally(() => {
-      //   this.onPublish = false
-      // })
+      this.onPublish = true
+      if (this.isEditor) {
+        return Promise.all([this.editThreadPublish(), this.editPostPublish()]).then(dataArray => {
+          this.$router.push(`/topic/index?id=${dataArray[0]._jv.id}`)
+        }, e => this.handleError(e)).finally(() => {
+          this.onPublish = false
+        })
+      }
+      let params = {
+        _jv: {
+          type: `threads`,
+          relationships: {
+            category: {
+              data: { type: 'categories', id: this.categorySelectedId }
+            }
+          }
+        },
+        content: this.post.text
+      }
+      this.post.title ? params.title = this.post.title : ''
+      params.type = this.type
+      params = this.publishPayment(params, this.payment)
+      params = this.publishLocation(params, this.location)
+      params = this.publishThreadResource(params, this.post)
+      params = this.publishPostResource(params, this.post)
+      if (this.forums.other.create_thread_with_captcha) {
+        try {
+          params = await this.checkCaptcha(params)
+        } catch (e) {
+          this.onPublish = false
+          return
+        }
+      }
+      return this.$store.dispatch('jv/post', params).then(data => {
+        this.$router.push(`/topic/index?id=${data._jv.id}`)
+      }, e => this.handleError(e)).finally(() => {
+        this.onPublish = false
+      })
     },
     editPostPublish() {
       // 用于 更新 content image attached
