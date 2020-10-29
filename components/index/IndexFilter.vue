@@ -88,15 +88,6 @@ export default {
       }, {
         label: this.$t('home.picture'), // 图片
         value: 3
-      }, {
-        label: this.$t('home.voice'), // 语音
-        value: 4
-      }, {
-        label: this.$t('home.question'), // 问答
-        value: 5
-      }, {
-        label: this.$t('home.product'), // 商品
-        value: 6
       }],
       // 排序
       filterSort: [{
