@@ -2,16 +2,12 @@
   <message-box :title="$t('post.callFriends')" overflow="visible" @close="$emit('close')">
     <div class="top">
       <div class="container-selectedCaller">
-        <div v-for="(username, index) in selectedFriends" :key="index" class="selectedCaller">
-          <span>@ {{ username }}</span>
-          <svg-icon
-            style="font-size: 14px; cursor: pointer; fill: #6d6d6d"
-            type="close"
-            @click="selectedFriends.splice(selectedFriends.indexOf(username), 1)"
-          />
+        <div v-show="Object.keys(selectedFriend).length > 0" class="selectedCaller">
+          <span>@ {{ selectedFriend.username }}</span>
+          <svg-icon style="font-size: 14px; cursor: pointer; fill: #6d6d6d" type="close" @click="selectedFriend = {}" />
         </div>
       </div>
-      <div class="tip">{{ $t('post.searchFriends') }}</div>
+      <div class="tip">{{ $t('post.searchFriendsCanBeAsd') }}</div>
       <div class="container-search-list">
         <label>
           <input ref="inputCaller" :placeholder="$t('post.pleaseInput')" type="text" class="input-caller" @input="searchUser">
@@ -21,7 +17,7 @@
             <li
               v-for="(user, index) in searchList"
               :key="index"
-              :class="{ 'infinite-list-item': true, selected: selectedFriends.indexOf(user.username) >= 0 }"
+              :class="{ 'infinite-list-item': true, selected: selectedFriend.username === user.username }"
               @click="selectFriendFromUl(user)"
             >{{ user.username }}</li>
           </ul>
@@ -35,8 +31,8 @@
           <div
             v-for="(user, index) in qaFriends"
             :key="index"
-            :class="{ caller: true, selected: selectedFriends.indexOf(user.username) >= 0 }"
-            @click="selectedFriends.indexOf(user.username) >= 0 ? selectedFriends.splice(selectedFriends.indexOf(user.username), 1) : selectedFriends.push(user.username)"
+            :class="{ caller: true, selected: selectedFriend.username === user.username }"
+            @click="selectedFriend = user"
           >
             <avatar :user="user" size="30" round prevent-jump />
             <span>{{ user.username }}</span>
@@ -46,8 +42,8 @@
     </div>
     <div class="bottom">
       <div class="container">
-        <span class="text">{{ $t('post.chosen') + ' ' + selectedFriends.length + ' ' + $t('topic.personUnit') }}</span>
-        <el-button size="medium" type="primary" @click="$emit('selectedCaller', formatValue())">{{ $t('post.confirmChoice') }}</el-button>
+        <!--<span class="text">{{ $t('post.chosen') + ' ' + selectedFriend.length + ' ' + $t('topic.personUnit') }}</span>-->
+        <el-button size="medium" type="primary" @click="$emit('selectedQaCaller', selectedFriend)">{{ $t('post.confirmChoice') }}</el-button>
       </div>
     </div>
   </message-box>
@@ -63,7 +59,7 @@ export default {
     return {
       qaFriends: [],
       qaFriendsLoading: true,
-      selectedFriends: [],
+      selectedFriend: {},
       searchList: [],
       searchValue: '',
       searchTotal: 10,
@@ -95,10 +91,8 @@ export default {
         include
       }
       return this.$store.dispatch('jv/get', ['follow', { params }]).then(data => {
-        console.log('friend', data)
         this.qaFriendsLoading = false
-        // this.qaFriends = data.filter(item => item.is_mutual === 1)
-        this.qaFriends = this.qaFriends.map(item => item.fromUser)
+        this.qaFriends = data.map(item => item.fromUser)
       }, e => this.handleError(e))
     },
     searchUser(e) {
@@ -118,14 +112,13 @@ export default {
         'filter[username]': '*' + this.searchValue + '*',
         'filter[status]': 'normal',
         'page[limit]': this.pageLimit,
-        'page[number]': this.pageNumber
+        'page[number]': this.pageNumber,
+        'filter[canBeAsked]': 'yes'
       }
       this.$store.dispatch('jv/get', ['users', { params }]).then(data => {
         const { _jv: { json: { meta }}} = data
-        // const { _jv: { json: { links }}} = data
         this.loading = false
         this.searchTotal = meta.total
-        // data.length > 0 && links.first.split('username')[1].split('%2A')[1] === this.searchValue
         if (data.length > 0) this.searchList.push(...data)
       }, e => this.handleError(e))
     },
@@ -137,13 +130,13 @@ export default {
         this.getSearchList()
       }
     },
-    formatValue() {
-      let callerList = [...this.selectedFriends]
-      callerList = callerList.map(item => item + ' ')
-      return ' @' + callerList.join('@')
-    },
+    // formatValue() {
+    //   let callerList = [...this.selectedFriend]
+    //   callerList = callerList.map(item => item + ' ')
+    //   return ' @' + callerList.join('@')
+    // },
     selectFriendFromUl(user) {
-      this.selectedFriends.indexOf(user.username) < 0 && this.selectedFriends.push(user.username)
+      this.selectedFriend = user
       this.clear()
     },
     clear() {
