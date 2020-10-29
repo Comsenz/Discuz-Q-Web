@@ -74,7 +74,7 @@ export default {
     selectedQaCaller(user) {
       this.beAskedUser = user
       this.showQACaller = false
-      this.$emit('beUserIdChange', user._jv.id)
+      this.$emit('beUserChange', user)
     }
   }
 }

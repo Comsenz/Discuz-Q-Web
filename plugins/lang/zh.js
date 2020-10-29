@@ -230,6 +230,8 @@ export default {
   },
   // 发布页
   post: {
+    askHim: '向他提问',
+    answerer: '解答人：',
     addBeAskedUser: '+选择解答人',
     changeBeAskedUser: '更换解答人',
     attachmentList: '附件列表:',
@@ -290,6 +292,7 @@ export default {
     titleLengthCannotOver: '文章标题不可超出 150 个字符',
     theTitleCanNotBeBlank: '标题不能为空',
     theContentCanNotBeBlank: '内容不能为空',
+    pleaseChooseBeAskedUser: '请选择解答人',
     theClassifyCanNotBeBlank: '请选择分类',
     imageCannotBeEmpty: '图片不能为空',
     videoCannotBeEmpty: '视频不能为空',

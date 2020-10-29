@@ -12,6 +12,18 @@
       </template>
     </div>
     <editor :type-information="typeInformation[type]" :edit-resource-show="editResourceShow" :question.sync="question" :payment.sync="payment" :on-publish="onPublish" :is-edit="isEditor" :post.sync="post" @publish="publish" />
+    <topic-checkout-counter
+      v-if="showCheckoutCounter"
+      :thread-type="5"
+      :user="currentUser || {}"
+      :amount="0"
+      :be-asked-user="question.beUser || {}"
+      :show-anonymous="false"
+      content="fuck"
+      reward-or-pay="reward"
+      @close="showCheckoutCounter = false"
+      @paying="paying"
+    />
   </div>
 </template>
 
@@ -32,7 +44,7 @@ export default {
       post: { id: '', title: '', text: '', imageList: [], videoList: [], attachedList: [] },
       payment: { paidType: 'free', price: 0, freeWords: 0, attachmentPrice: 0 }, // free 免费， paid 全部付费，attachmentPaid 文章免费，附件付费
       location: { latitude: '', location: '', longitude: '' },
-      question: { beUserId: '', orderId: '', price: '', isOnlooker: false, paymentType: 'free', isAnonymous: false },
+      question: { beUser: '', orderId: '', price: '', isOnlooker: false, paymentType: 'free', isAnonymous: false },
       editResourceShow: { showUploadImg: false, showUploadVideo: false, showUploadAttached: false },
       typeInformation: {
         // 0 文字帖 1 帖子 2 视频 3 图片 4 语音 5 问答 6 商品
@@ -46,23 +58,24 @@ export default {
           showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
         3: { type: 3, headerText: 'postImage', textLimit: 450, showPayment: true, showTitle: false, showImage: true, showVideo: false,
-          showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' }
+          showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
         // 语音帖不需要发帖
         // 4: { type: 3, headerText: 'postImage', textLimit: 450, showPayment: true, showTitle: false, showImage: true, showVideo: false,
         //   showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
         // TODO 问答帖
-        // 5: { type: 5, headerText: 'postQA', textLimit: 450, showPayment: true, showTitle: false, showImage: true, showVideo: false,
-        //   showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
+        5: { type: 5, headerText: 'postQA', textLimit: 450, showPayment: false, showTitle: false, showImage: true, showVideo: false,
+          showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
         // TODO 商品帖
-        // 6: { type: 6, headerText: 'postProduct', textLimit: 450, showPayment: true, showTitle: false, showImage: true, showVideo: false,
-        //   showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' }
+        6: { type: 6, headerText: 'postProduct', textLimit: 450, showPayment: true, showTitle: false, showImage: true, showVideo: false,
+          showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' }
       },
       categorySelectedId: '',
       isEditor: false,
-      onPublish: false
+      onPublish: false,
+      showCheckoutCounter: false
     }
   },
   computed: {
@@ -80,11 +93,14 @@ export default {
     },
     textarea() {
       return process.client ? document.querySelector(`#textarea`) : ''
+    },
+    currentUser() {
+      return this.$store.state.user.info.attributes || {}
     }
   },
   mounted() {
-    // if (['0', '1', '2', '3', '5', '6'].indexOf(this.type) < 0) return this.$router.replace('/error')
-    if (['0', '1', '2', '3'].indexOf(this.type) < 0) return this.$router.replace('/error')
+    if (['0', '1', '2', '3', '5', '6'].indexOf(this.type) < 0) return this.$router.replace('/error')
+    // if (['0', '1', '2', '3'].indexOf(this.type) < 0) return this.$router.replace('/error')
     this.getCategoryList()
     this.getThread()
   },
@@ -149,6 +165,9 @@ export default {
         target.push(attached)
       })
     },
+    paying({ payWay, hideAvatar, rewardAmount }) {
+      console.log('paying', payWay, rewardAmount)
+    },
     checkPublish() {
       if (!this.isLogin()) return
       // 0 文字帖 1 帖子 2 视频 3 图片
@@ -165,6 +184,9 @@ export default {
       if (this.type === '3' && this.post.imageList.length === 0) return this.$message.warning(this.$t('post.imageCannotBeEmpty'))
       if (this.type === '4' && !this.post.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
 
+      if (this.type === '5' && !this.question.beUser.username) return this.$message.warning(this.$t('post.pleaseChooseBeAskedUser'))
+      if (this.type === '5' && !this.post.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
+
       if (this.payment.paidType === 'paid' && this.payment.price === 0) return this.$message.warning(this.$t('post.paidTypePaidPriceCanNotBeZero'))
       if (this.payment.paidType === 'paid' && this.payment.price < 0.1) return this.$message.warning(this.$t('post.paidAmountTooLow'))
       if (this.payment.paidType === 'attachmentPaid' && this.payment.attachmentPrice === 0) return this.$message.warning(this.$t('post.paidTypeAttachmentPaidPriceCanNotBeZero'))
@@ -174,44 +196,48 @@ export default {
     },
     async publish() {
       if (this.checkPublish() !== 'success') return
-      this.onPublish = true
-      if (this.isEditor) {
-        return Promise.all([this.editThreadPublish(), this.editPostPublish()]).then(dataArray => {
-          this.$router.push(`/topic/index?id=${dataArray[0]._jv.id}`)
-        }, e => this.handleError(e)).finally(() => {
-          this.onPublish = false
-        })
+      console.log('question => ', this.question)
+      if (this.type === '5' && this.question.paymentType === 'paid') { // 付费问答帖，开启收银台
+        this.showCheckoutCounter = true
       }
-      let params = {
-        _jv: {
-          type: `threads`,
-          relationships: {
-            category: {
-              data: { type: 'categories', id: this.categorySelectedId }
-            }
-          }
-        },
-        content: this.post.text
-      }
-      this.post.title ? params.title = this.post.title : ''
-      params.type = this.type
-      params = this.publishPayment(params, this.payment)
-      params = this.publishLocation(params, this.location)
-      params = this.publishThreadResource(params, this.post)
-      params = this.publishPostResource(params, this.post)
-      if (this.forums.other.create_thread_with_captcha) {
-        try {
-          params = await this.checkCaptcha(params)
-        } catch (e) {
-          this.onPublish = false
-          return
-        }
-      }
-      return this.$store.dispatch('jv/post', params).then(data => {
-        this.$router.push(`/topic/index?id=${data._jv.id}`)
-      }, e => this.handleError(e)).finally(() => {
-        this.onPublish = false
-      })
+      // this.onPublish = true
+      // if (this.isEditor) {
+      //   return Promise.all([this.editThreadPublish(), this.editPostPublish()]).then(dataArray => {
+      //     this.$router.push(`/topic/index?id=${dataArray[0]._jv.id}`)
+      //   }, e => this.handleError(e)).finally(() => {
+      //     this.onPublish = false
+      //   })
+      // }
+      // let params = {
+      //   _jv: {
+      //     type: `threads`,
+      //     relationships: {
+      //       category: {
+      //         data: { type: 'categories', id: this.categorySelectedId }
+      //       }
+      //     }
+      //   },
+      //   content: this.post.text
+      // }
+      // this.post.title ? params.title = this.post.title : ''
+      // params.type = this.type
+      // params = this.publishPayment(params, this.payment)
+      // params = this.publishLocation(params, this.location)
+      // params = this.publishThreadResource(params, this.post)
+      // params = this.publishPostResource(params, this.post)
+      // if (this.forums.other.create_thread_with_captcha) {
+      //   try {
+      //     params = await this.checkCaptcha(params)
+      //   } catch (e) {
+      //     this.onPublish = false
+      //     return
+      //   }
+      // }
+      // return this.$store.dispatch('jv/post', params).then(data => {
+      //   this.$router.push(`/topic/index?id=${data._jv.id}`)
+      // }, e => this.handleError(e)).finally(() => {
+      //   this.onPublish = false
+      // })
     },
     editPostPublish() {
       // 用于 更新 content image attached

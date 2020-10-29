@@ -3,7 +3,12 @@
     <div class="top">
       <div class="row">
         <div class="head">{{ $t('pay.payProduct') }}</div>
-        <div class="body product-information">
+        <!--问答帖-->
+        <div v-if="threadType === 5" class="body product-information">
+          <span class="title">{{ $t('post.askHim') }}</span>
+          <span>{{ $t('post.answerer') + beAskedUser.username }}</span>
+        </div>
+        <div v-else class="body product-information">
           <span v-if="rewardOrPay === 'reward'" class="title">{{ $t('pay.supportAuthor') + $t('pay.keepWriting') }}</span>
           <span v-else class="title">{{ $t('pay.supportAuthor') + $t(`pay.${text[threadType]}`) + $t('pay.getRight') }}</span>
           <span>{{ $t('topic.author') + ': ' + (user.username || '') }}</span>
@@ -29,7 +34,7 @@
           </div>
         </div>
       </div>
-      <div class="row">
+      <div v-if="showAnonymous" class="row">
         <div class="head">{{ $t('pay.hideAvatar') }}</div>
         <div class="body hide-avatar" @click="hideAvatar = !hideAvatar">
           <svg-icon v-if="hideAvatar" style="font-size: 18px" type="checked" />
@@ -136,6 +141,14 @@ export default {
     rewardOrPay: {
       type: String,
       default: ''
+    },
+    beAskedUser: {
+      type: Object,
+      default: () => {}
+    },
+    showAnonymous: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
