@@ -235,7 +235,7 @@ export default {
         'filter[type]': this.threadType,
         'filter[isEssence]': this.threadEssence,
         'filter[fromUserId]': this.fromUserId,
-        sort: this.sort,
+        'sort': this.sort,
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize
       }
