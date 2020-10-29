@@ -66,9 +66,14 @@ export default {
     routeNameSplitter: '/',
     extendRoutes(routes, resolve) {
       routes.unshift({
-        name: 'h5',
+        name: 'h5-topic-index',
         path: '/topic/index',
         component: path.resolve() + '/pages/pages/topic/_index.vue'
+      },
+      {
+        name: 'h5-topic-post',
+        path: '/topic/post',
+        component: path.resolve() + '/pages/pages/topic/post.vue'
       })
     }
   },

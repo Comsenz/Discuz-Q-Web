@@ -21,7 +21,7 @@
           </div>
           <el-button type="primary" class="r-button" @click="UserLogin">{{ $t('user.login') }}</el-button>
           <div class="logorreg">
-            <span v-if="canReg && forums && forums.set_reg && (forums.set_reg.register_type === 0 || this.forums.set_reg.register_type === 2)">
+            <span v-if="canReg && forums && forums.set_reg && (forums.set_reg.register_type === 0 || forums.set_reg.register_type === 2)">
               {{ $t('user.noexist') }}
               <span class="agreement_text" @click="toRegister"> {{ $t('user.register') }}</span></span>
             <nuxt-link
