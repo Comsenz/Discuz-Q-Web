@@ -300,7 +300,8 @@ export default {
     attachmentUpload: '附件上传',
     failedToObtainSignature: '获取签名失败',
     fromWeChatApplet: '来自微信小程序',
-    pleaseEnterAPostTitle: '请输入帖子标题'
+    pleaseEnterAPostTitle: '请输入帖子标题',
+    buyProudct: '购买商品'
   },
   topic: {
     attachment: '附件',
@@ -779,7 +780,7 @@ export default {
     createThreadImage: '发布图片',
     createThreadAudio: '发布语音',
     createThreadGoods: '发布商品',
-    createThreadQuestion : '发布问答',
+    createThreadQuestion: '发布问答',
     createThread: '发布文本',
     createThreadLong: '发布帖子',
     createThreadVideo: '发布视频',
@@ -808,7 +809,7 @@ export default {
       agreementPrivacy: '隐私政策',
       edit: {
         status: '编辑用户状态',
-        group: '编辑用户用户组',
+        group: '编辑用户用户组'
       }
     },
     userFollow: {

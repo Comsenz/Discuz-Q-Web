@@ -67,7 +67,7 @@ export default {
       include: 'firstPost'
     }
     const threadsParams = {
-      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser',
+      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods',
       'filter[isSticky]': 'no',
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no',
@@ -183,7 +183,7 @@ export default {
   },
   mounted() {
     if (this.forums && this.forums.set_site) {
-      this.htitle = this.forums.set_site.site_name ? this.forums.set_site.site_name : 'Discuz! Q'
+      this.htitle = this.forums.set_site.site_title || this.forums.set_site.site_name || 'Discuz! Q'
     }
     if (this.$route.query.categoryId) {
       this.categoryId = this.$route.query.categoryId
@@ -227,7 +227,7 @@ export default {
     getThreadsList() {
       this.loading = true
       const params = {
-        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser',
+        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods',
         'filter[isSticky]': 'no',
         'filter[isApproved]': 1,
         'filter[isDeleted]': 'no',
@@ -348,7 +348,11 @@ export default {
   },
   head() {
     return {
-      title: this.htitle
+      title: this.htitle,
+      meta: [
+        { hid: 'keywords', name: 'keywords', content: (this.forums && this.forums.set_site && this.forums.set_site.site_keywords) || '' },
+        { hid: 'description', name: 'description', content: (this.forums && this.forums.set_site && this.forums.set_site.site_introduction) || '' }
+      ]
     }
   }
 }
