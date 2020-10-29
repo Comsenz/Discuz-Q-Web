@@ -14,7 +14,7 @@
     <div class="info">
       <div class="info-header">
         <div class="title">{{ item.title }}</div>
-        <div class="price">{{ $t('post.yuanItem') + item.price }}</div>
+        <div class="price">{{ $t('post.yuanItem') + item.price + $t('post.yuan') }}</div>
       </div>
       <div class="btn"><svg-icon type="product-icon" class="icon" />{{ $t('post.buyProudct') }}</div>
     </div>
@@ -24,6 +24,7 @@
 export default {
   name: 'ProductItem',
   props: {
+    // 接收postGoods
     item: {
       type: Object,
       default: () => {}
@@ -35,6 +36,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import "@/assets/css/variable/mixin.scss";
 .product-container{
   display: flex;
   background: #F4F5F6;
@@ -64,6 +66,7 @@ export default {
     justify-content: space-between;
     .title{
       line-height: 24px;
+      @include text-hidden(2);
     }
     .price{
       color: #FA5151;
