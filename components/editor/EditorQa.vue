@@ -18,14 +18,22 @@
         <span>{{ $t('post.questionHim') }}:</span>
         <span class="select-answerer" @click="showQACaller = true">+选择回答者</span>
       </div>
+      <div v-show="Object.keys(beAskedUser).length > 0" class="be-asked-user">
+        <avatar-component :author="beAskedUser" :size="50" round>
+          {{ $t('topic.activeAt') }} {{ timerDiff(beAskedUser.updatedAt) }}{{ $t('topic.before') }}
+        </avatar-component>
+      </div>
     </div>
-    <qa-caller v-if="showQACaller" @close="showQACaller = false" />
+    <qa-caller v-if="showQACaller" @close="showQACaller = false" @selectedQaCaller="selectedQaCaller" />
   </div>
 </template>
 
 <script>
+import timerDiff from '@/mixin/timerDiff'
+
 export default {
   name: 'EditorQa',
+  mixins: [timerDiff],
   props: {
     question: {
       type: Object,
@@ -35,9 +43,16 @@ export default {
   data() {
     return {
       paymentRadio: 'free',
+      beAskedUser: {},
       isAnonymous: false,
       canLooker: false,
       showQACaller: false
+    }
+  },
+  methods: {
+    selectedQaCaller(user) {
+      this.beAskedUser = user
+      this.showQACaller = false
     }
   }
 }
@@ -60,6 +75,17 @@ export default {
         margin-left: 10px;
         cursor: pointer;
       }
+    }
+    > .be-asked-user {
+      width: 230px;
+      min-width: 230px;
+      height: 70px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #F4F5F6;
+      border: 1px solid #EDEDED;
+      border-radius: 2px;
     }
   }
 }

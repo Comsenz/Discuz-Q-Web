@@ -242,6 +242,7 @@ export default {
     myFriends: '我的好友',
     chosen: '已选择',
     confirmChoice: '确定选择',
+    searchFriendsCanBeAsd: '请输入昵称，来搜索可被提问的圈友',
     searchFriends: '请输入昵称，来搜索圈友',
     topicInputTip: '请选择或直接输入#话题#',
     pleaseInputPostTitle: '请输入文章标题',
