@@ -95,51 +95,6 @@ export default {
       filterSelected3: '', // 冻结状态过滤内容的id
       freezelist: [], // 冻结金额
       total3: 0, // 冻结金额记录总记录数
-      // 钱包明细状态选择文本
-      options2: [{
-        value: '',
-        label: this.$t('profile.all')
-      }, {
-        value: '10',
-        label: this.$t('profile.withdrawalfreeze')
-
-      }, {
-        value: '11',
-        label: this.$t('profile.withdrawalsucceed')
-
-      }, {
-        value: '12',
-        label: this.$t('profile.withdrawalunfreeze')
-
-      }, {
-        value: '30',
-        label: this.$t('profile.registeredincome')
-
-      }, {
-        value: '31',
-        label: this.$t('profile.rewardincome')
-
-      }, {
-        value: '32',
-        label: this.$t('profile.laborincome')
-
-      }, {
-        value: '50',
-        label: this.$t('profile.laborexpenditure')
-
-      }, {
-        value: '41',
-        label: this.$t('profile.givearewardforthetheme')
-
-      }, {
-        value: '60',
-        label: this.$t('profile.paidtoseeyourtheme')
-
-      }, {
-        value: '61',
-        label: this.$t('profile.paidtoview')
-
-      }],
       userId: this.$store.getters['session/get']('userId'), // 获取当前登陆用户的ID
       userInfo: '',
       walletFreeze: 0
@@ -161,23 +116,6 @@ export default {
       this.filterSelected3 = e
       this.getFreezelist('filter')
     },
-    // 钱包状态格式化
-    statusFormat2(row) {
-      switch (row.change_type) {
-        case 10: return this.$t('profile.withdrawalfreeze')
-        case 11: return this.$t('profile.withdrawalsucceed')
-        case 12: return this.$t('profile.withdrawalunfreeze')
-        case 30: return this.$t('profile.registeredincome')
-        case 31: return this.$t('profile.rewardincome')
-        case 32: return this.$t('profile.laborincome')
-        case 50: return this.$t('profile.laborexpenditure')
-        case 41: return this.$t('profile.givearewardforthetheme')
-        case 60: return this.$t('profile.paidtoseeyourtheme')
-        case 61: return this.$t('profile.paidtoview')
-
-        default: return '未知状态'
-      }
-    },
     // 金额格式化
     amountFormat(row) {
       // 订单
@@ -194,7 +132,7 @@ export default {
       this.loading = true
       const params = {
         'filter[user]': this.userId,
-        'filter[change_type]': '10, 11, 12', // 10提现冻结 11提现成功 12 提现解冻
+        'filter[change_type]': '10,11,12,81,9,8', // 10提现冻结 11提现成功 12 提现解冻
         'page[number]': this.pageNum3,
         'page[limit]': this.pageSize3
       }

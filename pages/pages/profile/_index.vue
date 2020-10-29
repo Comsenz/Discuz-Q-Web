@@ -257,10 +257,20 @@ export default {
       'filter[isApproved]': 1,
       'filter[user_id]': query.userId
     }
+    const askthreadsparams = {
+      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups',
+      'page[number]': 1,
+      'page[limit]': 20,
+      'filter[isApproved]': 1,
+      'filter[userId]': 714,
+      'filter[type]': 5,
+      'filter[answer]': 'yes'
+    }
     try {
       const resData = {}
       const threadsData = await store.dispatch('jv/get', ['threads', { params: threadparams }])
       const likethreadsData = await store.dispatch('jv/get', ['threads/likes', { params: likethreadsparams }])
+      const askthreadsData = await store.dispatch('jv/get', ['threads', { params: askthreadsparams }])
 
       if (Array.isArray(threadsData)) {
         resData.threadsData = threadsData
@@ -287,6 +297,19 @@ export default {
             firstPost: item.relationships.firstPost.data, user: item.relationships.user.data, _jv: { id: item.id }}
         })
         resData.likethreadsData = _likethreadsData
+      }
+
+      if (Array.isArray(askthreadsData)) {
+        resData.askthreadsData = askthreadsData
+      } else if (askthreadsData && askthreadsData._jv && askthreadsData._jv.json) {
+        const _askthreadsData = askthreadsData._jv.json.data || []
+        _askthreadsData.forEach((item, index) => {
+          _askthreadsData[index] = {
+            ...item,
+            ...item.attributes,
+            firstPost: item.relationships.firstPost.data, user: item.relationships.user.data, _jv: { id: item.id }}
+        })
+        resData.askthreadsData = _askthreadsData
       }
       callback(null, resData)
       // return { threadsData: threadsData }
@@ -325,6 +348,7 @@ export default {
       isShield: false,
       threadsData: [],
       likethreadsData: [],
+      askthreadsData: [],
       unbundlingArry: [], // 解绑用户组
       unbundUserData: [] // 已屏蔽用户组
     }
