@@ -230,6 +230,8 @@ export default {
   },
   // 发布页
   post: {
+    addBeAskedUser: '+选择解答人',
+    changeBeAskedUser: '更换解答人',
     attachmentList: '附件列表:',
     addAttachment: '+添加附件',
     preview: '预览',

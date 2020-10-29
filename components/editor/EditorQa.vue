@@ -2,21 +2,27 @@
   <div class="qa">
     <div class="qa-payment block">
       <div class="title">{{ $t('post.isPay') }}:</div>
-      <el-radio v-model="paymentRadio" label="free">{{ $t('post.freeWatch') }}</el-radio>
-      <el-radio v-model="paymentRadio" label="paid">{{ $t('post.paidWatch') }}</el-radio>
+      <el-radio :value="question.paymentType" label="free" @input="value => $emit('paymentTypeChange', value)">{{ $t('post.freeWatch') }}</el-radio>
+      <el-radio :value="question.paymentType" label="paid" @input="value => $emit('paymentTypeChange', value)">{{ $t('post.paidWatch') }}</el-radio>
     </div>
     <div class="qa-anonymous block">
       <div class="title">{{ $t('post.anonymous') }}:</div>
-      <el-switch v-model="isAnonymous" active-color="#1878F3" />
+      <el-switch :value="question.isAnonymous" active-color="#1878F3" @input="value => $emit('isAnonymousChange', value)" />
     </div>
     <div class="qa-onlooker block">
       <div class="title">{{ $t('post.onLooker') }}:</div>
-      <el-switch v-model="canLooker" active-color="#1878F3" />
+      <el-switch :value="question.isOnlooker" active-color="#1878F3" @input="value => $emit('isOnlookerChange', value)" />
+      <span v-show="siteOnlookerPrice && siteMasterScale && siteUserScale" class="tip">
+        <span>{{ '他人围观需付费 ' + siteOnlookerPrice + ' 元' }}</span>
+        <span>{{ `（你得 ${siteOnlookerPrice * siteUserScale} 元，回答者得 ${siteOnlookerPrice * siteUserScale} 元，平台得 ${siteOnlookerPrice * siteMasterScale} 元）` }}</span>
+      </span>
     </div>
     <div class="qa-answerer block">
       <div class="title">
         <span>{{ $t('post.questionHim') }}:</span>
-        <span class="select-answerer" @click="showQACaller = true">+选择回答者</span>
+        <span class="select-answerer" @click="showQACaller = true">
+          {{ Object.keys(beAskedUser).length > 0 ? $t('post.changeBeAskedUser') : $t('post.addBeAskedUser') }}
+        </span>
       </div>
       <div v-show="Object.keys(beAskedUser).length > 0" class="be-asked-user">
         <avatar-component :author="beAskedUser" :size="50" round>
@@ -42,17 +48,33 @@ export default {
   },
   data() {
     return {
-      paymentRadio: 'free',
       beAskedUser: {},
-      isAnonymous: false,
-      canLooker: false,
       showQACaller: false
     }
+  },
+  computed: {
+    forums() {
+      return this.$store.state.site.info.attributes || {}
+    },
+    siteOnlookerPrice() {
+      return this.forums && this.forums.set_site ? this.forums.set_site.site_onlooker_price : ''
+    },
+    siteMasterScale() {
+      return this.forums && this.forums.set_site ? this.forums.set_site.site_master_scale / 10 : ''
+    },
+    siteUserScale() {
+      return this.siteMasterScale ? 1 - this.siteMasterScale : ''
+    }
+  },
+  // TODO beAskedUser 回显
+  mounted() {
+    console.log(this.forums, 'forums')
   },
   methods: {
     selectedQaCaller(user) {
       this.beAskedUser = user
       this.showQACaller = false
+      this.$emit('beUserIdChange', user._jv.id)
     }
   }
 }
@@ -77,15 +99,22 @@ export default {
       }
     }
     > .be-asked-user {
-      width: 230px;
       min-width: 230px;
       height: 70px;
-      display: flex;
-      justify-content: center;
+      padding: 0 11px;
+      display: inline-flex;
       align-items: center;
       background: #F4F5F6;
       border: 1px solid #EDEDED;
       border-radius: 2px;
+    }
+    > .tip {
+      font-size: 14px;
+      margin-left: 15px;
+      color: #6D6D6D;
+      span:last-child {
+        color: #CCCCCC;
+      }
     }
   }
 }
