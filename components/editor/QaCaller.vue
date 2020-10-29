@@ -97,7 +97,7 @@ export default {
       return this.$store.dispatch('jv/get', ['follow', { params }]).then(data => {
         console.log('friend', data)
         this.qaFriendsLoading = false
-        this.qaFriends = data.filter(item => item.is_mutual === 1)
+        // this.qaFriends = data.filter(item => item.is_mutual === 1)
         this.qaFriends = this.qaFriends.map(item => item.fromUser)
       }, e => this.handleError(e))
     },
