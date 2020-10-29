@@ -4,7 +4,14 @@
       <input :placeholder="$t('post.pleaseInputPostTitle')" class="input-title" type="text" :value="post && post.title" @input="e => onPostContentChange('title', e.target.value)">
     </label>
     <!--问答帖 -->
-    <!--<editor-qa :question="question" />-->
+    <editor-qa
+      v-if="typeInformation && typeInformation.type === 5"
+      :question="question"
+      @paymentTypeChange="value => onQuestionChange('paymentType', value)"
+      @isAnonymousChange="value => onQuestionChange('isAnonymous', value)"
+      @isOnlookerChange="value => onQuestionChange('isOnlooker', value)"
+      @beUserChange="value => onQuestionChange('beUser', value)"
+    />
     <editor-payment v-if="typeInformation && typeInformation.showPayment && canCreateThreadPaid" :payment="payment || {}" :type="typeInformation && typeInformation.type" @paymentChange="e => onPaymentChange(e.key, e.value)" />
     <attachment-upload v-if="isPost" :file-list="post && post.attachedList" :on-upload.sync="onUploadAttached" action="/attachments" :accept="attachedTypeLimit" :limit="99999" type="Attached" :size-limit="attachedSizeLimit" @success="files => onPostContentChange('attachedList', files)" @remove="files => onPostContentChange('attachedList', files)" />
     <Vditor
@@ -241,7 +248,7 @@ export default {
       this.$emit(`update:payment`, _payment)
     },
     onQuestionChange(key, value) {
-      const _question = Object.assign({}, this.payment)
+      const _question = Object.assign({}, this.question)
       _question[key] = value
       this.$emit(`update:question`, _question)
     },

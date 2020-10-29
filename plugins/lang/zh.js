@@ -230,6 +230,10 @@ export default {
   },
   // 发布页
   post: {
+    askHim: '向他提问',
+    answerer: '解答人：',
+    addBeAskedUser: '+选择解答人',
+    changeBeAskedUser: '更换解答人',
     attachmentList: '附件列表:',
     addAttachment: '+添加附件',
     preview: '预览',
@@ -288,6 +292,7 @@ export default {
     titleLengthCannotOver: '文章标题不可超出 150 个字符',
     theTitleCanNotBeBlank: '标题不能为空',
     theContentCanNotBeBlank: '内容不能为空',
+    pleaseChooseBeAskedUser: '请选择解答人',
     theClassifyCanNotBeBlank: '请选择分类',
     imageCannotBeEmpty: '图片不能为空',
     videoCannotBeEmpty: '视频不能为空',
@@ -300,7 +305,8 @@ export default {
     attachmentUpload: '附件上传',
     failedToObtainSignature: '获取签名失败',
     fromWeChatApplet: '来自微信小程序',
-    pleaseEnterAPostTitle: '请输入帖子标题'
+    pleaseEnterAPostTitle: '请输入帖子标题',
+    buyProudct: '购买商品'
   },
   topic: {
     attachment: '附件',
@@ -779,7 +785,7 @@ export default {
     createThreadImage: '发布图片',
     createThreadAudio: '发布语音',
     createThreadGoods: '发布商品',
-    createThreadQuestion : '发布问答',
+    createThreadQuestion: '发布问答',
     createThread: '发布文本',
     createThreadLong: '发布帖子',
     createThreadVideo: '发布视频',
@@ -808,7 +814,7 @@ export default {
       agreementPrivacy: '隐私政策',
       edit: {
         status: '编辑用户状态',
-        group: '编辑用户用户组',
+        group: '编辑用户用户组'
       }
     },
     userFollow: {

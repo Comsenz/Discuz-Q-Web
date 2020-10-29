@@ -244,14 +244,14 @@ export default {
     const threadparams = {
       'filter[isDeleted]': 'no',
       sort: '-createdAt',
-      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
+      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods',
       'page[number]': 1,
       'page[limit]': 10,
       'filter[isApproved]': 1,
       'filter[userId]': query.userId
     }
     const likethreadsparams = {
-      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
+      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods',
       'page[number]': 1,
       'page[limit]': 10,
       'filter[isApproved]': 1,
