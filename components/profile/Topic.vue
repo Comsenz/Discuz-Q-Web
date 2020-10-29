@@ -58,7 +58,7 @@ export default {
       const params = {
         'filter[isDeleted]': 'no',
         sort: '-createdAt',
-        include: 'user,user.groups,firstPost,firstPost.images,firstPost.postGoods,category,threadVideo,threadAudio',
+        include: 'user,user.groups,firstPost,firstPost.images,firstPost.postGoods,category,threadVideo,threadAudio,question,question.beUser',
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         'filter[isApproved]': 1,

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="item.type < 4" class="post-container">
+  <div class="post-container">
     <div v-if="item.isEssence" class="essence">
       <svg-icon type="index-essence" />
     </div>
@@ -159,6 +159,9 @@
               }}
             </div>
           </div>
+        </div>
+        <div v-if="item.type === 6" class="product">
+          <product-item :item="item.firstPost && item.firstPost.postGoods" />
         </div>
         <!-- 位置 -->
         <nuxt-link

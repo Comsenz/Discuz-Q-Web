@@ -148,7 +148,7 @@ export default {
       const clock = setInterval(() => {
         intervals = intervals - 1
         this.content = intervals + this.$t('modify.retransmission')
-        if (interval < 0) {
+        if (intervals < 0) {
           clearInterval(clock)
           this.content = this.$t('modify.sendVerifyCode')
           this.canClick = true
