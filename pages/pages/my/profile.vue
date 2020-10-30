@@ -42,6 +42,10 @@
           <span>{{ $t('profile.likes') }}</span>
           <span class="num">{{ userInfo.likedCount }}</span>
         </div>
+        <div class="myprofile-title" @click="toQuestion">
+          <span>{{ $t('profile.question') }}</span>
+          <span class="num">{{ userInfo.questionCount }}</span>
+        </div>
       </div>
     </div>
     <!-- 用户名 -->
@@ -883,6 +887,9 @@ export default {
     },
     toLikes() {
       this.$router.push(`/pages/profile/index?userId=${this.userId}&current=2`)
+    },
+    toQuestion() {
+      this.$router.push(`/pages/profile/index?userId=${this.userId}&current=5`)
     }
   },
   head() {

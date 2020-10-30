@@ -61,22 +61,17 @@
               @click="sendsms"
             >{{ content }}</el-button>
           </label>
-          <span
-            v-if="usertestphon"
-            class="phone"
-          >
+          <span v-if="usertestphon" class="phone">
             {{ $t('profile.codesend') }}
             <span style="font-weight:bold;color:#000000; ">{{ usertestphon }}</span> {{ $t('profile.phonesms') }}
           </span>
-          <span
-            v-else
-            class="phone"
-          >
-            {{ $t('profile.withoutbind') }} <span
-              style="font-weight:bold;color:#1878F3;cursor:pointer;"
-              @click="tomy"
-            > {{ $t('profile.personalhomepage') }} </span>
-            {{ $t('profile.tobindphone') }}</span>
+          <span v-else class="phone">
+            {{ $t('profile.withoutbind') }}
+            <span class="phonei" @click="tomy">
+              {{ $t('profile.personalhomepage') }}
+            </span>
+            {{ $t('profile.tobindphone') }}
+          </span>
         </div>
       </div>
     </div>
@@ -92,12 +87,12 @@
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
 import handleError from '@/mixin/handleError'
+import countDown from '@/mixin/countDown'
 const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
 
 export default {
-
-  name: 'WalletPassword',
-  mixins: [handleError, tcaptchs],
+  name: 'Withdrawal',
+  mixins: [handleError, tcaptchs, countDown],
   props: {
     price: {
       type: [Number, String],
@@ -140,21 +135,6 @@ export default {
     this.forumsdata()
   },
   methods: {
-    countDown(interval) {
-      if (!this.canClick) return
-      let intervals = interval
-      this.canClick = false
-      this.content = intervals + this.$t('modify.retransmission')
-      const clock = setInterval(() => {
-        intervals = intervals - 1
-        this.content = intervals + this.$t('modify.retransmission')
-        if (intervals < 0) {
-          clearInterval(clock)
-          this.content = this.$t('modify.sendVerifyCode')
-          this.canClick = true
-        }
-      }, 1000)
-    },
     setmydata() {
       this.userInfo = this.$store.state.user.info
       this.name = this.userInfo.attributes.username
@@ -410,6 +390,11 @@ export default {
         .phone {
           margin-top: 10px;
           font-size: 12px;
+          .phonei {
+            font-weight:bold;
+            color:#1878F3;
+            cursor:pointer;
+          }
         }
         > label {
           width: 300px;
