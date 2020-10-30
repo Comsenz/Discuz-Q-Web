@@ -205,11 +205,14 @@ export default {
         case 32: return this.$t('profile.laborincome')
         case 50: return this.$t('profile.laborexpenditure')
         case 41: return this.$t('profile.givearewardforthetheme')
-        case 60: return this.$t('profile.paidtoseeyourtheme')
-        case 61: return this.$t('profile.paidtoview')
+        case 60: return '付费主题收入'
+        case 61: return '付费主题支出'
         case 81: return '问答提问支出'
         case 8: return '问答冻结'
         case 52: return '付费附件支出'
+        case 35: return '问答答题收入'
+        case 36: return '问答围观收入'
+        case 82: return '问答围观支出'
 
         default: return '未知状态'
       }
