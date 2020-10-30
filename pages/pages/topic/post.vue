@@ -62,7 +62,7 @@ export default {
       post: { id: '', title: '', text: '', imageList: [], videoList: [], attachedList: [] },
       payment: { paidType: 'free', price: 0, freeWords: 0, attachmentPrice: 0 }, // free 免费， paid 全部付费，attachmentPaid 文章免费，附件付费
       location: { latitude: '', location: '', longitude: '' },
-      question: { beUser: '', orderId: '', price: '', isOnlooker: false, paymentType: 'free', isAnonymous: false },
+      question: { beUser: '', orderId: '', price: '', isOnlooker: false, paymentType: 'free', isAnonymous: false, isPaid: false },
       editResourceShow: { showUploadImg: false, showUploadVideo: false, showUploadAttached: false },
       typeInformation: {
         // 0 文字帖 1 帖子 2 视频 3 图片 4 语音 5 问答 6 商品
@@ -205,6 +205,7 @@ export default {
               this.wechatQrCode = wechatQrcode
               this.wxPayActive().then(orderNo => {
                 this.question.orderId = orderNo
+                this.question.isPaid = true
                 this.publish()
                 console.log('支付成功')
               }, () => console.log('支付失败'))
@@ -218,6 +219,7 @@ export default {
     onPasswordInputCompleted(password) {
       this.payOrder(password).then(orderNo => {
         this.question.orderId = orderNo
+        this.question.isPaid = true
         this.publish()
         console.log('支付成功')
       }, () => console.log('支付失败'))
@@ -240,6 +242,7 @@ export default {
 
       if (this.type === '5' && !this.question.beUser.username) return this.$message.warning(this.$t('post.pleaseChooseBeAskedUser'))
       if (this.type === '5' && !this.post.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
+      if (this.type === '5' && this.question.paymentType === 'paid' && !this.question.isPaid) return this.payQA() // 付费问答帖，开启收银台
 
       if (this.payment.paidType === 'paid' && this.payment.price === 0) return this.$message.warning(this.$t('post.paidTypePaidPriceCanNotBeZero'))
       if (this.payment.paidType === 'paid' && this.payment.price < 0.1) return this.$message.warning(this.$t('post.paidAmountTooLow'))
@@ -250,45 +253,45 @@ export default {
     },
     async publish() {
       if (this.checkPublish() !== 'success') return
-      if (this.type === '5' && this.question.paymentType === 'paid') return this.payQA() // 付费问答帖，开启收银台
-      // this.onPublish = true
-      // if (this.isEditor) {
-      //   return Promise.all([this.editThreadPublish(), this.editPostPublish()]).then(dataArray => {
-      //     this.$router.push(`/topic/index?id=${dataArray[0]._jv.id}`)
-      //   }, e => this.handleError(e)).finally(() => {
-      //     this.onPublish = false
-      //   })
-      // }
-      // let params = {
-      //   _jv: {
-      //     type: `threads`,
-      //     relationships: {
-      //       category: {
-      //         data: { type: 'categories', id: this.categorySelectedId }
-      //       }
-      //     }
-      //   },
-      //   content: this.post.text
-      // }
-      // this.post.title ? params.title = this.post.title : ''
-      // params.type = this.type
-      // params = this.publishPayment(params, this.payment)
-      // params = this.publishLocation(params, this.location)
-      // params = this.publishThreadResource(params, this.post)
-      // params = this.publishPostResource(params, this.post)
-      // if (this.forums.other.create_thread_with_captcha) {
-      //   try {
-      //     params = await this.checkCaptcha(params)
-      //   } catch (e) {
-      //     this.onPublish = false
-      //     return
-      //   }
-      // }
-      // return this.$store.dispatch('jv/post', params).then(data => {
-      //   this.$router.push(`/topic/index?id=${data._jv.id}`)
-      // }, e => this.handleError(e)).finally(() => {
-      //   this.onPublish = false
-      // })
+      this.onPublish = true
+      if (this.isEditor) {
+        return Promise.all([this.editThreadPublish(), this.editPostPublish()]).then(dataArray => {
+          this.$router.push(`/topic/index?id=${dataArray[0]._jv.id}`)
+        }, e => this.handleError(e)).finally(() => {
+          this.onPublish = false
+        })
+      }
+      let params = {
+        _jv: {
+          type: `threads`,
+          relationships: {
+            category: {
+              data: { type: 'categories', id: this.categorySelectedId }
+            }
+          }
+        },
+        content: this.post.text
+      }
+      this.post.title ? params.title = this.post.title : ''
+      params.type = this.type
+      params = this.publishPayment(params, this.payment)
+      params = this.publishLocation(params, this.location)
+      params = this.publishThreadResource(params, this.post)
+      params = this.publishPostResource(params, this.post)
+      if (this.type === 5) params = this.publishQuestion(params, this.question)
+      if (this.forums.other.create_thread_with_captcha) {
+        try {
+          params = await this.checkCaptcha(params)
+        } catch (e) {
+          this.onPublish = false
+          return
+        }
+      }
+      return this.$store.dispatch('jv/post', params).then(data => {
+        this.$router.push(`/topic/index?id=${data._jv.id}`)
+      }, e => this.handleError(e)).finally(() => {
+        this.onPublish = false
+      })
     },
     editPostPublish() {
       // 用于 更新 content image attached

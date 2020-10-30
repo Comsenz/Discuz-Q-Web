@@ -45,6 +45,17 @@ module.exports = {
       params.longitude = location.longitude ? location.longitude : ''
       return params
     },
+    publishQuestion(params, question) {
+      params.is_anonymous = question.isAnonymous
+      params._jv.relationships.question = {}
+      params._jv.relationships.question.data = {}
+      const data = params._jv.relationships.question.data
+      data.be_user_id = question.beUser._jv.id
+      data.order_id = question.orderId || ''
+      data.price = question.price || 0
+      data.is_onlooker = question.isOnlooker
+      return params
+    },
     deleteAttachmentsAfterEdit(oldData, newData) {
       const afterEditImageIds = newData.map(item => item.id)
       const beforeEditImageIds = oldData.map(item => item._jv.id)
