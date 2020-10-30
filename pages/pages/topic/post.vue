@@ -11,7 +11,7 @@
         >{{ category.name }}</span>
       </template>
     </div>
-    <editor :type-information="typeInformation[type]" :edit-resource-show="editResourceShow" :question.sync="question" :payment.sync="payment" :on-publish="onPublish" :is-edit="isEditor" :post.sync="post" @publish="publish" />
+    <editor :type-information="typeInformation[type]" :edit-resource-show="editResourceShow" :question.sync="question" :product.sync="product" :payment.sync="payment" :on-publish="onPublish" :is-edit="isEditor" :post.sync="post" @publish="publish" />
     <topic-checkout-counter
       v-if="showCheckoutCounter"
       :thread-type="5"
@@ -45,6 +45,7 @@ export default {
       payment: { paidType: 'free', price: 0, freeWords: 0, attachmentPrice: 0 }, // free 免费， paid 全部付费，attachmentPaid 文章免费，附件付费
       location: { latitude: '', location: '', longitude: '' },
       question: { beUser: '', orderId: '', price: '', isOnlooker: false, paymentType: 'free', isAnonymous: false },
+      product: { title: '', image_path: '', price: '', type: '' },
       editResourceShow: { showUploadImg: false, showUploadVideo: false, showUploadAttached: false },
       typeInformation: {
         // 0 文字帖 1 帖子 2 视频 3 图片 4 语音 5 问答 6 商品
@@ -69,7 +70,7 @@ export default {
           showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
         // TODO 商品帖
-        6: { type: 6, headerText: 'postProduct', textLimit: 450, showPayment: true, showTitle: false, showImage: true, showVideo: false,
+        6: { type: 6, headerText: 'postProduct', textLimit: 450, showPayment: false, showTitle: false, showImage: true, showVideo: false,
           showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' }
       },
       categorySelectedId: '',
