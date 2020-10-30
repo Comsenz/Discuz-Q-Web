@@ -46,7 +46,7 @@
           :password-error.sync="passwordError"
           :password-error-tip="passwordErrorTip"
           @close="showPasswordInput = passwordError = false"
-          @password="payOrder"
+          @password="onPasswordInputCompleted"
           @findPassword="onFindPassword"
         />
         <topic-wx-pay v-if="showWxPay" :qr-code="payment.wechat_qrcode" @close="showWxPay = false" />
@@ -221,16 +221,29 @@ export default {
       this.$set(this.actions, 2, favorInfo)
     },
     paying({ payWay, hideAvatar, rewardAmount }) {
-      this.payment.rewardAmount = rewardAmount
       if (this.rewardOrPay === 'reward' && (!rewardAmount || parseFloat(rewardAmount) === 0)) return this.$message.error(this.$t('pay.AmountCannotBeLessThan0'))
+      this.payment.rewardAmount = rewardAmount
       this.showCheckoutCounter = false
       if (payWay === 'walletPay') {
         this.showPasswordInput = true
         this.createOrder(hideAvatar, this.payOrRewardAmount, this.payOrderType, 20).finally(() => { this.defaultLoading = false })
       } else if (payWay === 'wxPay') {
         if (!this.forums.paycenter.wxpay_close) return this.$message.warning(this.$t('pay.wxPayClose'))
-        this.createOrder(hideAvatar, this.payOrRewardAmount, this.payOrderType, 10).then(() => this.payOrder()).finally(() => { this.defaultLoading = false })
+        this.createOrder(hideAvatar, this.payOrRewardAmount, this.payOrderType, 10)
+          .then(() => {
+            this.payOrder().then(wechatQrcode => {
+              this.payment.wechat_qrcode = wechatQrcode
+              this.wxPayActive().then(() => {
+                this.getThread()
+              }, () => console.log('支付失败'))
+            }, () => console.log('支付失败'))
+          }).finally(() => { this.defaultLoading = false })
       }
+    },
+    onPasswordInputCompleted(password) {
+      this.payOrder(password).then(() => {
+        this.getThread()
+      }, () => console.log('支付失败'))
     },
     postCommand(item) {
       if (this.defaultLoading) return

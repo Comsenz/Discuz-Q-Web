@@ -7,16 +7,17 @@ module.exports = {
     }
   },
   methods: {
-    createOrder(hideAvatar, amount = 0, type, paymentType) {
+    createOrder(hideAvatar, amount = 0, type, paymentType, payeeId = '') {
       if (this.defaultLoading) return
       this.defaultLoading = true
       const params = {
         _jv: { type: `/orders` },
-        type,
-        thread_id: this.threadId || '',
         is_anonymous: hideAvatar,
+        type,
         amount
       }
+      if (payeeId) params.payee_id = payeeId
+      if (this.threadId) params.thread_id = this.threadId
       return this.$store.dispatch('jv/post', params).then(data => {
         this.orderNo = data.order_sn
         this.paymentType = paymentType
@@ -31,43 +32,45 @@ module.exports = {
       }
       return this.$store.dispatch('jv/post', params).then(data => {
         if (this.paymentType === 10) {
-          this.wxPayActive(data)
+          return data.wechat_qrcode
         } else {
           this.$message.success(this.$t('pay.paySuccess'))
           this.passwordError = false
           this.showPasswordInput = false
-          this.getThread()
+          return this.orderNo
         }
       }, e => {
         const { response: { data: { errors }}} = e
         if (errors[0].code === 'pay_password_failures_times_toplimit') {
           this.passwordError = true
           this.passwordErrorTip = this.$t('core.pay_password_failures_times_toplimit')
-          return
+          return Promise.reject()
         }
         if (errors[0].code === 'validation_error') {
           this.passwordError = true
           this.passwordErrorTip = errors[0].detail[0]
-          return
+          return Promise.reject()
         }
         this.handleError(e)
       })
     },
-    wxPayActive(data) {
-      this.payment.wechat_qrcode = data.wechat_qrcode
+    wxPayActive() {
       this.showWxPay = true
-      if (process.client) {
+      return new Promise((resolve, reject) => {
         const id = setInterval(() => {
           if (this.paymentStatus === 1) {
             clearInterval(id)
             this.$message.success(this.$t('pay.paySuccess'))
             this.showWxPay = false
-            this.getThread()
+            resolve(this.orderNo)
           }
-          if (!this.showWxPay) clearInterval(id)
+          if (!this.showWxPay) {
+            clearInterval(id)
+            reject()
+          }
           this.getOrderStatus()
         }, 3000)
-      }
+      })
     },
     getOrderStatus() {
       const params = { _jv: { type: `/orders/${this.orderNo}` }, orderNo: this.orderNo }

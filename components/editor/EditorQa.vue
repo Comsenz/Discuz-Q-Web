@@ -14,7 +14,7 @@
       <el-switch :value="question.isOnlooker" active-color="#1878F3" @input="value => $emit('isOnlookerChange', value)" />
       <span v-show="siteOnlookerPrice && siteMasterScale && siteUserScale" class="tip">
         <span>{{ '他人围观需付费 ' + siteOnlookerPrice + ' 元' }}</span>
-        <span>{{ `（你得 ${siteOnlookerPrice * siteUserScale} 元，回答者得 ${siteOnlookerPrice * siteUserScale} 元，平台得 ${siteOnlookerPrice * siteMasterScale} 元）` }}</span>
+        <span>{{ `（你得 ${(siteOnlookerPrice * siteUserScale).toFixed(2)} 元，回答者得 ${(siteOnlookerPrice * siteUserScale).toFixed(2)} 元，平台得 ${(siteOnlookerPrice * siteMasterScale).toFixed(2)} 元）` }}</span>
       </span>
     </div>
     <div class="qa-answerer block">

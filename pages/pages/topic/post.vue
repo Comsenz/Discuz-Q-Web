@@ -1,5 +1,5 @@
 <template>
-  <div class="page-post">
+  <div v-loading="defaultLoading" class="page-post">
     <div v-if="type" class="title">{{ $t(`post.${typeInformation[type].headerText}`) }}</div>
     <div v-loading="categoryList.length === 0" class="category-list">
       <template v-for="(category, index) in categoryList">
@@ -23,6 +23,24 @@
       @close="showCheckoutCounter = false"
       @paying="paying"
     />
+    <topic-password
+      v-if="showPasswordInput"
+      :price="question.price"
+      :password-error.sync="passwordError"
+      :password-error-tip="passwordErrorTip"
+      @close="showPasswordInput = passwordError = false"
+      @password="onPasswordInputCompleted"
+      @findPassword="onFindPassword"
+    />
+    <topic-wx-pay v-if="showWxPay" :qr-code="wechatQrCode" @close="showWxPay = false" />
+    <find-paypwd
+      v-if="findPassword && currentUser.originalMobile"
+      :mobile="currentUser.mobile"
+      :phonenum="currentUser.originalMobile"
+      @close="findPassword = false"
+    />
+    <!-- 找回密码，没绑定手机 -->
+    <without-phone v-if="findPassword && !currentUser.originalMobile" @close="findPassword = false" />
   </div>
 </template>
 
@@ -32,10 +50,11 @@ import publishResource from '@/mixin/publishResource'
 import handleError from '@/mixin/handleError'
 import isLogin from '@/mixin/isLogin'
 import tencentCaptcha from '@/mixin/tencentCaptcha'
+import payment from '@/mixin/payment'
 
 export default {
   name: 'Post',
-  mixins: [tencentCaptcha, handleError, publishResource, isLogin],
+  mixins: [tencentCaptcha, handleError, publishResource, isLogin, payment],
   data() {
     return {
       editThread: {}, // 被编辑的主题
@@ -75,7 +94,13 @@ export default {
       isEditor: false,
       onPublish: false,
       showCheckoutCounter: false,
-      defaultLoading: false
+      showPasswordInput: false,
+      showWxPay: false,
+      wechatQrCode: '',
+      defaultLoading: false,
+      passwordError: false,
+      findPassword: false,
+      passwordErrorTip: ''
     }
   },
   computed: {
@@ -100,7 +125,6 @@ export default {
   },
   mounted() {
     if (['0', '1', '2', '3', '5', '6'].indexOf(this.type) < 0) return this.$router.replace('/error')
-    // if (['0', '1', '2', '3'].indexOf(this.type) < 0) return this.$router.replace('/error')
     this.getCategoryList()
     this.getThread()
   },
@@ -166,7 +190,37 @@ export default {
       })
     },
     paying({ payWay, hideAvatar, rewardAmount }) {
-      console.log('paying', payWay, rewardAmount)
+      if (!rewardAmount || parseFloat(rewardAmount) === 0) return this.$message.error(this.$t('pay.AmountCannotBeLessThan0'))
+      this.question.price = rewardAmount
+      this.showCheckoutCounter = false
+      const payeeId = this.question.beUser._jv.id
+      if (payWay === 'walletPay') {
+        this.createOrder(hideAvatar, this.question.price, 5, 20, payeeId)
+          .then(() => { this.showPasswordInput = true }).finally(() => { this.defaultLoading = false })
+      } else if (payWay === 'wxPay') {
+        if (!this.forums.paycenter.wxpay_close) return this.$message.warning(this.$t('pay.wxPayClose'))
+        this.createOrder(hideAvatar, this.question.price, 5, 10, payeeId)
+          .then(() => {
+            this.payOrder().then(wechatQrcode => {
+              this.wechatQrCode = wechatQrcode
+              this.wxPayActive().then(orderNo => {
+                this.question.orderId = orderNo
+                this.publish()
+                console.log('支付成功')
+              }, () => console.log('支付失败'))
+            }, () => console.log('支付失败'))
+          }).finally(() => { this.defaultLoading = false })
+      }
+    },
+    payQA() {
+      this.showCheckoutCounter = true
+    },
+    onPasswordInputCompleted(password) {
+      this.payOrder(password).then(orderNo => {
+        this.question.orderId = orderNo
+        this.publish()
+        console.log('支付成功')
+      }, () => console.log('支付失败'))
     },
     checkPublish() {
       if (!this.isLogin()) return
@@ -196,47 +250,45 @@ export default {
     },
     async publish() {
       if (this.checkPublish() !== 'success') return
-      if (this.type === '5' && this.question.paymentType === 'paid') { // 付费问答帖，开启收银台
-        this.showCheckoutCounter = true
-      }
-      this.onPublish = true
-      if (this.isEditor) {
-        return Promise.all([this.editThreadPublish(), this.editPostPublish()]).then(dataArray => {
-          this.$router.push(`/topic/index?id=${dataArray[0]._jv.id}`)
-        }, e => this.handleError(e)).finally(() => {
-          this.onPublish = false
-        })
-      }
-      let params = {
-        _jv: {
-          type: `threads`,
-          relationships: {
-            category: {
-              data: { type: 'categories', id: this.categorySelectedId }
-            }
-          }
-        },
-        content: this.post.text
-      }
-      this.post.title ? params.title = this.post.title : ''
-      params.type = this.type
-      params = this.publishPayment(params, this.payment)
-      params = this.publishLocation(params, this.location)
-      params = this.publishThreadResource(params, this.post)
-      params = this.publishPostResource(params, this.post)
-      if (this.forums.other.create_thread_with_captcha) {
-        try {
-          params = await this.checkCaptcha(params)
-        } catch (e) {
-          this.onPublish = false
-          return
-        }
-      }
-      return this.$store.dispatch('jv/post', params).then(data => {
-        this.$router.push(`/topic/index?id=${data._jv.id}`)
-      }, e => this.handleError(e)).finally(() => {
-        this.onPublish = false
-      })
+      if (this.type === '5' && this.question.paymentType === 'paid') return this.payQA() // 付费问答帖，开启收银台
+      // this.onPublish = true
+      // if (this.isEditor) {
+      //   return Promise.all([this.editThreadPublish(), this.editPostPublish()]).then(dataArray => {
+      //     this.$router.push(`/topic/index?id=${dataArray[0]._jv.id}`)
+      //   }, e => this.handleError(e)).finally(() => {
+      //     this.onPublish = false
+      //   })
+      // }
+      // let params = {
+      //   _jv: {
+      //     type: `threads`,
+      //     relationships: {
+      //       category: {
+      //         data: { type: 'categories', id: this.categorySelectedId }
+      //       }
+      //     }
+      //   },
+      //   content: this.post.text
+      // }
+      // this.post.title ? params.title = this.post.title : ''
+      // params.type = this.type
+      // params = this.publishPayment(params, this.payment)
+      // params = this.publishLocation(params, this.location)
+      // params = this.publishThreadResource(params, this.post)
+      // params = this.publishPostResource(params, this.post)
+      // if (this.forums.other.create_thread_with_captcha) {
+      //   try {
+      //     params = await this.checkCaptcha(params)
+      //   } catch (e) {
+      //     this.onPublish = false
+      //     return
+      //   }
+      // }
+      // return this.$store.dispatch('jv/post', params).then(data => {
+      //   this.$router.push(`/topic/index?id=${data._jv.id}`)
+      // }, e => this.handleError(e)).finally(() => {
+      //   this.onPublish = false
+      // })
     },
     editPostPublish() {
       // 用于 更新 content image attached
