@@ -160,9 +160,8 @@
             </div>
           </div>
         </div>
-        <div v-if="item.type === 6" class="product">
-          <product-item :item="item.firstPost && item.firstPost.postGoods" />
-        </div>
+        <!-- 商品 -->
+        <product-item v-if="item.type === 6" :item="item && item.firstPost && item.firstPost.postGoods" />
         <!-- 位置 -->
         <nuxt-link
           v-if="item.location"

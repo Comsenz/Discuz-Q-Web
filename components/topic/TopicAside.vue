@@ -45,7 +45,8 @@ export default {
         { key: 'threadCount', count: '', text: this.$t('home.thread') },
         { key: 'likedCount', count: '', text: this.$t('topic.getLike') },
         { key: 'followCount', count: '', text: this.$t('home.followed') },
-        { key: 'fansCount', count: '', text: this.$t('profile.followers') }
+        { key: 'fansCount', count: '', text: this.$t('profile.followers') },
+        { key: 'questionCount', count: '', text: this.$t('profile.question') }
       ]
     }
   },

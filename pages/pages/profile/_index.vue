@@ -217,6 +217,17 @@
               @changeFollow="changeFollow"
             />
           </el-tab-pane>
+          <el-tab-pane
+            :label="$t('profile.question')+ ` (${userInfo.questionCount || 0})`"
+            name="5"
+          >
+            <question
+              v-if="activeName === '5'"
+              ref="question"
+              :user-id="userId"
+              @changeLike="changeLike"
+            />
+          </el-tab-pane>
         </el-tabs>
       </div>
       <div class="profileside">
@@ -257,10 +268,20 @@ export default {
       'filter[isApproved]': 1,
       'filter[user_id]': query.userId
     }
+    const askthreadsparams = {
+      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups',
+      'page[number]': 1,
+      'page[limit]': 20,
+      'filter[isApproved]': 1,
+      'filter[userId]': 714,
+      'filter[type]': 5,
+      'filter[answer]': 'yes'
+    }
     try {
       const resData = {}
       const threadsData = await store.dispatch('jv/get', ['threads', { params: threadparams }])
       const likethreadsData = await store.dispatch('jv/get', ['threads/likes', { params: likethreadsparams }])
+      const askthreadData = await store.dispatch('jv/get', ['threads', { params: askthreadsparams }])
 
       if (Array.isArray(threadsData)) {
         resData.threadsData = threadsData
@@ -287,6 +308,19 @@ export default {
             firstPost: item.relationships.firstPost.data, user: item.relationships.user.data, _jv: { id: item.id }}
         })
         resData.likethreadsData = _likethreadsData
+      }
+
+      if (Array.isArray(askthreadData)) {
+        resData.askthreadData = askthreadData
+      } else if (askthreadData && askthreadData._jv && askthreadData._jv.json) {
+        const _askthreadData = askthreadData._jv.json.data || []
+        _askthreadData.forEach((item, index) => {
+          _askthreadData[index] = {
+            ...item,
+            ...item.attributes,
+            firstPost: item.relationships.firstPost.data, user: item.relationships.user.data, _jv: { id: item.id }}
+        })
+        resData.askthreadData = _askthreadData
       }
       callback(null, resData)
       // return { threadsData: threadsData }
@@ -325,6 +359,7 @@ export default {
       isShield: false,
       threadsData: [],
       likethreadsData: [],
+      askthreadData: [],
       unbundlingArry: [], // 解绑用户组
       unbundUserData: [] // 已屏蔽用户组
     }
@@ -580,6 +615,9 @@ export default {
       top: 24px;
       color: #b5b5b5;
       cursor: pointer;
+      width: 100%;
+      min-width: 80px;
+      text-align: right;
     }
     .canshield-icon {
       width: 14px;

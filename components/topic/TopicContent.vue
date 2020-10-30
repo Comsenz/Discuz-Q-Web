@@ -47,6 +47,9 @@
         </span>
       </nuxt-link>
     </div>
+    <div v-if="threadType === 6" class="product">
+      <product-item :item="article && article.postGoods" />
+    </div>
     <video-pop v-if="showVideoPop" :cover-url="video.cover_url" :url="video.media_url" @remove="showVideoPop = false" />
     <audio id="audio-player" :src="currentAudio.url" style="display: none" />
   </article>
@@ -375,7 +378,10 @@ export default {
         fill: #777;
       }
     }
-
+    .product{
+      margin: 45px auto 0;
+      width: 570px;
+    }
   }
 
 </style>

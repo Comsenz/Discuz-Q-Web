@@ -886,6 +886,7 @@ export default {
     mutualfollow: '互相关注',
     followers: '粉丝',
     likes: '点赞',
+    question: '问答',
     username: '用户名',
     avatar: '头像',
     mobile: '手机号码',
