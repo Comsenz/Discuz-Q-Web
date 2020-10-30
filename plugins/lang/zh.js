@@ -234,6 +234,7 @@ export default {
     answerer: '解答人：',
     addBeAskedUser: '+选择解答人',
     changeBeAskedUser: '更换解答人',
+    addProduct: '添加商品',
     attachmentList: '附件列表:',
     addAttachment: '+添加附件',
     preview: '预览',
@@ -306,7 +307,14 @@ export default {
     failedToObtainSignature: '获取签名失败',
     fromWeChatApplet: '来自微信小程序',
     pleaseEnterAPostTitle: '请输入帖子标题',
-    buyProudct: '购买商品'
+    buyProudct: '购买商品',
+    supportedLink: '现以支持以下商品链接',
+    jd: '京东',
+    taobao: '淘宝',
+    tmall: '天猫',
+    pinduoduo: '拼多多',
+    goodsLink: '请粘贴 \\ 输入商品链接',
+    goodsLinkEmpty: '商品链接不能为空'
   },
   topic: {
     attachment: '附件',
