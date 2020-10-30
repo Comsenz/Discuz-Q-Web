@@ -62,7 +62,7 @@ export default {
       post: { id: '', title: '', text: '', imageList: [], videoList: [], attachedList: [] },
       payment: { paidType: 'free', price: 0, freeWords: 0, attachmentPrice: 0 }, // free 免费， paid 全部付费，attachmentPaid 文章免费，附件付费
       location: { latitude: '', location: '', longitude: '' },
-      product: { title: '', image_path: '', price: '', type: '', _jv: {}},
+      product: {},
       question: { beUser: '', orderId: '', price: '', isOnlooker: false, paymentType: 'free', isAnonymous: false, isPaid: false },
       editResourceShow: { showUploadImg: false, showUploadVideo: false, showUploadAttached: false },
       typeInformation: {
