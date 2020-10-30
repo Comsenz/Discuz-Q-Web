@@ -12,6 +12,12 @@
       @isOnlookerChange="value => onQuestionChange('isOnlooker', value)"
       @beUserChange="value => onQuestionChange('beUser', value)"
     />
+    <!--商品帖 -->
+    <editor-product
+      v-if="typeInformation && typeInformation.type === 6"
+      :product="product"
+      @productChange="onProductChange"
+    />
     <editor-payment v-if="typeInformation && typeInformation.showPayment && canCreateThreadPaid" :payment="payment || {}" :type="typeInformation && typeInformation.type" @paymentChange="e => onPaymentChange(e.key, e.value)" />
     <attachment-upload v-if="isPost" :file-list="post && post.attachedList" :on-upload.sync="onUploadAttached" action="/attachments" :accept="attachedTypeLimit" :limit="99999" type="Attached" :size-limit="attachedSizeLimit" @success="files => onPostContentChange('attachedList', files)" @remove="files => onPostContentChange('attachedList', files)" />
     <Vditor
@@ -103,6 +109,10 @@ export default {
       default: () => {}
     },
     question: {
+      type: Object,
+      default: () => {}
+    },
+    product: {
       type: Object,
       default: () => {}
     },
@@ -251,6 +261,10 @@ export default {
       const _question = Object.assign({}, this.question)
       _question[key] = value
       this.$emit(`update:question`, _question)
+    },
+    onProductChange(product) {
+      const _product = Object.assign({}, product)
+      this.$emit(`update:product`, _product)
     },
     autoHeight() {
       if (this.editorStyle === 'chat') return // 聊天框不需要自动高度
