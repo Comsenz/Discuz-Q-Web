@@ -615,6 +615,9 @@ export default {
       top: 24px;
       color: #b5b5b5;
       cursor: pointer;
+      width: 100%;
+      min-width: 80px;
+      text-align: right;
     }
     .canshield-icon {
       width: 14px;
