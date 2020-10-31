@@ -20,7 +20,11 @@
         </div>
       </div>
       <div class="post-list">
-        <post-item v-for="(item, index) in threadsData" :key="index" :item="item" />
+        <template v-for="(item, index) in threadsData">
+          <!-- 语音贴 -->
+          <post-item v-if="item.type === 4" :ref="`audio${ item && item.threadAudio && item.threadAudio._jv && item.threadAudio._jv.id}`" :key="index" :item="item" @audioPlay="audioPlay" />
+          <post-item v-else :key="index" :item="item" />
+        </template>
         <list-load-more
           :loading="loading"
           :has-more="hasMore"
@@ -67,7 +71,7 @@ export default {
       include: 'firstPost'
     }
     const threadsParams = {
-      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods',
+      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods,threadAudio',
       'filter[isSticky]': 'no',
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no',
@@ -170,7 +174,8 @@ export default {
       timer: null, // 轮询获取新主题 定时器
       threadCount: 0, // 主题总数
       total: 0, // 新的主题数，通过轮询获取
-      htitle: '\u200E'
+      htitle: '\u200E',
+      currentAudioId: ''
     }
   },
   computed: {
@@ -227,7 +232,7 @@ export default {
     getThreadsList() {
       this.loading = true
       const params = {
-        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods',
+        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods,threadAudio',
         'filter[isSticky]': 'no',
         'filter[isApproved]': 1,
         'filter[isDeleted]': 'no',
@@ -243,6 +248,7 @@ export default {
         params['filter[type]'] = this.threadType
       }
       this.$store.dispatch('jv/get', ['threads', { params }]).then((data) => {
+        console.log('list', data)
         this.hasMore = data.length === this.pageSize
         const _threadCount = (data &&
           data._jv &&
@@ -344,6 +350,13 @@ export default {
     formatRichText(html) {
       // eslint-disable-next-line no-param-reassign
       return s9e.parse(html)
+    },
+    // 语音互斥播放
+    audioPlay(id) {
+      if (this.currentAudioId && this.currentAudioId !== id) {
+        this.$refs[`audio${this.currentAudioId}`][0].pause()
+      }
+      this.currentAudioId = id
     }
   },
   head() {

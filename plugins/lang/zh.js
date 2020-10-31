@@ -423,7 +423,8 @@ export default {
     be: '向',
     of: '的',
     question: '提问：',
-    answer: '回答了'
+    answer: '回答了',
+    joinAfterView: '加入站点后才可以预览'
   },
   pay: {
     passwordError: '密码错误请重试',

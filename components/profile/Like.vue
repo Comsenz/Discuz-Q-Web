@@ -1,13 +1,25 @@
 <template>
   <div class="like">
     <div class="post-list">
-      <post-item
-        v-for="(item, index) in data"
-        :key="index"
-        :item="item"
-        :lazy="false"
-        @change="changelike"
-      />
+      <template v-for="(item, index) in data">
+        <!-- 语音贴 -->
+        <post-item
+          v-if="item.type === 4"
+          :ref="`audio${ item && item.threadAudio && item.threadAudio._jv && item.threadAudio._jv.id}`"
+          :key="index"
+          :item="item"
+          :lazy="false"
+          @change="changelike"
+          @audioPlay="audioPlay"
+        />
+        <post-item
+          v-else
+          :key="index"
+          :item="item"
+          :lazy="false"
+          @change="changelike"
+        />
+      </template>
       <list-load-more
         :loading="loading"
         :has-more="hasMore"
@@ -43,7 +55,8 @@ export default {
       currentLoginId: this.$store.getters['session/get']('userId'),
       loading: false,
       hasMore: false,
-      editThreadId: ''
+      editThreadId: '',
+      currentAudioId: '' // 当前播放语音id
     }
   },
   mounted() {
@@ -96,6 +109,13 @@ export default {
       this.data = []
       this.$emit('changeFollow', { userId: this.userId })
       this.loadlikes()
+    },
+    // 语音互斥播放
+    audioPlay(id) {
+      if (this.currentAudioId && this.currentAudioId !== id) {
+        this.$refs[`audio${this.currentAudioId}`][0].pause()
+      }
+      this.currentAudioId = id
     }
   }
 }

@@ -4,7 +4,7 @@
     placement="bottom"
     width="120"
     min-width="120"
-    trigger="hover"
+    trigger="manual"
     popper-class="custom-popover-width"
   >
     <ul class="type-container">
