@@ -232,6 +232,7 @@ export default {
   post: {
     askHim: '向他提问',
     answerer: '解答人：',
+    questionMode: '提问模式',
     addBeAskedUser: '+选择解答人',
     changeBeAskedUser: '更换解答人',
     addProduct: '添加商品',
@@ -267,7 +268,7 @@ export default {
     freeWatch: '免费',
     paidWatch: '付费',
     anonymous: '提问匿名',
-    onLooker: '围观模式',
+    onLooker: '围观付费',
     questionHim: '向他提问',
     postFreeAttachmentPaid: '文章免费，附件付费',
     pleaseInput: '请输入',
