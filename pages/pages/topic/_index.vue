@@ -9,6 +9,7 @@
           :author="thread.user || {}"
           :thread="thread"
           :management-list="managementList"
+          :be-asked-user="question.beUser"
           @managementSelected="postCommand"
         />
         <topic-content

@@ -319,6 +319,8 @@ export default {
     goodsEmpty: '商品不能为空'
   },
   topic: {
+    to: '向',
+    ask: '提问',
     attachment: '附件',
     topicPageTitle: '内容详情页',
     commentPageTitle: '评论详情页',
