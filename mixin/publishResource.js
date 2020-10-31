@@ -56,6 +56,10 @@ module.exports = {
       data.is_onlooker = question.isOnlooker
       return params
     },
+    publishProduct(params, product) {
+      params.post_goods_id = product && product._jv && product._jv.id || ''
+      return params
+    },
     deleteAttachmentsAfterEdit(oldData, newData) {
       const afterEditImageIds = newData.map(item => item.id)
       const beforeEditImageIds = oldData.map(item => item._jv.id)

@@ -11,7 +11,7 @@
         >{{ category.name }}</span>
       </template>
     </div>
-    <editor :type-information="typeInformation[type]" :edit-resource-show="editResourceShow" :question.sync="question" :payment.sync="payment" :on-publish="onPublish" :is-edit="isEditor" :post.sync="post" @publish="publish" />
+    <editor :type-information="typeInformation[type]" :edit-resource-show="editResourceShow" :question.sync="question" :product.sync="product" :payment.sync="payment" :on-publish="onPublish" :is-edit="isEditor" :post.sync="post" @publish="publish" />
     <topic-checkout-counter
       v-if="showCheckoutCounter"
       :thread-type="5"
@@ -62,6 +62,7 @@ export default {
       post: { id: '', title: '', text: '', imageList: [], videoList: [], attachedList: [] },
       payment: { paidType: 'free', price: 0, freeWords: 0, attachmentPrice: 0 }, // free 免费， paid 全部付费，attachmentPaid 文章免费，附件付费
       location: { latitude: '', location: '', longitude: '' },
+      product: {},
       question: { beUser: '', orderId: '', price: '', isOnlooker: false, paymentType: 'free', isAnonymous: false, isPaid: false },
       editResourceShow: { showUploadImg: false, showUploadVideo: false, showUploadAttached: false },
       typeInformation: {
@@ -87,7 +88,7 @@ export default {
           showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
         // TODO 商品帖
-        6: { type: 6, headerText: 'postProduct', textLimit: 450, showPayment: true, showTitle: false, showImage: true, showVideo: false,
+        6: { type: 6, headerText: 'postProduct', textLimit: 450, showPayment: false, showTitle: false, showImage: true, showVideo: false,
           showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' }
       },
       categorySelectedId: '',
@@ -176,6 +177,7 @@ export default {
       this.location.location = data.location
       this.location.latitude = data.latitude
       this.location.longitude = data.longitude
+      this.product = { ...data.firstPost.postGoods }
     },
     initThreadResource(target, resource, key = '') {
       resource.forEach(item => {
@@ -243,7 +245,7 @@ export default {
       if (this.type === '5' && !this.question.beUser.username) return this.$message.warning(this.$t('post.pleaseChooseBeAskedUser'))
       if (this.type === '5' && !this.post.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
       if (this.type === '5' && this.question.paymentType === 'paid' && !this.question.isPaid) return this.payQA() // 付费问答帖，开启收银台
-
+      if (this.type === '6' && (Object.keys(this.product).length === 0 || (this.product && this.product._jv && !this.product._jv.id))) return this.$message.warning(this.$t('post.goodsEmpty'))
       if (this.payment.paidType === 'paid' && this.payment.price === 0) return this.$message.warning(this.$t('post.paidTypePaidPriceCanNotBeZero'))
       if (this.payment.paidType === 'paid' && this.payment.price < 0.1) return this.$message.warning(this.$t('post.paidAmountTooLow'))
       if (this.payment.paidType === 'attachmentPaid' && this.payment.attachmentPrice === 0) return this.$message.warning(this.$t('post.paidTypeAttachmentPaidPriceCanNotBeZero'))
@@ -278,7 +280,9 @@ export default {
       params = this.publishLocation(params, this.location)
       params = this.publishThreadResource(params, this.post)
       params = this.publishPostResource(params, this.post)
-      if (this.type === 5) params = this.publishQuestion(params, this.question)
+
+      if (this.type === '5') params = this.publishQuestion(params, this.question)
+      if (this.type === '6') params = this.publishProduct(params, this.product)
       if (this.forums.other.create_thread_with_captcha) {
         try {
           params = await this.checkCaptcha(params)
@@ -304,6 +308,7 @@ export default {
       }
       if (this.threadId) postParams._jv.id = this.threadId
       postParams = this.publishPostResource(postParams, this.post)
+      if (this.type === '6') postParams = this.publishProduct(postParams, this.product)
       // this.deleteAttachmentsAfterEdit(this.editThread.firstPost.images, this.post.imageList) // 编辑主题时删除的图片，在发布的时候删除
       this.deleteAttachmentsAfterEdit(this.editThread.firstPost.attachments, this.post.attachedList) // 编辑主题时删除的附件，在发布的时候删除
       return this.$store.dispatch('jv/patch', [postParams, { url: `/posts/${this.post.id}` }])
