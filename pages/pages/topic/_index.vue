@@ -21,6 +21,12 @@
           :location="location"
           @payForVideo="showCheckoutCounter = true"
         />
+        <qa-actions
+          v-if="thread.type === 5"
+          :question="question || {}"
+          :current-user-id="currentUser._jv && currentUser._jv.id ? currentUser._jv.id : ''"
+          :question-user-id="thread.user && thread.user._jv && thread.user._jv.id ? thread.user._jv.id : ''"
+        />
         <topic-reward-list
           :author="thread.user || {}"
           :paid-information="paidInformation"
@@ -66,7 +72,7 @@
 </template>
 
 <script>
-const threadInclude = 'posts.replyUser,user.groups,user,user.groups.permissionWithoutCategories,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers'
+const threadInclude = 'posts.replyUser,user.groups,user,user.groups.permissionWithoutCategories,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers,question,question.beUser,question.images,onlookers'
 import handleError from '@/mixin/handleError'
 import isLogin from '@/mixin/isLogin'
 import payment from '@/mixin/payment'
@@ -91,6 +97,7 @@ export default {
     return {
       thread: {},
       article: {},
+      question: {},
       postId: 0,
       actions: [
         { text: this.$t('topic.read'), count: 0, command: '', canOpera: false, icon: 'book' },
@@ -121,9 +128,6 @@ export default {
   computed: {
     threadId() {
       return this.$route.query.id
-    },
-    userId() {
-      return this.$store.getter['session/get']('userId')
     },
     currentUser() {
       return this.$store.state.user.info.attributes || {}
@@ -176,6 +180,12 @@ export default {
       this.initPaidInformation(this.thread)
       this.initActions(this.thread, this.article)
       this.initLocation(this.thread)
+      this.initQuestion(this.thread)
+    },
+    initQuestion(data) {
+      this.question = data.question
+      this.question.onlookerState = data.onlookerState
+      console.log(this.question, 'question')
     },
     initLocation(data) {
       for (const key in this.location) this.location[key] = data[key]
