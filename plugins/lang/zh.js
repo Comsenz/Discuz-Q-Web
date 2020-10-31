@@ -862,7 +862,7 @@ export default {
     post: '发帖',
     notice: '消息',
     mine: '我的',
-    myperson: '个人主页',
+    myperson: '的主页',
     backhomePage: '回首页',
     walletpasset: '已设置 / 修改',
     isset: '已设置',

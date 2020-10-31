@@ -431,7 +431,7 @@ export default {
               this.loading = false
               this.dialog.id = res.dialog ? res.dialog._jv.id : 0
               this.dialog.name = res.username
-              this.profilename = `${this.dialog.name + this.$t('profile.myperson')}`
+              this.profilename = `${this.dialog.name + this.$t('profile.myperson')} - ${this.forums && this.forums.set_site && this.forums.set_site.site_name}`
               this.userInfo = res
               this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
             }
