@@ -68,13 +68,13 @@
           @password="validatePass"
           @findpaypwd="findPaypwd"
         />
-        <set-new-password
+        <set-newpassword
           v-if="showNewverify"
           :error="codeError"
           @close="showNewverify = false"
           @password="checkpass"
         />
-        <repeat-new-password
+        <repeat-newpassword
           v-if="showNewverify2"
           ref="repeatnewpass"
           :error="codeError"
