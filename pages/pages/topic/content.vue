@@ -199,7 +199,7 @@ export default {
   },
   head() {
     return {
-      title: this.forums && this.forums.set_site ? this.topic.content + ' - ' + this.forums.set_site.site_name : this.topic.content,
+      title: this.forums && this.forums.set_site && this.forums.set_site.site_name ? this.topic.content + ' - ' + this.forums.set_site.site_name : this.topic.content,
       meta: [
         { hid: 'keywords', name: 'keywords', content: (this.topic.content) || '' },
         { hid: 'description', name: 'description', content: (this.topic.content) || '' }

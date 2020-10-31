@@ -283,7 +283,7 @@ export default {
     return {
       title: ((this.thread && this.thread.title) ||
       (this.thread && this.thread.firstPost && this.thread.firstPost.summaryText.slice(0, 15)) ||
-      '主题详情页') + (this.forums && this.forums.set_site ? ' - ' + this.forums.set_site.site_name : '\u200E'),
+      '主题详情页') + (this.forums && this.forums.set_site && this.forums.set_site.site_name ? ' - ' + this.forums.set_site.site_name : '\u200E'),
       meta: [
         { hid: 'keywords', name: 'keywords', content: (this.thread.category && this.thread.category.name) || '' },
         { hid: 'description', name: 'description', content: (this.thread.firstPost && this.thread.firstPost.summaryText.slice(0, 80)) || '' }

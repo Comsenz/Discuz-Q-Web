@@ -162,7 +162,7 @@ export default {
   },
   head() {
     return {
-      title: this.forums && this.forums.set_site ? this.$t('topic.topictitlelist') + ' - ' + this.forums.set_site.site_name : this.$t('topic.topictitlelist')
+      title: this.forums && this.forums.set_site && this.forums.set_site.site_name ? this.$t('topic.topictitlelist') + ' - ' + this.forums.set_site.site_name : this.$t('topic.topictitlelist')
     }
   }
 }
