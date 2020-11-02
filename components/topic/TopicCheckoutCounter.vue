@@ -5,7 +5,7 @@
         <div class="head">{{ $t('pay.payProduct') }}</div>
         <!--问答帖-->
         <div v-if="threadType === 5" class="body product-information">
-          <span class="title">{{ $t('post.askHim') }}</span>
+          <span class="title">{{ askOrWatchAnswer === 'ask' ? $t('post.askHim') : $t('topic.watchAnswer') }}</span>
           <span>{{ $t('post.answerer') + beAskedUser.username }}</span>
         </div>
         <div v-else class="body product-information">
@@ -149,6 +149,10 @@ export default {
     showAnonymous: {
       type: Boolean,
       default: true
+    },
+    askOrWatchAnswer: {
+      type: String,
+      default: 'ask'
     }
   },
   data() {

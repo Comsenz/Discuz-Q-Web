@@ -10,7 +10,12 @@
           <span v-show="question.onlooker_number > 0">, {{ question.onlooker_number + '人已支付' }}</span>
         </div>
       </div>
-      <div class="answer-text" v-html="$xss(question.content_html)" />
+      <div class="answer-text content-html" v-html="$xss(question.content_html)" />
+      <div v-if="question.images && question.images.length > 0" v-viewer="{url: 'data-source'}" class="images">
+        <el-image v-for="(image, index) in question.images" :key="index" class="image" :data-source="image.url" :src="image.thumbUrl" :alt="image.filename" fit="cover">
+          <div slot="placeholder" class="image-slot"><i class="el-icon-loading" /></div>
+        </el-image>
+      </div>
     </div>
     <div v-if="showAnswerButton" class="block">
       <button @click="showAnswerEditor = true">
@@ -26,9 +31,9 @@
       </div>
     </div>
     <div v-if="showOnLookerButton" class="block">
-      <button>
+      <button @click="$emit('payForAnswer')">
         <svg-icon type="yuan" style="font-size: 15px" />
-        <span>答案支付 2 元可见</span>
+        <span>{{ $t('topic.payAmountCanWatch', { amount: question.onlooker_unit_price }) }}</span>
       </button>
     </div>
     <message-box v-if="showAnswerEditor" title="回答问题" @close="closeEditor">
@@ -97,7 +102,7 @@ export default {
       return this.isBeAskedUser && this.question.is_answer === 0
     },
     showOnLookerButton() {
-      return !this.isBeAskedUser && !this.isQuestionUser && this.question.onlooker_unit_price > 0 && this.question.onlookerState === '0'
+      return !this.isBeAskedUser && !this.isQuestionUser && this.question.onlooker_unit_price > 0 && !this.question.onlookerState
     },
     forums() {
       return this.$store.state.site.info.attributes || {}
@@ -153,8 +158,9 @@ export default {
     text-align: center;
     &.answer {
       border-radius: 5px;
-      padding: 15px 15px 30px;
+      padding: 15px;
       background: #F7F7F7;
+      text-align: left;
       > .header {
         display: flex;
         justify-content: space-between;
@@ -163,8 +169,21 @@ export default {
         }
       }
       > .answer-text {
+        text-align: left;
         margin-top: 15px;
         font-size: 16px;
+      }
+      > .images {
+        margin-top: 15px;
+        text-align: left;
+        width: 330px;
+        > .image {
+          cursor: pointer;
+          width: 100px;
+          height: 100px;
+          margin-right: 10px;
+          margin-bottom: 10px;
+        }
       }
     }
     > .tip {

@@ -323,6 +323,8 @@ export default {
     ask: '提问',
     answerCanGet: '回答即可获得',
     answerQuestion: '回答问题',
+    payAmountCanWatch: '答案支付 {amount} 元可见',
+    watchAnswer: '查看回答',
     answerTip: '元；若提问被围观，每次可获得',
     attachment: '附件',
     topicPageTitle: '内容详情页',
