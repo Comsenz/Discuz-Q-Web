@@ -80,6 +80,9 @@ export default {
           label: this.$t('notice.reward'),
           value: 'rewarded'
         }, {
+          label: this.$t('notice.questionsAnswers'),
+          value: 'questioned'
+        }, {
           label: this.$t('notice.system'),
           value: 'system'
         }
