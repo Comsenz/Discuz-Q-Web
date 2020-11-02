@@ -16,11 +16,12 @@
           :article="article"
           :title="thread.title || ''"
           :video="thread.threadVideo || {}"
+          :audio="thread.threadAudio || {}"
           :paid-information="paidInformation"
           :thread-type="thread.type || 0"
           :category="thread.category || {}"
           :location="location"
-          @payForVideo="showCheckoutCounter = true"
+          @payForThread="showCheckoutCounter = true"
         />
         <qa-actions
           v-if="thread.type === 5"
@@ -77,7 +78,7 @@
 </template>
 
 <script>
-const threadInclude = 'posts.replyUser,user.groups,user,user.groups.permissionWithoutCategories,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers,question,question.beUser,question.images,onlookers'
+const threadInclude = 'posts.replyUser,threadAudio,user.groups,user,user.groups.permissionWithoutCategories,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers,question,question.beUser,question.images,onlookers'
 import handleError from '@/mixin/handleError'
 import isLogin from '@/mixin/isLogin'
 import payment from '@/mixin/payment'

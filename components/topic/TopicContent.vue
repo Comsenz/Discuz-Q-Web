@@ -20,11 +20,6 @@
     </div>
     <div v-if="(article.attachments || []).length > 0" class="container-attachment">
       <h3 class="name">{{ $t('topic.attachment') }}</h3>
-      <!--      <div>-->
-      <!--        <template v-for="(file, index) in audioList">-->
-      <!--          <audio-player :key="index" :file="file" :current-audio="currentAudio" @play="play" @pause="pause" @seek="seek" @seeking="seeking" />-->
-      <!--        </template>-->
-      <!--      </div>-->
       <div>
         <template v-for="(file, index) in article.attachments">
           <attachment-list
@@ -50,6 +45,11 @@
     </div>
     <div v-if="threadType === 6" class="product">
       <product-item :item="article && article.postGoods" />
+    </div>
+    <div v-if="threadType === 4" class="audio">
+      <template v-for="(file, index) in [...audio]">
+        <audio-player :key="index" :file="file" :current-audio="currentAudio" @play="play" @pause="pause" @seek="seek" @seeking="seeking" />
+      </template>
     </div>
     <video-pop v-if="showVideoPop" :cover-url="video.cover_url" :url="video.media_url" @remove="showVideoPop = false" />
     <audio id="audio-player" :src="currentAudio.url" style="display: none" />
@@ -77,6 +77,10 @@ export default {
       default: () => ''
     },
     video: {
+      type: Object,
+      default: () => {}
+    },
+    audio: {
       type: Object,
       default: () => {}
     },
@@ -122,14 +126,6 @@ export default {
       if (process.client && this.paidInformation.paid) this.removeTextHideCover()
       return !(this.paidInformation.paid || parseFloat(this.paidInformation.price) === 0)
     }
-    // 只有音频帖才区分 音频和普通附件
-    // audioList() {
-    //   // MP3/M4A/WAV/AAC
-    //   return this.article.attachments.filter(item => this.isAudio(item))
-    // },
-    // attachmentList() {
-    //   return this.article.attachments.filter(item => !this.isAudio(item))
-    // }
   },
   watch: {
     article: {
@@ -143,10 +139,6 @@ export default {
     this.currentAudio.audio = document.getElementById('audio-player')
   },
   methods: {
-    // isAudio(item) {
-    //   const audio = ['MP3', 'M4A', 'WAV', 'AAC']
-    //   return audio.indexOf(item.extension.toUpperCase()) >= 0
-    // },
     formatTopicHTML(html) {
       return s9e.parse(html)
     },
@@ -162,13 +154,15 @@ export default {
     },
     openVideo() {
       if (!this.isLogin()) return
-      if (this.unpaid) return this.$emit('payForVideo')
+      if (this.unpaid) return this.$emit('payForThread')
       this.showVideoPop = true
     },
     play(file) {
+      if (!this.isLogin()) return
+      if (this.unpaid) return this.$emit('payForThread')
       if (this.currentAudio.id !== file._jv.id) {
         this.resetAudio(this.currentAudio.audio)
-        this.currentAudio.url = file.url
+        this.currentAudio.url = file.media_url
         this.currentAudio.id = file._jv.id
         this.currentAudio.audio.src = this.currentAudio.url
         this.currentAudio.isLoading = true
@@ -381,6 +375,9 @@ export default {
     .product{
       margin: 45px auto 0;
       width: 570px;
+    }
+    .audio {
+      margin: 45px auto 0;
     }
   }
 

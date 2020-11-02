@@ -158,7 +158,7 @@ export default {
   data() {
     return {
       hideAvatar: false,
-      text: ['getRemainingContent', 'getRemainingContent', 'getVideo', 'getPicture'],
+      text: ['getRemainingContent', 'getRemainingContent', 'getVideo', 'getPicture', 'getAudio'],
       payWay: 'wxPay',
       rewardAmount: '',
       defaultAmounts: ['1', '2', '5', '10', '20', '50', '88', '128'],
