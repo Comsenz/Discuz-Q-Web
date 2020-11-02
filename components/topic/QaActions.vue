@@ -22,7 +22,7 @@
         <svg-icon type="question" style="font-size: 15px" />
         <span>{{ $t('topic.answerQuestion') }}</span>
       </button>
-      <div class="tip">
+      <div v-show="parseFloat(question.price) > 0" class="tip">
         <span>{{ $t('topic.answerCanGet') }}</span>
         <span class="amount"> ￥{{ (parseFloat(question.price) * siteUserScale).toFixed(2) }} </span>
         <span>{{ $t('topic.answerTip') }}</span>
@@ -36,7 +36,7 @@
         <span>{{ $t('topic.payAmountCanWatch', { amount: question.onlooker_unit_price }) }}</span>
       </button>
     </div>
-    <message-box v-if="showAnswerEditor" title="回答问题" @close="closeEditor">
+    <message-box v-if="showAnswerEditor" :title="$t('topic.answerQuestion')" @close="closeEditor">
       <div class="editor-box">
         <editor
           editor-style="comment"
@@ -102,7 +102,7 @@ export default {
       return this.isBeAskedUser && this.question.is_answer === 0
     },
     showOnLookerButton() {
-      return !this.isBeAskedUser && !this.isQuestionUser && this.question.onlooker_unit_price > 0 && !this.question.onlookerState
+      return !this.isBeAskedUser && !this.isQuestionUser && this.question.onlooker_unit_price > 0 && !this.question.onlookerState && this.question.is_answer === 1
     },
     forums() {
       return this.$store.state.site.info.attributes || {}
