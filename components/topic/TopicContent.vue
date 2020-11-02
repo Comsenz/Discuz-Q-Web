@@ -139,7 +139,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.paidInformation)
     this.currentAudio.audio = document.getElementById('audio-player')
   },
   methods: {

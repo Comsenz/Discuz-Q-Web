@@ -9,7 +9,7 @@
           :author="thread.user || {}"
           :thread="thread"
           :management-list="managementList"
-          :be-asked-user="question.beUser"
+          :be-asked-user="question && question.beUser ? question.beUser : {}"
           @managementSelected="postCommand"
         />
         <topic-content
@@ -25,8 +25,9 @@
         <qa-actions
           v-if="thread.type === 5"
           :question="question || {}"
-          :current-user-id="currentUser._jv && currentUser._jv.id ? currentUser._jv.id : ''"
-          :question-user-id="thread.user && thread.user._jv && thread.user._jv.id ? thread.user._jv.id : ''"
+          :current-user-id="currentUser && currentUser.id ? currentUser.id : ''"
+          :question-user-id="thread.user && thread.user.id ? thread.user.id : ''"
+          @answerPublished="getThread()"
         />
         <topic-reward-list
           :author="thread.user || {}"
@@ -184,6 +185,7 @@ export default {
       this.initQuestion(this.thread)
     },
     initQuestion(data) {
+      if (!data.question) return
       this.question = data.question
       this.question.onlookerState = data.onlookerState
       console.log(this.question, 'question')
