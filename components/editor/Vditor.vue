@@ -155,7 +155,11 @@ export default {
       this.$emit('update:onUploadImage', true)
       Promise.all(promiseList).then(resList => {
         const files = resList.map(item => item.data.data)
-        files.forEach(item => { this.vditor.insertValue(`![${item.attributes.fileName}](${item.attributes.url})`) })
+        files.forEach(item => {
+          const html = `<img src="${item.attributes.url}" alt="${item.attributes.fileName}" title="${item.id}">`
+          const markdown = this.vditor.html2md(html)
+          this.vditor.insertValue(markdown)
+        })
         this.input.value = ''
       }, (e) => {
         this.input.value = ''
