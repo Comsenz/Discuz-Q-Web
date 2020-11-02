@@ -55,7 +55,7 @@ export default {
     getFavoriteList() {
       this.loading = true
       const params = {
-        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods,threadAudio',
+        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio',
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize
       }

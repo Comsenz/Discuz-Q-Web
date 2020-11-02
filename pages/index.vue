@@ -53,7 +53,7 @@
 import s9e from '@/utils/s9e'
 import handleError from '@/mixin/handleError'
 import env from '@/utils/env'
-const threadInclude = 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods,threadAudio'
+const threadInclude = 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio'
 export default {
   layout: 'custom_layout',
   name: 'Index',
@@ -76,6 +76,7 @@ export default {
       'filter[isSticky]': 'no',
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no',
+      'filter[isDisplay]': 'yes',
       'filter[categoryId]': query.categoryId,
       'page[number]': 1,
       'page[limit]': 10
@@ -250,6 +251,7 @@ export default {
         params['filter[type]'] = this.threadType
       }
       this.$store.dispatch('jv/get', ['threads', { params }]).then((data) => {
+        console.log('list', data)
         this.hasMore = data.length === this.pageSize
         const _threadCount = (data &&
           data._jv &&

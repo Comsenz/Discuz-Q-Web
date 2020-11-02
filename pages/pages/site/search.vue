@@ -160,7 +160,7 @@ export default {
     getThreadsList() {
       this.loading = true
       const params = {
-        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods,threadAudio',
+        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio',
         'filter[isApproved]': 1,
         'filter[isDeleted]': 'no',
         'filter[categoryId]': this.categoryId,
