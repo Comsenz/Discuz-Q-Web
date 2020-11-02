@@ -314,6 +314,7 @@ export default {
     taobao: '淘宝',
     tmall: '天猫',
     pinduoduo: '拼多多',
+    youzan: '有赞',
     goodsLink: '请粘贴 \\ 输入商品链接',
     goodsLinkEmpty: '商品链接不能为空',
     goodsEmpty: '商品不能为空'
@@ -1013,7 +1014,9 @@ export default {
     price: '费用',
     role: '角色：',
     to: '至',
-    permission: '权限'
+    permission: '权限',
+    inviteJoin: '邀请进站',
+    siteClose: '站点关闭'
   },
   // 搜索
   search: {

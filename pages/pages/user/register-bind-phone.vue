@@ -60,16 +60,18 @@
 </template>
 
 <script>
+import head from '@/mixin/head'
 import handleError from '@/mixin/handleError'
 import loginAbout from '@/mixin/loginAbout'
 const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
 
 export default {
   mixins: [
-    handleError, tcaptchs, loginAbout
+    head, handleError, tcaptchs, loginAbout
   ],
   data() {
     return {
+      title: this.$t('profile.register'),
       userName: '',
       passWord: '',
       repeatPassWord: '',
@@ -227,11 +229,6 @@ export default {
     },
     jump2Login() {
       this.$router.push(`/pages/user/login-bind-phone?&validate=${this.validate}&code=${this.code}&phoneNumber=${this.phoneNumber}`)
-    }
-  },
-  head() {
-    return {
-      title: this.$t('profile.register')
     }
   }
 }

@@ -40,11 +40,12 @@
 
 <script>
 import handleError from '@/mixin/handleError'
+import head from '@/mixin/head'
 import env from '@/utils/env'
 export default {
   layout: 'custom_layout',
   name: 'Index',
-  mixins: [handleError],
+  mixins: [head, handleError],
   // 异步数据用法
   async asyncData({ store, query }, callback) {
     if (!env.isSpider) {
@@ -99,6 +100,7 @@ export default {
   },
   data() {
     return {
+      title: this.$t('home.location'),
       loading: false,
       index_loading: true,
       threadsData: [], // 主题列表
@@ -180,11 +182,6 @@ export default {
         this.$refs[`audio${this.currentAudioId}`][0].pause()
       }
       this.currentAudioId = id
-    }
-  },
-  head() {
-    return {
-      title: this.$t('home.location')
     }
   }
 }

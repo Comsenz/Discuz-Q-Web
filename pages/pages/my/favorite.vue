@@ -30,12 +30,14 @@
 </template>
 
 <script>
+import head from '@/mixin/head'
 import handleError from '@/mixin/handleError'
 export default {
   layout: 'center_layout',
-  mixins: [handleError],
+  mixins: [head, handleError],
   data() {
     return {
+      title: this.$t('profile.myfavorite'),
       activeName: 'all',
       favoriteList: [],
       total: 0,
@@ -115,11 +117,6 @@ export default {
         this.$refs[`audio${this.currentAudioId}`][0].pause()
       }
       this.currentAudioId = id
-    }
-  },
-  head() {
-    return {
-      title: this.$t('profile.myfavorite')
     }
   }
 }

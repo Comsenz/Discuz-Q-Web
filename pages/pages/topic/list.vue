@@ -49,10 +49,11 @@
 <script>
 import handleError from '@/mixin/handleError'
 import env from '@/utils/env'
+import head from '@/mixin/head'
 export default {
   layout: 'custom_layout',
   name: 'TopicContent',
-  mixins: [handleError],
+  mixins: [handleError, head],
   // 异步数据用法
   async asyncData({ store }, callback) {
     if (!env.isSpider) {
@@ -96,6 +97,7 @@ export default {
   },
   data() {
     return {
+      title: this.$t('topic.topictitlelist'),
       loading: false,
       topicsData: [], // 话题列表
       total: 0,
@@ -158,11 +160,6 @@ export default {
       this.pageNum = 1
       this.topicsData = []
       this.getTopicList()
-    }
-  },
-  head() {
-    return {
-      title: this.forums && this.forums.set_site && this.forums.set_site.site_name ? this.$t('topic.topictitlelist') + ' - ' + this.forums.set_site.site_name : this.$t('topic.topictitlelist')
     }
   }
 }

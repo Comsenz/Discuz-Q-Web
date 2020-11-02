@@ -37,6 +37,11 @@ export default {
       //   }
       // }
     }
+  },
+  head() {
+    return {
+      title: this.$t('site.siteClose')
+    }
   }
 }
 </script>

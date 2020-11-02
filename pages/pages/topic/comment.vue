@@ -59,6 +59,7 @@ const commentInclude = 'user,likedUsers,commentPosts,commentPosts.user,commentPo
 const replyInclude = 'replyUser,user.groups,user,images'
 import publishResource from '@/mixin/publishResource'
 import postLegalityCheck from '@/mixin/postLegalityCheck'
+import head from '@/mixin/head'
 import handleError from '@/mixin/handleError'
 import timerDiff from '@/mixin/timerDiff'
 import isLogin from '@/mixin/isLogin'
@@ -67,7 +68,7 @@ import env from '@/utils/env'
 export default {
   name: 'Comment',
   layout: 'custom_layout',
-  mixins: [timerDiff, handleError, isLogin, publishResource, postLegalityCheck],
+  mixins: [head, timerDiff, handleError, isLogin, publishResource, postLegalityCheck],
   async asyncData({ store, query }) {
     if (!env.isSpider) {
       return {}
@@ -140,6 +141,7 @@ export default {
         // TODO replyCount 不包括审核中的评论
         this.replyCount = response.replyCount
         this.comment = response
+        this.title = this.comment ? this.comment.summaryText : '评论详情页'
       }, e => this.handleError(e))
     },
     getReplyList(type) {
@@ -231,11 +233,6 @@ export default {
         }
         this.postLegalityCheck(response, this.$t('topic.replyPublishSuccess'))
       }, e => this.handleError(e)).finally(() => { this.onReplyPublish = false })
-    }
-  },
-  head() {
-    return {
-      title: this.comment ? this.comment.summaryText : '评论详情页'
     }
   }
 }

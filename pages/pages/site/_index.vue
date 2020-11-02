@@ -110,13 +110,15 @@
 
 <script>
 import handleError from '@/mixin/handleError'
+import head from '@/mixin/head'
 import { timestamp2day } from '@/utils/time'
 export default {
   layout: 'center_layout',
   name: 'SiteInfo',
-  mixins: [handleError],
+  mixins: [handleError, head],
   data() {
     return {
+      title: this.$t('manage.circleinfo'),
       userId: this.$store.state.user.info.id, // 获取当前登陆用户的ID
       groupsId: '',
       inputInfo: '',
@@ -212,11 +214,6 @@ export default {
     handleDays(date) {
       const _date = Math.round(new Date(date) / 1000)
       return timestamp2day(_date)
-    }
-  },
-  head() {
-    return {
-      title: this.$t('manage.circleinfo')
     }
   }
 }

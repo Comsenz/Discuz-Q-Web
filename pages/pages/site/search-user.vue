@@ -35,10 +35,11 @@
 <script>
 import handleError from '@/mixin/handleError'
 import env from '@/utils/env'
+import head from '@/mixin/head'
 export default {
   layout: 'custom_layout',
   name: 'Index',
-  mixins: [handleError],
+  mixins: [handleError, head],
   // 异步数据用法
   async asyncData({ store }, callback) {
     if (!env.isSpider) {
@@ -71,7 +72,8 @@ export default {
       value: '',
       hasMore: false,
       userCount: 0,
-      userList: []
+      userList: [],
+      title: this.$t('search.search')
     }
   },
   computed: {
@@ -137,11 +139,6 @@ export default {
       this.pageNum = 1
       this.userList = []
       this.getUserList()
-    }
-  },
-  head() {
-    return {
-      title: this.$t('search.search')
     }
   }
 }

@@ -53,12 +53,14 @@
 </template>
 
 <script>
+import head from '@/mixin/head'
 import handleError from '@/mixin/handleError'
 export default {
   layout: 'center_layout',
-  mixins: [handleError],
+  mixins: [head, handleError],
   data() {
     return {
+      title: this.$t('profile.notice'),
       activeName: 'chat',
       // 消息类型
       noticeTypeList: [
@@ -233,11 +235,6 @@ export default {
       this.chatting = false
       this.dialog.pageNum = 1
       this.getDialogList()
-    }
-  },
-  head() {
-    return {
-      title: this.$t('profile.notice')
     }
   }
 }

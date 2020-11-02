@@ -95,11 +95,13 @@
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
 import handleError from '@/mixin/handleError'
+import head from '@/mixin/head'
 let payWechat = null
 export default {
-  mixins: [handleError],
+  mixins: [head, handleError],
   data() {
     return {
+      title: this.$t('profile.circleinfo'),
       isLogin: this.$store.getters['session/get']('isLogin'),
       qrcodeShow: false,
       payStatus: 0, // 订单支付状态
@@ -241,11 +243,6 @@ export default {
         this.$refs[`audio${this.currentAudioId}`][0].pause()
       }
       this.currentAudioId = id
-    }
-  },
-  head() {
-    return {
-      title: this.$t('profile.circleinfo')
     }
   }
 }

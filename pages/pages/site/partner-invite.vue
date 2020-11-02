@@ -110,9 +110,9 @@
 import { status } from '@/library/jsonapi-vuex/index'
 import loginAbout from '@/mixin/loginAbout'
 import handleError from '@/mixin/handleError'
-
+import head from '@/mixin/head'
 export default {
-  mixins: [loginAbout, handleError],
+  mixins: [loginAbout, handleError, head],
   data() {
     return {
       isLogin: this.$store.getters['session/get']('isLogin'),
@@ -130,7 +130,8 @@ export default {
       normal: false,
       loading: true,
       canDetail: false,
-      currentAudioId: ''
+      currentAudioId: '',
+      title: this.$t('site.inviteJoin')
     }
   },
   computed: {
@@ -304,11 +305,6 @@ export default {
         this.$refs[`audio${this.currentAudioId}`][0].pause()
       }
       this.currentAudioId = id
-    }
-  },
-  head() {
-    return {
-      title: '邀请进站'
     }
   }
 }

@@ -33,7 +33,8 @@ export default {
         { icon: 'product-jd', text: this.$t('post.jd') },
         { icon: 'product-taobao', text: this.$t('post.taobao') },
         { icon: 'product-tmall', text: this.$t('post.tmall') },
-        { icon: 'product-pinduoduo', text: this.$t('post.pinduoduo') }
+        { icon: 'product-pinduoduo', text: this.$t('post.pinduoduo') },
+        { icon: 'product-youzan', text: this.$t('post.youzan') }
       ],
       link: '',
       loading: false
