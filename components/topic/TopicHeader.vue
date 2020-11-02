@@ -1,9 +1,14 @@
 <template>
   <div class="title">
-    <avatar-component :author="author">
+    <avatar-component v-if="thread.type !== 5" :author="author">
       {{ $t('topic.publishAt') }} {{ timerDiff(thread.createdAt) + $t('topic.before') }} ..
-      <!--  TODO thread.updateAt 没更新，只能先用 firstPost.updateAt   -->
       （{{ $t('topic.editAt') }} {{ timerDiff(thread.firstPost ? thread.firstPost.updatedAt : '') + $t('topic.before') }}）
+    </avatar-component>
+    <!--问答帖特殊展示-->
+    <avatar-component v-else :author="author">
+      {{ timerDiff(thread.createdAt) + $t('topic.before') + $t('topic.to') }}
+      <nuxt-link :to="'/pages/profile/index?userId=' + beAskedUser._jv.id" class="be-ask-user">{{ ' @' + beAskedUser.username }}</nuxt-link>
+      {{ ' ' + $t('topic.ask') }}
     </avatar-component>
     <div class="container-management">
       <el-dropdown
@@ -59,6 +64,10 @@ export default {
     managementList: {
       type: Array,
       default: () => []
+    },
+    beAskedUser: {
+      type: Object,
+      default: () => {}
     }
   },
   data() {
@@ -99,6 +108,10 @@ export default {
   display: flex;
   justify-content: space-between;
 
+  .be-ask-user {
+    color: $color-blue-base;
+    cursor: pointer;
+  }
   > .container-management {
     display: flex;
     .report {

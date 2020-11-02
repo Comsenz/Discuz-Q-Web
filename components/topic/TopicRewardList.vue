@@ -1,8 +1,8 @@
 <template>
   <div class="global">
     <div v-for="(userList, usersIndex) in userLists" :key="usersIndex" class="group">
-      <div v-if="userList.length > 0" class="title">{{ userList.length + $t('topic.personUnit') +
-        $t(`topic.${command[usersIndex].title}`) }}
+      <div v-if="userList.length > 0" class="title">
+        {{ userList.length + $t('topic.personUnit') + $t(`topic.${command[usersIndex].title}`) }}
       </div>
       <div v-if="userList.length > 0" class="person-list">
         <div class="first-show">
@@ -18,7 +18,7 @@
       >
         <svg-icon style="font-size: 20px; margin-top: 10px; fill: #8590A6" type="drop-down" />
       </div>
-      <button v-if="command[usersIndex].showButton && command[usersIndex].buttonText && canRewardOrPaid" @click="onClick(command, usersIndex)">
+      <button v-if="command[usersIndex].showButton && command[usersIndex].buttonText && canRewardOrPaid && threadType !== 5" @click="onClick(command, usersIndex)">
         <svg-icon style="font-size: 16px; fill: white; margin-right: 10px" :type="command[usersIndex].icon" />
         <span>{{ command[usersIndex].buttonText }}</span>
       </button>

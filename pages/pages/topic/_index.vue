@@ -9,6 +9,7 @@
           :author="thread.user || {}"
           :thread="thread"
           :management-list="managementList"
+          :be-asked-user="question && question.beUser ? question.beUser : {}"
           @managementSelected="postCommand"
         />
         <topic-content
@@ -24,8 +25,10 @@
         <qa-actions
           v-if="thread.type === 5"
           :question="question || {}"
-          :current-user-id="currentUser._jv && currentUser._jv.id ? currentUser._jv.id : ''"
-          :question-user-id="thread.user && thread.user._jv && thread.user._jv.id ? thread.user._jv.id : ''"
+          :current-user-id="currentUser && currentUser.id ? currentUser.id : ''"
+          :question-user-id="thread.user && thread.user.id ? thread.user.id : ''"
+          @answerPublished="getThread()"
+          @payForAnswer="showCheckoutCounter = true"
         />
         <topic-reward-list
           :author="thread.user || {}"
@@ -43,6 +46,8 @@
           :amount="payOrRewardAmount"
           :content="article.summaryText || ''"
           :reward-or-pay="rewardOrPay"
+          :be-asked-user="question.beUser || {}"
+          ask-or-watch-answer="watchAnswer"
           @close="showCheckoutCounter = false"
           @paying="paying"
         />
@@ -132,24 +137,32 @@ export default {
     currentUser() {
       return this.$store.state.user.info.attributes || {}
     },
-    rewardOrPay() {
-      return parseFloat(this.paidInformation.price) > 0 || parseFloat(this.paidInformation.attachmentPrice) > 0 ? 'pay' : 'reward'
-    },
     forums() {
       return this.$store.state.site.info.attributes || {}
+    },
+    rewardOrPay() {
+      const price = parseFloat(this.paidInformation.price)
+      const attachmentPrice = parseFloat(this.paidInformation.attachmentPrice)
+      const questionPrice = Object.keys(this.question).length > 0 ? parseFloat(this.question.onlooker_unit_price) : 0
+      return price > 0 || attachmentPrice > 0 || questionPrice > 0 ? 'pay' : 'reward'
     },
     payOrRewardAmount() {
       const price = parseFloat(this.paidInformation.price || '0')
       const attachmentPrice = parseFloat(this.paidInformation.attachmentPrice || '0')
-      return price || attachmentPrice || this.payment.rewardAmount
+      const questionPrice = Object.keys(this.question).length > 0 ? parseFloat(this.question.onlooker_unit_price) : 0
+      return price || attachmentPrice || questionPrice || this.payment.rewardAmount
     },
     payOrderType() {
       const price = parseFloat(this.paidInformation.price || '0')
       const attachmentPrice = parseFloat(this.paidInformation.attachmentPrice || '0')
+      const questionPrice = Object.keys(this.question).length > 0 ? parseFloat(this.question.onlooker_unit_price) : 0
+      // 1：注册，2：打赏，3：付费主题，4：付费用户组，5：问答提问支付，6：问答围观付费, 7: 付费附件
       if (price > 0) {
         return 3
       } else if (attachmentPrice > 0) {
         return 7
+      } else if (questionPrice > 0) {
+        return 6
       } else {
         return 2
       }
@@ -183,6 +196,7 @@ export default {
       this.initQuestion(this.thread)
     },
     initQuestion(data) {
+      if (!data.question) return
       this.question = data.question
       this.question.onlookerState = data.onlookerState
       console.log(this.question, 'question')

@@ -320,6 +320,13 @@ export default {
     goodsEmpty: '商品不能为空'
   },
   topic: {
+    to: '向',
+    ask: '提问',
+    answerCanGet: '回答即可获得',
+    answerQuestion: '回答问题',
+    payAmountCanWatch: '答案支付 {amount} 元可见',
+    watchAnswer: '查看回答',
+    answerTip: '元；若提问被围观，每次可获得',
     attachment: '附件',
     topicPageTitle: '内容详情页',
     commentPageTitle: '评论详情页',
@@ -381,6 +388,7 @@ export default {
     canWrite: '还能输入',
     word: '个字',
     publish: '发布',
+    answerPublishSuccess: '回答发布成功',
     commentPublishSuccess: '评论发布成功',
     replyPublishSuccess: '回复发布成功',
     publishAt: '发布于',
