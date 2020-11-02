@@ -83,7 +83,11 @@
     </div>
     <div v-if="threadsData.length > 0" class="thread">
       <div class="threadtitle">部分内容预览</div>
-      <post-item v-for="(item, index) in threadsData" :key="index" :item="item" :infoimage="true" :can-detail="canDetail" />
+      <template v-for="(item, index) in threadsData">
+        <!-- 语音贴 -->
+        <post-item v-if="item.type === 4" :ref="`audio${ item && item.threadAudio && item.threadAudio._jv && item.threadAudio._jv.id}`" :key="index" :item="item" :infoimage="true" :can-detail="canDetail" @audioPlay="audioPlay" />
+        <post-item v-else :key="index" :item="item" :infoimage="true" :can-detail="canDetail" />
+      </template>
     </div>
   </div>
 </template>
@@ -91,11 +95,13 @@
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
 import handleError from '@/mixin/handleError'
+import head from '@/mixin/head'
 let payWechat = null
 export default {
-  mixins: [handleError],
+  mixins: [head, handleError],
   data() {
     return {
+      title: this.$t('profile.circleinfo'),
       isLogin: this.$store.getters['session/get']('isLogin'),
       qrcodeShow: false,
       payStatus: 0, // 订单支付状态
@@ -105,7 +111,8 @@ export default {
       site_price: 0,
       threadsData: [],
       loading: true,
-      canDetail: false
+      canDetail: false,
+      currentAudioId: ''
     }
   },
   computed: {
@@ -212,7 +219,7 @@ export default {
       const params = {
         'filter[isDeleted]': 'no',
         sort: '-createdAt',
-        include: 'user,user.groups,firstPost,firstPost.images,firstPost.postGoods,category,threadVideo,threadAudio',
+        include: 'user,user.groups,firstPost,firstPost.images,firstPost.postGoods,category,threadVideo,threadAudio,question,question.beUser',
         'page[number]': 1,
         'page[limit]': 10,
         'filter[isApproved]': 1,
@@ -229,11 +236,13 @@ export default {
         .finally(() => {
           this.loading = false
         })
-    }
-  },
-  head() {
-    return {
-      title: this.$t('profile.circleinfo')
+    },
+    // 语音互斥播放
+    audioPlay(id) {
+      if (this.currentAudioId && this.currentAudioId !== id) {
+        this.$refs[`audio${this.currentAudioId}`][0].pause()
+      }
+      this.currentAudioId = id
     }
   }
 }

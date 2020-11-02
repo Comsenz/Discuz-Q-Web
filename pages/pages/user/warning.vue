@@ -20,9 +20,12 @@
 </template>
 
 <script>
+import head from '@/mixin/head'
 export default {
+  mixins: [head],
   data() {
     return {
+      title: this.$t('core.registerValidate'),
       username: ''
     }
   },

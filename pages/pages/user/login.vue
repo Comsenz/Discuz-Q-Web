@@ -42,13 +42,15 @@
 </template>
 
 <script>
+import head from '@/mixin/head'
 import handleError from '@/mixin/handleError'
 import loginAbout from '@/mixin/loginAbout'
 
 export default {
-  mixins: [handleError, loginAbout],
+  mixins: [head, handleError, loginAbout],
   data() {
     return {
+      title: this.$t('user.login'),
       userName: '',
       passWord: '',
       checked: true,
@@ -149,11 +151,6 @@ export default {
       } else {
         this.$router.push(`/pages/user/phone-login?code=${this.code}`)
       }
-    }
-  },
-  head() {
-    return {
-      title: this.$t('user.login')
     }
   }
 }

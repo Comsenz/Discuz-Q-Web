@@ -48,16 +48,18 @@
 
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
+import head from '@/mixin/head'
 import handleError from '@/mixin/handleError'
 import tencentCaptcha from '@/mixin/tencentCaptcha'
 
 export default {
   name: 'Findpwd',
   mixins: [
-    tencentCaptcha, handleError
+    head, tencentCaptcha, handleError
   ],
   data() {
     return {
+      title: `${this.$t('modify.forgetPassword')} \ ${this.$t('modify.retrievePassword')}`,
       phoneNumber: '',
       isVerifyDisabled: true,
       canCountDown: false,

@@ -38,11 +38,12 @@
 <script>
 import handleError from '@/mixin/handleError'
 import loginAbout from '@/mixin/loginAbout'
-
+import head from '@/mixin/head'
 export default {
-  mixins: [handleError, loginAbout],
+  mixins: [head, handleError, loginAbout],
   data() {
     return {
+      title: this.$t('user.login'),
       userName: '',
       passWord: '',
       checked: true,
@@ -142,11 +143,6 @@ export default {
     },
     iscanReg() {
       return [this.canReg ? '' : 'noreg']
-    }
-  },
-  head() {
-    return {
-      title: this.$t('user.login')
     }
   }
 }

@@ -134,15 +134,18 @@
 
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
+import head from '@/mixin/head'
 import handleError from '@/mixin/handleError'
 
 export default {
   layout: 'center_layout',
   mixins: [
+    head,
     handleError
   ],
   data() {
     return {
+      title: this.$t('profile.mywallet'),
       isWithdraw: false,
       inputpas: '', // 第一次新密码
       usertokenid: '', // 原密码验证成功id
@@ -298,11 +301,6 @@ export default {
       } else {
         this.isWithoutphone = true
       }
-    }
-  },
-  head() {
-    return {
-      title: this.$t('profile.mywallet')
     }
   }
 

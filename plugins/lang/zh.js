@@ -314,6 +314,7 @@ export default {
     taobao: '淘宝',
     tmall: '天猫',
     pinduoduo: '拼多多',
+    youzan: '有赞',
     goodsLink: '请粘贴 \\ 输入商品链接',
     goodsLinkEmpty: '商品链接不能为空',
     goodsEmpty: '商品不能为空'
@@ -432,7 +433,8 @@ export default {
     be: '向',
     of: '的',
     question: '提问：',
-    answer: '回答了'
+    answer: '回答了',
+    joinAfterView: '加入站点后才可以预览'
   },
   pay: {
     passwordError: '密码错误请重试',
@@ -621,6 +623,9 @@ export default {
     repliedMe: '回复了我',
     like: '点赞我的',
     likedMe: '点赞了我',
+    answersMe: ' 回答了我',
+    questions: ' 提问了我',
+    questionsAnswers: '问答通知',
     reward: '财务通知',
     rewardedMe: '打赏了我',
     pay: '支付我的',
@@ -629,6 +634,7 @@ export default {
     rewardScale: '的打赏分成',
     payScale: '的付费分成',
     payedMe: '支付了我',
+    watchedMe: ' 围观了我',
     system: '系统通知',
     chat: '与你的私信',
     admin: '管理员',
@@ -869,7 +875,7 @@ export default {
     post: '发帖',
     notice: '消息',
     mine: '我的',
-    myperson: '个人主页',
+    myperson: '的主页',
     backhomePage: '回首页',
     walletpasset: '已设置 / 修改',
     isset: '已设置',
@@ -963,6 +969,17 @@ export default {
     rewardincome: '打赏收入',
     laborincome: '人工收入',
     laborexpenditure: '人工支出',
+    payincome: '付费收入',
+    answerincome: '问答收入',
+    answerpay: '问答支出',
+    threadpayincome: '付费主题收入',
+    threadpay: '付费主题支出',
+    threadanswerpay: '问答提问支出',
+    answerfreeze: '问答冻结',
+    filepay: '付费附件支出',
+    answersincome: '问答答题收入',
+    answersaroundincome: '问答围观收入',
+    answersaroundpay: '问答围观支出',
     tobereviewed: '待审核',
     approved: '审核通过',
     auditfailed: '审核不通过',
@@ -977,6 +994,9 @@ export default {
     givearewardforthetheme: '打赏了主题',
     paidtoseeyourtheme: '付费查看了你的主题',
     paidtoview: '付费查看了',
+    paidtoviewFiles: '付费查看了主题的附件',
+    paidtoviewQuestion: '付费查看了问答',
+    paidtowatchQuestion: '付费围观了问答',
     orderexpired: '订单过期',
     payfail: '支付失败',
     cancelorder: '取消订单',
@@ -1020,7 +1040,9 @@ export default {
     price: '费用',
     role: '角色：',
     to: '至',
-    permission: '权限'
+    permission: '权限',
+    inviteJoin: '邀请进站',
+    siteClose: '站点关闭'
   },
   // 搜索
   search: {

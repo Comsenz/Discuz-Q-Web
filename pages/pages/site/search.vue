@@ -36,7 +36,11 @@
       </div>
       <div class="count">{{ $t('home.invitation') }} {{ threadCount }} {{ $t('topic.item') }}</div>
       <div class="post-list">
-        <post-item v-for="(item, index) in threadsList" :key="index" :item="item" />
+        <template v-for="(item, index) in threadsList">
+          <!-- 语音贴 -->
+          <post-item v-if="item.type === 4" :ref="`audio${ item && item.threadAudio && item.threadAudio._jv && item.threadAudio._jv.id}`" :key="index" :item="item" @audioPlay="audioPlay" />
+          <post-item v-else :key="index" :item="item" />
+        </template>
         <list-load-more
           :loading="loading"
           :has-more="hasMore"
@@ -59,10 +63,11 @@
 <script>
 import handleError from '@/mixin/handleError'
 import env from '@/utils/env'
+import head from '@/mixin/head'
 export default {
   layout: 'custom_layout',
   name: 'Index',
-  mixins: [handleError],
+  mixins: [head, handleError],
   // 异步数据用法
   async asyncData({ store }, callback) {
     if (!env.isSpider) {
@@ -87,6 +92,7 @@ export default {
   },
   data() {
     return {
+      title: this.$t('search.search'),
       loading: false,
       categoryData: [],
       threadsList: [], // 主题列表
@@ -99,7 +105,8 @@ export default {
       userCount: 0,
       userList: [],
       userLoading: false,
-      userPageSize: 3
+      userPageSize: 3,
+      currentAudioId: ''
     }
   },
   computed: {
@@ -153,7 +160,7 @@ export default {
     getThreadsList() {
       this.loading = true
       const params = {
-        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
+        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods,threadAudio',
         'filter[isApproved]': 1,
         'filter[isDeleted]': 'no',
         'filter[categoryId]': this.categoryId,
@@ -198,11 +205,13 @@ export default {
       if (this.$route.query.q) {
         this.$router.push(`/pages/site/search-user?value=${this.$route.query.q}`)
       }
-    }
-  },
-  head() {
-    return {
-      title: this.$t('search.search')
+    },
+    // 语音互斥播放
+    audioPlay(id) {
+      if (this.currentAudioId && this.currentAudioId !== id) {
+        this.$refs[`audio${this.currentAudioId}`][0].pause()
+      }
+      this.currentAudioId = id
     }
   }
 }

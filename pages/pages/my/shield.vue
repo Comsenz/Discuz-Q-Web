@@ -212,12 +212,14 @@
 </template>
 
 <script>
+import head from '@/mixin/head'
 import handleError from '@/mixin/handleError'
 export default {
   layout: 'center_layout',
-  mixins: [handleError],
+  mixins: [head, handleError],
   data() {
     return {
+      title: this.$t('profile.myshield'),
       activeName: 'all',
       shieldList: [],
       shieldTotal: 0,
@@ -402,11 +404,6 @@ export default {
       if (this.unbundlingArry && this.unbundlingArry.includes(uid)) {
         return true
       }
-    }
-  },
-  head() {
-    return {
-      title: this.$t('profile.myshield')
     }
   }
 }

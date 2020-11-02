@@ -46,6 +46,7 @@
 
 <script>
 const threadInclude = 'firstPost,firstPost.images,firstPost.attachments,category,threadVideo'
+import head from '@/mixin/head'
 import publishResource from '@/mixin/publishResource'
 import handleError from '@/mixin/handleError'
 import isLogin from '@/mixin/isLogin'
@@ -54,9 +55,10 @@ import payment from '@/mixin/payment'
 
 export default {
   name: 'Post',
-  mixins: [tencentCaptcha, handleError, publishResource, isLogin, payment],
+  mixins: [head, tencentCaptcha, handleError, publishResource, isLogin, payment],
   data() {
     return {
+      title: this.$t('topic.publish'),
       editThread: {}, // 被编辑的主题
       categoryList: [],
       post: { id: '', title: '', text: '', imageList: [], videoList: [], attachedList: [] },
@@ -341,9 +343,6 @@ export default {
       }
       return this.$store.dispatch('jv/patch', [threadParams, { url: `/threads/${this.threadId}` }])
     }
-  },
-  head() {
-    return { title: '发布' }
   }
 }
 </script>

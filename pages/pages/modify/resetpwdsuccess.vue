@@ -19,8 +19,15 @@
 </template>
 
 <script>
+import head from '@/mixin/head'
 export default {
   name: 'ResetPwdSuccess',
+  mixins: [head],
+  data() {
+    return {
+      title: this.$t('modify.resetPasswordSuccess')
+    }
+  },
   computed: {
     username() {
       if (process.client) return window.localStorage.getItem('username') || ''

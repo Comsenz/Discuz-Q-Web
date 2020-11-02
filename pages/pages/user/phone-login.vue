@@ -31,15 +31,17 @@
 
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
+import head from '@/mixin/head'
 import handleError from '@/mixin/handleError'
 import tencentCaptcha from '@/mixin/tencentCaptcha'
 import countDown from '@/mixin/countDown'
 import loginAbout from '@/mixin/loginAbout'
 
 export default {
-  mixins: [handleError, tencentCaptcha, countDown, loginAbout],
+  mixins: [head, handleError, tencentCaptcha, countDown, loginAbout],
   data() {
     return {
+      title: '手机号登录',
       phoneNumber: '',
       content: this.$t('modify.sendVerifyCode'),
       activeName: '0', // 默认激活tab
@@ -166,11 +168,6 @@ export default {
     },
     toUserlogin() {
       this.$router.push(`/pages/user/login?code=${this.code}`)
-    }
-  },
-  head() {
-    return {
-      title: '手机号登录'
     }
   }
 }

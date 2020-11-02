@@ -20,7 +20,11 @@
           </div>
         </div>
         <div class="thread-list">
-          <post-item v-for="(item, index) in threadsData" :key="index" :item="item" />
+          <template v-for="(item, index) in threadsData">
+            <!-- 语音贴 -->
+            <post-item v-if="item.type === 4" :ref="`audio${ item && item.threadAudio && item.threadAudio._jv && item.threadAudio._jv.id}`" :key="index" :item="item" @audioPlay="audioPlay" />
+            <post-item v-else :key="index" :item="item" />
+          </template>
           <list-load-more
             :loading="loading"
             :has-more="hasMore"
@@ -56,7 +60,7 @@ export default {
       callback(null, {})
     }
     const threadsParams = {
-      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
+      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods,threadAudio',
       'filter[isSticky]': 'no',
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no',
@@ -114,7 +118,8 @@ export default {
       pageSize: 10, // 每页多少条数据
       hasMore: false,
       topicId: '',
-      topic: {} // 话题详情
+      topic: {}, // 话题详情
+      currentAudioId: ''
     }
   },
   computed: {
@@ -149,7 +154,7 @@ export default {
     getThreadsList() {
       this.loading = true
       const params = {
-        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
+        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods,threadAudio',
         'filter[isApproved]': 1,
         'filter[isDeleted]': 'no',
         'page[number]': this.pageNum,
@@ -183,11 +188,22 @@ export default {
     },
     loadMore() {
       this.getThreadsList()
+    },
+    // 语音互斥播放
+    audioPlay(id) {
+      if (this.currentAudioId && this.currentAudioId !== id) {
+        this.$refs[`audio${this.currentAudioId}`][0].pause()
+      }
+      this.currentAudioId = id
     }
   },
   head() {
     return {
-      title: this.topic.content
+      title: this.forums && this.forums.set_site && this.forums.set_site.site_name ? this.topic.content + ' - ' + this.forums.set_site.site_name : this.topic.content,
+      meta: [
+        { hid: 'keywords', name: 'keywords', content: (this.topic.content) || '' },
+        { hid: 'description', name: 'description', content: (this.topic.content) || '' }
+      ]
     }
   }
 }

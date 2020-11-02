@@ -13,7 +13,7 @@ export default {
     return {
       type: '',
       forums: '',
-      popTitle: '',
+      popTitle: '\u200E',
       popDetail: ''
     }
   },
@@ -41,6 +41,11 @@ export default {
         this.popTitle = this.$t('permission.user.agreementPrivacy')
         this.popDetail = this.forums.agreement.privacy_content
       }
+    }
+  },
+  head() {
+    return {
+      title: this.forums && this.forums.set_site && this.forums.set_site.site_name ? this.popTitle + ' - ' + this.forums.set_site.site_name : this.popTitle
     }
   }
 }

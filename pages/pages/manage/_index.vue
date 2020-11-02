@@ -21,11 +21,14 @@
 </template>
 
 <script>
+import head from '@/mixin/head'
 export default {
   layout: 'center_layout',
   name: 'UserManage',
+  mixins: [head],
   data() {
     return {
+      title: this.$t('manage.siteManagement'),
       loading: false,
       activeName: 'manage',
       groupMap: {},
@@ -71,11 +74,6 @@ export default {
       }, (e) => {
         this.handleError(e)
       })
-    }
-  },
-  head() {
-    return {
-      title: this.$t('manage.siteManagement')
     }
   }
 }

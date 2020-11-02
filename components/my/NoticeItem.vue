@@ -26,7 +26,15 @@
           >{{ item.user_name }}
           </nuxt-link>
           <span class="text">
-            <template v-if="item.type === 'rewarded'">
+            <template v-if="item.type === 'questioned'">
+              <template v-if="item.is_answer === 0">
+                {{ $t('notice.questions') }}
+              </template>
+              <template v-if="item.is_answer === 1">
+                {{ $t('notice.answersMe') }}
+              </template>
+            </template>
+            <template v-else-if="item.type === 'rewarded'">
               <template v-if="item.isScale">
                 {{ item.order_type === 1
                   ? typeMap['registerScale'] : item.order_type === 2
@@ -34,6 +42,8 @@
                       ? typeMap['payScale'] : typeMap[item.type] }}
               </template>
               <template v-else-if="item.order_type === 3">{{ typeMap['payMe'] }}</template>
+              <template v-else-if="item.order_type === 5">{{ typeMap['questions'] }}</template>
+              <template v-else-if="item.order_type === 6">{{ typeMap['watchedMe'] }}</template>
               <template v-else>{{ typeMap[item.type] }}</template>
             </template>
             <template v-else>{{ typeMap[item.type] }}</template>
@@ -51,6 +61,12 @@
           ? item.reply_post_id : item.post_id}`"
         class="post-content"
         v-html="$xss(item.post_content)"
+      />
+      <nuxt-link
+        v-if="item.answer_content"
+        :to="`/topic/index?id=${item.thread_id}`"
+        class="post-content"
+        v-html="$xss(item.answer_content)"
       />
       <nuxt-link
         v-if="(item.thread_title || item.content) && item.type !== 'system'"
@@ -120,7 +136,12 @@ export default {
         registerScale: this.$t('notice.registerScale'),
         rewardScale: this.$t('notice.rewardScale'),
         payScale: this.$t('notice.payScale'),
-        system: this.$t('notice.system')
+        system: this.$t('notice.system'),
+        questions: this.$t('notice.questions'),
+        watchedMe: this.$t('notice.watchedMe'),
+        payedMe: this.$t('notice.payedMe'),
+        answersMe: this.$t('notice.answersMe'),
+        questioned: this.$t('notice.questions')
       }
     }
   },

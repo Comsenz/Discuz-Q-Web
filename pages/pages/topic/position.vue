@@ -11,7 +11,11 @@
       <main class="cont-left">
         <div class="thread-count">{{ $t('home.threadCount',{total}) }}</div>
         <div class="post-list">
-          <post-item v-for="(item, index) in threadsData" :key="index" :item="item" />
+          <template v-for="(item, index) in threadsData">
+            <!-- 语音贴 -->
+            <post-item v-if="item.type === 4" :ref="`audio${ item && item.threadAudio && item.threadAudio._jv && item.threadAudio._jv.id}`" :key="index" :item="item" @audioPlay="audioPlay" />
+            <post-item v-else :key="index" :item="item" />
+          </template>
           <list-load-more
             :loading="loading"
             :has-more="hasMore"
@@ -36,18 +40,19 @@
 
 <script>
 import handleError from '@/mixin/handleError'
+import head from '@/mixin/head'
 import env from '@/utils/env'
 export default {
   layout: 'custom_layout',
   name: 'Index',
-  mixins: [handleError],
+  mixins: [head, handleError],
   // 异步数据用法
   async asyncData({ store, query }, callback) {
     if (!env.isSpider) {
       callback(null, {})
     }
     const threadsParams = {
-      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
+      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods,threadAudio',
       'filter[isSticky]': 'no',
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no',
@@ -95,6 +100,7 @@ export default {
   },
   data() {
     return {
+      title: this.$t('home.location'),
       loading: false,
       index_loading: true,
       threadsData: [], // 主题列表
@@ -106,7 +112,8 @@ export default {
       longitude: '', // 经度
       latitude: '', // 纬度
       location: '', // 位置
-      address: '' // 详细地址
+      address: '', // 详细地址
+      currentAudioId: '' // 当前播放语音id
     }
   },
   computed: {
@@ -133,7 +140,7 @@ export default {
     getThreadsList() {
       this.loading = true
       const params = {
-        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo',
+        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods,threadAudio',
         'filter[isApproved]': 1,
         'filter[isDeleted]': 'no',
         'page[number]': this.pageNum,
@@ -168,11 +175,13 @@ export default {
     },
     loadMore() {
       this.getThreadsList()
-    }
-  },
-  head() {
-    return {
-      title: this.$t('home.location')
+    },
+    // 语音互斥播放
+    audioPlay(id) {
+      if (this.currentAudioId && this.currentAudioId !== id) {
+        this.$refs[`audio${this.currentAudioId}`][0].pause()
+      }
+      this.currentAudioId = id
     }
   }
 }

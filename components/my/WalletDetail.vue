@@ -160,16 +160,15 @@ export default {
 
       }, {
         value: '60,62,63',
-        label: '付费收入'
+        label: this.$t('profile.payincome')
 
       }, {
         value: '35,36',
-        label: '问答收入'
+        label: this.$t('profile.answerincome')
 
       }, {
         value: '81,82',
-        label: '问答支出'
-
+        label: this.$t('profile.answerpay')
       }]
 
     }
@@ -205,14 +204,14 @@ export default {
         case 32: return this.$t('profile.laborincome')
         case 50: return this.$t('profile.laborexpenditure')
         case 41: return this.$t('profile.givearewardforthetheme')
-        case 60: return '付费主题收入'
-        case 61: return '付费主题支出'
-        case 81: return '问答提问支出'
-        case 8: return '问答冻结'
-        case 52: return '付费附件支出'
-        case 35: return '问答答题收入'
-        case 36: return '问答围观收入'
-        case 82: return '问答围观支出'
+        case 60: return this.$t('profile.threadpayincome')
+        case 61: return this.$t('profile.threadpay')
+        case 81: return this.$t('profile.threadanswerpay')
+        case 8: return this.$t('profile.answerfreeze')
+        case 52: return this.$t('profile.filepay')
+        case 35: return this.$t('profile.answersincome')
+        case 36: return this.$t('profile.answersaroundincome')
+        case 82: return this.$t('profile.answersaroundpay')
 
         default: return '未知状态'
       }

@@ -93,6 +93,7 @@
 
 <script>
 import { time2MinuteOrHour } from '@/utils/time'
+import head from '@/mixin/head'
 export default {
   layout: 'center_layout',
   name: 'InviteExtension',
@@ -101,8 +102,10 @@ export default {
       return time2MinuteOrHour(date)
     }
   },
+  mixins: [head],
   data() {
     return {
+      title: this.$t('invite.invite'),
       loading: false,
       activeName: 'invited',
       isShowDetail: false,
@@ -174,11 +177,6 @@ export default {
     handleCurrentChange(val) {
       this.pageNum = val
       this.getIncomeDetailList()
-    }
-  },
-  head() {
-    return {
-      title: this.$t('invite.invite')
     }
   }
 }

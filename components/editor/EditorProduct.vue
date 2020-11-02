@@ -11,7 +11,7 @@
         <el-image :src="addedProduct.image_path" class="image" />
         <div class="right">
           <div class="title">
-            <svg-icon v-if="typeList[addedProduct.type]" :type="typeList[addedProduct.type]" class="icon" />
+            <svg-icon v-if="typeList[addedProduct.type] && addedProduct.title" :type="typeList[addedProduct.type]" class="icon" />
             {{ addedProduct.title }}
           </div>
           <div class="bottom">
@@ -45,7 +45,8 @@ export default {
         1: 'product-tmall',
         2: 'product-jd',
         3: 'product-pinduoduo',
-        5: 'product-taobao'
+        5: 'product-taobao',
+        7: 'product-youzan'
       }
     }
   },

@@ -290,14 +290,16 @@
 
 <script>
 import { status } from '@/library/jsonapi-vuex/index'
+import head from '@/mixin/head'
 import handleError from '@/mixin/handleError'
 import bindWechat from '@/mixin/bindWechat'
 const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
 export default {
   layout: 'center_layout',
-  mixins: [handleError, bindWechat, tcaptchs],
+  mixins: [head, handleError, bindWechat, tcaptchs],
   data() {
     return {
+      title: this.$t('profile.myprofile'),
       userId: this.$store.getters['session/get']('userId'),
       userInfo: '',
       num: 140,
@@ -890,11 +892,6 @@ export default {
     },
     toQuestion() {
       this.$router.push(`/pages/profile/index?userId=${this.userId}&current=5`)
-    }
-  },
-  head() {
-    return {
-      title: this.$t('profile.myprofile')
     }
   }
 }
