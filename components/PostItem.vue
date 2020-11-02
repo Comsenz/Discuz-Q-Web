@@ -163,10 +163,10 @@
         <!-- 商品 -->
         <product-item v-if="item.type === 6" :item="item && item.firstPost && item.firstPost.postGoods" />
         <!-- 语音 -->
-        <template v-if="item.type === 4">
+        <div v-if="item.type === 4" @click.self="toDetail">
           <audio-player :file="item && item.threadAudio" :current-audio="currentAudio" @play="play" @pause="pause" @seek="seek" @seeking="seeking" />
           <audio :id="`audio-player${item._jv && item._jv.id}`" class="audio-player" :src="currentAudio.url" style="display: none" />
-        </template>
+        </div>
         <!-- 位置 -->
         <nuxt-link
           v-if="item.location"

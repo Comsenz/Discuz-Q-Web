@@ -53,6 +53,7 @@
 import s9e from '@/utils/s9e'
 import handleError from '@/mixin/handleError'
 import env from '@/utils/env'
+const threadInclude = 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods,threadAudio'
 export default {
   layout: 'custom_layout',
   name: 'Index',
@@ -71,7 +72,7 @@ export default {
       include: 'firstPost'
     }
     const threadsParams = {
-      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods,threadAudio',
+      include: threadInclude,
       'filter[isSticky]': 'no',
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no',
@@ -232,10 +233,11 @@ export default {
     getThreadsList() {
       this.loading = true
       const params = {
-        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods,threadAudio',
+        include: threadInclude,
         'filter[isSticky]': 'no',
         'filter[isApproved]': 1,
         'filter[isDeleted]': 'no',
+        'filter[isDisplay]': 'yes',
         'filter[categoryId]': this.categoryId,
         'filter[type]': this.threadType,
         'filter[isEssence]': this.threadEssence,
@@ -248,7 +250,6 @@ export default {
         params['filter[type]'] = this.threadType
       }
       this.$store.dispatch('jv/get', ['threads', { params }]).then((data) => {
-        console.log('list', data)
         this.hasMore = data.length === this.pageSize
         const _threadCount = (data &&
           data._jv &&
@@ -291,6 +292,7 @@ export default {
         'filter[isSticky]': 'no',
         'filter[isApproved]': 1,
         'filter[isDeleted]': 'no',
+        'filter[isDisplay]': 'yes',
         'filter[categoryId]': this.categoryId,
         'filter[type]': this.threadType,
         'filter[isEssence]': this.threadEssence,
@@ -301,7 +303,7 @@ export default {
         if (data && data._jv) {
           const _threadCount = (data._jv.json && data._jv.json.meta && data._jv.json.meta.threadCount) || 0
           if (this.threadCount > 0) {
-            this.total = _threadCount - this.threadCount > 0 ? _threadCount - this.threadCount : 0
+            this.total = (_threadCount - this.threadCount) > 0 ? _threadCount - this.threadCount : 0
           }
         }
       })
