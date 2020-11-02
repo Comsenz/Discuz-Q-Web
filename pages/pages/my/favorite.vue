@@ -4,11 +4,19 @@
       <el-tab-pane :label="$t('topic.allPost', {total})" name="all" />
     </el-tabs>
     <div class="post-list">
-      <post-item v-for="(item, index) in favoriteList" :key="index" :item="item" :show-share="false">
-        <div slot="bottom-right" class="delete-container">
-          <span class="delete" @click="handleFavorite(item,index)"><svg-icon type="delete" />{{ $t('topic.delete') }}</span>
-        </div>
-      </post-item>
+      <template v-for="(item, index) in favoriteList">
+        <!-- 语音贴 -->
+        <post-item v-if="item.type === 4" :ref="`audio${ item && item.threadAudio && item.threadAudio._jv && item.threadAudio._jv.id}`" :key="index" :item="item" :show-share="false" @audioPlay="audioPlay">
+          <div slot="bottom-right" class="delete-container">
+            <span class="delete" @click="handleFavorite(item,index)"><svg-icon type="delete" />{{ $t('topic.delete') }}</span>
+          </div>
+        </post-item>
+        <post-item v-else :key="index" :item="item" :show-share="false">
+          <div slot="bottom-right" class="delete-container">
+            <span class="delete" @click="handleFavorite(item,index)"><svg-icon type="delete" />{{ $t('topic.delete') }}</span>
+          </div>
+        </post-item>
+      </template>
       <list-load-more
         :loading="loading"
         :has-more="hasMore"
@@ -34,7 +42,8 @@ export default {
       pageNum: 1,
       pageSize: 10,
       loading: false,
-      hasMore: false
+      hasMore: false,
+      currentAudioId: '' // 当前播放语音id
     }
   },
   mounted() {
@@ -44,7 +53,7 @@ export default {
     getFavoriteList() {
       this.loading = true
       const params = {
-        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods',
+        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods,threadAudio',
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize
       }
@@ -99,6 +108,13 @@ export default {
           })
       })
         .catch(() => {})
+    },
+    // 语音互斥播放
+    audioPlay(id) {
+      if (this.currentAudioId && this.currentAudioId !== id) {
+        this.$refs[`audio${this.currentAudioId}`][0].pause()
+      }
+      this.currentAudioId = id
     }
   },
   head() {

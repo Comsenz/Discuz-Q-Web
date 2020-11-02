@@ -1,7 +1,7 @@
 <template>
   <div class="qa">
     <div class="qa-payment block">
-      <div class="title">{{ $t('post.isPay') }}:</div>
+      <div class="title">{{ $t('post.questionMode') }}:</div>
       <el-radio :value="question.paymentType" label="free" @input="value => $emit('paymentTypeChange', value)">{{ $t('post.freeWatch') }}</el-radio>
       <el-radio :value="question.paymentType" label="paid" @input="value => $emit('paymentTypeChange', value)">{{ $t('post.paidWatch') }}</el-radio>
     </div>

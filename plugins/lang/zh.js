@@ -232,6 +232,7 @@ export default {
   post: {
     askHim: '向他提问',
     answerer: '解答人：',
+    questionMode: '提问模式',
     addBeAskedUser: '+选择解答人',
     changeBeAskedUser: '更换解答人',
     addProduct: '添加商品',
@@ -267,7 +268,7 @@ export default {
     freeWatch: '免费',
     paidWatch: '付费',
     anonymous: '提问匿名',
-    onLooker: '围观模式',
+    onLooker: '围观付费',
     questionHim: '向他提问',
     postFreeAttachmentPaid: '文章免费，附件付费',
     pleaseInput: '请输入',
@@ -423,7 +424,8 @@ export default {
     be: '向',
     of: '的',
     question: '提问：',
-    answer: '回答了'
+    answer: '回答了',
+    joinAfterView: '加入站点后才可以预览'
   },
   pay: {
     passwordError: '密码错误请重试',
@@ -864,7 +866,7 @@ export default {
     post: '发帖',
     notice: '消息',
     mine: '我的',
-    myperson: '个人主页',
+    myperson: '的主页',
     backhomePage: '回首页',
     walletpasset: '已设置 / 修改',
     isset: '已设置',

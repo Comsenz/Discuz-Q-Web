@@ -255,21 +255,21 @@ export default {
     const threadparams = {
       'filter[isDeleted]': 'no',
       sort: '-createdAt',
-      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods',
+      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods,threadAudio',
       'page[number]': 1,
       'page[limit]': 10,
       'filter[isApproved]': 1,
       'filter[userId]': query.userId
     }
     const likethreadsparams = {
-      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods',
+      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods,threadAudio',
       'page[number]': 1,
       'page[limit]': 10,
       'filter[isApproved]': 1,
       'filter[user_id]': query.userId
     }
     const askthreadsparams = {
-      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups',
+      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio',
       'page[number]': 1,
       'page[limit]': 20,
       'filter[isApproved]': 1,
@@ -431,7 +431,7 @@ export default {
               this.loading = false
               this.dialog.id = res.dialog ? res.dialog._jv.id : 0
               this.dialog.name = res.username
-              this.profilename = `${this.dialog.name + this.$t('profile.myperson')}`
+              this.profilename = `${this.dialog.name + this.$t('profile.myperson')} - ${this.forums && this.forums.set_site && this.forums.set_site.site_name}`
               this.userInfo = res
               this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
             }

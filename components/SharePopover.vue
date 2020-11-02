@@ -111,6 +111,7 @@ export default {
 .custom-popover-width{
   min-width: 120px;
   padding: 0;
+  z-index: 7 !important;
 }
 </style>
 <style lang="scss" scoped>
