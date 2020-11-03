@@ -186,10 +186,7 @@ export default {
     },
     initData() {
       console.log('thread => ', this.thread)
-      console.log('forums => ', this.forums)
       if (this.thread.user && this.thread.user.groups[0] && this.thread.user.groups[0].permissionWithoutCategories) {
-        const a = this.thread.user.groups[0].permissionWithoutCategories.map(item => item.permission)
-        console.log(a, '333')
         this.canBeReward = this.thread.user.groups[0].permissionWithoutCategories.filter(item => item.permission === 'canBeReward').length > 0
         if (this.thread.user.groups[0]._jv.id === '1') this.canBeReward = true
       }
@@ -222,6 +219,10 @@ export default {
           item.text = item.isStatus ? this.$t('topic.cancelSticky') : this.$t('topic.sticky')
         }
       })
+      if (this.thread.type === 4 || this.thread.type === 5) { // 语音贴和问答帖，不支持编辑
+        this.managementList.filter(item => item.name === 'canEdit')[0].canOpera = false
+      }
+      console.log('manage', this.managementList)
       this.thread.isEssence = data.isEssence
       this.managementList = this.managementList.filter(item => item.canOpera)
     },
