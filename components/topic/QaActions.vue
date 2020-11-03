@@ -36,20 +36,32 @@
         <span>{{ $t('topic.payAmountCanWatch', { amount: question.onlooker_unit_price }) }}</span>
       </button>
     </div>
-    <message-box v-if="showAnswerEditor" :title="$t('topic.answerQuestion')" @close="closeEditor">
-      <div class="editor-box">
-        <editor
-          editor-style="comment"
-          class="edit-answer-editor"
-          selector="edit-answer-editor"
-          :edit-resource-show="editResourceShow"
-          :on-publish="onAnswerPublish"
-          :type-information="answerType"
-          :post.sync="answer"
-          @publish="answerPublish"
-        />
-      </div>
-    </message-box>
+    <el-dialog :title="$t('topic.answerQuestion')" :visible.sync="showAnswerEditor" destroy-on-close width="820px">
+      <editor
+        editor-style="comment"
+        class="edit-answer-editor"
+        selector="edit-answer-editor"
+        :edit-resource-show="editResourceShow"
+        :on-publish="onAnswerPublish"
+        :type-information="answerType"
+        :post.sync="answer"
+        @publish="answerPublish"
+      />
+    </el-dialog>
+    <!--    <message-box v-if="showAnswerEditor" :title="$t('topic.answerQuestion')" @close="closeEditor">-->
+    <!--      <div class="editor-box">-->
+    <!--        <editor-->
+    <!--          editor-style="comment"-->
+    <!--          class="edit-answer-editor"-->
+    <!--          selector="edit-answer-editor"-->
+    <!--          :edit-resource-show="editResourceShow"-->
+    <!--          :on-publish="onAnswerPublish"-->
+    <!--          :type-information="answerType"-->
+    <!--          :post.sync="answer"-->
+    <!--          @publish="answerPublish"-->
+    <!--        />-->
+    <!--      </div>-->
+    <!--    </message-box>-->
   </div>
 </template>
 
@@ -146,6 +158,30 @@ export default {
   }
 }
 </script>
+
+<style>
+.el-dialog {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0 !important;
+}
+.el-dialog .el-dialog__body {
+  padding: 20px;
+}
+.el-dialog .el-dialog__title {
+  color: #6d6d6d;
+  font-size: 16px;
+  font-weight: 700;
+}
+.el-dialog .el-dialog__header {
+  padding-bottom: 0;
+}
+.el-dialog .el-icon-close {
+  font-size: 22px;
+}
+</style>
 
 <style lang="scss" scoped>
 .qa {

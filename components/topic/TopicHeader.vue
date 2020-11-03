@@ -6,7 +6,7 @@
     </avatar-component>
     <!--问答帖特殊展示-->
     <avatar-component v-else :author="author">
-      {{ timerDiff(thread.createdAt) + $t('topic.before') + $t('topic.to') }}
+      {{ timerDiff(thread.createdAt) + $t('topic.before') + '...' + $t('topic.to') }}
       <nuxt-link :to="'/pages/profile/index?userId=' + beAskedUser._jv.id" class="be-ask-user">{{ ' @' + beAskedUser.username }}</nuxt-link>
       {{ ' ' + $t('topic.ask') }}
     </avatar-component>

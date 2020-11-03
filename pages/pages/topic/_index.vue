@@ -219,10 +219,9 @@ export default {
           item.text = item.isStatus ? this.$t('topic.cancelSticky') : this.$t('topic.sticky')
         }
       })
-      if (this.thread.type === 4 || this.thread.type === 5) { // 语音贴和问答帖，不支持编辑
+      if ((this.thread.type === 4 || this.thread.type === 5) && this.managementList.filter(item => item.name === 'canEdit').length > 0) { // 语音贴和问答帖，不支持编辑
         this.managementList.filter(item => item.name === 'canEdit')[0].canOpera = false
       }
-      console.log('manage', this.managementList)
       this.thread.isEssence = data.isEssence
       this.managementList = this.managementList.filter(item => item.canOpera)
     },
