@@ -34,7 +34,7 @@
         <topic-reward-list
           :author="thread.user || {}"
           :paid-information="paidInformation"
-          :can-reward-or-paid="forums && forums.paycenter && forums.paycenter.wxpay_close && canRewardOrPaid"
+          :can-reward-or-paid="forums && forums.paycenter && forums.paycenter.wxpay_close && canBeReward"
           :thread-type="thread.type || 0"
           :user-lists="[thread.paidUsers || [], thread.rewardedUsers || [], article.likedUsers || [], []]"
           @payOrReward="showCheckoutCounter = true"
@@ -125,7 +125,7 @@ export default {
       showWxPay: false,
       defaultLoading: false,
       articleLoading: false,
-      canRewardOrPaid: false,
+      canBeReward: false,
       passwordError: false,
       passwordErrorTip: '',
       findPassword: false
@@ -188,8 +188,10 @@ export default {
       console.log('thread => ', this.thread)
       console.log('forums => ', this.forums)
       if (this.thread.user && this.thread.user.groups[0] && this.thread.user.groups[0].permissionWithoutCategories) {
-        this.canRewardOrPaid = this.thread.user.groups[0].permissionWithoutCategories.filter(item => item.permission === 'createThreadPaid').length > 0
-        if (this.thread.user.groups[0]._jv.id === '1') this.canRewardOrPaid = true
+        const a = this.thread.user.groups[0].permissionWithoutCategories.map(item => item.permission)
+        console.log(a, '333')
+        this.canBeReward = this.thread.user.groups[0].permissionWithoutCategories.filter(item => item.permission === 'canBeReward').length > 0
+        if (this.thread.user.groups[0]._jv.id === '1') this.canBeReward = true
       }
       this.initManagementList(this.thread)
       this.initPaidInformation(this.thread)
