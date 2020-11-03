@@ -43,18 +43,26 @@
         <div class="header">
           <div class="title base-font-size">{{ $t('manage.siteintroduction') }}</div>
           <div v-if="+groupsId === 1" class="modify" @click="handleModify">
-            {{ isModify ? $t('profile.cancelModify') : $t('profile.modify') }}
+            {{ $t('profile.modify') }}
           </div>
         </div>
-        <div v-if="forums && forums.set_site" v-loading="loading" class="content base-font-size">
-          <template v-if="isModify">
-            <el-input v-model="inputInfo" type="textarea" :rows="5" />
-            <el-button type="primary" class="confirm-btn" @click="confirmModify">
-              {{ $t('profile.confirmModify') }}
-            </el-button>
-          </template>
-          <template v-else>{{ forums.set_site.site_introduction }}</template>
+        <div v-if="forums && forums.set_site && forums.set_site.site_introduction" class="content base-font-size">
+          {{ forums.set_site.site_introduction }}
         </div>
+        <div v-else class="content base-font-size grey-color">{{ $t('modify.noSiteInfo') }}</div>
+        <el-dialog :title="$t('modify.modifySiteInfo')" :visible.sync="isModify" width="620px" custom-class="custom-dialog" append-to-body :close-on-click-modal="false">
+          <div class="dialog-main">
+            <el-input v-model="inputInfo" type="textarea" :rows="5" class="custom-input" :placeholder="$t('modify.siteInfoPlaceholder')" />
+          </div>
+          <div class="dialog-footer">
+            <el-button type="primary" size="medium" :loading="loading" @click="confirmModify">
+              {{ $t('discuzq.ok') }}
+            </el-button>
+            <el-button size="medium" @click="isModify = false">
+              {{ $t('discuzq.msgBox.cancel') }}
+            </el-button>
+          </div>
+        </el-dialog>
       </div>
       <div v-if="forums && forums.set_site" class="circlemode">
         <div class="title base-font-size">{{ $t('site.circlemode') }} \ {{ $t('site.price') }}</div>
@@ -153,6 +161,9 @@ export default {
     },
     handleModify() {
       this.isModify = !this.isModify
+      if (this.isModify) {
+        this.inputInfo = this.forums && this.forums.set_site && this.forums.set_site.site_introduction
+      }
     },
     confirmModify() {
       if (this.loading) return
@@ -302,9 +313,9 @@ export default {
     .el-button{
       margin-top: 16px;
     }
-  }
-  .confirm-btn{
-    width: 300px;
+    &.grey-color{
+      color: $font-color-grey;
+    }
   }
 }
 .circlemode{
@@ -347,6 +358,33 @@ export default {
         }
       }
     }
+  }
+}
+::v-deep .custom-dialog{
+  .el-dialog__header{
+    font-weight: bold;
+    .el-dialog__title{
+      color: #6D6D6D;
+    }
+  }
+  .el-dialog__body{
+    padding: 0;
+  }
+  .custom-input{
+    textarea{
+      background: #F4F5F6;
+      border:1px solid #DCDFE6;
+      border-radius: 2px;
+      font-family: inherit;
+    }
+  }
+  .dialog-main{
+    padding:30px 20px 45px;
+  }
+  .dialog-footer{
+    background: #F5F6F7;
+    text-align:right;
+    padding:10px 20px;
   }
 }
 </style>

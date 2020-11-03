@@ -184,6 +184,17 @@
             />
           </el-tab-pane>
           <el-tab-pane
+            :label="$t('profile.question')+ ` (${userInfo.questionCount || 0})`"
+            name="5"
+          >
+            <question
+              v-if="activeName === '5'"
+              ref="question"
+              :user-id="userId"
+              @changeLike="changeLike"
+            />
+          </el-tab-pane>
+          <el-tab-pane
             :label="$t('profile.likes')+ ` (${userInfo.likedCount || 0})`"
             name="2"
           >
@@ -215,17 +226,6 @@
               ref="followers"
               :user-id="userId"
               @changeFollow="changeFollow"
-            />
-          </el-tab-pane>
-          <el-tab-pane
-            :label="$t('profile.question')+ ` (${userInfo.questionCount || 0})`"
-            name="5"
-          >
-            <question
-              v-if="activeName === '5'"
-              ref="question"
-              :user-id="userId"
-              @changeLike="changeLike"
             />
           </el-tab-pane>
         </el-tabs>
