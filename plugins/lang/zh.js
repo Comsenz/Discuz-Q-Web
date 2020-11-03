@@ -789,7 +789,10 @@ export default {
     resetPassword: '请重新设置您的登录密码',
     resetPasswordSuccess: '设置新密码成功',
     resetPasswordSuccessRepeat: '重新设置新密码成功',
-    resetPasswordLoginTip: '请重新返回登录页面，并使用新设密码进行登录操作请点击下方登录。'
+    resetPasswordLoginTip: '请重新返回登录页面，并使用新设密码进行登录操作请点击下方登录。',
+    modifySiteInfo: '编辑站点介绍',
+    noSiteInfo: '暂无站点介绍',
+    siteInfoPlaceholder: '请输入站点介绍'
   },
   permission: {
     viewThreads: '查看主题列表',
