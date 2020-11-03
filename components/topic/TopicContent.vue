@@ -374,7 +374,7 @@ export default {
     }
     .product{
       margin: 45px auto 0;
-      width: 570px;
+      width: 450px;
     }
     .audio {
       margin: 45px auto 0;

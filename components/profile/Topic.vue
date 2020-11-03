@@ -71,6 +71,8 @@ export default {
       this.loading = true
       const params = {
         'filter[isDeleted]': 'no',
+        'filter[isDisplay]': 'yes',
+        'filter[type]': '0,1,2,3,4,6',
         sort: '-createdAt',
         include: 'user,user.groups,firstPost,firstPost.images,firstPost.postGoods,category,threadVideo,threadAudio,question,question.beUser,question.beUser.groups',
         'page[number]': this.pageNum,

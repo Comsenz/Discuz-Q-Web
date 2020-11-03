@@ -1,5 +1,5 @@
 <template>
-  <message-box v-loading="loading" :title="$t('post.addProduct')" overflow="visible" class="message-box-product" @close="$emit('close')">
+  <message-box v-loading="loading" :title="$t('post.addProduct')" overflow="visible" width="620px" class="message-box-product" @close="$emit('close')">
     <div class="top">
       <div class="tips">{{ $t('post.supportedLink') }}</div>
       <div class="supported-type">
@@ -77,9 +77,6 @@ export default {
  @import '@/assets/css/variable/color.scss';
  $font-color: #606266;
  $black-color: #000;
- .message-box-product{
-   width: 620px;
- }
   .top {
     z-index: 100;
     padding: 40px 20px;

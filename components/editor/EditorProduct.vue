@@ -108,7 +108,7 @@ export default {
         width: 80px;
         height: 80px;
         margin-right: 10px;
-        border-radius: 2px;
+        border-radius: 2px !important;
       }
       > .right{
         flex: 1;

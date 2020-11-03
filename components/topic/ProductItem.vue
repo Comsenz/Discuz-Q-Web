@@ -47,7 +47,7 @@ export default {
     width: 120px;
     height: 120px;
     margin-right: 15px;
-    border-radius: 2px;
+    border-radius: 2px !important;
     .image-slot {
       display: flex;
       justify-content: center;
