@@ -140,7 +140,7 @@ export default {
     },
     formatSummary(comment) {
       let html
-      if (comment.contentHtml !== comment.summary) {
+      if (comment.content !== comment.summaryText) {
         html = comment.summary + `<button class="showAllComment">${this.$t('topic.all')}</button>`
       } else {
         html = comment.contentHtml
