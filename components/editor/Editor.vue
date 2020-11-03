@@ -1,6 +1,6 @@
 <template>
   <div class="editor">
-    <div v-if="!userId" class="not-logged">
+    <div v-if="userId && userId === 0" class="not-logged">
       <span>{{ $t('post.publishAfterLogin') }}</span>
     </div>
     <label v-if="typeInformation && typeInformation.showTitle">
@@ -188,8 +188,7 @@ export default {
   },
   computed: {
     userId() {
-      if (process.client) return localStorage.getItem('user_id')
-      else return ''
+      return this.$store.state.session.userId
     },
     url() {
       return '/api'
