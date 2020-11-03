@@ -42,6 +42,7 @@
 import handleError from '@/mixin/handleError'
 import head from '@/mixin/head'
 import env from '@/utils/env'
+const threadInclude = 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio'
 export default {
   layout: 'custom_layout',
   name: 'Index',
@@ -52,10 +53,10 @@ export default {
       callback(null, {})
     }
     const threadsParams = {
-      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods,threadAudio',
-      'filter[isSticky]': 'no',
+      include: threadInclude,
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no',
+      'filter[isDisplay]': 'yes',
       'page[limit]': 10,
       'filter[location]': `${query.longitude},${query.latitude}`
     }
@@ -140,9 +141,10 @@ export default {
     getThreadsList() {
       this.loading = true
       const params = {
-        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods,threadAudio',
+        include: threadInclude,
         'filter[isApproved]': 1,
         'filter[isDeleted]': 'no',
+        'filter[isDisplay]': 'yes',
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         'filter[location]': `${this.longitude},${this.latitude}`

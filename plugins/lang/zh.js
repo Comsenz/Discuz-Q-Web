@@ -795,6 +795,7 @@ export default {
     viewThreads: '查看主题列表',
     canBeAsked: '允许提问',
     canBeOnlooker: '设置围观',
+    canBeReward: '允许被打赏',
     thread: {
       viewPosts: '查看主题',
       reply: '回复主题',

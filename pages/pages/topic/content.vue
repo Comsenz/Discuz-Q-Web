@@ -50,6 +50,7 @@
 <script>
 import handleError from '@/mixin/handleError'
 import env from '@/utils/env'
+const threadInclude = 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio'
 export default {
   layout: 'custom_layout',
   name: 'TopicContent',
@@ -60,10 +61,10 @@ export default {
       callback(null, {})
     }
     const threadsParams = {
-      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods,threadAudio',
-      'filter[isSticky]': 'no',
+      include: threadInclude,
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no',
+      'filter[isDisplay]': 'yes',
       'page[limit]': 10,
       'filter[topicId]': query.id
     }
@@ -154,9 +155,10 @@ export default {
     getThreadsList() {
       this.loading = true
       const params = {
-        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,firstPost.postGoods,threadAudio',
+        include: threadInclude,
         'filter[isApproved]': 1,
         'filter[isDeleted]': 'no',
+        'filter[isDisplay]': 'yes',
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         'filter[topicId]': `${this.topicId}`
