@@ -321,7 +321,7 @@ export default {
     line-height: 30px;
   }
   .workdate2 {
-    width: 326px;
+    // width: 326px;
     word-break: break-all;
     color: #6d6d6d;
     font-size: 14px;

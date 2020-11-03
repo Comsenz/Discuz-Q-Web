@@ -334,7 +334,7 @@ export default {
   margin-top: 62px;
   flex-direction: column;
   @media screen and (max-width: 1005px) {
-    width: 292px;
+    width: 308px;
   }
   .info-title {
     height: 35px;
