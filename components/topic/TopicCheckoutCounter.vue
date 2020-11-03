@@ -44,7 +44,7 @@
       </div>
       <div class="row">
         <div class="head">{{ $t('pay.payType') }}</div>
-        <div class="body pay-way">
+        <div v-if="showWechatPay" class="body pay-way">
           <div class="pay-card" :class="{'pay-card': true, 'selected': payWay === 'wxPay'}" @click="payWay = 'wxPay'">
             <div class="detail">
               <div class="pay-title">
@@ -153,6 +153,10 @@ export default {
     askOrWatchAnswer: {
       type: String,
       default: 'ask'
+    },
+    showWechatPay: {
+      type: Boolean,
+      default: true
     }
   },
   data() {

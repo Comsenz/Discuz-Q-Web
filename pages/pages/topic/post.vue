@@ -19,6 +19,7 @@
       :amount="0"
       :be-asked-user="question.beUser || {}"
       :show-anonymous="false"
+      :show-wechat-pay="canWechatPay"
       reward-or-pay="reward"
       @close="showCheckoutCounter = false"
       @paying="paying"
@@ -82,7 +83,7 @@ export default {
           showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
         // 语音帖不需要发帖
-        // 4: { type: 3, headerText: 'postImage', textLimit: 450, showPayment: true, showTitle: false, showImage: true, showVideo: false,
+        // 4: { type: 4, headerText: 'postImage', textLimit: 450, showPayment: true, showTitle: false, showImage: true, showVideo: false,
         //   showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
         // TODO 问答帖
@@ -119,6 +120,13 @@ export default {
     forums() {
       return this.$store.state.site.info.attributes || {}
     },
+    canWechatPay() {
+      if (this.forums && this.forums.paycenter) {
+        return this.forums.paycenter.wxpay_close
+      } else {
+        return false
+      }
+    },
     textarea() {
       return process.client ? document.querySelector(`#textarea`) : ''
     },
@@ -130,7 +138,6 @@ export default {
     if (['0', '1', '2', '3', '5', '6'].indexOf(this.type) < 0) return this.$router.replace('/error')
     this.getCategoryList()
     this.getThread()
-    console.log(this.forums, 'forums')
   },
   methods: {
     getCategoryList() {
