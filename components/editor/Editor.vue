@@ -22,7 +22,7 @@
       @productChange="onProductChange"
     />
     <editor-payment v-if="typeInformation && typeInformation.showPayment && canCreateThreadPaid" :payment="payment || {}" :type="typeInformation && typeInformation.type" @paymentChange="e => onPaymentChange(e.key, e.value)" />
-    <attachment-upload v-if="isPost" :file-list="post && post.attachedList" :on-upload.sync="onUploadAttached" action="/attachments" :accept="attachedTypeLimit" :limit="99999" type="Attached" :size-limit="attachedSizeLimit" @success="files => onPostContentChange('attachedList', files)" @remove="files => onPostContentChange('attachedList', files)" />
+    <attachment-upload v-if="isPost" :file-list="post && post.attachedList" :on-upload.sync="onUploadAttached" action="/attachments" :accept="attachedTypeLimit" :limit="99999" :type="0" :size-limit="attachedSizeLimit" @success="files => onPostContentChange('attachedList', files)" @remove="files => onPostContentChange('attachedList', files)" />
     <Vditor
       v-if="isPost"
       :text-limit="typeInformation && typeInformation.textLimit"
@@ -67,9 +67,20 @@
         <textarea id="textarea" :value="post && post.text" :class="['input-text', editorStyle]" :placeholder="typeInformation ? typeInformation.placeholder : ''" :maxlength="post && post.textLimit" @input="e => onPostContentChange('text', e.target.value)" />
       </label>
       <div>
-        <!--uploader-->
+        <!--uploader type 15 是回答图片-->
         <div v-if="showUploadImg || showUploadVideo" class="resources-list">
-          <image-upload v-if="showUploadImg" type="Image" :file-list="post && post.imageList" :on-upload.sync="onUploadImage" action="/attachments" :accept="imageTypeLimit" :limit="9" :size-limit="attachedSizeLimit" @success="imageList => onPostContentChange('imageList', imageList)" @remove="imageList => onPostContentChange('imageList', imageList)" />
+          <image-upload
+            v-if="showUploadImg"
+            :type="typeInformation.type && typeInformation.type === 15 ? 5 : 1"
+            :file-list="post && post.imageList"
+            :on-upload.sync="onUploadImage"
+            action="/attachments"
+            :accept="imageTypeLimit"
+            :limit="9"
+            :size-limit="attachedSizeLimit"
+            @success="imageList => onPostContentChange('imageList', imageList)"
+            @remove="imageList => onPostContentChange('imageList', imageList)"
+          />
           <video-upload v-if="showUploadVideo" :on-upload-video.sync="onUploadVideo" :video-list="post && post.videoList" @videoChange="e => onPostContentChange(e.key, e.value)" />
         </div>
         <!--bar-->
