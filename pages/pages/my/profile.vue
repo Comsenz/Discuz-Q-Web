@@ -904,8 +904,8 @@ export default {
 .myprofile {
   margin-top: 40px !important;
   .bgcolor {
-    background: #fafbfc;
-    border-top: 1px solid #d0d4dc;
+    // background: #fafbfc;
+    // border-top: 1px solid #d0d4dc;
   }
 }
 .myprofile-c {
@@ -920,7 +920,7 @@ export default {
     border-bottom: 1px solid $line-color-base;
   }
   .pborder{
-    border-top: 1px solid #f5f5f5;
+    // border-top: 1px solid #f5f5f5;
   }
   .pmobile {
     font-size: 20px;
