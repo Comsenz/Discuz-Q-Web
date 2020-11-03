@@ -230,6 +230,7 @@ export default {
   },
   // 发布页
   post: {
+    publishAfterLogin: '请登录后发布...',
     askHim: '向他提问',
     answerer: '解答人：',
     questionMode: '提问模式',

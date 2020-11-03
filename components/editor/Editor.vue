@@ -1,5 +1,8 @@
 <template>
   <div class="editor">
+    <div v-if="!userId" class="not-logged">
+      <span>{{ $t('post.publishAfterLogin') }}</span>
+    </div>
     <label v-if="typeInformation && typeInformation.showTitle">
       <input :placeholder="$t('post.pleaseInputPostTitle')" class="input-title" type="text" :value="post && post.title" @input="e => onPostContentChange('title', e.target.value)">
     </label>
@@ -173,6 +176,10 @@ export default {
     }
   },
   computed: {
+    userId() {
+      if (process.client) return localStorage.getItem('user_id')
+      else return ''
+    },
     url() {
       return '/api'
     },
@@ -343,6 +350,23 @@ export default {
   .editor {
     width: 100%;
     margin-top: 20px;
+    position: relative;
+
+    > .not-logged {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.3);
+      z-index: 1000000000;
+      color: #8590A6;
+      font-size: 20px;
+      span {
+        transform: translateY(-20px);
+      }
+    }
 
     label {
       width: 100%;
