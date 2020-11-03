@@ -130,6 +130,7 @@ export default {
     if (['0', '1', '2', '3', '5', '6'].indexOf(this.type) < 0) return this.$router.replace('/error')
     this.getCategoryList()
     this.getThread()
+    console.log(this.forums, 'forums')
   },
   methods: {
     getCategoryList() {

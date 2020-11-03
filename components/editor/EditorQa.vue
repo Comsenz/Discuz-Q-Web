@@ -9,7 +9,7 @@
       <div class="title">{{ $t('post.anonymous') }}:</div>
       <el-switch :value="question.isAnonymous" active-color="#1878F3" @input="value => $emit('isAnonymousChange', value)" />
     </div>
-    <div class="qa-onlooker block">
+    <div v-show="canSetOnlooker" class="qa-onlooker block">
       <div class="title">{{ $t('post.onLooker') }}:</div>
       <el-switch :value="question.isOnlooker" active-color="#1878F3" @input="value => $emit('isOnlookerChange', value)" />
       <span v-show="siteOnlookerPrice && siteMasterScale && siteUserScale" class="tip">
@@ -55,6 +55,9 @@ export default {
   computed: {
     forums() {
       return this.$store.state.site.info.attributes || {}
+    },
+    canSetOnlooker() {
+      return this.forums && this.forums.other && this.forums.other.can_be_onlooker ? this.forums.other.can_be_onlooker : false
     },
     siteOnlookerPrice() {
       return this.forums && this.forums.set_site ? this.forums.set_site.site_onlooker_price : ''

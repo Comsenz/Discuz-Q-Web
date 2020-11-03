@@ -158,7 +158,7 @@ export default {
         files.forEach(item => {
           const html = `<img src="${item.attributes.url}" alt="${item.attributes.fileName}" title="${item.id}">`
           const markdown = this.vditor.html2md(html)
-          this.vditor.insertValue(markdown)
+          this.vditor.insertValue(markdown.substr(0, markdown.length - 1))
         })
         this.input.value = ''
       }, (e) => {
@@ -215,16 +215,9 @@ export default {
     background: #F5F6F7;
     top: 65px;
     padding-left: 10px !important;
-    //height: 45px;
-    //background: white;
-    //padding-left: 14px !important;
-    //> .vditor-toolbar__item {
-    //  line-height: 45px;
-    //  svg {
-    //    width: 20px;
-    //    height: 20px;
-    //  }
-    //}
+  }
+  ::v-deep.vditor-content pre {
+    padding: 13px !important;
   }
 }
 

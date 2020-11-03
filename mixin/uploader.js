@@ -18,7 +18,7 @@ module.exports = {
     onInput(e) {
       const files = e.target.files
       const fileArray = []
-      if (this.onUploadImage) return this.$message.warning('请等待上传中的图片完成上传')
+      if (this.onUpload) return this.$message.warning(this.type === 'Image' ? '请等待上传中的图片完成上传' : '请等待上传中的文件完成上传')
       if (!this.checkSizeLimit(files)) return // 文件大小检查
       if (!this.checkLengthLimit(files)) return // 文件数量检查
       for (let i = 0; i < files.length; i++) {
@@ -90,12 +90,12 @@ module.exports = {
       for (let i = 0; i < files.length; i++) {
         if (files[i].size > this.sizeLimit) pass = false
       }
-      if (!pass) this.$message.error(`图片不可大于 ${this.sizeLimit / 1024 / 1024} MB`)
+      if (!pass) this.$message.error(this.type === 'Image' ? `图片不可大于 ${this.sizeLimit / 1024 / 1024} MB` : `文件不可大于 ${this.sizeLimit / 1024 / 1024} MB`)
       return pass
     },
     checkLengthLimit(files) {
       if (this.previewFiles.length + files.length > this.limit) {
-        this.$message.warning(`图片最多上传${this.limit}张`)
+        this.$message.warning(this.type === 'Image' ? `图片最多上传${this.limit}张` : `文件最多上传${this.limit}张`)
         this.$emit('exceed', files)
         return false
       } else {
