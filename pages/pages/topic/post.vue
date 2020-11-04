@@ -176,7 +176,7 @@ export default {
       this.post.id = data.firstPost._jv.id
       this.payment.price = parseFloat(data.price)
       this.payment.attachmentPrice = parseFloat(data.attachmentPrice)
-      this.payment.freeWords = parseInt(data.freeWords)
+      this.payment.freeWords = data.freeWords
       if (parseFloat(data.price) === 0 && parseFloat(data.attachmentPrice) === 0) {
         this.payment.paidType = 'free'
       } else if (parseFloat(data.price) > 0 && parseFloat(data.attachmentPrice) === 0) {

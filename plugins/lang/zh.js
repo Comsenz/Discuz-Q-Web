@@ -274,7 +274,7 @@ export default {
     postFreeAttachmentPaid: '文章免费，附件付费',
     pleaseInput: '请输入',
     paymentAmount: '付费金额',
-    freeWord: '免费的查看字数',
+    freeWord: '免费的查看比例',
     location: '地理位置',
     pleaseSelectLocation: '请选择位置',
     selectToViewFreeWordCount: '选择查看免费字数',
