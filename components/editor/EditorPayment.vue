@@ -46,7 +46,7 @@
     </div>
     <div class="block">
       <div v-show="payment.paidType === 'paid' && type === 1">
-        <div class="text">{{ $t('post.freeWordCount') }}:</div>
+        <div class="text">{{ $t('post.freeWord') }}:</div>
         <el-input
           v-model="freeWords"
           size="medium"
@@ -55,7 +55,7 @@
           @change="$emit('paymentChange', { key: 'freeWords', value: parseInt(freeWords) })"
           @input="onFreeWordInput"
         >
-          <span slot="prefix" class="prefix">字</span>
+          <span slot="prefix" class="prefix">%</span>
         </el-input>
       </div>
     </div>

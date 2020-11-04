@@ -60,8 +60,8 @@ module.exports = {
         const id = setInterval(() => {
           if (this.paymentStatus === 1) {
             clearInterval(id)
-            this.$message.success(this.$t('pay.paySuccess'))
             this.showWxPay = false
+            this.$message.success(this.$t('pay.paySuccess'))
             resolve(this.orderNo)
           }
           if (!this.showWxPay) {
@@ -69,12 +69,14 @@ module.exports = {
             reject()
           }
           this.getOrderStatus()
-        }, 3000)
+        }, 1000)
       })
     },
     getOrderStatus() {
       const params = { _jv: { type: `/orders/${this.orderNo}` }, orderNo: this.orderNo }
-      return this.$store.dispatch('jv/get', params).then(data => { this.paymentStatus = data.status }, e => this.handleError(e))
+      return this.$store.dispatch('jv/get', params).then(data => {
+        this.paymentStatus = data.status
+      }, e => this.handleError(e))
     },
     onFindPassword() {
       this.showPasswordInput = this.passwordError = false
