@@ -50,7 +50,7 @@ module.exports = {
       return this.service.post(this.action, formData, config)
     },
     uploadFiles(promiseList) {
-      this.$emit(`update:onUpload${this.type === 0 ? 'Attached' : 'Image'}`, true)
+      this.$emit(`update:onUpload`, true)
       Promise.all(promiseList).then(resList => {
         this.previewFiles.map(item => { item.progress = 100 }) // 请求响应后，更新到 100%
         const files = resList.map(item => item.data.data)
@@ -58,12 +58,12 @@ module.exports = {
         files.forEach(item => _fileList.push({ id: item.id, name: item.attributes.fileName, url: item.attributes.url }))
         this.input.value = ''
         this.$emit('success', _fileList)
-        this.$emit(`update:onUpload${this.type === 0 ? 'Attached' : 'Image'}`, false)
+        this.$emit(`update:onUpload`, false)
       }, (e) => {
         // 失败的时候取消对应的预览照片
         this.input.value = ''
         const length = promiseList.length
-        this.$emit(`update:onUpload${this.type === 0 ? 'Attached' : 'Image'}`, false)
+        this.$emit(`update:onUpload`, false)
         this.previewFiles.splice(this.previewFiles.length - length, length)
         this.handleError(e).then(() => {})
       })
