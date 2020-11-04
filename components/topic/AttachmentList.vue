@@ -5,7 +5,7 @@
         <svg-icon :type="extensionValidate(file.extension)" style="font-size: 18px; vertical-align: middle;" />
         <span class="file-name">{{ file.fileName }}</span>
       </div>
-      <span class="size">{{ parseInt(file.fileSize).toLocaleString() }} KB</span>
+      <span class="size">{{ parseInt((file.fileSize / 1024).toString()).toLocaleString() }} KB</span>
     </div>
     <div class="action">
       <div v-if="!unpaid">

@@ -73,7 +73,8 @@ export default {
   data() {
     return {
       vditor: {},
-      input: {}
+      input: {},
+      range: []
     }
   },
   watch: {
@@ -97,13 +98,13 @@ export default {
         toolbar: [
           { hotkey: '', name: '@', tipPosition: 'ne', tip: '@ 好友', className: 'right', icon: call,
             click: () => {
-              // this.setCursorPosition()
+              this.range = getSelection().getRangeAt(0)
               this.$emit('onActions', 'showCaller')
             }
           },
           { hotkey: '', name: '#', tipPosition: 'ne', tip: '新增话题', className: 'right', icon: topic,
             click: () => {
-              // this.setCursorPosition()
+              this.range = getSelection().getRangeAt(0)
               this.$emit('onActions', 'showTopic')
             }
           },
@@ -115,16 +116,6 @@ export default {
         cache: { enable: false }
       })
     },
-    // setCursorPosition() {
-    //   window.xxx = this.vditor
-    //   const position = this.vditor.getCursorPosition()
-    //   console.log('left => ', position.left)
-    //   console.log('right => ', position.left)
-    //   console.log('position => ', position)
-    //   if (position.left === 0 && position.top === 0) {
-    //     this.vditor.focus()
-    //   }
-    // },
     uploader() {
       if (this.onUploadImage) return this.$message.warning('请等待上传中的图片完成上传')
       this.input = document.createElement('input')
@@ -169,6 +160,9 @@ export default {
       })
     },
     selectActions(code) {
+      const selection = window.getSelection()
+      selection.removeAllRanges()
+      selection.addRange(this.range)
       this.vditor.insertValue(code)
       this.$emit('hideActions')
     },
