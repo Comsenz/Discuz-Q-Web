@@ -119,7 +119,7 @@
         <div v-show="(isMobileModify && userInfo.mobile)" class="myprofile-btom">
           <div class="pmobile">{{ userInfo.mobile }}</div>
           <verify-phone
-            v-if="isMobileModify"
+            v-if="isMobileModify && userInfo.mobile"
             ref="verifyphone"
             :error="phoneError"
             :mobile="userInfo.mobile"
