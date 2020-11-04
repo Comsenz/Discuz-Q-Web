@@ -1,29 +1,42 @@
 <template>
   <div v-if="forums" v-loading="loading" class="register">
     <el-tabs v-model="activeName" type="border-card" class="register-select">
-      <!-- 手机号登录/注册 -->
-      <el-tab-pane v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms" :label="$t('user.phonelogin')+'/注册'" name="0">
-        <span class="title2">{{ $t('profile.mobile') }}</span>
-        <el-input v-model="phoneNumber" :placeholder="$t('user.phoneNumber')" class="phone-input" maxlength="11" />
-        <el-button
-          class="count-b"
-          :class="{disabled: !canClick}"
-          size="middle"
-          @click="sendVerifyCode"
-        >{{ content }}</el-button>
-        <span class="title3">{{ $t('user.verification') }}</span>
-        <el-input
-          v-model="verifyCode"
-          :placeholder="$t('user.verificationCode')"
-          class="reg-input"
-          @keyup.enter.native="PhoneLogin"
-        />
-        <div class="agreement"><reg-agreement @check="check" /></div>
-        <el-button type="primary" class="r-button" @click="PhoneLogin">{{ $t('user.login') }}</el-button>
-        <div class="otherlogin">
-          <svg-icon v-if="forums && forums.passport && forums.passport.oplatform_close && forums.passport.offiaccount_close" class="wechat-icon" type="wechatlogin" @click="toWechat" />
-          <svg-icon class="wechat-icon" type="userlogin" @click="toUserlogin" />
-        </div>
+      <!-- 用户名注册 -->
+      <el-tab-pane label="登录/注册并绑定手机号" name="0">
+        <form>
+          <div class="bindtext">
+            <div>{{ $t('user.dear') }}
+              <avatar
+                :user="{
+                  username: nickname,
+                  avatarUrl: headimgurl
+                }"
+                :size="20"
+                :round="true"
+                style="display:inline-block;
+                vertical-align:text-top;"
+              />
+              <b>{{ nickname || '' }}</b> {{ $t('user.user') }}</div>
+            <div>{{ $t('user.yourWechat') }}<b>{{ $t('user.withoutBind') }}</b>，<b>{{ $t('user.register') }}/{{ $t('user.login') }}</b>{{ $t('user.readyBInd') }}</div>
+          </div>
+          <span class="title2">{{ $t('profile.mobile') }}</span>
+          <el-input v-model="phoneNumber" :placeholder="$t('user.phoneNumber')" class="phone-input" maxlength="11" />
+          <el-button
+            class="count-b"
+            :class="{disabled: !canClick}"
+            size="middle"
+            @click="sendVerifyCode"
+          >{{ content }}</el-button>
+          <span class="title3">{{ $t('user.verification') }}</span>
+          <el-input
+            v-model="verifyCode"
+            :placeholder="$t('user.verificationCode')"
+            class="reg-input"
+            @keyup.enter.native="PhoneLogin"
+          />
+          <div class="agreement"><reg-agreement @check="check" /></div>
+          <el-button type="primary" class="r-button" @click="PhoneLogin">注册/登录，并绑定</el-button>
+        </form>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -38,10 +51,12 @@ import countDown from '@/mixin/countDown'
 import loginAbout from '@/mixin/loginAbout'
 
 export default {
-  mixins: [head, handleError, tencentCaptcha, countDown, loginAbout],
+  mixins: [
+    head, handleError, tencentCaptcha, countDown, loginAbout
+  ],
   data() {
     return {
-      title: '手机号登录/注册',
+      title: '登录/注册并绑定手机号',
       phoneNumber: '',
       content: this.$t('modify.sendVerifyCode'),
       activeName: '0', // 默认激活tab
@@ -51,21 +66,31 @@ export default {
       isPaid: false, // 是否付费
       canClick: true,
       ischeck: true,
-      loading: false
+      loading: false,
+      nickname: '',
+      headimgurl: '',
+      token: '' // 微信绑定token
     }
   },
   computed: {
     forums() {
       return this.$store.state.site.info.attributes || {}
+    },
+    userInfo() {
+      return this.$store.state.user.info.attributes || {}
     }
   },
   mounted() {
-    const { code } = this.$route.query
+    const { code, nickname, headimgurl } = this.$route.query
+    if (process.client) this.token = localStorage.getItem('wechat')
+    if (nickname) {
+      this.nickname = nickname
+    }
+    if (headimgurl) {
+      this.headimgurl = headimgurl
+    }
     if (code !== 'undefined') {
       this.code = code
-    }
-    if (this.forums && this.forums.set_site && this.forums.set_site.site_mode) {
-      this.site_mode = this.forums.set_site.site_mode
     }
   },
   methods: {
@@ -110,7 +135,8 @@ export default {
               mobile: this.phoneNumber,
               code: this.verifyCode,
               type: 'login',
-              register: 1
+              register: 1,
+              token: this.token
             }
           }
         }
@@ -164,12 +190,6 @@ export default {
             this.handleError(err)
           })
       }
-    },
-    toWechat() {
-      this.$router.push(`/pages/user/wechat?code=${this.code}`)
-    },
-    toUserlogin() {
-      this.$router.push(`/pages/user/login?code=${this.code}`)
     }
   }
 }
@@ -197,6 +217,10 @@ export default {
     border: none;
     background: transparent;
     box-shadow: none;
+    .bindtext{
+      font-size: 16px;
+      margin-bottom: 40px;
+    }
     .title2 {
       margin-right: 10px;
       color: #606266;

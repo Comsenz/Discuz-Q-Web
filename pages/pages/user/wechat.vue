@@ -85,7 +85,7 @@ export default {
           }
           this.$store.dispatch('jv/get', [`users/${userId}`, { params }]).then((res) => {
             if (res.username) {
-              this.$message.success('登录成功')
+              this.$message.success(this.$t('user.loginSuccess'))
               this.logind()
             }
           })
@@ -102,7 +102,16 @@ export default {
             const headimgurl = errors[0].user.headimgurl
             const token = errors[0].token
             if (process.client) localStorage.setItem('wechat', token)
-            this.$router.push(`/pages/user/register-bind?nickname=${nickname}&headimgurl=${headimgurl}`)
+            if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 0) {
+              this.$router.push(`/pages/user/register-bind?nickname=${nickname}&headimgurl=${headimgurl}`)
+            }
+            if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
+              this.$router.push(`/pages/user/wechat-bind-phone?nickname=${nickname}&headimgurl=${headimgurl}`)
+            }
+            if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 2) {
+              this.$message.success(this.$t('user.loginSuccess'))
+              this.logind()
+            }
           } else {
             clearInterval(this.wehcatLoginTimer)
             this.$message.error(errorText)
