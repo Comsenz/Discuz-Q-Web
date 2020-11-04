@@ -4,6 +4,7 @@
     class="reg-agreement"
   >
     <el-checkbox
+      v-if="check"
       v-model="checked"
       @change="rcheck"
     />
@@ -26,6 +27,12 @@
 <script>
 export default {
   name: 'Regagreement',
+  props: {
+    check: {
+      type: Boolean,
+      default: true
+    }
+  },
   data() {
     return {
       forums: '',
