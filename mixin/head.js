@@ -12,7 +12,7 @@ module.exports = {
   },
   head() {
     return {
-      title: this.forums && this.forums.set_site && this.forums.set_site.site_name ? this.title + ' - ' + this.forums.set_site.site_name : this.title
+      title: this.title !== '\u200E' && this.forums && this.forums.set_site && this.forums.set_site.site_name ? this.title + ' - ' + this.forums.set_site.site_name : this.title
     }
   }
 }

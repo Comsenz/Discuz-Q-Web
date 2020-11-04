@@ -51,13 +51,14 @@
 
 <script>
 import s9e from '@/utils/s9e'
+import head from '@/mixin/head'
 import handleError from '@/mixin/handleError'
 import env from '@/utils/env'
 const threadInclude = 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio'
 export default {
   layout: 'custom_layout',
   name: 'Index',
-  mixins: [handleError],
+  mixins: [head, handleError],
   // 异步数据用法
   async asyncData({ store, query }, callback) {
     if (!env.isSpider) {
@@ -67,6 +68,7 @@ export default {
       'filter[isSticky]': 'yes',
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no',
+      'filter[categoryId]': query.categoryId,
       'page[number]': 1,
       include: 'firstPost'
     }
@@ -76,6 +78,7 @@ export default {
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no',
       'filter[isDisplay]': 'yes',
+      'filter[categoryId]': query.categoryId,
       'page[number]': 1,
       'page[limit]': 10
     }
@@ -165,6 +168,7 @@ export default {
       recommendUserData: [], // 推荐用户列表
       pageNum: 1, // 当前页码
       pageSize: 10, // 每页多少条数据
+      categoryId: 0, // 分类id 0全部
       threadType: '', // 主题类型 0普通 1长文 2视频 3图片（'' 不筛选）
       sort: '', // 排序
       threadEssence: '', // 是否精华帖
@@ -173,7 +177,6 @@ export default {
       timer: null, // 轮询获取新主题 定时器
       threadCount: 0, // 主题总数
       total: 0, // 新的主题数，通过轮询获取
-      htitle: '\u200E',
       currentAudioId: ''
     }
   },
@@ -186,8 +189,9 @@ export default {
     }
   },
   mounted() {
-    if (this.forums && this.forums.set_site) {
-      this.htitle = this.forums.set_site.site_title || this.forums.set_site.site_name || 'Discuz! Q'
+    if (this.$route.params.id) {
+      this.categoryId = this.$route.params.id
+      this.getCategoryList()
     }
     if (this.threadsStickyData.length === 0) {
       this.getThreadsSticky()
@@ -217,6 +221,7 @@ export default {
         'filter[isSticky]': 'yes',
         'filter[isApproved]': 1,
         'filter[isDeleted]': 'no',
+        'filter[categoryId]': this.categoryId,
         include: ['firstPost']
       }
       this.$store.dispatch('jv/get', ['threads', { params }]).then((data) => {
@@ -232,6 +237,7 @@ export default {
         'filter[isApproved]': 1,
         'filter[isDeleted]': 'no',
         'filter[isDisplay]': 'yes',
+        'filter[categoryId]': this.categoryId,
         'filter[type]': this.threadType,
         'filter[isEssence]': this.threadEssence,
         'filter[fromUserId]': this.fromUserId,
@@ -273,6 +279,21 @@ export default {
           this.loading = false
         })
     },
+    // 获取分类列表 用于head title显示
+    getCategoryList() {
+      this.$store.dispatch('jv/get', ['categories', {}]).then((res) => {
+        const resData = [...res] || []
+        this.categoryData = resData
+        const currentCategory = resData.find(item => {
+          return item._jv && +item._jv.id === +this.categoryId
+        })
+        if (currentCategory) {
+          this.title = currentCategory.name
+        }
+      }, (e) => {
+        this.handleError(e)
+      })
+    },
     // 点击加载更多
     loadMore() {
       // 在这里加1的话，遇到加载不成功的会不断加页码
@@ -286,6 +307,7 @@ export default {
         'filter[isApproved]': 1,
         'filter[isDeleted]': 'no',
         'filter[isDisplay]': 'yes',
+        'filter[categoryId]': this.categoryId,
         'filter[type]': this.threadType,
         'filter[isEssence]': this.threadEssence,
         'filter[fromUserId]': this.fromUserId,
@@ -311,6 +333,8 @@ export default {
     onChangeCategory(id) {
       if (id !== 0) {
         this.$router.push(`/category/${id}`)
+      } else {
+        this.$router.push('/')
       }
     },
     // 筛选
@@ -349,15 +373,6 @@ export default {
         this.$refs[`audio${this.currentAudioId}`][0].pause()
       }
       this.currentAudioId = id
-    }
-  },
-  head() {
-    return {
-      title: this.htitle,
-      meta: [
-        { hid: 'keywords', name: 'keywords', content: (this.forums && this.forums.set_site && this.forums.set_site.site_keywords) || '' },
-        { hid: 'description', name: 'description', content: (this.forums && this.forums.set_site && this.forums.set_site.site_introduction) || '' }
-      ]
     }
   }
 }
