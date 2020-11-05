@@ -108,7 +108,12 @@ export default {
               this.$emit('onActions', 'showTopic')
             }
           },
-          { hotkey: '', name: 'my-emoji', tipPosition: 'ne', tip: '插入表情', className: 'right', icon: emoji, click: () => { this.$emit('onActions', 'showEmoji') } },
+          { hotkey: '', name: 'my-emoji', tipPosition: 'ne', tip: '插入表情', className: 'right', icon: emoji,
+            click: () => {
+              this.range = getSelection().getRangeAt(0)
+              this.$emit('onActions', 'showEmoji')
+            }
+          },
           'headings', 'bold', 'italic', 'strike', 'link', 'list', 'ordered-list', 'check', 'outdent', 'indent', 'quote',
           { hotkey: '', name: 'picture', tipPosition: 'ne', tip: '插入图片', className: 'right', icon: picture, click: () => { this.uploader() } },
           'line', 'code', 'inline-code', 'table', 'both', 'br', 'undo', 'redo'],
