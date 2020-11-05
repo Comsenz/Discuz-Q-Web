@@ -42,8 +42,7 @@
     </div>
     <div class="bottom">
       <div class="container">
-        <!--<span class="text">{{ $t('post.chosen') + ' ' + selectedFriend.length + ' ' + $t('topic.personUnit') }}</span>-->
-        <el-button size="medium" type="primary" @click="$emit('selectedQaCaller', selectedFriend)">{{ $t('post.confirmChoice') }}</el-button>
+        <el-button :disabled="Object.keys(selectedFriend).length === 0" size="medium" type="primary" @click="$emit('selectedQaCaller', selectedFriend)">{{ $t('post.confirmChoice') }}</el-button>
       </div>
     </div>
   </message-box>

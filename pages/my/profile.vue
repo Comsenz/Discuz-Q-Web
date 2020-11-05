@@ -341,7 +341,6 @@ export default {
   data() {
     return {
       title: this.$t('profile.myprofile'),
-      userId: this.$store.getters['session/get']('userId'),
       userInfo: '',
       num: 140,
       wordnumber: '',
@@ -391,14 +390,22 @@ export default {
     forums() {
       return this.$store.state.site.info.attributes || {}
     },
+    userId() {
+      return this.$store.getters['session/get']('userId')
+    },
     avataruserInfo() {
       return this.$store.state.user.info.attributes || {}
     }
   },
+  watch: {
+    userId(id) {
+      if (id) this.userinfo()
+    }
+  },
   mounted() {
+    if (this.userId) this.userinfo()
     const { phonebind } = this.$route.query
     if (phonebind) this.isMobileModify = true
-    this.userinfo()
   },
   methods: {
     countDown(interval) {
@@ -432,9 +439,6 @@ export default {
       }, 1000)
     },
     userinfo() {
-      if (this.userId === '0') {
-        return
-      }
       const params = {
         include: 'groups,wechat'
       }

@@ -57,7 +57,7 @@
             >
             <el-button
               size="medium"
-              :disabled="!canClick"
+              :disabled="!canClick || !usertestphon"
               @click="sendsms"
             >{{ content }}</el-button>
           </label>

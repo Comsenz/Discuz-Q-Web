@@ -92,8 +92,8 @@ npm run generate
 |-- plugins                   插件存放目录
 | |-- lang                    国际化设置目录（语言设置）
 |-- static                    用于存放应用的静态文件，此类文件不会被 Nuxt.js 调用 Webpack 进行构建编译处理。服务器启动的时候，该目录下的文件会映射至应用的根路径 / 下
-|-- store                     数据状态管理目录
 |-- utils                     常用函数存放目录
+|-- store                     数据状态管理目录
 | |-- modules
 | |-- types
 |-- .editorconfig             编辑器配置推荐

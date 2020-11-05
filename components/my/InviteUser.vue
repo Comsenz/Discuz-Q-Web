@@ -109,8 +109,15 @@ export default {
       return this.$store.state.user.info.attributes || {}
     }
   },
+  watch: {
+    groupMap: {
+      handler() {
+        this.getInviteList()
+      },
+      deep: true
+    }
+  },
   mounted() {
-    this.getInviteList()
   },
   methods: {
     // 获取邀请列表

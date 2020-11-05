@@ -21,8 +21,14 @@
       :product="product"
       @productChange="onProductChange"
     />
-    <editor-payment v-if="typeInformation && typeInformation.showPayment && canCreateThreadPaid" :payment="payment || {}" :type="typeInformation && typeInformation.type" @paymentChange="e => onPaymentChange(e.key, e.value)" />
-    <attachment-upload v-if="isPost" :file-list="post && post.attachedList" :on-upload.sync="onUploadAttached" action="/attachments" :accept="attachedTypeLimit" :limit="99999" :type="0" :size-limit="attachedSizeLimit" @success="files => onPostContentChange('attachedList', files)" @remove="files => onPostContentChange('attachedList', files)" />
+    <editor-payment
+      v-if="typeInformation && typeInformation.showPayment && canCreateThreadPaid"
+      :payment="payment || {}"
+      :type="typeInformation && typeInformation.type"
+      :can-upload-attachments="canUploadAttachments"
+      @paymentChange="e => onPaymentChange(e.key, e.value)"
+    />
+    <attachment-upload v-if="isPost && canUploadAttachments" :file-list="post && post.attachedList" :on-upload.sync="onUploadAttached" action="/attachments" :accept="attachedTypeLimit" :limit="99999" :type="0" :size-limit="attachedSizeLimit" @success="files => onPostContentChange('attachedList', files)" @remove="files => onPostContentChange('attachedList', files)" />
     <Vditor
       v-if="isPost"
       :text-limit="typeInformation && typeInformation.textLimit"
@@ -203,14 +209,14 @@ export default {
     textarea() {
       return process.client ? document.querySelector(`.${this.selector} #textarea`) : ''
     },
-    canCreateThreadPaid() {
-      const forums = this.$store.state.site.info.attributes
-      if (forums) {
-        return forums.other ? forums.other.can_create_thread_paid : false
-      } else return false
-    },
     forums() {
       return this.$store.state.site.info.attributes || {}
+    },
+    canCreateThreadPaid() {
+      return this.forums && this.forums.other ? this.forums.other.can_create_thread_paid : false
+    },
+    canUploadAttachments() {
+      return this.forums && this.forums.other ? this.forums.other.can_upload_attachments : false
     },
     attachedSizeLimit() {
       if (this.forums.set_attach) {

@@ -11,7 +11,7 @@ module.exports = {
   methods: {
     // 绑定微信 生成二维码
     createQRcode() {
-      this.$store.dispatch('jv/get', `/oauth/wechat/pc/qrcode`).then(res => {
+      this.$store.dispatch('jv/get', `/oauth/wechat/pc/qrcode?type=pc_relation`).then(res => {
         if (res) {
           this.wechatBind = res
           const _this = this
@@ -22,25 +22,41 @@ module.exports = {
     // 轮询查询微信是否绑定成功
     getWechatStatus() {
       if (this.wechatBind && !this.wechatBind.session_token) return
-      this.$store.dispatch('jv/get', `/oauth/wechat/pc/login/${this.wechatBind.session_token}`).then(res => {
-        if (res.pc_login) {
-          window.clearInterval(this.wehcatTimer)
-          clearInterval(this.wehcatLoginTimer)
-          console.log(res)
-          this.$store.commit('session/SET_USER_ID', res._jv.id)
-          this.$store.commit('session/CHECK_SESSION', true)
-          this.$store.commit('session/SET_ACCESS_TOKEN', res.access_token)
-          const userId = this.$store.getters['session/get']('userId')
-          this.userId = userId
-          this.$store.dispatch('user/getUserInfo', userId)
-          this.userinfo()
-          this.isWechatModify = false
-          this.$message.success('绑定成功')
-        }
+      this.$store.dispatch('jv/get', `/oauth/wechat/pc/bind/${this.wechatBind.session_token}`).then(res => {
+        console.log('轮询查询', res)
+        // if (res.pc_login) {
+        //   window.clearInterval(this.wehcatTimer)
+        //   clearInterval(this.wehcatLoginTimer)
+        //   console.log(res)
+        //   this.$store.commit('session/SET_USER_ID', res._jv.id)
+        //   this.$store.commit('session/CHECK_SESSION', true)
+        //   this.$store.commit('session/SET_ACCESS_TOKEN', res.access_token)
+        //   const userId = this.$store.getters['session/get']('userId')
+        //   this.userId = userId
+        //   this.$store.dispatch('user/getUserInfo', userId)
+        //   this.userinfo()
+        //   this.isWechatModify = false
+        //   this.$message.success('绑定成功')
+        // }
       }, e => {
-        this.handleError(e)
-        window.clearInterval(this.wehcatTimer)
-        this.createQRcode()
+        const {
+          response: {
+            data: {
+              errors
+            }
+          }
+        } = e
+        if (Array.isArray(errors) && errors.length > 0) {
+          const error = errors[0].detail && errors[0].detail.length > 0 ? errors[0].detail[0] : errors[0].code
+          const errorText = errors[0].detail && errors[0].detail.length > 0 ? errors[0].detail[0] : this.$t(`core.${error}`)
+          if (error === 'pc_qrcode_scanning_code') {
+            return
+          } else {
+            clearInterval(this.wehcatTimer)
+            this.$message.error(errorText)
+            this.createQRcode()
+          }
+        }
       })
     }
   }
