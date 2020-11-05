@@ -76,6 +76,10 @@ export default {
     type: {
       type: Number,
       default: 0
+    },
+    canUploadAttachments: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -114,7 +118,7 @@ export default {
     },
     type: {
       handler(val) {
-        val === 1 ? this.options.push({ value: 'attachmentPaid', label: this.$t('post.postFreeAttachmentPaid') }) : ''
+        val === 1 && this.canUploadAttachments ? this.options.push({ value: 'attachmentPaid', label: this.$t('post.postFreeAttachmentPaid') }) : ''
       },
       immediate: true
     }
