@@ -189,7 +189,7 @@ export default {
      * 复制链接
      * @param {*} code 邀请码
      * @example:
-     * copyLink('https://discuz.chat/site/partner-invite?code=1178')
+     * copyLink('https://xxx.com/site/partner-invite?code=1178')
      */
     copyLink(code) {
       const oInput = document.createElement('input')
