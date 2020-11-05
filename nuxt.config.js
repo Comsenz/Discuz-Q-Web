@@ -1,13 +1,13 @@
 // import enLocale from './plugins/lang/en.js'
 import zhLocale from './plugins/lang/zh.js'
-import config from './utils/config.js'
+import config from './config.js'
 const path = require('path')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const API_URL_DEV = config.DOMAIN_DEV
+const API_URL_DEV = config.API_URL_DEV
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -31,7 +31,7 @@ if (isProduction) {
 }
 export default {
   env: {
-    domain: process.env.VUE_APP_CONFIG_API_URL || API_URL_DEV,
+    domain: config.SSR_API_URL || API_URL_DEV,
     baseURL: '/'
   },
   /*
