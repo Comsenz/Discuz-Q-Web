@@ -11,7 +11,7 @@
           <svg-icon :type="extensionValidate(file.name)" style="font-size: 18px; vertical-align: middle;" />
           <span :class="{ 'file-name': true, 'uploading': file.progress < 100 }">{{ file.name }}</span>
         </div>
-        <span class="size">{{ parseInt(file.size).toLocaleString() }} KB</span>
+        <span class="size">{{ parseInt((file.size / 1024).toString()).toLocaleString() }} KB</span>
         <div v-show="file.progress < 100" class="progress" :style="{ width: file.progress + '%' }" />
       </div>
       <div class="remove">
