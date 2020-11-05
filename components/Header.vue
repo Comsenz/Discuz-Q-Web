@@ -57,7 +57,7 @@
         />
         <nuxt-link
           v-if="userInfo.username && userInfo.id"
-          :to="`/pages/profile/index?userId=${userInfo.id}`"
+          :to="`/user/${userInfo.id}`"
           class="menu-item user-name text-hidden"
         >
           {{ userInfo.username }}

@@ -60,7 +60,7 @@ export default {
   name: 'Index',
   mixins: [head, handleError],
   // 异步数据用法
-  async asyncData({ store, query }, callback) {
+  async asyncData({ store, params }, callback) {
     if (!env.isSpider) {
       callback(null, {})
     }
@@ -68,7 +68,7 @@ export default {
       'filter[isSticky]': 'yes',
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no',
-      'filter[categoryId]': query.categoryId,
+      'filter[categoryId]': params.id,
       'page[number]': 1,
       include: 'firstPost'
     }
@@ -78,7 +78,7 @@ export default {
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no',
       'filter[isDisplay]': 'yes',
-      'filter[categoryId]': query.categoryId,
+      'filter[categoryId]': params.id,
       'page[number]': 1,
       'page[limit]': 10
     }

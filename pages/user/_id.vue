@@ -243,33 +243,33 @@
 import { status } from '@/library/jsonapi-vuex/index'
 import handleError from '@/mixin/handleError'
 import env from '@/utils/env'
-
+const threadInclude = 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio'
 export default {
   layout: 'custom_layout',
   mixins: [handleError],
   // 异步数据用法
-  async asyncData({ store, query }, callback) {
+  async asyncData({ store, params }, callback) {
     if (!env.isSpider) {
       callback(null, {})
     }
     const threadparams = {
       'filter[isDeleted]': 'no',
       sort: '-createdAt',
-      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio',
+      include: threadInclude,
       'page[number]': 1,
       'page[limit]': 10,
       'filter[isApproved]': 1,
-      'filter[userId]': query.userId
+      'filter[userId]': params.id
     }
     const likethreadsparams = {
-      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio',
+      include: threadInclude,
       'page[number]': 1,
       'page[limit]': 10,
       'filter[isApproved]': 1,
-      'filter[user_id]': query.userId
+      'filter[user_id]': params.id
     }
     const askthreadsparams = {
-      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio',
+      include: threadInclude,
       'page[number]': 1,
       'page[limit]': 20,
       'filter[isApproved]': 1,
@@ -375,8 +375,8 @@ export default {
     }
   },
   created() {
-    const { userId, current } = this.$route.query
-    this.userId = userId || ''
+    const { current } = this.$route.query
+    this.userId = this.$route.params.id || ''
     this.current = current
     this.activeName = this.current ? this.current : this.activeName
   },

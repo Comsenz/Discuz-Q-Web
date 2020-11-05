@@ -1,5 +1,5 @@
 <template>
-  <a v-if="user" class="avatar-a" :href="preventJump || isAnonymous ? 'javascript:void(0)' : ('/pages/profile/index?userId=' + user.id)" :class="[sizeClass]">
+  <a v-if="user" class="avatar-a" :href="preventJump || isAnonymous ? 'javascript:void(0)' : ('/user/' + user.id)" :class="[sizeClass]">
     <img v-if="avatarUrl && !errorUrl" :src="user.avatarUrl" class="img" :class="[sizeClass, roundClass]" :alt="user.username" @error="error">
     <span v-else-if="styleText" :class="['avatar', sizeClass, roundClass]" :style="styleText">
       {{ usernameAt }}

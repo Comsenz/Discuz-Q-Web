@@ -14,7 +14,7 @@
           <nuxt-link
             v-for="(item, index) in userList.slice(0, userPageSize)"
             :key="index"
-            :to="`/pages/profile/index?userId=${item.id}`"
+            :to="`/user/${item.id}`"
             class="user-item"
           >
             <avatar :user="item" :size="45" />

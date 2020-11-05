@@ -25,7 +25,7 @@
     />
     <div class="main-cont">
       <div class="top-flex">
-        <nuxt-link v-if="item.type === 5 && item.question && item.question.is_answer === 1 && item.question.beUser" :to="item.user.id > 0 ? `/pages/profile/index?userId=${item.question.beUser.id}` : ''" class="user-info">
+        <nuxt-link v-if="item.type === 5 && item.question && item.question.is_answer === 1 && item.question.beUser" :to="item.user.id > 0 ? `/user/${item.question.beUser.id}` : ''" class="user-info">
           <span class="user-name">{{ item.question.beUser.username }}</span>
           <span
             v-if="item.question.beUser && item.question.beUser.groups && item.question.beUser.groups.length > 0 && item.question.beUser.groups[0].isDisplay"
@@ -34,7 +34,7 @@
             ({{ item.question.beUser.groups[0].name }})
           </span>
         </nuxt-link>
-        <nuxt-link v-else-if="item.user" :to="item.user.id > 0 ? `/pages/profile/index?userId=${item.user.id}` : ''" class="user-info">
+        <nuxt-link v-else-if="item.user" :to="item.user.id > 0 ? `/user/${item.user.id}` : ''" class="user-info">
           <span class="user-name">{{ item.user.username }}</span>
           <span
             v-if="item.user && item.user.groups && item.user.groups.length > 0 && item.user.groups[0].isDisplay"
@@ -54,7 +54,7 @@
           {{ $t('topic.be') }}
           <nuxt-link
             v-if="item.question && item.question.beUser"
-            :to="item.question.beUser.id > 0 ? `/pages/profile/index?userId=${item.question.beUser.id}` : ''"
+            :to="item.question.beUser.id > 0 ? `/user/${item.question.beUser.id}` : ''"
             class="blue"
           >@{{ item.question.beUser.username }}</nuxt-link>
           {{ $t('topic.question') }}
@@ -64,7 +64,7 @@
           {{ $t('topic.answer') }}
           <nuxt-link
             v-if="item.user"
-            :to="item.user.id > 0 ? `/pages/profile/index?userId=${item.user.id}` : ''"
+            :to="item.user.id > 0 ? `/user/${item.user.id}` : ''"
             class="blue"
           >@{{ item.user.username }}</nuxt-link>
           {{ $t('topic.of') }}{{ $t('topic.question') }}

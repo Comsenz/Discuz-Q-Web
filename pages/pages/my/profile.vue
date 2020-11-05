@@ -936,19 +936,19 @@ export default {
       )
     },
     toTopic() {
-      this.$router.push(`/pages/profile/index?userId=${this.userId}&current=1`)
+      this.$router.push(`/user/${this.userId}?current=1`)
     },
     toFollowing() {
-      this.$router.push(`/pages/profile/index?userId=${this.userId}&current=3`)
+      this.$router.push(`/user/${this.userId}?current=3`)
     },
     toFollowers() {
-      this.$router.push(`/pages/profile/index?userId=${this.userId}&current=4`)
+      this.$router.push(`/user/${this.userId}?current=4`)
     },
     toLikes() {
-      this.$router.push(`/pages/profile/index?userId=${this.userId}&current=2`)
+      this.$router.push(`/user/${this.userId}?current=2`)
     },
     toQuestion() {
-      this.$router.push(`/pages/profile/index?userId=${this.userId}&current=5`)
+      this.$router.push(`/user/${this.userId}?current=5`)
     }
   }
 }

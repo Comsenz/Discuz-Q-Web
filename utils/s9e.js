@@ -17,7 +17,7 @@ const tags = {
     const regexp = /<span\s*id="member"\s*value="(?<value>\w+)"\s*>(?<string>[^<]+)<\/span>/gimu;
     return text.replace(regexp, match => {
       return match.replace(regexp, (content, value, text) => {
-        const href = `/pages/profile/index?userId=${value}`;
+        const href = `/user/${value}`;
         return `<a href="${href}" class="content-member a-blue">${text}</a> `;
       });
     });
