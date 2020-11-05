@@ -1,14 +1,13 @@
 // import enLocale from './plugins/lang/en.js'
 import zhLocale from './plugins/lang/zh.js'
-
+import config from './utils/config.js'
 const path = require('path')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-// const API_URL = 'https://discuz.chat'
-const API_URL_DEV = 'https://dq.comsenz-service.com'
+const API_URL_DEV = config.DOMAIN_DEV
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -63,19 +62,6 @@ export default {
   },
   router: {
     middleware: 'header'
-    // routeNameSplitter: '/',
-    // extendRoutes(routes, resolve) {
-    //   routes.unshift({
-    //     name: 'h5-topic-index',
-    //     path: '/topic/index',
-    //     component: path.resolve() + '/pages/pages/topic/_id.vue'
-    //   })
-    // {
-    //   name: 'h5-topic-post',
-    //   path: '/topic/post',
-    //   component: path.resolve() + '/pages/pages/topic/post.vue'
-    // })
-    // }
   },
   /*
   ** Global CSS
@@ -118,9 +104,6 @@ export default {
     'nuxt-i18n',
     '@nuxtjs/proxy'
   ],
-  generate: {
-    routes: ['/pages/invite/index', '/pages/manage/index', '/pages/site/index']
-  },
   i18n: {
     // locales: ['en', 'zh'],
     defaultLocale: 'zh',
