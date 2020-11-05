@@ -119,7 +119,7 @@
         <div v-show="(isMobileModify && userInfo.mobile)" class="myprofile-btom">
           <div class="pmobile">{{ userInfo.mobile }}</div>
           <verify-phone
-            v-if="isMobileModify"
+            v-if="isMobileModify && userInfo.mobile"
             ref="verifyphone"
             :error="phoneError"
             :mobile="userInfo.mobile"
@@ -155,54 +155,95 @@
         <div class="myprofile-top">
           <span class="sig">{{ $t('profile.password') }}</span>
           <span class="setavatar">
-            <span class="setbutton" @click="passModify">{{ (!isPassModify ? $t('profile.modify') : $t('profile.cancelModify')) }}</span>
+            <span class="setbutton" @click="passModify">
+              {{ (!isPassModify ? userInfo && userInfo.hasPassword ? $t('profile.modify') : '设置' : userInfo && userInfo.hasPassword ? $t('profile.cancelModify') : '取消设置') }}
+            </span>
           </span>
         </div>
         <div v-show="!isPassModify" class="myprofile-btom2">{{ userInfo && userInfo.hasPassword ? $t('profile.isset') : $t('profile.withoutsetpass') }}</div>
         <div v-show="isPassModify" class="myprofile-btom">
-          <el-dialog
-            :title="$t('profile.password')"
-            :visible.sync="isPassModify"
-            width="620px"
-            :before-close="passModify"
-          >
-            <form class="form">
-              <el-input
-                ref="oldpass"
-                v-model="oldPassWord"
-                :placeholder="$t('modify.enterold')"
-                class="passbtom"
-                type="password"
-                show-password
-              />
-              <el-input
-                v-model="newPassWord"
-                :placeholder="$t('modify.enterNew')"
-                class="passbtom"
-                type="password"
-                show-password
-              />
-              <div :class="passerror ? 'rep passerr' : 'rep'">
+          <div v-if="userInfo && userInfo.hasPassword">
+            <el-dialog
+              :title="$t('profile.password')"
+              :visible.sync="isPassModify"
+              width="620px"
+              :before-close="passModify"
+            >
+              <form class="form">
                 <el-input
-                  v-model="renewPassword"
-                  :placeholder="$t('modify.enterNewRepeat')"
-                  :class="passerror ? 'passbtom inputerr':'passbtom'"
+                  ref="oldpass"
+                  v-model="oldPassWord"
+                  :placeholder="$t('modify.enterold')"
+                  class="passbtom"
                   type="password"
                   show-password
-                  @keyup.enter.native="passSub"
                 />
-                <div
-                  v-if="passerror"
-                  class="passerror"
-                >{{ $t('modify.reenter') }}</div>
-              </div>
-              <el-button
-                type="primary"
-                class="ebutton"
-                @click="passSub"
-              >{{ $t('profile.submitchange') }}</el-button>
-            </form>
-          </el-dialog>
+                <el-input
+                  v-model="newPassWord"
+                  :placeholder="$t('modify.enterNew')"
+                  class="passbtom"
+                  type="password"
+                  show-password
+                />
+                <div :class="passerror ? 'rep passerr' : 'rep'">
+                  <el-input
+                    v-model="renewPassword"
+                    :placeholder="$t('modify.enterNewRepeat')"
+                    :class="passerror ? 'passbtom inputerr':'passbtom'"
+                    type="password"
+                    show-password
+                    @keyup.enter.native="passSub"
+                  />
+                  <div
+                    v-if="passerror"
+                    class="passerror"
+                  >{{ $t('modify.reenter') }}</div>
+                </div>
+                <el-button
+                  type="primary"
+                  class="ebutton"
+                  @click="passSub"
+                >{{ $t('profile.submitchange') }}</el-button>
+              </form>
+            </el-dialog>
+          </div>
+          <div v-else>
+            <el-dialog
+              :title="$t('profile.password')"
+              :visible.sync="isPassModify"
+              width="620px"
+              :before-close="passModify"
+            >
+              <form class="form">
+                <el-input
+                  v-model="newPassWord"
+                  :placeholder="$t('modify.enterNew')"
+                  class="passbtom"
+                  type="password"
+                  show-password
+                />
+                <div :class="passerror ? 'rep passerr' : 'rep'">
+                  <el-input
+                    v-model="renewPassword"
+                    :placeholder="$t('modify.enterNewRepeat')"
+                    :class="passerror ? 'passbtom inputerr':'passbtom'"
+                    type="password"
+                    show-password
+                    @keyup.enter.native="passSub2"
+                  />
+                  <div
+                    v-if="passerror"
+                    class="passerror"
+                  >{{ $t('modify.reenter') }}</div>
+                </div>
+                <el-button
+                  type="primary"
+                  class="ebutton"
+                  @click="passSub2"
+                >{{ $t('modify.submit') }}</el-button>
+              </form>
+            </el-dialog>
+          </div>
         </div>
       </div>
     </div>
@@ -698,9 +739,11 @@ export default {
     // 修改密码
     passModify() {
       this.isPassModify = !this.isPassModify
-      this.$nextTick(() => {
-        this.$refs.oldpass.focus()
-      })
+      if (this.$refs.oldpass) {
+        this.$nextTick(() => {
+          this.$refs.oldpass.focus()
+        })
+      }
     },
     // 密码为空校验
     passSub() {
@@ -713,6 +756,20 @@ export default {
         this.passwordComfirm()
       } else if (!this.oldPassWord) {
         this.$message.error(this.$t('modify.oldpassword'))
+      } else if (!this.newPassWord) {
+        this.$message.error(this.$t('modify.newpassword'))
+      } else if (this.newPassWord !== this.renewPassword) {
+        this.$message.error(this.$t('modify.masstext'))
+        this.passerror = true
+      }
+    },
+    passSub2() {
+      if (
+        this.newPassWord &&
+        this.renewPassword &&
+        this.newPassWord === this.renewPassword
+      ) {
+        this.passwordComfirm()
       } else if (!this.newPassWord) {
         this.$message.error(this.$t('modify.newpassword'))
       } else if (this.newPassWord !== this.renewPassword) {
@@ -879,19 +936,19 @@ export default {
       )
     },
     toTopic() {
-      this.$router.push(`/pages/profile/index?userId=${this.userId}&current=1`)
+      this.$router.push(`/user/${this.userId}?current=1`)
     },
     toFollowing() {
-      this.$router.push(`/pages/profile/index?userId=${this.userId}&current=3`)
+      this.$router.push(`/user/${this.userId}?current=3`)
     },
     toFollowers() {
-      this.$router.push(`/pages/profile/index?userId=${this.userId}&current=4`)
+      this.$router.push(`/user/${this.userId}?current=4`)
     },
     toLikes() {
-      this.$router.push(`/pages/profile/index?userId=${this.userId}&current=2`)
+      this.$router.push(`/user/${this.userId}?current=2`)
     },
     toQuestion() {
-      this.$router.push(`/pages/profile/index?userId=${this.userId}&current=5`)
+      this.$router.push(`/user/${this.userId}?current=5`)
     }
   }
 }

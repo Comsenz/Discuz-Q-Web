@@ -14,6 +14,9 @@
                 {{ forums && forums.set_reg && forums.set_reg.register_type !== 2 ? $t('user.wechatlogin') : $t('user.wechatlogin')+'/注册' }}
               </span>
             </div>
+            <div class="agreement">
+              <reg-agreement v-if="forums && forums.set_reg && forums.set_reg.register_type === 2" :check="false" @check="check" />
+            </div>
             <div v-if="forums && forums.set_reg && forums.set_reg.register_type !== 2" class="otherlogin">
               <svg-icon v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms" class="phone-icon" type="phonelogin" @click="toPhonelogin" />
               <svg-icon class="wechat-icon" type="userlogin" @click="toUserlogin" />
@@ -37,7 +40,8 @@ export default {
       code: '', // 注册邀请码
       wechatLogin: {}, // 微信扫码登录信息
       wehcatLoginTimer: null, // 微信登录定时器
-      activeName: '0'
+      activeName: '0',
+      ischeck: true
     }
   },
   computed: {
@@ -60,6 +64,9 @@ export default {
     window.clearInterval(this.wehcatLoginTimer)
   },
   methods: {
+    check(value) {
+      this.ischeck = value
+    },
     // PC扫码登陆-生成二维码
     createQRcode() {
       this.$store.dispatch('jv/get', '/oauth/wechat/pc/qrcode').then((res) => {
@@ -85,7 +92,7 @@ export default {
           }
           this.$store.dispatch('jv/get', [`users/${userId}`, { params }]).then((res) => {
             if (res.username) {
-              this.$message.success('登录成功')
+              this.$message.success(this.$t('user.loginSuccess'))
               this.logind()
             }
           })
@@ -102,7 +109,16 @@ export default {
             const headimgurl = errors[0].user.headimgurl
             const token = errors[0].token
             if (process.client) localStorage.setItem('wechat', token)
-            this.$router.push(`/pages/user/register-bind?nickname=${nickname}&headimgurl=${headimgurl}`)
+            if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 0) {
+              this.$router.push(`/pages/user/register-bind?nickname=${nickname}&headimgurl=${headimgurl}`)
+            }
+            if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
+              this.$router.push(`/pages/user/wechat-bind-phone?nickname=${nickname}&headimgurl=${headimgurl}`)
+            }
+            if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 2) {
+              this.$message.success(this.$t('user.loginSuccess'))
+              this.logind()
+            }
           } else {
             clearInterval(this.wehcatLoginTimer)
             this.$message.error(errorText)
@@ -158,6 +174,9 @@ export default {
       .quick-container {
         flex: 1;
         text-align: center;
+        .agreement{
+          margin-top: 5px;
+        }
         .qrtext {
           margin-top: 5px;
         }
@@ -200,7 +219,7 @@ export default {
   }
   .otherlogin {
     font-size:50px;
-    margin-top:40px;
+    margin-top:35px;
     .wechat-icon {
       cursor: pointer;
     }

@@ -69,7 +69,7 @@
                     :round="true"
                   />
                   <nuxt-link
-                    :to="`/pages/profile/index?userId=${scope.row.id}`"
+                    :to="`/user/${scope.row.id}`"
                     class="user-name"
                   >{{ scope.row.username }}</nuxt-link>
                 </div>
@@ -147,7 +147,7 @@
                     :round="true"
                   />
                   <nuxt-link
-                    :to="`/pages/profile/index?userId=${scope.row.id}`"
+                    :to="`/user/${scope.row.id}`"
                     class="user-name"
                   >{{ scope.row.username }}</nuxt-link>
                 </div>

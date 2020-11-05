@@ -65,7 +65,7 @@ export default {
   methods: {
     // 跳转详情
     toUser() {
-      this.$router.push(`/pages/profile/index?userId=${this.item.id}`)
+      this.$router.push(`/user/${this.item.id}`)
     }
   }
 }

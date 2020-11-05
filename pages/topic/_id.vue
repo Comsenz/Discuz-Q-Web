@@ -16,7 +16,7 @@
                 {{ $t("topic.share") }}
               </div>
             </share-popover>
-            <nuxt-link to="/pages/topic/list" class="item hover">{{ $t('topic.allTopics') }}</nuxt-link>
+            <nuxt-link to="/topic/list" class="item hover">{{ $t('topic.allTopics') }}</nuxt-link>
           </div>
         </div>
         <div class="thread-list">
@@ -56,7 +56,7 @@ export default {
   name: 'TopicContent',
   mixins: [handleError],
   // 异步数据用法
-  async asyncData({ store, query }, callback) {
+  async asyncData({ store, params }, callback) {
     if (!env.isSpider) {
       callback(null, {})
     }
@@ -66,7 +66,7 @@ export default {
       'filter[isDeleted]': 'no',
       'filter[isDisplay]': 'yes',
       'page[limit]': 10,
-      'filter[topicId]': query.id
+      'filter[topicId]': params.id
     }
     const userParams = {
       include: 'groups',
@@ -74,7 +74,7 @@ export default {
     }
     try {
       const resData = {}
-      const topicData = await store.dispatch('jv/get', [`topics/${query.id}`, {}])
+      const topicData = await store.dispatch('jv/get', [`topics/${params.id}`, {}])
       const threadsData = await store.dispatch('jv/get', ['threads', { params: threadsParams }])
       const recommendUser = await store.dispatch('jv/get', ['users/recommended', { params: userParams }])
       // 处理一下data
@@ -137,9 +137,9 @@ export default {
   methods: {
     init() {
       this.threadsData = []
-      if (this.$route.query && this.$route.query.id) {
-        this.topicId = this.$route.query.id
-        this.getTopicDetail(this.$route.query.id)
+      if (this.$route.params && this.$route.params.id) {
+        this.topicId = this.$route.params.id
+        this.getTopicDetail(this.$route.params.id)
         this.getThreadsList()
       }
     },

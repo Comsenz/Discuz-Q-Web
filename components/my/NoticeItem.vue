@@ -21,7 +21,7 @@
         <template v-if="item.type !== 'system'">
           <nuxt-link
             v-if="item.user_name"
-            :to="`/pages/profile/index?userId=${item.user_id}`"
+            :to="`/user/${item.user_id}`"
             class="user-name"
           >{{ item.user_name }}
           </nuxt-link>

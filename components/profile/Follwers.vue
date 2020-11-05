@@ -191,7 +191,7 @@ export default {
           const item2 = JSON.parse(JSON.stringify(item))
           item2.fromUser.follow = res.is_mutual === 1 ? 2 : 1
           this.$set(this.followerList, index, item2)
-        })
+        }, e => this.handleError(e))
     },
     // 取消关注
     deleteFollow(userInfo, index) {
@@ -216,7 +216,7 @@ export default {
       }
     },
     toUser(userId) {
-      this.$router.push(`/pages/profile/index?userId=${userId}`)
+      this.$router.push(`/user/${userId}`)
     },
     confirm(e) {
       this.sort = e

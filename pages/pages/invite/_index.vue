@@ -10,7 +10,7 @@
             :size="50"
           />
           <div class="user-info">
-            <nuxt-link :to="`/pages/profile/index?userId=${detail.user.id}`" class="user-name">
+            <nuxt-link :to="`/user/${detail.user.id}`" class="user-name">
               {{ detail.user.username }}
             </nuxt-link>
             <div class="create-at">
@@ -42,7 +42,7 @@
                     :size="30"
                     :round="true"
                   />
-                  <nuxt-link :to="`/pages/profile/index?userId=${scope.row.sourceUser.id}`" class="user-name">
+                  <nuxt-link :to="`/user/${scope.row.sourceUser.id}`" class="user-name">
                     {{ scope.row.sourceUser.username }}</nuxt-link>
                 </div>
               </template>
