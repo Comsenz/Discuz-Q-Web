@@ -75,11 +75,11 @@
                 <span>{{ $t('pay.walletPay') }}</span>
                 <div class="pay-tip">
                   <div v-if="enoughBalance">
-                    <nuxt-link v-if="!userWallet.canWalletPay" to="/pages/my/wallet" class="not-enough-balance">{{ $t('pay.needToResetPassword') }}</nuxt-link>
+                    <nuxt-link v-if="!userWallet.canWalletPay" to="/my/wallet" class="not-enough-balance">{{ $t('pay.needToResetPassword') }}</nuxt-link>
                     <div>{{ $t('pay.walletBalance') }}</div>
                   </div>
                   <div v-else>
-                    <nuxt-link v-if="!userWallet.canWalletPay" to="/pages/my/wallet" class="not-enough-balance">{{ $t('pay.needToResetPassword') }}</nuxt-link>
+                    <nuxt-link v-if="!userWallet.canWalletPay" to="/my/wallet" class="not-enough-balance">{{ $t('pay.needToResetPassword') }}</nuxt-link>
                     <span v-else class="not-enough-balance">{{ $t('pay.walletBalanceNo') }}</span>
                   </div>
                   <div>

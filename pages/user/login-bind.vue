@@ -136,7 +136,7 @@ export default {
               res.data.errors &&
               res.data.errors[0].code === 'register_validate'
             ) {
-              this.$router.push(`/pages/user/warning?username=${this.userName}`)
+              this.$router.push(`/user/warning?username=${this.userName}`)
             }
             if (
               res &&
@@ -156,7 +156,7 @@ export default {
       }
     },
     toRegister() {
-      this.$router.push(`/pages/user/register-bind?nickname=${this.nickname}&headimgurl=${this.headimgurl}`)
+      this.$router.push(`/user/register-bind?nickname=${this.nickname}&headimgurl=${this.headimgurl}`)
     },
     iscanReg() {
       return [this.canReg ? '' : 'noreg']

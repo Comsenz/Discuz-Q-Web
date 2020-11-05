@@ -56,7 +56,7 @@ export default {
       })
     },
     open(type) {
-      this.$router.push(`/pages/user/agreement?type=${type}`)
+      this.$router.push(`/user/agreement?type=${type}`)
     },
     rcheck() {
       this.$emit('check', this.checked)

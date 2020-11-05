@@ -6,41 +6,41 @@ module.exports = {
     toregister(url = '/', code) {
       if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 0) {
         // 用户名模式
-        this.$router.push(`/pages/user/register?code=${code}`)
+        this.$router.push(`/user/register?code=${code}`)
       }
       if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
         // 手机模式
-        this.$router.push(`/pages/user/phone-login-register?code=${code}`)
+        this.$router.push(`/user/phone-login-register?code=${code}`)
       }
       if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 2) {
         //  微信模式
         if (this.forums && this.forums.passport && this.forums.passport.oplatform_close && this.forums.passport.offiaccount_close) {
-          this.$router.push(`/pages/user/wechat?code=${code}`)
+          this.$router.push(`/user/wechat?code=${code}`)
         } else if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_sms) {
-          this.$router.push(`/pages/user/phone-login-register?code=${code}`)
+          this.$router.push(`/user/phone-login-register?code=${code}`)
         } else {
-          this.$router.push(`/pages/user/register?code=${code}`)
+          this.$router.push(`/user/register?code=${code}`)
         }
       }
     },
     headerTologin() {
       if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 0) {
         // 用户名模式
-        this.$router.push(`/pages/user/login`)
+        this.$router.push(`/user/login`)
       } else if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
         // 手机模式
-        this.$router.push(`/pages/user/phone-login-register`)
+        this.$router.push(`/user/phone-login-register`)
       } else if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 2) {
         //  微信模式
         if (this.forums && this.forums.passport && this.forums.passport.oplatform_close && this.forums.passport.offiaccount_close) {
-          this.$router.push(`/pages/user/wechat`)
+          this.$router.push(`/user/wechat`)
         } else if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_sms) {
-          this.$router.push(`/pages/user/phone-login-register`)
+          this.$router.push(`/user/phone-login-register`)
         } else {
-          this.$router.push(`/pages/user/login`)
+          this.$router.push(`/user/login`)
         }
       } else {
-        this.$router.push(`/pages/user/login`)
+        this.$router.push(`/user/login`)
       }
     },
     logind() {
@@ -63,7 +63,7 @@ module.exports = {
           this.$router.push('/')
         }
         if (this.site_mode === 'pay' && !this.isPaid) {
-          this.$router.push('/pages/site/info')
+          this.$router.push('/site/info')
         }
       })
     }

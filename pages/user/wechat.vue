@@ -110,10 +110,10 @@ export default {
             const token = errors[0].token
             if (process.client) localStorage.setItem('wechat', token)
             if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 0) {
-              this.$router.push(`/pages/user/register-bind?nickname=${nickname}&headimgurl=${headimgurl}`)
+              this.$router.push(`/user/register-bind?nickname=${nickname}&headimgurl=${headimgurl}`)
             }
             if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
-              this.$router.push(`/pages/user/wechat-bind-phone?nickname=${nickname}&headimgurl=${headimgurl}`)
+              this.$router.push(`/user/wechat-bind-phone?nickname=${nickname}&headimgurl=${headimgurl}`)
             }
             if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 2) {
               this.$message.success(this.$t('user.loginSuccess'))
@@ -128,13 +128,13 @@ export default {
       })
     },
     toUserlogin() {
-      this.$router.push(`/pages/user/login?code=${this.code}`)
+      this.$router.push(`/user/login?code=${this.code}`)
     },
     toPhonelogin() {
       if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
-        this.$router.push(`/pages/user/phone-login-register?code=${this.code}`)
+        this.$router.push(`/user/phone-login-register?code=${this.code}`)
       } else {
-        this.$router.push(`/pages/user/phone-login?code=${this.code}`)
+        this.$router.push(`/user/phone-login?code=${this.code}`)
       }
     }
   }

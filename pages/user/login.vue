@@ -2,12 +2,8 @@
   <div v-if="forums" v-loading="loading" class="register">
     <el-tabs v-model="activeName" type="border-card" class="register-select">
       <!-- 用户名登录 login register phone-login   -->
-      <el-tab-pane :label="$t('user.loginBindPhone')" name="0">
+      <el-tab-pane :label="$t('user.userlogin')" name="0">
         <form>
-          <div class="bindtext">
-            <div>{{ $t('user.phoneuser') }} <b>{{ phoneNumber }}</b> {{ $t('user.user') }}</div>
-            <div>{{ $t('user.loginToBind') }}</div>
-          </div>
           <span class="title">{{ $t('user.usrname') }}</span>
           <el-input v-model="userName" :placeholder="$t('user.username')" class="reg-input" />
           <span class="title2">{{ $t('user.pwd') }}</span>
@@ -23,11 +19,21 @@
             <el-checkbox v-model="checked" />
             <span class="agree">{{ $t('user.status') }} </span>
           </div>
-          <el-button type="primary" class="r-button" @click="UserLogin">{{ $t('user.loginbind') }}</el-button>
+          <el-button type="primary" class="r-button" @click="UserLogin">{{ $t('user.login') }}</el-button>
           <div class="logorreg">
-            <span v-if="canReg">
+            <span v-if="canReg && forums && forums.set_reg && (forums.set_reg.register_type === 0 || forums.set_reg.register_type === 2)">
               {{ $t('user.noexist') }}
-              <span class="agreement_text" @click="toRegister"> {{ $t('user.registerbind') }}</span></span>
+              <span class="agreement_text" @click="toRegister"> {{ $t('user.register') }}</span></span>
+            <nuxt-link
+              v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms"
+              to="/modify/findpwd"
+              :class="['findpass',iscanReg()]"
+            >
+              {{ $t('modify.findpawdtitle') }}</nuxt-link>
+          </div>
+          <div class="otherlogin">
+            <svg-icon v-if="forums && forums.passport && forums.passport.oplatform_close && forums.passport.offiaccount_close" class="wechat-icon" type="wechatlogin" @click="toWechat" />
+            <svg-icon v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms" class="phone-icon" type="phonelogin" @click="toPhonelogin" />
           </div>
         </form>
       </el-tab-pane>
@@ -36,9 +42,10 @@
 </template>
 
 <script>
+import head from '@/mixin/head'
 import handleError from '@/mixin/handleError'
 import loginAbout from '@/mixin/loginAbout'
-import head from '@/mixin/head'
+
 export default {
   mixins: [head, handleError, loginAbout],
   data() {
@@ -53,9 +60,7 @@ export default {
       code: '', // 注册邀请码
       loading: false,
       canReg: false,
-      ischeck: true,
-      mobileToken: '',
-      phoneNumber: ''
+      ischeck: true
     }
   },
   computed: {
@@ -64,13 +69,7 @@ export default {
     }
   },
   mounted() {
-    const { phoneNumber, code } = this.$route.query
-    if (process.client) {
-      this.mobileToken = localStorage.getItem('mobileToken')
-    }
-    if (phoneNumber) {
-      this.phoneNumber = phoneNumber
-    }
+    const { code } = this.$route.query
     if (code !== 'undefined') {
       this.code = code
     }
@@ -99,8 +98,7 @@ export default {
           data: {
             attributes: {
               username: this.userName,
-              password: this.passWord,
-              mobileToken: this.mobileToken
+              password: this.passWord
             }
           }
         }
@@ -119,7 +117,7 @@ export default {
               res.data.errors &&
               res.data.errors[0].code === 'register_validate'
             ) {
-              this.$router.push(`/pages/user/warning?username=${this.userName}`)
+              this.$router.push(`/user/warning?username=${this.userName}`)
             }
             if (
               res &&
@@ -139,10 +137,20 @@ export default {
       }
     },
     toRegister() {
-      this.$router.push(`/pages/user/register-bind-phone?code=${this.code}&phoneNumber=${this.phoneNumber}`)
+      this.$router.push(`/user/register?code=${this.code}`)
     },
     iscanReg() {
-      return [this.canReg ? '' : 'noreg']
+      return [this.canReg && this.forums && this.forums.set_reg && (this.forums.set_reg.register_type === 0 || this.forums.set_reg.register_type === 2) ? '' : 'noreg']
+    },
+    toWechat() {
+      this.$router.push(`/user/wechat?code=${this.code}`)
+    },
+    toPhonelogin() {
+      if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
+        this.$router.push(`/user/phone-login-register?code=${this.code}`)
+      } else {
+        this.$router.push(`/user/phone-login?code=${this.code}`)
+      }
     }
   }
 }
@@ -170,10 +178,6 @@ export default {
     border: none;
     background: transparent;
     box-shadow: none;
-    .bindtext{
-      font-size: 16px;
-      margin-bottom: 40px;
-    }
     .title {
       width: 66px;
       text-align: center;
