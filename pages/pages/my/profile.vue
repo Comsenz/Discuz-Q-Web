@@ -30,6 +30,10 @@
           <span>{{ $t('profile.topic') }}</span>
           <span class="num">{{ userInfo.threadCount }}</span>
         </div>
+        <div class="myprofile-title" @click="toQuestion">
+          <span>{{ $t('profile.question') }}</span>
+          <span class="num">{{ userInfo.questionCount }}</span>
+        </div>
         <div class="myprofile-title" @click="toFollowing">
           <span>{{ $t('profile.following') }}</span>
           <span class="num">{{ userInfo.followCount }}</span>
@@ -41,10 +45,6 @@
         <div class="myprofile-title" @click="toLikes">
           <span>{{ $t('profile.likes') }}</span>
           <span class="num">{{ userInfo.likedCount }}</span>
-        </div>
-        <div class="myprofile-title" @click="toQuestion">
-          <span>{{ $t('profile.question') }}</span>
-          <span class="num">{{ userInfo.questionCount }}</span>
         </div>
       </div>
     </div>
@@ -939,16 +939,16 @@ export default {
       this.$router.push(`/user/${this.userId}?current=1`)
     },
     toFollowing() {
-      this.$router.push(`/user/${this.userId}?current=3`)
-    },
-    toFollowers() {
       this.$router.push(`/user/${this.userId}?current=4`)
     },
+    toFollowers() {
+      this.$router.push(`/user/${this.userId}?current=5`)
+    },
     toLikes() {
-      this.$router.push(`/user/${this.userId}?current=2`)
+      this.$router.push(`/user/${this.userId}?current=3`)
     },
     toQuestion() {
-      this.$router.push(`/user/${this.userId}?current=5`)
+      this.$router.push(`/user/${this.userId}?current=2`)
     }
   }
 }

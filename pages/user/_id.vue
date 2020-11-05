@@ -185,10 +185,10 @@
           </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.question')+ ` (${userInfo.questionCount || 0})`"
-            name="5"
+            name="2"
           >
             <question
-              v-if="activeName === '5'"
+              v-if="activeName === '2'"
               ref="question"
               :user-id="userId"
               @changeLike="changeLike"
@@ -196,10 +196,10 @@
           </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.likes')+ ` (${userInfo.likedCount || 0})`"
-            name="2"
+            name="3"
           >
             <like
-              v-if="activeName === '2'"
+              v-if="activeName === '3'"
               ref="like"
               :user-id="userId"
               :likethreads-data="likethreadsData"
@@ -208,10 +208,10 @@
           </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.following')+ ` (${userInfo.followCount || 0})`"
-            name="3"
+            name="4"
           >
             <following
-              v-if="activeName === '3'"
+              v-if="activeName === '4'"
               ref="following"
               :user-id="userId"
               @changeFollow="changeFollow"
@@ -219,10 +219,10 @@
           </el-tab-pane>
           <el-tab-pane
             :label="$t('profile.followers')+ ` (${userInfo.fansCount || 0})`"
-            name="4"
+            name="5"
           >
             <follwers
-              v-if="activeName === '4'"
+              v-if="activeName === '5'"
               ref="followers"
               :user-id="userId"
               @changeFollow="changeFollow"
