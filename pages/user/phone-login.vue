@@ -134,7 +134,7 @@ export default {
                 const mobileToken = res.data.errors[0].token
                 localStorage.setItem('mobileToken', mobileToken)
               }
-              this.$router.push(`/pages/user/register-bind-phone?phoneNumber=${this.phoneNumber}`)
+              this.$router.push(`/user/register-bind-phone?phoneNumber=${this.phoneNumber}`)
               return
             }
             if (
@@ -143,7 +143,7 @@ export default {
               res.data.errors &&
               res.data.errors[0].code === 'register_validate'
             ) {
-              this.$router.push(`/pages/user/warning?username=${this.phoneNumber}`)
+              this.$router.push(`/user/warning?username=${this.phoneNumber}`)
               return
             }
             if (
@@ -164,10 +164,10 @@ export default {
       }
     },
     toWechat() {
-      this.$router.push(`/pages/user/wechat?code=${this.code}`)
+      this.$router.push(`/user/wechat?code=${this.code}`)
     },
     toUserlogin() {
-      this.$router.push(`/pages/user/login?code=${this.code}`)
+      this.$router.push(`/user/login?code=${this.code}`)
     }
   }
 }

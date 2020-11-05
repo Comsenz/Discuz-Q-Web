@@ -153,7 +153,7 @@ export default {
         status.run(() => this.$store.dispatch('jv/post', params))
           .then((res) => {
             if (process.client) window.localStorage.setItem('username', res.username)
-            this.$router.push('/pages/modify/resetpwdsuccess')
+            this.$router.push('/modify/resetpwdsuccess')
           }, e => this.handleError(e))
       }
     }

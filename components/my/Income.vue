@@ -189,12 +189,12 @@ export default {
      * 复制链接
      * @param {*} code 邀请码
      * @example:
-     * copyLink('https://discuz.chat/pages/site/partner-invite?code=1178')
+     * copyLink('https://discuz.chat/site/partner-invite?code=1178')
      */
     copyLink(code) {
       const oInput = document.createElement('input')
       if (process.client) {
-        oInput.value = `${window.location.protocol}//${window.location.host}/pages/site/partner-invite?code=${code}`
+        oInput.value = `${window.location.protocol}//${window.location.host}/site/partner-invite?code=${code}`
         oInput.id = 'copyInput'
         document.body.appendChild(oInput)
         oInput.select()

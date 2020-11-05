@@ -5,7 +5,7 @@
       {{ $t('modify.user') + ' “' + username + '” ' + $t('modify.resetPasswordSuccessRepeat') }} !</div>
     <div class="detail"> {{ $t('modify.resetPasswordLoginTip') }}</div>
     <nuxt-link
-      to="/pages/user/login"
+      to="/user/login"
       class="login"
     >
       <el-button

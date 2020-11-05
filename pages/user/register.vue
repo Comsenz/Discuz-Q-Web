@@ -47,7 +47,7 @@
           <div class="tologin">
             <span
               @click="jump2Login"
-            >{{ $t('user.exist') }}<nuxt-link to="/pages/user/login">{{ $t('user.login') }}</nuxt-link> </span>
+            >{{ $t('user.exist') }}<nuxt-link to="/user/login">{{ $t('user.login') }}</nuxt-link> </span>
           </div>
         </form>
       </el-tab-pane>
@@ -193,7 +193,7 @@ export default {
             res.data.errors[0].code === 'register_validate'
           ) {
             // this.$message.error('帐号审核中，请等管理员审核通过')
-            this.$router.push(`/pages/user/warning?username=${this.userName}`)
+            this.$router.push(`/user/warning?username=${this.userName}`)
             return
           }
           if (
@@ -215,7 +215,7 @@ export default {
         })
     },
     jump2Login() {
-      this.$router.push(`/pages/user/login?&validate=${this.validate}&code=${this.code}`)
+      this.$router.push(`/user/login?&validate=${this.validate}&code=${this.code}`)
     }
   }
 }

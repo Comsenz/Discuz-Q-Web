@@ -148,7 +148,7 @@ export default {
       })
     },
     tologin() {
-      this.$router.push('/pages/user/login')
+      this.$router.push('/user/login')
     },
     // 支付方式选择完成点击确定时
     paysureShow() {

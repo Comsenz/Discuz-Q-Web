@@ -2,11 +2,22 @@
   <div v-if="forums" v-loading="loading" class="register">
     <el-tabs v-model="activeName" type="border-card" class="register-select">
       <!-- 用户名注册 -->
-      <el-tab-pane :label="$t('user.registerBindPhone')" name="0">
+      <el-tab-pane :label="$t('user.registerBindWechat')" name="0">
         <form>
           <div class="bindtext">
-            <div>{{ $t('user.phoneuser') }} <b>{{ phoneNumber }}</b> {{ $t('user.user') }}</div>
-            <div>{{ $t('user.yourPhone') }}<b>{{ $t('user.withoutBind') }}</b>，<b>{{ $t('user.register') }}</b>{{ $t('user.readyBInd') }}</div>
+            <div>{{ $t('user.dear') }}
+              <avatar
+                :user="{
+                  username: nickname,
+                  avatarUrl: headimgurl
+                }"
+                :size="20"
+                :round="true"
+                style="display:inline-block;
+                vertical-align:text-top;"
+              />
+              <b>{{ nickname || '' }}</b> {{ $t('user.user') }}</div>
+            <div>{{ $t('user.yourWechat') }}<b>{{ $t('user.withoutBind') }}</b>，<b>{{ $t('user.register') }}</b>{{ $t('user.readyBInd') }}</div>
           </div>
           <div>
             <span class="title">{{ $t('profile.username') }}</span>
@@ -47,11 +58,11 @@
           <div class="agreement">
             <reg-agreement @check="check" />
           </div>
-          <el-button type="primary" class="r-button" @click="register">注册并绑定</el-button>
+          <el-button type="primary" class="r-button" @click="register">{{ $t('user.registerbind') }}</el-button>
           <div class="tologin">
             <span
               @click="jump2Login"
-            >{{ $t('user.exist') }}<nuxt-link to="/pages/user/login-bind-phone">登录并绑定</nuxt-link> </span>
+            >{{ $t('user.exist') }}<nuxt-link to="/user/login-bind">{{ $t('user.loginbind') }}</nuxt-link> </span>
           </div>
         </form>
       </el-tab-pane>
@@ -88,22 +99,27 @@ export default {
       ischeck: true,
       loading: false,
       passerror: false,
-      mobileToken: '',
-      phoneNumber: ''
+      nickname: '',
+      headimgurl: '',
+      token: '' // 微信绑定token
     }
   },
   computed: {
     forums() {
       return this.$store.state.site.info.attributes || {}
+    },
+    userInfo() {
+      return this.$store.state.user.info.attributes || {}
     }
   },
   mounted() {
-    const { validate, code, phoneNumber } = this.$route.query
-    if (process.client) {
-      this.mobileToken = localStorage.getItem('mobileToken')
+    const { validate, code, nickname, headimgurl } = this.$route.query
+    if (process.client) this.token = localStorage.getItem('wechat')
+    if (nickname) {
+      this.nickname = nickname
     }
-    if (phoneNumber) {
-      this.phoneNumber = phoneNumber
+    if (headimgurl) {
+      this.headimgurl = headimgurl
     }
     if (validate) {
       this.validate = JSON.parse(validate)
@@ -172,7 +188,7 @@ export default {
           attributes: {
             username: this.userName,
             password: this.passWord,
-            mobileToken: this.mobileToken
+            token: this.token
           }
         }
       }
@@ -206,7 +222,7 @@ export default {
             res.data.errors[0].code === 'register_validate'
           ) {
             // this.$message.error('帐号审核中，请等管理员审核通过')
-            this.$router.push(`/pages/user/warning?username=${this.userName}`)
+            this.$router.push(`/user/warning?username=${this.userName}`)
             return
           }
           if (
@@ -228,7 +244,7 @@ export default {
         })
     },
     jump2Login() {
-      this.$router.push(`/pages/user/login-bind-phone?&validate=${this.validate}&code=${this.code}&phoneNumber=${this.phoneNumber}`)
+      this.$router.push(`/user/login-bind?nickname=${this.nickname}&headimgurl=${this.headimgurl}`)
     }
   }
 }

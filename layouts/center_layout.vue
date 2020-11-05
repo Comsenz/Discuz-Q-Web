@@ -5,7 +5,7 @@
       <div class="app-cont">
         <el-menu :default-active="$route.path" :router="true">
           <template v-for="(item,index) in menuList">
-            <template v-if="item.index === '/pages/manage/index'">
+            <template v-if="item.index === '/manage'">
               <el-menu-item
                 v-if="forums && forums.other && ((forums.other.can_view_user_list && (forums.other.can_edit_user_group || forums.other.can_edit_user_status)) || forums.other.can_create_invite)"
                 :key="item.index"
@@ -17,7 +17,7 @@
                 <span class="arrow"><i class="el-icon-arrow-right icon" /></span>
               </el-menu-item>
             </template>
-            <template v-else-if="item.index === '/pages/invite/index'">
+            <template v-else-if="item.index === '/invite'">
               <el-menu-item
                 v-if="forums && forums.other && forums.other.can_invite_user_scale"
                 :key="item.index"
@@ -38,7 +38,7 @@
                 @click="currentInfo(index)"
               >
                 <span slot="title" class="menu-title">{{ $t(item.content) }}
-                  <span v-if="item.index === '/pages/my/notice' && userInfo.unreadNotifications > 0" class="unread-notice">
+                  <span v-if="item.index === '/my/notice' && userInfo.unreadNotifications > 0" class="unread-notice">
                     {{ userInfo.unreadNotifications > 99 ? '99+' : userInfo.unreadNotifications }}
                   </span>
                 </span>
@@ -61,14 +61,14 @@ export default {
     return {
       currentNumber: 0,
       menuList: [
-        { index: '/pages/my/profile', classname: 'padd', content: 'profile.myprofile', hidden: false },
-        { index: '/pages/my/wallet', classname: 'padd', content: 'profile.mywallet', hidden: false },
-        { index: '/pages/my/favorite', classname: 'padd', content: 'profile.myfavorite', hidden: false },
-        { index: '/pages/my/shield', classname: 'padd', content: 'profile.myshield', hidden: false },
-        { index: '/pages/my/notice', classname: 'padd', content: 'profile.notice', hidden: false },
-        { index: '/pages/site/index', classname: 'padd divided', content: 'manage.circleinfo', hidden: false },
-        { index: '/pages/manage/index', classname: 'padd', content: 'manage.siteManagement', hidden: false },
-        { index: '/pages/invite/index', classname: 'padd', content: 'invite.invite', hidden: false }
+        { index: '/my/profile', classname: 'padd', content: 'profile.myprofile', hidden: false },
+        { index: '/my/wallet', classname: 'padd', content: 'profile.mywallet', hidden: false },
+        { index: '/my/favorite', classname: 'padd', content: 'profile.myfavorite', hidden: false },
+        { index: '/my/shield', classname: 'padd', content: 'profile.myshield', hidden: false },
+        { index: '/my/notice', classname: 'padd', content: 'profile.notice', hidden: false },
+        { index: '/site', classname: 'padd divided', content: 'manage.circleinfo', hidden: false },
+        { index: '/manage', classname: 'padd', content: 'manage.siteManagement', hidden: false },
+        { index: '/invite', classname: 'padd', content: 'invite.invite', hidden: false }
       ]
     }
   },

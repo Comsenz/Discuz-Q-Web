@@ -203,7 +203,7 @@ export default {
     },
     toUserList() {
       if (this.$route.query.q) {
-        this.$router.push(`/pages/site/search-user?value=${this.$route.query.q}`)
+        this.$router.push(`/site/search-user?value=${this.$route.query.q}`)
       }
     },
     // 语音互斥播放
