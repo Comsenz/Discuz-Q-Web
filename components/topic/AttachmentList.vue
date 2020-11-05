@@ -84,7 +84,25 @@ export default {
   methods: {
     downloadAttachment(url) {
       if (this.unpaid) return
-      if (process.client) window.open(url, '_self')
+      const xhr = new XMLHttpRequest()
+      xhr.open('get', url)
+      xhr.responseType = 'blob'
+      xhr.send()
+      xhr.onload = function() {
+        if (this.status === 200 || this.status === 304) {
+          const fileReader = new FileReader()
+          fileReader.readAsDataURL(this.response)
+          fileReader.onload = function() {
+            const a = document.createElement('a')
+            a.style.display = 'none'
+            a.href = this.result
+            a.download = name
+            document.body.appendChild(a)
+            a.click()
+            document.body.removeChild(a)
+          }
+        }
+      }
     },
     extensionValidate(extension) {
       return extensionList.indexOf(extension.toUpperCase()) > 0 ? extension.toUpperCase() : 'UNKNOWN'
