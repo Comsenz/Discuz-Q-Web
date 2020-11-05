@@ -5,7 +5,7 @@
       <div v-if="threadsStickyData.length > 0" class="list-top">
         <div v-for="(item, index) in threadsStickyData" :key="index" class="list-top-item">
           <div class="top-label">{{ $t('home.sticky') }}</div>
-          <nuxt-link :to="`/topic/index?id=${item._jv && item._jv.id}`" target="_blank" class="top-title">
+          <nuxt-link :to="`/content/${item._jv && item._jv.id}`" target="_blank" class="top-title">
             <template v-if="item.type === 1">
               {{ item.title }}
             </template>

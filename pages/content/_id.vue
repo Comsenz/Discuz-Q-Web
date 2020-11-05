@@ -133,7 +133,7 @@ export default {
   },
   computed: {
     threadId() {
-      return this.$route.query.id
+      return this.$route.params.id
     },
     currentUser() {
       return this.$store.state.user.info.attributes || {}

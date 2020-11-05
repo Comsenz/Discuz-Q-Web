@@ -268,7 +268,7 @@ export default {
       this.onPublish = true
       if (this.isEditor) {
         return Promise.all([this.editThreadPublish(), this.editPostPublish()]).then(dataArray => {
-          this.$router.push(`/topic/index?id=${dataArray[0]._jv.id}`)
+          this.$router.push(`/content/${dataArray[0]._jv.id}`)
         }, e => this.handleError(e)).finally(() => {
           this.onPublish = false
         })
@@ -302,7 +302,7 @@ export default {
         }
       }
       return this.$store.dispatch('jv/post', params).then(data => {
-        this.$router.push(`/topic/index?id=${data._jv.id}`)
+        this.$router.push(`/content/${data._jv.id}`)
       }, e => this.handleError(e)).finally(() => {
         this.onPublish = false
       })
