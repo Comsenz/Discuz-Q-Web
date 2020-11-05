@@ -179,7 +179,7 @@
         <!-- 位置 -->
         <nuxt-link
           v-if="item.location"
-          :to="`/pages/topic/position?longitude=${item.longitude}&latitude=${item.latitude}`"
+          :to="`/topic/position?longitude=${item.longitude}&latitude=${item.latitude}`"
           class="location"
         >
           <span class="flex">
