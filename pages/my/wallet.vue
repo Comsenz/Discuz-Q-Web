@@ -70,7 +70,6 @@
         />
         <set-newpassword
           v-if="showNewverify"
-          :error="codeError"
           @close="showNewverify = false"
           @password="checkpass"
         />
@@ -78,7 +77,7 @@
           v-if="showNewverify2"
           ref="repeatnewpass"
           :error="codeError"
-          @close="showNewverify2 = false"
+          @close="repeatclose"
           @password="checkpass2"
         />
       </div>
@@ -198,6 +197,10 @@ export default {
     // 修改密码框展示
     changePassword() {
       this.showPasswordInput = true
+    },
+    repeatclose() {
+      this.showNewverify2 = false
+      this.codeError = false
     },
     // 原密码判断
     validatePass(password = '') {

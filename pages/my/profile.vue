@@ -252,11 +252,11 @@
       <div class="profileborder">
         <div class="myprofile-top">
           <span class="sig">{{ $t('profile.wechat') }}</span>
-          <!-- <el-button type="text" class="setavatar">
+          <el-button type="text" class="setavatar">
             <span class="setbutton" @click="wechatModify">
               {{ (!isWechatModify ? $t('profile.modify') : $t('profile.cancelModify')) }}
             </span>
-          </el-button>-->
+          </el-button>
         </div>
         <div class="myprofile-btom2">
           {{ userInfo && userInfo.wechat ? userInfo.wechat.nickname : $t('profile.withoutbindwechat') }}
