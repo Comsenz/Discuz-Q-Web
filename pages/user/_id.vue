@@ -345,7 +345,6 @@ export default {
   data() {
     return {
       userId: '', // 路由获取的用户id
-      currentLoginId: this.$store.getters['session/get']('userId'), // 当前登录用户id
       userInfo: '',
       current: '', // 当前激活的tab
       activeName: '1', // 默认激活tab
@@ -367,6 +366,9 @@ export default {
   computed: {
     forums() {
       return this.$store.state.site.info.attributes || {}
+    },
+    currentLoginId() {
+      return this.$store.getters['session/get']('userId') // 当前登录用户id
     }
   },
   watch: {
