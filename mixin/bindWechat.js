@@ -24,20 +24,12 @@ module.exports = {
       if (this.wechatBind && !this.wechatBind.session_token) return
       this.$store.dispatch('jv/get', `/oauth/wechat/pc/bind/${this.wechatBind.session_token}`).then(res => {
         console.log('轮询查询', res)
-        // if (res.pc_login) {
-        //   window.clearInterval(this.wehcatTimer)
-        //   clearInterval(this.wehcatLoginTimer)
-        //   console.log(res)
-        //   this.$store.commit('session/SET_USER_ID', res._jv.id)
-        //   this.$store.commit('session/CHECK_SESSION', true)
-        //   this.$store.commit('session/SET_ACCESS_TOKEN', res.access_token)
-        //   const userId = this.$store.getters['session/get']('userId')
-        //   this.userId = userId
-        //   this.$store.dispatch('user/getUserInfo', userId)
-        //   this.userinfo()
-        //   this.isWechatModify = false
-        //   this.$message.success('绑定成功')
-        // }
+        if (res._jv.json.bind) {
+          clearInterval(this.wehcatTimer)
+          this.userinfo()
+          this.isWechatModify = false
+          this.$message.success('绑定成功')
+        }
       }, e => {
         const {
           response: {
