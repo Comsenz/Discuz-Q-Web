@@ -101,7 +101,7 @@
       </div>
       <div
         v-if="item.type === 'withdrawal' && item.cash_actual_amount"
-        class="amount"
+        class="amount green"
       >
         - {{ $t('post.yuanItem') + item.cash_actual_amount }}
       </div>
@@ -252,6 +252,9 @@ export default {
       margin-top: 12px;
       font-weight: bold;
       color: #fa5151;
+    }
+    .green{
+      color: #09BB07;
     }
   }
 }
