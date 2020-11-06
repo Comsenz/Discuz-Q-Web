@@ -31,6 +31,7 @@
               type="password"
               :class="passerror ? 'reg-input inputerr':'reg-input'"
               show-password
+              @input="notsame"
               @keyup.enter.native="register"
             />
             <div v-if="passerror" class="passerror">{{ $t('modify.reenter') }}</div>
@@ -123,6 +124,13 @@ export default {
     }
   },
   methods: {
+    notsame() {
+      if (this.passWord !== this.repeatPassWord) {
+        this.passerror = true
+      } else {
+        this.passerror = false
+      }
+    },
     check(value) {
       this.ischeck = value
     },

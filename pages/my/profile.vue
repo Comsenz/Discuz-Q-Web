@@ -123,7 +123,7 @@
             ref="verifyphone"
             :error="phoneError"
             :mobile="userInfo.mobile"
-            @close="isMobileModify = false"
+            @close="oldError"
             @password="oldVerify"
             @sendsms="sendsms2"
           />
@@ -192,6 +192,7 @@
                     :class="passerror ? 'passbtom inputerr':'passbtom'"
                     type="password"
                     show-password
+                    @input="notsame"
                     @keyup.enter.native="passSub"
                   />
                   <div
@@ -207,6 +208,7 @@
               </form>
             </el-dialog>
           </div>
+          <!-- 未设置密码 -->
           <div v-else>
             <el-dialog
               :title="$t('profile.password')"
@@ -229,6 +231,7 @@
                     :class="passerror ? 'passbtom inputerr':'passbtom'"
                     type="password"
                     show-password
+                    @input="notsame"
                     @keyup.enter.native="passSub2"
                   />
                   <div
@@ -254,7 +257,8 @@
           <span class="sig">{{ $t('profile.wechat') }}</span>
           <el-button type="text" class="setavatar">
             <span class="setbutton" @click="wechatModify">
-              {{ (!isWechatModify ? $t('profile.modify') : $t('profile.cancelModify')) }}
+              {{ (!isWechatModify ? (userInfo && userInfo.wechat && userInfo.wechat.nickname) ? '解绑' : '绑定' :
+                (userInfo && userInfo.wechat && userInfo.wechat.nickname) ? '取消解绑' : '取消绑定') }}
             </span>
           </el-button>
         </div>
@@ -691,6 +695,10 @@ export default {
     mobileComfirm() {
       this.oldVerify()
     },
+    oldError() {
+      this.isMobileModify = false
+      this.phoneError = false
+    },
     oldVerify(oldVerifyCode = '') {
       const params = {
         _jv: { type: 'sms/verify' },
@@ -765,6 +773,13 @@ export default {
       } else if (this.newPassWord !== this.renewPassword) {
         this.$message.error(this.$t('modify.masstext'))
         this.passerror = true
+      }
+    },
+    notsame() {
+      if (this.newPassWord !== this.renewPassword) {
+        this.passerror = true
+      } else {
+        this.passerror = false
       }
     },
     passSub2() {
