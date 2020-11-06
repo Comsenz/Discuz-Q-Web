@@ -257,7 +257,8 @@
           <span class="sig">{{ $t('profile.wechat') }}</span>
           <el-button type="text" class="setavatar">
             <span class="setbutton" @click="wechatModify">
-              {{ (!isWechatModify ? $t('profile.modify') : $t('profile.cancelModify')) }}
+              {{ (!isWechatModify ? (userInfo && userInfo.wechat && userInfo.wechat.nickname) ? '解绑' : '绑定' :
+                (userInfo && userInfo.wechat && userInfo.wechat.nickname) ? '取消解绑' : '取消绑定') }}
             </span>
           </el-button>
         </div>
