@@ -107,7 +107,6 @@ export default {
       payStatus: 0, // 订单支付状态
       orderSn: '', // 订单编号
       codeUrl: '', // 二维码支付url，base64
-      userId: this.$store.getters['session/get']('userId'),
       site_price: 0,
       threadsData: [],
       loading: true,
@@ -118,14 +117,22 @@ export default {
   computed: {
     forums() {
       return this.$store.state.site.info.attributes || {}
+    },
+    userId() {
+      return this.$store.getters['session/get']('userId')
+    }
+  },
+  watch: {
+    userId(id) {
+      if (id) this.userinfo()
     }
   },
   mounted() {
-    this.userinfo()
+    if (this.userId) this.userinfo()
     this.loadThreads()
     this.site_price = this.forums && this.forums.set_site && this.forums.set_site.site_price
       ? (1 * this.forums.set_site.site_price).toFixed(2) : 0
-    if (this.forums.set_site.site_mode || !this.userId) {
+    if (this.forums.set_site && this.forums.set_site.site_mode || !this.userId) {
       this.canDetail = true
     }
   },

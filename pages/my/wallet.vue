@@ -162,17 +162,24 @@ export default {
       issendcode: false,
       isfindpwd: false,
       isWithoutphone: false,
-      passwordErrorTip: '',
-      userId: this.$store.getters['session/get']('userId') // 获取当前登陆用户的ID
+      passwordErrorTip: ''
     }
   },
   computed: {
     forums() {
       return this.$store.state.site.info.attributes || {}
+    },
+    userId() {
+      return this.$store.getters['session/get']('userId')
+    }
+  },
+  watch: {
+    userId(id) {
+      if (id) this.getInfo()
     }
   },
   mounted() {
-    this.getInfo()
+    if (this.userId) this.getInfo()
   },
   methods: {
     // 提现成功后的数据更新

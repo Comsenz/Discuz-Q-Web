@@ -40,6 +40,21 @@ export default {
       return this.$store.state.site.info.attributes
     }
   },
+  watch: {
+    forums: {
+      handler() {
+        if (this.forums && this.forums.other) {
+          if (!this.forums.other.can_view_user_list ||
+          (this.forums.other.can_view_user_list &&
+          !this.forums.other.can_edit_user_group &&
+          !this.forums.other.can_edit_user_status)) {
+            this.activeName = 'invite'
+          }
+        }
+      },
+      deep: true
+    }
+  },
   mounted() {
     this.getGroupList()
     // 没有查看成员列表或有查看列表权限，但是没有编辑用户组和状态的权限，就显示另一个tab

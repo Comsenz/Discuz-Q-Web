@@ -86,7 +86,7 @@ export default {
      * 生成二维码
      * @param {*} link 网址
      * @example:
-     * createQrcode('https://discuz.chat/')
+     * createQrcode('https://xxx.com/')
      */
     createQrcode(link) {
       if (process.client) {
