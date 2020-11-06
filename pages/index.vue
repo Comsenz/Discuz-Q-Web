@@ -185,6 +185,16 @@ export default {
       return this.$store.state.site.info.attributes || {}
     }
   },
+  watch: {
+    forums: {
+      handler(val) {
+        if (val && val.set_site) {
+          this.htitle = val.set_site.site_title || val.set_site.site_name || 'Discuz! Q'
+        }
+      },
+      deep: true
+    }
+  },
   mounted() {
     if (this.forums && this.forums.set_site) {
       this.htitle = this.forums.set_site.site_title || this.forums.set_site.site_name || 'Discuz! Q'
