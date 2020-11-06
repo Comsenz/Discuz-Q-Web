@@ -124,10 +124,20 @@ export default {
       }
       if (Array.isArray(categoryData)) {
         resData.categoryData = categoryData
+        // 用于head title 显示
+        const currentCategory = categoryData.find(item => {
+          return item._jv && item._jv.id === params.id
+        })
+        if (currentCategory) {
+          resData.title = currentCategory.name || '分类'
+        }
       } else if (categoryData && categoryData._jv && categoryData._jv.json) {
         const _categoryData = categoryData._jv.json.data || []
         _categoryData.forEach((item, index) => {
           _categoryData[index] = { ...item, ...item.attributes, _jv: { id: item.id }}
+          if (item.id === params.id) {
+            resData.title = item.attributes.name || '分类'
+          }
         })
         resData.categoryData = _categoryData
       }

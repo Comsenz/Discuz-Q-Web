@@ -85,12 +85,17 @@ export default {
     }
     try {
       const resData = {}
+      const siteInfo = await store.dispatch('site/getSiteInfo')
       const threadsStickyData = await store.dispatch('jv/get', ['threads', { params: threadsStickyParams }])
       const threadsData = await store.dispatch('jv/get', ['threads', { params: threadsParams }])
       const categoryData = await store.dispatch('jv/get', ['categories', {}])
       const recommendUser = await store.dispatch('jv/get', ['users/recommended', { params: userParams }])
-      const siteInfo = await store.dispatch('site/getSiteInfo')
-      resData.htitle = siteInfo.attributes.set_site.site_title || siteInfo.attributes.set_site.site_name || 'Discuz! Q'
+      // head
+      if (siteInfo && siteInfo.attributes && siteInfo.attributes.set_site) {
+        resData.headTitle = siteInfo.attributes.set_site.site_title || siteInfo.attributes.set_site.site_name || 'Discuz! Q'
+        resData.headKeywords = siteInfo.attributes.set_site.site_keywords
+        resData.headDesc = siteInfo.attributes.set_site.site_introduction
+      }
       // 处理一下data
       if (Array.isArray(threadsStickyData)) {
         resData.threadsStickyData = threadsStickyData
@@ -175,7 +180,9 @@ export default {
       timer: null, // 轮询获取新主题 定时器
       threadCount: 0, // 主题总数
       total: 0, // 新的主题数，通过轮询获取
-      htitle: '\u200E',
+      headTitle: '\u200E',
+      headKeywords: '',
+      headDesc: '',
       currentAudioId: ''
     }
   },
@@ -191,7 +198,7 @@ export default {
     forums: {
       handler(val) {
         if (val && val.set_site) {
-          this.htitle = val.set_site.site_title || val.set_site.site_name || 'Discuz! Q'
+          this.headTitle = val.set_site.site_title || val.set_site.site_name || 'Discuz! Q'
         }
       },
       deep: true
@@ -199,7 +206,7 @@ export default {
   },
   mounted() {
     if (this.forums && this.forums.set_site) {
-      this.htitle = this.forums.set_site.site_title || this.forums.set_site.site_name || 'Discuz! Q'
+      this.headTitle = this.forums.set_site.site_title || this.forums.set_site.site_name || 'Discuz! Q'
     }
     if (this.threadsStickyData.length === 0) {
       this.getThreadsSticky()
@@ -365,10 +372,10 @@ export default {
   },
   head() {
     return {
-      title: this.htitle,
+      title: this.headTitle,
       meta: [
-        { hid: 'keywords', name: 'keywords', content: (this.forums && this.forums.set_site && this.forums.set_site.site_keywords) || '' },
-        { hid: 'description', name: 'description', content: (this.forums && this.forums.set_site && this.forums.set_site.site_introduction) || '' }
+        { hid: 'keywords', name: 'keywords', content: this.headKeywords },
+        { hid: 'description', name: 'description', content: this.headDesc }
       ]
     }
   }

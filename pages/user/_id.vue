@@ -282,7 +282,10 @@ export default {
       const threadsData = await store.dispatch('jv/get', ['threads', { params: threadparams }])
       const likethreadsData = await store.dispatch('jv/get', ['threads/likes', { params: likethreadsparams }])
       const askthreadData = await store.dispatch('jv/get', ['threads', { params: askthreadsparams }])
-
+      const userInfo = await store.dispatch('jv/get', [`users/${params.id}`, {}])
+      if (Object.keys(userInfo).length > 0) {
+        resData.profilename = userInfo.username
+      }
       if (Array.isArray(threadsData)) {
         resData.threadsData = threadsData
       } else if (threadsData && threadsData._jv && threadsData._jv.json) {
