@@ -123,7 +123,7 @@
             ref="verifyphone"
             :error="phoneError"
             :mobile="userInfo.mobile"
-            @close="isMobileModify = false"
+            @close="oldError"
             @password="oldVerify"
             @sendsms="sendsms2"
           />
@@ -690,6 +690,10 @@ export default {
     // 手机号确认修改
     mobileComfirm() {
       this.oldVerify()
+    },
+    oldError() {
+      this.isMobileModify = false
+      this.phoneError = false
     },
     oldVerify(oldVerifyCode = '') {
       const params = {
