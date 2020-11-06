@@ -94,7 +94,7 @@ export default {
         minHeight: 450,
         placeholder: this.placeholder,
         mode: 'wysiwyg',
-        input: (value) => { this.$emit('textChange', value) },
+        blur: (value) => { this.$emit('textChange', value) },
         toolbar: [
           { hotkey: '', name: '@', tipPosition: 'ne', tip: '@ 好友', className: 'right', icon: call,
             click: () => {
@@ -187,6 +187,7 @@ export default {
 .vditor-container {
   position: relative;
   margin-top: 20px;
+  ::v-deep a { color: #1878F3; &:hover { border-bottom: 1px solid #1878F3; } }
 
   > .sticky-box { // 保证 topicList 和 emojiList 的定位正确
     position: sticky;
