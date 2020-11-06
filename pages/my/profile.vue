@@ -192,6 +192,7 @@
                     :class="passerror ? 'passbtom inputerr':'passbtom'"
                     type="password"
                     show-password
+                    @input="notsame"
                     @keyup.enter.native="passSub"
                   />
                   <div
@@ -207,6 +208,7 @@
               </form>
             </el-dialog>
           </div>
+          <!-- 未设置密码 -->
           <div v-else>
             <el-dialog
               :title="$t('profile.password')"
@@ -229,6 +231,7 @@
                     :class="passerror ? 'passbtom inputerr':'passbtom'"
                     type="password"
                     show-password
+                    @input="notsame"
                     @keyup.enter.native="passSub2"
                   />
                   <div
@@ -769,6 +772,13 @@ export default {
       } else if (this.newPassWord !== this.renewPassword) {
         this.$message.error(this.$t('modify.masstext'))
         this.passerror = true
+      }
+    },
+    notsame() {
+      if (this.newPassWord !== this.renewPassword) {
+        this.passerror = true
+      } else {
+        this.passerror = false
       }
     },
     passSub2() {
