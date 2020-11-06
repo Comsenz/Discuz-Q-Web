@@ -88,12 +88,12 @@ export default {
   name: 'Topic',
   layout: 'custom_layout',
   mixins: [handleError, isLogin, payment],
-  async asyncData({ query, store }) {
+  async asyncData({ params, store }) {
     if (!env.isSpider) {
       return {}
     }
     try {
-      const threadData = await store.dispatch('jv/get', [`threads/${query.id}`, { params: { include: threadInclude }}])
+      const threadData = await store.dispatch('jv/get', [`threads/${params.id}`, { params: { include: threadInclude }}])
       return { thread: threadData, article: threadData.firstPost, postId: threadData.firstPost._jv.id }
     } catch (error) {
       return { articleLoading: true }

@@ -141,7 +141,6 @@ export default {
         // TODO replyCount 不包括审核中的评论
         this.replyCount = response.replyCount
         this.comment = response
-        this.title = this.comment ? this.comment.summaryText : '评论详情页'
       }, e => this.handleError(e))
     },
     getReplyList(type) {
@@ -233,6 +232,11 @@ export default {
         }
         this.postLegalityCheck(response, this.$t('topic.replyPublishSuccess'))
       }, e => this.handleError(e)).finally(() => { this.onReplyPublish = false })
+    }
+  },
+  head() {
+    return {
+      title: this.comment ? this.comment.summaryText : '评论详情页'
     }
   }
 }

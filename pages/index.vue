@@ -89,6 +89,8 @@ export default {
       const threadsData = await store.dispatch('jv/get', ['threads', { params: threadsParams }])
       const categoryData = await store.dispatch('jv/get', ['categories', {}])
       const recommendUser = await store.dispatch('jv/get', ['users/recommended', { params: userParams }])
+      const siteInfo = await store.dispatch('site/getSiteInfo')
+      resData.htitle = siteInfo.attributes.set_site.site_title || siteInfo.attributes.set_site.site_name || 'Discuz! Q'
       // 处理一下data
       if (Array.isArray(threadsStickyData)) {
         resData.threadsStickyData = threadsStickyData

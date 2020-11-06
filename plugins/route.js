@@ -7,7 +7,7 @@ export default ({ app }) => {
   const { store, router } = app
   router.beforeEach(async(to, from, next) => {
     if (process.client) {
-      if (router.history.pending) router.history.current = router.history.pending // fix general 模式下，动态路由
+      if (router.history.pending) router.history.current = router.history.pending // fix spa 模式下，动态路由
       // 登录页不判断站点关闭
       if (from.path === '/site/close' && to.path === '/user/login') return next()
       // 获取站点信息
