@@ -115,10 +115,10 @@ export default {
             if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
               this.$router.push(`/user/wechat-bind-phone?nickname=${nickname}&headimgurl=${headimgurl}`)
             }
-            if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 2) {
-              this.$message.success(this.$t('user.loginSuccess'))
-              this.logind()
-            }
+            // if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 2) {
+            //   this.$message.success(this.$t('user.loginSuccess'))
+            //   this.logind()
+            // }
           } else {
             clearInterval(this.wehcatLoginTimer)
             this.$message.error(errorText)

@@ -23,12 +23,11 @@ module.exports = {
     getWechatStatus() {
       if (this.wechatBind && !this.wechatBind.session_token) return
       this.$store.dispatch('jv/get', `/oauth/wechat/pc/bind/${this.wechatBind.session_token}`).then(res => {
-        console.log('轮询查询', res)
         if (res._jv.json.bind) {
           clearInterval(this.wehcatTimer)
           this.userinfo()
           this.isWechatModify = false
-          this.$message.success('绑定成功')
+          this.$message.success(this.$t('user.BindSuccess'))
         }
       }, e => {
         const {
