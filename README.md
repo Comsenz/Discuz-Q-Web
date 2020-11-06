@@ -24,12 +24,8 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 
 ### 打包前配置
 
-修改根目录下面的```package.json```文件，把打包命令```build```和```start```里面的```VUE_APP_CONFIG_API_URL```改成接口url,比如接口地址是```https://discuz.chat```
+修改根目录下面的```config.js```配置文件
 
-```javascript
-  "build": "VUE_APP_CONFIG_API_URL=https://discuz.chat nuxt build",
-  "start": "VUE_APP_CONFIG_API_URL=https://discuz.chat nuxt start",
-```
 
 ### 安装依赖
 
@@ -99,6 +95,7 @@ npm run generate
 |-- .editorconfig             编辑器配置推荐
 |-- .eslintrc.js              eslint 配置文件
 |-- .gitignore                git 提交忽略文件
+|-- config.js                 项目配置文件
 |-- nuxt.config.js            用于组织 Nuxt.js 应用的个性化配置，以便覆盖默认配置
 |-- package.json              用于描述应用的依赖关系和对外暴露的脚本接口
 |-- README.md                 项目说明文件

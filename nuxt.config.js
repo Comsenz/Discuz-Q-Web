@@ -1,19 +1,19 @@
 // import enLocale from './plugins/lang/en.js'
 import zhLocale from './plugins/lang/zh.js'
-import config from './utils/config.js'
+import config from './config.js'
 const path = require('path')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const API_URL_DEV = config.DOMAIN_DEV
+const DEV_API_URL = config.DEV_API_URL
 
 const isProduction = process.env.NODE_ENV === 'production'
 
 const proxyConfig = {
   '/api': {
-    target: API_URL_DEV, // 目标服务器
+    target: DEV_API_URL, // 目标服务器
     changeOrigin: true
   }
 }
@@ -31,7 +31,7 @@ if (isProduction) {
 }
 export default {
   env: {
-    domain: process.env.VUE_APP_CONFIG_API_URL || API_URL_DEV,
+    domain: config.SSR_API_URL || DEV_API_URL,
     baseURL: '/'
   },
   /*
