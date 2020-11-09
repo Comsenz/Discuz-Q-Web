@@ -824,6 +824,7 @@ export default {
       6: '发布商品'
     },
     createThreadPaid: '发布付费贴和被打赏',
+    createThreadLong: '发布帖子',
     attachment: {
       create: ['上传附件', '上传图片'],
       view: ['查看附件', '查看图片'],
