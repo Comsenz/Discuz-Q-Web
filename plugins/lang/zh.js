@@ -823,8 +823,10 @@ export default {
       5: '发布问答',
       6: '发布商品'
     },
-    createThreadPaid: '发布付费贴和被打赏',
+    createThreadImage: '发布图片',
     createThreadLong: '发布帖子',
+    createThreadVideo: '发布视频',
+    createThreadPaid: '发布付费贴和被打赏',
     attachment: {
       create: ['上传附件', '上传图片'],
       view: ['查看附件', '查看图片'],
