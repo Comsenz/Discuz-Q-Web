@@ -348,7 +348,6 @@ export default {
   data() {
     return {
       userId: '', // 路由获取的用户id
-      currentLoginId: this.$store.getters['session/get']('userId'), // 当前登录用户id
       userInfo: '',
       current: '', // 当前激活的tab
       activeName: '1', // 默认激活tab
@@ -360,6 +359,7 @@ export default {
       chatting: false,
       offsetTop: 0,
       isShield: false,
+      site_name: '',
       threadsData: [],
       likethreadsData: [],
       askthreadData: [],
@@ -370,11 +370,26 @@ export default {
   computed: {
     forums() {
       return this.$store.state.site.info.attributes || {}
+    },
+    currentLoginId() {
+      return this.$store.getters['session/get']('userId') // 当前登录用户id
     }
   },
   watch: {
     '$route'() {
       this.$router.go(0)
+    },
+    forums: {
+      handler(val) {
+        if (val.other && val.other.can_create_dialog) {
+          this.can_create_dialog = true
+        }
+        if (val.set_site && val.set_site.site_name) {
+          this.site_name = val.set_site.site_name
+        }
+      },
+      deep: true,
+      immediate: true
     }
   },
   created() {
@@ -434,7 +449,7 @@ export default {
               this.loading = false
               this.dialog.id = res.dialog ? res.dialog._jv.id : 0
               this.dialog.name = res.username
-              this.profilename = `${this.dialog.name + this.$t('profile.myperson')} - ${this.forums && this.forums.set_site && this.forums.set_site.site_name}`
+              this.profilename = `${this.dialog.name + this.$t('profile.myperson')} - ${this.site_name}`
               this.userInfo = res
               this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
             }
