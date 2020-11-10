@@ -104,7 +104,7 @@ export default {
       pageLimit: 5,
       pageNumber: 1,
       replyCount: 0,
-      isPositiveSort: false,
+      isPositiveSort: true,
       replyList: [],
       replyLoading: false,
       scrollLoading: false,
