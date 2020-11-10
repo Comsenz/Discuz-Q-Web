@@ -1,6 +1,5 @@
 <template>
   <div
-    v-if="forums && forums.other && forums.other.can_view_user_list"
     v-loading="loading"
     class="recommend-user-container"
   >
@@ -49,14 +48,11 @@ export default {
     }
   },
   mounted() {
-    // 是否有查看用户列表权限
-    if (this.forums && this.forums.other && this.forums.other.can_view_user_list) {
-      // 父组件是否有传值
-      if (this.list.length === 0) {
-        this.getList()
-      } else {
-        this.userList = this.list
-      }
+    // 父组件是否有传值
+    if (this.list.length === 0) {
+      this.getList()
+    } else {
+      this.userList = this.list
     }
   },
   methods: {
