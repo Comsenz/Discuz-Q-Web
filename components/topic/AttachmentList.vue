@@ -1,5 +1,5 @@
 <template>
-  <div class="attachment-item" @click.self="downloadAttachment(file.url)">
+  <div class="attachment-item" @click.self="downloadAttachment(file.url, file.fileName)">
     <div class="info">
       <div>
         <svg-icon :type="extensionValidate(file.extension)" style="font-size: 18px; vertical-align: middle;" />
@@ -82,7 +82,7 @@ export default {
     }
   },
   methods: {
-    downloadAttachment(url) {
+    downloadAttachment(url, name) {
       if (this.unpaid) return
       const xhr = new XMLHttpRequest()
       xhr.open('get', url)

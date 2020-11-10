@@ -176,7 +176,7 @@ export default {
       for (let i = 0; i < files.length; i++) {
         if (files[i].size > this.attachmentSizeLimit) pass = false
       }
-      if (!pass) this.$message.error(`图片不可大于 ${this.attachmentSizeLimit / 1024 / 1024} MB`)
+      if (!pass) this.$message.error(`图片大小不可超过 ${this.attachmentSizeLimit / 1024 / 1024} MB`)
       return pass
     },
     publish() {

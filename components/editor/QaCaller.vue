@@ -1,5 +1,5 @@
 <template>
-  <message-box :title="$t('post.callFriends')" overflow="visible" @close="$emit('close')">
+  <message-box :title="$t('post.callAnswer')" overflow="visible" @close="$emit('close')">
     <div class="top">
       <div class="container-selectedCaller">
         <div v-show="Object.keys(selectedFriend).length > 0" class="selectedCaller">

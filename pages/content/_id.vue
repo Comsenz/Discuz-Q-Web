@@ -34,7 +34,8 @@
         <topic-reward-list
           :author="thread.user || {}"
           :paid-information="paidInformation"
-          :can-reward-or-paid="forums && forums.paycenter && forums.paycenter.wxpay_close && canBeReward"
+          :can-paid="forums && forums.paycenter && forums.paycenter.wxpay_close"
+          :can-reward="forums && forums.paycenter && forums.paycenter.wxpay_close && canBeReward"
           :thread-type="thread.type || 0"
           :user-lists="[thread.paidUsers || [], thread.rewardedUsers || [], article.likedUsers || [], []]"
           @payOrReward="showCheckoutCounter = true"
@@ -187,6 +188,7 @@ export default {
     initData() {
       console.log('thread => ', this.thread)
       if (this.thread.user && this.thread.user.groups[0] && this.thread.user.groups[0].permissionWithoutCategories) {
+        console.log('canBeReward => ', this.thread.user.groups[0].permissionWithoutCategories.map(item => item.permission))
         this.canBeReward = this.thread.user.groups[0].permissionWithoutCategories.filter(item => item.permission === 'canBeReward').length > 0
         if (this.thread.user.groups[0]._jv.id === '1') this.canBeReward = true
       }
