@@ -33,16 +33,20 @@
             name="1"
           />
           <el-tab-pane
-            :label="$t('profile.likes')+ ` (${userInfo.likedCount || 0})`"
+            :label="$t('profile.question')+ ` (${userInfo.questionCount || 0})`"
             name="2"
           />
           <el-tab-pane
-            :label="$t('profile.following')+ ` (${userInfo.followCount || 0})`"
+            :label="$t('profile.likes')+ ` (${userInfo.likedCount || 0})`"
             name="3"
           />
           <el-tab-pane
-            :label="$t('profile.followers')+ ` (${userInfo.fansCount || 0})`"
+            :label="$t('profile.following')+ ` (${userInfo.followCount || 0})`"
             name="4"
+          />
+          <el-tab-pane
+            :label="$t('profile.followers')+ ` (${userInfo.fansCount || 0})`"
+            name="5"
           />
 
         </el-tabs>

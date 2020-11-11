@@ -71,7 +71,7 @@ export default {
         .then((res) => {
           this.loading = false
           this.hasMore = res.length === this.pageSize
-          this.askthreadsData = res
+          this.askthreadsData = [...this.askthreadsData, ...res]
           if (res._jv) {
             this.hasMore = this.askthreadsData.length < res._jv.json.meta.threadCount
           }
