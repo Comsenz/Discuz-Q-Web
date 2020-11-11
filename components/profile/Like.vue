@@ -82,10 +82,9 @@ export default {
           this.loading = false
           this.hasMore = res.length === this.pageSize
           const ress = JSON.parse(JSON.stringify(res))
-          ress.forEach((val) => {
-            // eslint-disable-next-line no-param-reassign
-            val.firstPost.isLiked = true
-          })
+          // ress.forEach((val) => {
+          // val.firstPost.isLiked = true
+          // })
           this.data = [...this.data, ...ress]
           if (res._jv) {
             this.hasMore = this.data.length < res._jv.json.meta.threadCount
