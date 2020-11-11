@@ -246,7 +246,7 @@ export default {
     prev: '上一页',
     next: '下一页',
     callFriends: '@圈友',
-    callAnswer: '解答人',
+    callAnswer: '选择解答人',
     myFriends: '我的好友',
     chosen: '已选择',
     confirmChoice: '确定选择',
