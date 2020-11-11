@@ -352,7 +352,7 @@ export default {
     // 详情路由
     routerLink() {
       window.open(
-        `/content/${this.item._jv && this.item._jv.id}`,
+        `/thread/${this.item._jv && this.item._jv.id}`,
         '_blank'
       )
     },
