@@ -246,6 +246,7 @@ export default {
     prev: '上一页',
     next: '下一页',
     callFriends: '@圈友',
+    callAnswer: '解答人',
     myFriends: '我的好友',
     chosen: '已选择',
     confirmChoice: '确定选择',
@@ -812,7 +813,8 @@ export default {
       edit: '编辑主题 ',
       essence: '加精',
       sticky: '置顶',
-      deletePosts: '删除回复'
+      deletePosts: '删除回复',
+      canBeReward: '允许被打赏'
     },
     createThread: {
       0: '发布文本',
@@ -823,6 +825,10 @@ export default {
       5: '发布问答',
       6: '发布商品'
     },
+    createThreadImage: '发布图片',
+    createThreadLong: '发布帖子',
+    createThreadVideo: '发布视频',
+    createThreadGoods: '发布商品',
     createThreadPaid: '发布付费贴和被打赏',
     attachment: {
       create: ['上传附件', '上传图片'],

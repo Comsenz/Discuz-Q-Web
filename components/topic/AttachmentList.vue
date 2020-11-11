@@ -1,5 +1,5 @@
 <template>
-  <div class="attachment-item" @click.self="downloadAttachment(file.url)">
+  <div class="attachment-item" @click.self="downloadAttachment(file.url, file.fileName)">
     <div class="info">
       <div>
         <svg-icon :type="extensionValidate(file.extension)" style="font-size: 18px; vertical-align: middle;" />
@@ -10,7 +10,7 @@
     <div class="action">
       <div v-if="!unpaid">
         <span v-if="canReview" class="download" @click.self="preview(file.url)">{{ $t('post.preview') }}</span>
-        <span class="download" @click.self="downloadAttachment(file.url)">{{ $t('post.download') }}</span>
+        <span class="download" @click.self="downloadAttachment(file.url, file.fileName)">{{ $t('post.download') }}</span>
       </div>
       <span v-else>{{ $t('post.paidAfterDownload') }}</span>
     </div>
@@ -82,10 +82,10 @@ export default {
     }
   },
   methods: {
-    downloadAttachment(url) {
+    downloadAttachment(url, name) {
       if (this.unpaid) return
       const xhr = new XMLHttpRequest()
-      xhr.open('get', url)
+      xhr.open('get', '/api' + url.split('/api')[1]) // 使用相当地址
       xhr.responseType = 'blob'
       xhr.send()
       xhr.onload = function() {

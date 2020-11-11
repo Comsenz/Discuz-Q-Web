@@ -89,7 +89,7 @@ module.exports = {
       for (let i = 0; i < files.length; i++) {
         if (files[i].size > this.sizeLimit) pass = false
       }
-      if (!pass) this.$message.error(this.type === 0 ? `文件不可大于 ${this.sizeLimit / 1024 / 1024} MB` : `图片不可大于 ${this.sizeLimit / 1024 / 1024} MB`)
+      if (!pass) this.$message.error(this.type === 0 ? `文件大小不可超过 ${this.sizeLimit / 1024 / 1024} MB` : `图片大小不可超过 ${this.sizeLimit / 1024 / 1024} MB`)
       return pass
     },
     checkLengthLimit(files) {

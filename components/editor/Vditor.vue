@@ -7,7 +7,7 @@
     <div id="vditor" />
     <span v-if="textLimit" class="tip">{{ textLimit>= textLength ? $t('post.note', { num: textLimit - textLength }) : $t('post.exceed', { num: textLength - typeInformation.textLimit }) }}</span>
     <caller v-if="showCaller" @close="$emit('close')" @selectedCaller="selectActions" />
-    <el-button class="button-publish" :loading="onPublish" type="primary" size="small" @click="$emit('publish')">{{ $t('post.post') }}</el-button>
+    <el-button class="button-publish" :loading="onPublish" type="primary" size="small" @click="publish">{{ $t('post.post') }}</el-button>
   </div>
 </template>
 
@@ -94,7 +94,7 @@ export default {
         minHeight: 450,
         placeholder: this.placeholder,
         mode: 'wysiwyg',
-        blur: (value) => { this.$emit('textChange', value) },
+        tab: '    ',
         toolbar: [
           { hotkey: '', name: '@', tipPosition: 'ne', tip: '@ 好友', className: 'right', icon: call,
             click: () => {
@@ -176,8 +176,13 @@ export default {
       for (let i = 0; i < files.length; i++) {
         if (files[i].size > this.attachmentSizeLimit) pass = false
       }
-      if (!pass) this.$message.error(`图片不可大于 ${this.attachmentSizeLimit / 1024 / 1024} MB`)
+      if (!pass) this.$message.error(`图片大小不可超过 ${this.attachmentSizeLimit / 1024 / 1024} MB`)
       return pass
+    },
+    publish() {
+      const value = this.vditor.getValue()
+      this.$emit('textChange', value)
+      this.$emit('publish')
     }
   }
 }

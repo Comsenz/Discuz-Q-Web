@@ -199,6 +199,8 @@ export default {
       handler(val) {
         if (val && val.set_site) {
           this.headTitle = val.set_site.site_title || val.set_site.site_name || 'Discuz! Q'
+          this.headKeywords = val.set_site.site_keywords
+          this.headDesc = val.set_site.site_introduction
         }
       },
       deep: true
@@ -207,6 +209,8 @@ export default {
   mounted() {
     if (this.forums && this.forums.set_site) {
       this.headTitle = this.forums.set_site.site_title || this.forums.set_site.site_name || 'Discuz! Q'
+      this.headKeywords = this.forums.set_site.site_keywords
+      this.headDesc = this.forums.set_site.site_introduction
     }
     if (this.threadsStickyData.length === 0) {
       this.getThreadsSticky()

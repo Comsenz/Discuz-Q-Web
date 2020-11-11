@@ -206,9 +206,13 @@ export default {
         this.forums.user.groups.length > 0 &&
         this.forums.user.groups[0].id
         let list = []
+        console.log(res)
         res.forEach((item) => {
           if (+item._jv.id === +groupsId) {
             list = item.permission
+            list = list.filter((item) => {
+              return item.permission !== 'createThread'
+            })
           }
         })
         this.permissionList = list.filter((item) => {

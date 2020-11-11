@@ -17,8 +17,8 @@
             <div class="agreement">
               <reg-agreement v-if="forums && forums.set_reg && forums.set_reg.register_type === 2" :check="false" @check="check" />
             </div>
-            <div v-if="forums && forums.set_reg && forums.set_reg.register_type !== 2" class="otherlogin">
-              <svg-icon v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms" class="phone-icon" type="phonelogin" @click="toPhonelogin" />
+            <div class="otherlogin">
+              <svg-icon v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms && forums.set_reg && forums.set_reg.register_type !== 2" class="phone-icon" type="phonelogin" @click="toPhonelogin" />
               <svg-icon class="wechat-icon" type="userlogin" @click="toUserlogin" />
             </div>
           </div>
@@ -39,7 +39,7 @@ export default {
       title: this.$t('user.quicklogin'),
       code: '', // 注册邀请码
       wechatLogin: {}, // 微信扫码登录信息
-      wehcatLoginTimer: null, // 微信登录定时器
+      wechatLoginTimer: null, // 微信登录定时器
       activeName: '0',
       ischeck: true
     }
@@ -61,7 +61,7 @@ export default {
     this.createQRcode()
   },
   destroyed() {
-    window.clearInterval(this.wehcatLoginTimer)
+    window.clearInterval(this.wechatLoginTimer)
   },
   methods: {
     check(value) {
@@ -73,7 +73,7 @@ export default {
         if (res) {
           this.wechatLogin = res
           const _this = this
-          this.wehcatLoginTimer = setInterval(_this.getLoginStatus, 3000)
+          this.wechatLoginTimer = setInterval(_this.getLoginStatus, 3000)
         }
       }, e => this.handleError(e))
     },
@@ -82,7 +82,7 @@ export default {
       if (this.wechatLogin && !this.wechatLogin.session_token) return
       this.$store.dispatch('jv/get', `/oauth/wechat/pc/login/${this.wechatLogin.session_token}`).then((res) => {
         if (res) {
-          clearInterval(this.wehcatLoginTimer)
+          clearInterval(this.wechatLoginTimer)
           this.$store.commit('session/SET_USER_ID', res._jv.id)
           this.$store.commit('session/CHECK_SESSION', true)
           this.$store.commit('session/SET_ACCESS_TOKEN', res.access_token)
@@ -120,7 +120,7 @@ export default {
             //   this.logind()
             // }
           } else {
-            clearInterval(this.wehcatLoginTimer)
+            clearInterval(this.wechatLoginTimer)
             this.$message.error(errorText)
             this.createQRcode()
           }

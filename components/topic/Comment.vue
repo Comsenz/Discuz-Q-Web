@@ -75,7 +75,7 @@ export default {
       postCount: 0,
       pageLimit: 5,
       pageNumber: 1,
-      isPositiveSort: false,
+      isPositiveSort: true,
       onCommentPublish: false,
       onEditCommentPublish: false,
       comment: { text: '', imageList: [], attachedList: [] },

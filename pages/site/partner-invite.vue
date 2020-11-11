@@ -144,7 +144,7 @@ export default {
     this.inviteCode = code
     this.getInviteInfo(this.inviteCode)
     this.loadThreads()
-    if (this.forums.set_site.site_mode || !this.userId) {
+    if (this.forums && this.forums.set_site && this.forums.set_site.site_mode || !this.userId) {
       this.canDetail = true
     }
   },
@@ -162,8 +162,11 @@ export default {
           .then((res) => {
             this.inviteData = res
             this.check2()
-            const permission = res.group.permission.slice(0, 3)
-            this.permission = permission
+            const permission = res.group.permission
+            const permissionfilter = permission.filter((item) => {
+              return item.permission !== 'createThread'
+            })
+            this.permission = permissionfilter.slice(0, 3)
           })
           .catch((e) => {
             this.check2()
