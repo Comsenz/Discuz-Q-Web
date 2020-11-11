@@ -248,6 +248,7 @@ export default {
     callFriends: '@圈友',
     callAnswer: '选择解答人',
     myFriends: '我的好友',
+    recommendAnswer: '推荐解答人',
     chosen: '已选择',
     confirmChoice: '确定选择',
     searchFriendsCanBeAsd: '请输入昵称，来搜索可被提问的用户',
