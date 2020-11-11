@@ -238,7 +238,7 @@ export default {
     },
     checkPublish() {
       if (!this.isLogin()) return
-      // 0 文字帖 1 帖子 2 视频 3 图片
+      // 0 文字帖 1 帖子 2 视频 3 图片 4 音频 5 问答 6 商品
       if (!this.categorySelectedId) return this.$message.warning(this.$t('post.theClassifyCanNotBeBlank'))
       if (this.post.text.length > this.typeInformation[this.type].textLimit) return this.$message.warning(this.$t('post.messageLengthCannotOver'))
       if (this.type === '0' && !this.post.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
