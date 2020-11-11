@@ -18,7 +18,7 @@ module.exports = {
     onInput(e) {
       const files = e.target.files
       const fileArray = []
-      if (this.onUploadImage) return this.$message.warning('请等待上传中的图片完成上传')
+      if (this.onUpload) return this.$message.warning(this.type === 0 ? '请等待上传中的文件完成上传' : '请等待上传中的图片完成上传')
       if (!this.checkSizeLimit(files)) return // 文件大小检查
       if (!this.checkLengthLimit(files)) return // 文件数量检查
       for (let i = 0; i < files.length; i++) {
@@ -45,13 +45,12 @@ module.exports = {
         }
       }
       const formData = new FormData()
-      const type = this.type === 'Image' ? 1 : 0
-      formData.append('type', type)
+      formData.append('type', this.type)
       formData.append('file', file)
       return this.service.post(this.action, formData, config)
     },
     uploadFiles(promiseList) {
-      this.$emit(`update:onUpload${this.type}`, true)
+      this.$emit(`update:onUpload`, true)
       Promise.all(promiseList).then(resList => {
         this.previewFiles.map(item => { item.progress = 100 }) // 请求响应后，更新到 100%
         const files = resList.map(item => item.data.data)
@@ -59,12 +58,12 @@ module.exports = {
         files.forEach(item => _fileList.push({ id: item.id, name: item.attributes.fileName, url: item.attributes.url }))
         this.input.value = ''
         this.$emit('success', _fileList)
-        this.$emit(`update:onUpload${this.type}`, false)
+        this.$emit(`update:onUpload`, false)
       }, (e) => {
         // 失败的时候取消对应的预览照片
         this.input.value = ''
         const length = promiseList.length
-        this.$emit(`update:onUpload${this.type}`, false)
+        this.$emit(`update:onUpload`, false)
         this.previewFiles.splice(this.previewFiles.length - length, length)
         this.handleError(e).then(() => {})
       })
@@ -90,12 +89,12 @@ module.exports = {
       for (let i = 0; i < files.length; i++) {
         if (files[i].size > this.sizeLimit) pass = false
       }
-      if (!pass) this.$message.error(`图片不可大于 ${this.sizeLimit / 1024 / 1024} MB`)
+      if (!pass) this.$message.error(this.type === 0 ? `文件大小不可超过 ${this.sizeLimit / 1024 / 1024} MB` : `图片大小不可超过 ${this.sizeLimit / 1024 / 1024} MB`)
       return pass
     },
     checkLengthLimit(files) {
       if (this.previewFiles.length + files.length > this.limit) {
-        this.$message.warning(`图片最多上传${this.limit}张`)
+        this.$message.warning(this.type === 0 ? `文件最多上传${this.limit}张` : `图片最多上传${this.limit}张`)
         this.$emit('exceed', files)
         return false
       } else {

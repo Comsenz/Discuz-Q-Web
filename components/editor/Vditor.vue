@@ -7,7 +7,7 @@
     <div id="vditor" />
     <span v-if="textLimit" class="tip">{{ textLimit>= textLength ? $t('post.note', { num: textLimit - textLength }) : $t('post.exceed', { num: textLength - typeInformation.textLimit }) }}</span>
     <caller v-if="showCaller" @close="$emit('close')" @selectedCaller="selectActions" />
-    <el-button class="button-publish" :loading="onPublish" type="primary" size="small" @click="$emit('publish')">{{ $t('post.post') }}</el-button>
+    <el-button class="button-publish" :loading="onPublish" type="primary" size="small" @click="publish">{{ $t('post.post') }}</el-button>
   </div>
 </template>
 
@@ -73,7 +73,8 @@ export default {
   data() {
     return {
       vditor: {},
-      input: {}
+      input: {},
+      range: []
     }
   },
   watch: {
@@ -93,21 +94,26 @@ export default {
         minHeight: 450,
         placeholder: this.placeholder,
         mode: 'wysiwyg',
-        input: (value) => { this.$emit('textChange', value) },
+        tab: '    ',
         toolbar: [
           { hotkey: '', name: '@', tipPosition: 'ne', tip: '@ 好友', className: 'right', icon: call,
             click: () => {
-              // this.setCursorPosition()
+              this.range = getSelection().getRangeAt(0)
               this.$emit('onActions', 'showCaller')
             }
           },
           { hotkey: '', name: '#', tipPosition: 'ne', tip: '新增话题', className: 'right', icon: topic,
             click: () => {
-              // this.setCursorPosition()
+              this.range = getSelection().getRangeAt(0)
               this.$emit('onActions', 'showTopic')
             }
           },
-          { hotkey: '', name: 'my-emoji', tipPosition: 'ne', tip: '插入表情', className: 'right', icon: emoji, click: () => { this.$emit('onActions', 'showEmoji') } },
+          { hotkey: '', name: 'my-emoji', tipPosition: 'ne', tip: '插入表情', className: 'right', icon: emoji,
+            click: () => {
+              this.range = getSelection().getRangeAt(0)
+              this.$emit('onActions', 'showEmoji')
+            }
+          },
           'headings', 'bold', 'italic', 'strike', 'link', 'list', 'ordered-list', 'check', 'outdent', 'indent', 'quote',
           { hotkey: '', name: 'picture', tipPosition: 'ne', tip: '插入图片', className: 'right', icon: picture, click: () => { this.uploader() } },
           'line', 'code', 'inline-code', 'table', 'both', 'br', 'undo', 'redo'],
@@ -115,16 +121,6 @@ export default {
         cache: { enable: false }
       })
     },
-    // setCursorPosition() {
-    //   window.xxx = this.vditor
-    //   const position = this.vditor.getCursorPosition()
-    //   console.log('left => ', position.left)
-    //   console.log('right => ', position.left)
-    //   console.log('position => ', position)
-    //   if (position.left === 0 && position.top === 0) {
-    //     this.vditor.focus()
-    //   }
-    // },
     uploader() {
       if (this.onUploadImage) return this.$message.warning('请等待上传中的图片完成上传')
       this.input = document.createElement('input')
@@ -155,7 +151,11 @@ export default {
       this.$emit('update:onUploadImage', true)
       Promise.all(promiseList).then(resList => {
         const files = resList.map(item => item.data.data)
-        files.forEach(item => { this.vditor.insertValue(`![${item.attributes.fileName}](${item.attributes.url})`) })
+        files.forEach(item => {
+          const html = `<img src="${item.attributes.url}" alt="${item.attributes.fileName}" title="${item.id}">`
+          const markdown = this.vditor.html2md(html)
+          this.vditor.insertValue(markdown.substr(0, markdown.length - 1))
+        })
         this.input.value = ''
       }, (e) => {
         this.input.value = ''
@@ -165,6 +165,9 @@ export default {
       })
     },
     selectActions(code) {
+      const selection = window.getSelection()
+      selection.removeAllRanges()
+      selection.addRange(this.range)
       this.vditor.insertValue(code)
       this.$emit('hideActions')
     },
@@ -173,8 +176,13 @@ export default {
       for (let i = 0; i < files.length; i++) {
         if (files[i].size > this.attachmentSizeLimit) pass = false
       }
-      if (!pass) this.$message.error(`图片不可大于 ${this.attachmentSizeLimit / 1024 / 1024} MB`)
+      if (!pass) this.$message.error(`图片大小不可超过 ${this.attachmentSizeLimit / 1024 / 1024} MB`)
       return pass
+    },
+    publish() {
+      const value = this.vditor.getValue()
+      this.$emit('textChange', value)
+      this.$emit('publish')
     }
   }
 }
@@ -184,6 +192,7 @@ export default {
 .vditor-container {
   position: relative;
   margin-top: 20px;
+  ::v-deep a { color: #1878F3; &:hover { border-bottom: 1px solid #1878F3; } }
 
   > .sticky-box { // 保证 topicList 和 emojiList 的定位正确
     position: sticky;
@@ -211,16 +220,9 @@ export default {
     background: #F5F6F7;
     top: 65px;
     padding-left: 10px !important;
-    //height: 45px;
-    //background: white;
-    //padding-left: 14px !important;
-    //> .vditor-toolbar__item {
-    //  line-height: 45px;
-    //  svg {
-    //    width: 20px;
-    //    height: 20px;
-    //  }
-    //}
+  }
+  ::v-deep.vditor-content pre {
+    padding: 13px !important;
   }
 }
 

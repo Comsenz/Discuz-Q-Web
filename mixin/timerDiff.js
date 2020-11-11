@@ -15,8 +15,8 @@ module.exports = {
     timerDiff(dateStart, dateEnd) {
       if (!process.client) return ''
       if (!(dateStart instanceof Date)) dateStart = new Date(dateStart)
-      if (!(dateEnd instanceof Date)) dateEnd = window.currentTime || new Date()
-      if (!dateEnd) dateEnd = window.currentTime || new Date()
+      if (!(dateEnd instanceof Date)) dateEnd = (process.client && window.currentTime) || new Date()
+      if (!dateEnd) dateEnd = (process.client && window.currentTime) || new Date()
       const diff = dateEnd - dateStart
       let value
       for (let i = 0; i < this.diffModulus.length; i++) {

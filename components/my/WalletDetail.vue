@@ -54,7 +54,7 @@
         />
         <el-table-column
           :label="$t('profile.status')"
-          width="97"
+          width="105"
           :formatter="statusFormat2"
         />
         <el-table-column
@@ -159,17 +159,16 @@ export default {
         label: this.$t('profile.laborexpenditure')
 
       }, {
-        value: '41',
-        label: this.$t('profile.givearewardforthetheme')
+        value: '60,62,63',
+        label: this.$t('profile.payincome')
 
       }, {
-        value: '60',
-        label: this.$t('profile.paidtoseeyourtheme')
+        value: '35,36',
+        label: this.$t('profile.answerincome')
 
       }, {
-        value: '61',
-        label: this.$t('profile.paidtoview')
-
+        value: '81,82',
+        label: this.$t('profile.answerpay')
       }]
 
     }
@@ -180,7 +179,7 @@ export default {
   },
   methods: {
     setCurrentTime() {
-      const date = window.currentTime || new Date()
+      const date = (process.client && window.currentTime) || new Date()
       const year = date.getFullYear()
       let month = date.getMonth() + 1
       month = month < 10 ? `0${month}` : month
@@ -205,15 +204,20 @@ export default {
         case 32: return this.$t('profile.laborincome')
         case 50: return this.$t('profile.laborexpenditure')
         case 41: return this.$t('profile.givearewardforthetheme')
-        case 60: return this.$t('profile.paidtoseeyourtheme')
-        case 61: return this.$t('profile.paidtoview')
+        case 60: return this.$t('profile.threadpayincome')
+        case 61: return this.$t('profile.threadpay')
+        case 81: return this.$t('profile.threadanswerpay')
+        case 8: return this.$t('profile.answerfreeze')
+        case 52: return this.$t('profile.filepay')
+        case 35: return this.$t('profile.answersincome')
+        case 36: return this.$t('profile.answersaroundincome')
+        case 82: return this.$t('profile.answersaroundpay')
 
         default: return '未知状态'
       }
     },
     // 金额格式化
     amountFormat(row) {
-      console.log(row)
       // 订单
       if (row.amount > 0) {
         return `<font color="09BB07">-￥${row.amount}</font>`
@@ -250,6 +254,7 @@ export default {
         'filter[user]': this.userId,
         'page[number]': this.pageNum2,
         'page[limit]': this.pageSize2,
+        'filter[change_type_exclude]': '11,81',
         'filter[start_time]': `${this.date2}-01-00-00-00`,
         'filter[end_time]': `${this.date2}-${days}-00-00-00`
       }
@@ -261,6 +266,9 @@ export default {
       // 当有选择某个分类类型时，添加新的过滤参数
       if (this.filterSelected2) {
         params['filter[change_type]'] = this.filterSelected2
+        // if (this.filterSelected2 === '81,82') {
+        //   params['filter[change_type_exclude]'] = '11'
+        // }
       }
       status
         .run(() => this.$store.dispatch('jv/get', ['wallet/log', { params }]))

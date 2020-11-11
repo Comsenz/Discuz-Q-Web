@@ -46,17 +46,19 @@
     </div>
     <div class="block">
       <div v-show="payment.paidType === 'paid' && type === 1">
-        <div class="text">{{ $t('post.freeWordCount') }}:</div>
-        <el-input
-          v-model="freeWords"
+        <div class="text">{{ $t('post.freeWord') }}:</div>
+        <el-select
           size="medium"
-          placeholder="0"
-          maxlength="5"
-          @change="$emit('paymentChange', { key: 'freeWords', value: parseInt(freeWords) })"
-          @input="onFreeWordInput"
+          :value="freeWords"
+          @change="value => $emit('paymentChange', { key: 'freeWords', value: value })"
         >
-          <span slot="prefix" class="prefix">字</span>
-        </el-input>
+          <el-option
+            v-for="item in freeWordsOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
       </div>
     </div>
   </div>
@@ -74,6 +76,10 @@ export default {
     type: {
       type: Number,
       default: 0
+    },
+    canUploadAttachments: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -89,7 +95,15 @@ export default {
         {
           value: 'paid',
           label: this.$t('post.paidWatch')
-        }]
+        }],
+      freeWordsOptions: [
+        { value: 0, label: '0%' },
+        { value: 0.1, label: '10%' },
+        { value: 0.3, label: '30%' },
+        { value: 0.5, label: '50%' },
+        { value: 0.7, label: '70%' },
+        { value: 1, label: '100%' }
+      ]
     }
   },
   watch: {
@@ -104,15 +118,12 @@ export default {
     },
     type: {
       handler(val) {
-        val === 1 ? this.options.push({ value: 'attachmentPaid', label: this.$t('post.postFreeAttachmentPaid') }) : ''
+        val === 1 && this.canUploadAttachments ? this.options.push({ value: 'attachmentPaid', label: this.$t('post.postFreeAttachmentPaid') }) : ''
       },
       immediate: true
     }
   },
   methods: {
-    onFreeWordInput(value) {
-      this.freeWords = value.replace(/[^\d]/g, '')
-    },
     onPriceInput(value) {
       this.price = formatAmount(value)
     },

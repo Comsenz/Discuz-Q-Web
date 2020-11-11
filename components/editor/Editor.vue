@@ -1,12 +1,34 @@
 <template>
   <div class="editor">
+    <div v-if="userId && userId === 0" class="not-logged">
+      <span>{{ $t('post.publishAfterLogin') }}</span>
+    </div>
     <label v-if="typeInformation && typeInformation.showTitle">
       <input :placeholder="$t('post.pleaseInputPostTitle')" class="input-title" type="text" :value="post && post.title" @input="e => onPostContentChange('title', e.target.value)">
     </label>
     <!--问答帖 -->
-    <!--<editor-qa :question="question" />-->
-    <editor-payment v-if="typeInformation && typeInformation.showPayment && canCreateThreadPaid" :payment="payment || {}" :type="typeInformation && typeInformation.type" @paymentChange="e => onPaymentChange(e.key, e.value)" />
-    <attachment-upload v-if="isPost" :file-list="post && post.attachedList" :on-upload.sync="onUploadAttached" action="/attachments" :accept="attachedTypeLimit" :limit="99999" type="Attached" :size-limit="attachedSizeLimit" @success="files => onPostContentChange('attachedList', files)" @remove="files => onPostContentChange('attachedList', files)" />
+    <editor-qa
+      v-if="typeInformation && typeInformation.type === 5"
+      :question="question"
+      @paymentTypeChange="value => onQuestionChange('paymentType', value)"
+      @isAnonymousChange="value => onQuestionChange('isAnonymous', value)"
+      @isOnlookerChange="value => onQuestionChange('isOnlooker', value)"
+      @beUserChange="value => onQuestionChange('beUser', value)"
+    />
+    <!--商品帖 -->
+    <editor-product
+      v-if="typeInformation && typeInformation.type === 6"
+      :product="product"
+      @productChange="onProductChange"
+    />
+    <editor-payment
+      v-if="typeInformation && typeInformation.showPayment && canCreateThreadPaid"
+      :payment="payment || {}"
+      :type="typeInformation && typeInformation.type"
+      :can-upload-attachments="canUploadAttachments"
+      @paymentChange="e => onPaymentChange(e.key, e.value)"
+    />
+    <attachment-upload v-if="isPost && canUploadAttachments" :file-list="post && post.attachedList" :on-upload.sync="onUploadAttached" action="/attachments" :accept="attachedTypeLimit" :limit="99999" :type="0" :size-limit="attachedSizeLimit" @success="files => onPostContentChange('attachedList', files)" @remove="files => onPostContentChange('attachedList', files)" />
     <Vditor
       v-if="isPost"
       :text-limit="typeInformation && typeInformation.textLimit"
@@ -51,9 +73,20 @@
         <textarea id="textarea" :value="post && post.text" :class="['input-text', editorStyle]" :placeholder="typeInformation ? typeInformation.placeholder : ''" :maxlength="post && post.textLimit" @input="e => onPostContentChange('text', e.target.value)" />
       </label>
       <div>
-        <!--uploader-->
+        <!--uploader type 15 是回答图片-->
         <div v-if="showUploadImg || showUploadVideo" class="resources-list">
-          <image-upload v-if="showUploadImg" type="Image" :file-list="post && post.imageList" :on-upload.sync="onUploadImage" action="/attachments" :accept="imageTypeLimit" :limit="9" :size-limit="attachedSizeLimit" @success="imageList => onPostContentChange('imageList', imageList)" @remove="imageList => onPostContentChange('imageList', imageList)" />
+          <image-upload
+            v-if="showUploadImg"
+            :type="typeInformation.type && typeInformation.type === 15 ? 5 : 1"
+            :file-list="post && post.imageList"
+            :on-upload.sync="onUploadImage"
+            action="/attachments"
+            :accept="imageTypeLimit"
+            :limit="9"
+            :size-limit="attachedSizeLimit"
+            @success="imageList => onPostContentChange('imageList', imageList)"
+            @remove="imageList => onPostContentChange('imageList', imageList)"
+          />
           <video-upload v-if="showUploadVideo" :on-upload-video.sync="onUploadVideo" :video-list="post && post.videoList" @videoChange="e => onPostContentChange(e.key, e.value)" />
         </div>
         <!--bar-->
@@ -96,6 +129,10 @@ export default {
       default: () => {}
     },
     question: {
+      type: Object,
+      default: () => {}
+    },
+    product: {
       type: Object,
       default: () => {}
     },
@@ -156,6 +193,9 @@ export default {
     }
   },
   computed: {
+    userId() {
+      return this.$store.state.session.userId
+    },
     url() {
       return '/api'
     },
@@ -169,14 +209,14 @@ export default {
     textarea() {
       return process.client ? document.querySelector(`.${this.selector} #textarea`) : ''
     },
-    canCreateThreadPaid() {
-      const forums = this.$store.state.site.info.attributes
-      if (forums) {
-        return forums.other ? forums.other.can_create_thread_paid : false
-      } else return false
-    },
     forums() {
       return this.$store.state.site.info.attributes || {}
+    },
+    canCreateThreadPaid() {
+      return this.forums && this.forums.other ? this.forums.other.can_create_thread_paid : false
+    },
+    canUploadAttachments() {
+      return this.forums && this.forums.other ? this.forums.other.can_upload_attachments : false
     },
     attachedSizeLimit() {
       if (this.forums.set_attach) {
@@ -241,9 +281,13 @@ export default {
       this.$emit(`update:payment`, _payment)
     },
     onQuestionChange(key, value) {
-      const _question = Object.assign({}, this.payment)
+      const _question = Object.assign({}, this.question)
       _question[key] = value
       this.$emit(`update:question`, _question)
+    },
+    onProductChange(product) {
+      const _product = Object.assign({}, product)
+      this.$emit(`update:product`, _product)
     },
     autoHeight() {
       if (this.editorStyle === 'chat') return // 聊天框不需要自动高度
@@ -322,6 +366,23 @@ export default {
   .editor {
     width: 100%;
     margin-top: 20px;
+    position: relative;
+
+    > .not-logged {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.3);
+      z-index: 1000000000;
+      color: #8590A6;
+      font-size: 20px;
+      span {
+        transform: translateY(-20px);
+      }
+    }
 
     label {
       width: 100%;

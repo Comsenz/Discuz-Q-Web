@@ -19,6 +19,17 @@ module.exports = {
       }
       return params
     },
+    publishAnswerResource(params, post) { // 后端在提交回答附件的结构 和 平常的不同
+      const imageData = this.createAttachmentsData(post.imageList)
+      const attachedData = this.createAttachmentsData(post.attachedList)
+      if (imageData.length > 0 || attachedData.length > 0) {
+        params.relationships.attachments = {}
+        params.relationships.attachments.data = []
+        params.relationships.attachments.data.push(...imageData)
+        params.relationships.attachments.data.push(...attachedData)
+      }
+      return params
+    },
     publishThreadResource(params, thread) {
       if (thread.videoList.length > 0) {
         params.file_id = this.post.videoList[0].id
@@ -43,6 +54,21 @@ module.exports = {
       params.location = location.location ? location.location : ''
       params.latitude = location.latitude ? location.latitude : ''
       params.longitude = location.longitude ? location.longitude : ''
+      return params
+    },
+    publishQuestion(params, question) {
+      params.is_anonymous = question.isAnonymous
+      params._jv.relationships.question = {}
+      params._jv.relationships.question.data = {}
+      const data = params._jv.relationships.question.data
+      data.be_user_id = question.beUser._jv.id
+      data.order_id = question.orderId || ''
+      data.price = question.price || 0
+      data.is_onlooker = question.isOnlooker
+      return params
+    },
+    publishProduct(params, product) {
+      params.post_goods_id = product && product._jv && product._jv.id || ''
       return params
     },
     deleteAttachmentsAfterEdit(oldData, newData) {

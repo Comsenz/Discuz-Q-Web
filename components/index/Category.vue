@@ -61,8 +61,8 @@ export default {
       })
       this.categoryList = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), threadCount }, ...this.list]
     }
-    if (this.$route.query.categoryId) {
-      this.selectId = this.$route.query.categoryId
+    if (this.$route.params.id) {
+      this.selectId = this.$route.params.id
     }
   },
   methods: {

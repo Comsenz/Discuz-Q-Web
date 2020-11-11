@@ -58,7 +58,7 @@ export default {
           // 话题详情
           oInput.value = window.location.href
         } else {
-          oInput.value = `${window.location.protocol}//${window.location.host}/topic/index?id=${this.threadsId}`
+          oInput.value = `${window.location.protocol}//${window.location.host}/content/${this.threadsId}`
         }
         oInput.id = 'copyInput'
         document.body.appendChild(oInput)
@@ -78,7 +78,7 @@ export default {
         // 话题详情
         path = window.location.href
       } else {
-        path = `${window.location.protocol}//${window.location.host}/topic/index?id=${this.threadsId}`
+        path = `${window.location.protocol}//${window.location.host}/content/${this.threadsId}`
       }
       this.createQrcode(path)
     },
@@ -86,7 +86,7 @@ export default {
      * 生成二维码
      * @param {*} link 网址
      * @example:
-     * createQrcode('https://discuz.chat/')
+     * createQrcode('https://xxx.com/')
      */
     createQrcode(link) {
       if (process.client) {
@@ -111,6 +111,7 @@ export default {
 .custom-popover-width{
   min-width: 120px;
   padding: 0;
+  z-index: 7 !important;
 }
 </style>
 <style lang="scss" scoped>

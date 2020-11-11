@@ -52,7 +52,7 @@
         :on-publish="onReplyPublish"
         @publish="replyPublish(comment._jv.id)"
       />
-      <div class="reply-list" @click="$router.push(`/pages/topic/comment?threadId=${threadId}&commentId=${comment._jv.id}#reply`)">
+      <div class="reply-list" @click="$router.push(`/content/comment?threadId=${threadId}&commentId=${comment._jv.id}#reply`)">
         <div v-for="(reply, replyIndex) in replyList[index]" :key="replyIndex" class="reply">
           <div class="title">
             <Avatar :user="reply.user || {}" size="30" />
@@ -140,7 +140,7 @@ export default {
     },
     formatSummary(comment) {
       let html
-      if (comment.contentHtml !== comment.summary) {
+      if (comment.content !== comment.summaryText) {
         html = comment.summary + `<button class="showAllComment">${this.$t('topic.all')}</button>`
       } else {
         html = comment.contentHtml
@@ -148,7 +148,7 @@ export default {
       return s9e.parse(html)
     },
     showAll(e, comment) {
-      if (e.target.matches('.showAllComment')) this.$router.push(`/pages/topic/comment?threadId=${this.threadId}&commentId=${comment._jv.id}`)
+      if (e.target.matches('.showAllComment')) this.$router.push(`/content/comment?threadId=${this.threadId}&commentId=${comment._jv.id}`)
     },
     replyPublish(id) {
       if (!this.isLogin()) return

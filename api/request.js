@@ -1,12 +1,13 @@
 import axios from 'axios'
 import Qs from 'qs'
+import config from '../config'
 
 let baseURL = '/api'
 
 // SSR 服务端 baseURL 修正处理
 if (process.server === true) {
   if (process.env.NODE_ENV === 'production') {
-    baseURL = `${process.env.VUE_APP_CONFIG_API_URL || 'https://discuz.chat'}${baseURL}`
+    baseURL = `${config.SSR_API_URL}${baseURL}`
   } else {
     baseURL = `http://127.0.0.1:${process.env.npm_package_config_nuxt_port || 3000}${baseURL}`
   }

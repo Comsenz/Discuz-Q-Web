@@ -10,7 +10,8 @@
         <svg-icon type="video-play" class="icon-play" style="font-size: 50px" @click="openVideo" />
       </div>
     </div>
-    <div v-if="article.images && article.images.length > 0" v-viewer="{url: 'data-source'}" class="images" @click="unpaid ? openVideo() : ''">
+    <!--帖子只展示图文混排的图片-->
+    <div v-if="article.images && article.images.length > 0 && threadType !== 1" v-viewer="{url: 'data-source'}" class="images" @click="unpaid ? openVideo() : ''">
       <el-image v-for="(image, index) in article.images" :key="index" class="image" :data-source="unpaid ? '' : image.url" :src="image.thumbUrl" :alt="image.filename" fit="cover">
         <div slot="placeholder" class="image-slot">
           <i class="el-icon-loading" />
@@ -19,11 +20,6 @@
     </div>
     <div v-if="(article.attachments || []).length > 0" class="container-attachment">
       <h3 class="name">{{ $t('topic.attachment') }}</h3>
-      <!--      <div>-->
-      <!--        <template v-for="(file, index) in audioList">-->
-      <!--          <audio-player :key="index" :file="file" :current-audio="currentAudio" @play="play" @pause="pause" @seek="seek" @seeking="seeking" />-->
-      <!--        </template>-->
-      <!--      </div>-->
       <div>
         <template v-for="(file, index) in article.attachments">
           <attachment-list
@@ -40,12 +36,20 @@
     <div v-if="unpaid && threadType === 1" class="hide-content-tip">{{ $t('pay.contentHide') }}</div>
     <nuxt-link v-if="category.name" :to="{path: '/', query: { categoryId: category._jv.id } }" class="tag">{{ category.name }}</nuxt-link>
     <div v-if="location && location.location">
-      <nuxt-link :to="`/pages/topic/position?longitude=${location.longitude}&latitude=${location.latitude}`" class="location">
+      <nuxt-link :to="`/topic/position?longitude=${location.longitude}&latitude=${location.latitude}`" class="location">
         <span class="flex">
           <svg-icon type="location" class="icon" />
           <span> {{ location.location }} </span>
         </span>
       </nuxt-link>
+    </div>
+    <div v-if="threadType === 6" class="product">
+      <product-item :item="article && article.postGoods" />
+    </div>
+    <div v-if="threadType === 4" class="audio">
+      <template v-for="(file, index) in [...audio]">
+        <audio-player :key="index" :file="file" :current-audio="currentAudio" @play="play" @pause="pause" @seek="seek" @seeking="seeking" />
+      </template>
     </div>
     <video-pop v-if="showVideoPop" :cover-url="video.cover_url" :url="video.media_url" @remove="showVideoPop = false" />
     <audio id="audio-player" :src="currentAudio.url" style="display: none" />
@@ -73,6 +77,10 @@ export default {
       default: () => ''
     },
     video: {
+      type: Object,
+      default: () => {}
+    },
+    audio: {
       type: Object,
       default: () => {}
     },
@@ -118,14 +126,6 @@ export default {
       if (process.client && this.paidInformation.paid) this.removeTextHideCover()
       return !(this.paidInformation.paid || parseFloat(this.paidInformation.price) === 0)
     }
-    // 只有音频帖才区分 音频和普通附件
-    // audioList() {
-    //   // MP3/M4A/WAV/AAC
-    //   return this.article.attachments.filter(item => this.isAudio(item))
-    // },
-    // attachmentList() {
-    //   return this.article.attachments.filter(item => !this.isAudio(item))
-    // }
   },
   watch: {
     article: {
@@ -136,14 +136,9 @@ export default {
     }
   },
   mounted() {
-    console.log(this.paidInformation)
     this.currentAudio.audio = document.getElementById('audio-player')
   },
   methods: {
-    // isAudio(item) {
-    //   const audio = ['MP3', 'M4A', 'WAV', 'AAC']
-    //   return audio.indexOf(item.extension.toUpperCase()) >= 0
-    // },
     formatTopicHTML(html) {
       return s9e.parse(html)
     },
@@ -159,13 +154,15 @@ export default {
     },
     openVideo() {
       if (!this.isLogin()) return
-      if (this.unpaid) return this.$emit('payForVideo')
+      if (this.unpaid) return this.$emit('payForThread')
       this.showVideoPop = true
     },
     play(file) {
+      if (!this.isLogin()) return
+      if (this.unpaid) return this.$emit('payForThread')
       if (this.currentAudio.id !== file._jv.id) {
         this.resetAudio(this.currentAudio.audio)
-        this.currentAudio.url = file.url
+        this.currentAudio.url = file.media_url
         this.currentAudio.id = file._jv.id
         this.currentAudio.audio.src = this.currentAudio.url
         this.currentAudio.isLoading = true
@@ -375,7 +372,13 @@ export default {
         fill: #777;
       }
     }
-
+    .product{
+      margin: 45px auto 0;
+      width: 450px;
+    }
+    .audio {
+      margin: 45px auto 0;
+    }
   }
 
 </style>
