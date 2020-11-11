@@ -66,7 +66,7 @@ export default {
       }
       this.$store.dispatch('jv/get', ['users/recommended', { params }]).then((res) => {
         const data = res
-        data.forEach((v, i) => {
+        res && Array.isArray(res) && data.forEach((v, i) => {
           data[i].groupName = v.groups[0] ? v.groups[0].name : ''
         })
         this.userList = data
