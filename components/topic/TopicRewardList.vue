@@ -92,6 +92,7 @@ export default {
   watch: {
     paidInformation: {
       handler(val) {
+        // TODO 商品帖不需要打赏
         this.command[0].showButton = parseFloat(val.price) > 0 && !val.paid && this.canPaid // 支付
         this.command[3].showButton = parseFloat(val.attachmentPrice) > 0 && !val.isPaidAttachment && this.canPaid // 支付附件
         this.command[1].showButton = parseFloat(val.price) === 0 && parseFloat(val.attachmentPrice) === 0 && this.canReward // 打赏
