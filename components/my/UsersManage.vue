@@ -93,7 +93,7 @@
               :round="true"
             />
             <nuxt-link
-              :to="`/pages/profile/index?userId=${scope.row.id}`"
+              :to="`/user/${scope.row.id}`"
               class="user-name"
             >{{ scope.row.username }}</nuxt-link>
           </div>
@@ -428,7 +428,7 @@ export default {
     copyLink(code) {
       const oInput = document.createElement('input')
       if (process.client) {
-        oInput.value = `${window.location.protocol}//${window.location.host}/pages/site/partner-invite?code=${code}`
+        oInput.value = `${window.location.protocol}//${window.location.host}/site/partner-invite?code=${code}`
         oInput.id = 'copyInput'
         document.body.appendChild(oInput)
         oInput.select()

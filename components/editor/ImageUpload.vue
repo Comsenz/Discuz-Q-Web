@@ -54,8 +54,8 @@ export default {
       default: false
     },
     type: {
-      type: String,
-      default: ''
+      type: Number,
+      default: 0
     }
   },
   data() {

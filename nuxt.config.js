@@ -1,20 +1,19 @@
 // import enLocale from './plugins/lang/en.js'
 import zhLocale from './plugins/lang/zh.js'
-
+import config from './config.js'
 const path = require('path')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-// const API_URL = 'https://discuz.chat'
-const API_URL_DEV = 'https://dq.comsenz-service.com'
+const DEV_API_URL = config.DEV_API_URL
 
 const isProduction = process.env.NODE_ENV === 'production'
 
 const proxyConfig = {
   '/api': {
-    target: API_URL_DEV, // 目标服务器
+    target: DEV_API_URL, // 目标服务器
     changeOrigin: true
   }
 }
@@ -32,7 +31,7 @@ if (isProduction) {
 }
 export default {
   env: {
-    domain: process.env.VUE_APP_CONFIG_API_URL || API_URL_DEV,
+    domain: config.SSR_API_URL || DEV_API_URL,
     baseURL: '/'
   },
   /*
@@ -61,21 +60,11 @@ export default {
     //   { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     // ]
   },
+  general: {
+    fallback: true
+  },
   router: {
-    middleware: 'header',
-    routeNameSplitter: '/',
-    extendRoutes(routes, resolve) {
-      routes.unshift({
-        name: 'h5-topic-index',
-        path: '/topic/index',
-        component: path.resolve() + '/pages/pages/topic/_index.vue'
-      },
-      {
-        name: 'h5-topic-post',
-        path: '/topic/post',
-        component: path.resolve() + '/pages/pages/topic/post.vue'
-      })
-    }
+    middleware: 'header'
   },
   /*
   ** Global CSS
@@ -118,9 +107,6 @@ export default {
     'nuxt-i18n',
     '@nuxtjs/proxy'
   ],
-  generate: {
-    routes: ['/pages/invite/index', '/pages/manage/index', '/pages/site/index']
-  },
   i18n: {
     // locales: ['en', 'zh'],
     defaultLocale: 'zh',

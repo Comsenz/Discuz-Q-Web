@@ -11,7 +11,7 @@
     </div>
     <div class="info">
       <div class="title">
-        <span class="title-audio">{{ file.fileName }}</span>
+        <span class="title-audio">{{ file.fileName || file.file_name }}</span>
         <span v-if="currentFile && playing" class="duration-audio">
           {{ formatCurrentTime(currentAudio.currentTime) }} / {{ formatDuration(currentAudio.duration) }}
         </span>
@@ -107,6 +107,7 @@ export default {
     margin-top: 10px;
     position: relative;
     width: 370px;
+    max-width: 100%;
     height: 60px;
     border-radius: 3px;
     background: $background-color-grey;
@@ -126,12 +127,13 @@ export default {
     > .info {
       width: 100%;
       padding: 13px 10px;
-
+      flex: 1;
       > .progress {
         margin-top: 12px;
         position: relative;
         background: #EDEDED;
         width: 290px;
+        max-width: 100%;
         height: 3px;
         > .progress-item {
           background: #1878F3;

@@ -28,7 +28,7 @@ a:hover {
   cursor: pointer;
 }
 i {
-  font-style: normal;
+  font-style: italic;
 }
 
 ul {
@@ -256,7 +256,7 @@ $em: 16px;
   .h1, .h2, .h3, .h4, .h5, .h6, .b, .strong { font-weight: bolder; }
   div { margin: 0; padding: 0; display: block; word-break: break-word; }
   p { line-height: 24px; font-size: $em; clear: both;  margin-bottom: $em; &:last-child { margin-bottom: 0 } }
-  i, cite, em, var, address { font-style: italic; }
+  cite, em, var, address { font-style: italic; }
   .spaceshow { white-space: pre; }
   pre, tt, code, kbd, samp { font-family: monospace; }
   .pre { padding: 16px; margin: 1 * $em 0; overflow: auto; font-size: 24px; white-space: pre; background: #f5f5f5; }

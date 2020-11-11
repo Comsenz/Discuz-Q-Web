@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     getAuthorInfo() {
-      if (!(this.author && this.author._jv && this.author._jv.id)) return
+      if (!this.author.id || this.author.id && this.author.id === -1) return
       return this.$store.dispatch('jv/get', [`users/${this.author._jv.id}`, { params: { include }}]).then(res => {
         if (res.dialog) this.dialog.id = res.dialog._jv.id
         this.dialog.name = this.author.username
@@ -81,7 +81,7 @@ export default {
       this.chatting = true
     },
     toprofile(index) {
-      this.$router.push(`/pages/profile/index?userId=${this.author._jv.id}&current=${index + 1}`)
+      this.$router.push(`/user/${this.author._jv.id}?current=${index + 1}`)
     }
   }
 }

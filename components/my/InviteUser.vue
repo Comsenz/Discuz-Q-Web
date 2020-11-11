@@ -109,8 +109,15 @@ export default {
       return this.$store.state.user.info.attributes || {}
     }
   },
+  watch: {
+    groupMap: {
+      handler() {
+        this.getInviteList()
+      },
+      deep: true
+    }
+  },
   mounted() {
-    this.getInviteList()
   },
   methods: {
     // 获取邀请列表
@@ -196,7 +203,7 @@ export default {
     copyLink(code) {
       const oInput = document.createElement('input')
       if (process.client) {
-        oInput.value = `${window.location.protocol}//${window.location.host}/pages/site/partner-invite?code=${code}`
+        oInput.value = `${window.location.protocol}//${window.location.host}/site/partner-invite?code=${code}`
         oInput.id = 'copyInput'
         document.body.appendChild(oInput)
         oInput.select()

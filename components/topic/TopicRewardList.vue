@@ -1,8 +1,8 @@
 <template>
   <div class="global">
     <div v-for="(userList, usersIndex) in userLists" :key="usersIndex" class="group">
-      <div v-if="userList.length > 0" class="title">{{ userList.length + $t('topic.personUnit') +
-        $t(`topic.${command[usersIndex].title}`) }}
+      <div v-if="userList.length > 0" class="title">
+        {{ userList.length + $t('topic.personUnit') + $t(`topic.${command[usersIndex].title}`) }}
       </div>
       <div v-if="userList.length > 0" class="person-list">
         <div class="first-show">
@@ -18,7 +18,7 @@
       >
         <svg-icon style="font-size: 20px; margin-top: 10px; fill: #8590A6" type="drop-down" />
       </div>
-      <button v-if="command[usersIndex].showButton && command[usersIndex].buttonText && canRewardOrPaid" @click="onClick(command, usersIndex)">
+      <button v-if="command[usersIndex].showButton && command[usersIndex].buttonText && threadType !== 5" @click="onClick(command, usersIndex)">
         <svg-icon style="font-size: 16px; fill: white; margin-right: 10px" :type="command[usersIndex].icon" />
         <span>{{ command[usersIndex].buttonText }}</span>
       </button>
@@ -49,14 +49,18 @@ export default {
       type: Number,
       default: 0
     },
-    canRewardOrPaid: {
+    canReward: {
+      type: Boolean,
+      default: false
+    },
+    canPaid: {
       type: Boolean,
       default: false
     }
   },
   data() {
     return {
-      payButtonText: ['', this.$t('topic.paymentViewRemainingContent'), this.$t('topic.paymentViewVideo'), this.$t('topic.paymentViewPicture')],
+      payButtonText: ['', this.$t('topic.paymentViewRemainingContent'), this.$t('topic.paymentViewVideo'), this.$t('topic.paymentViewPicture'), this.$t('topic.paymentViewPicture')],
       command: [
         {
           value: 24, // value 是每次加载的头像数量
@@ -88,9 +92,9 @@ export default {
   watch: {
     paidInformation: {
       handler(val) {
-        this.command[0].showButton = parseFloat(val.price) > 0 && !val.paid // 支付
-        this.command[3].showButton = parseFloat(val.attachmentPrice) > 0 && !val.isPaidAttachment // 支付附件
-        this.command[1].showButton = parseFloat(val.price) === 0 && parseFloat(val.attachmentPrice) === 0 // 打赏
+        this.command[0].showButton = parseFloat(val.price) > 0 && !val.paid && this.canPaid // 支付
+        this.command[3].showButton = parseFloat(val.attachmentPrice) > 0 && !val.isPaidAttachment && this.canPaid // 支付附件
+        this.command[1].showButton = parseFloat(val.price) === 0 && parseFloat(val.attachmentPrice) === 0 && this.canReward // 打赏
 
         this.command[3].buttonText = this.$t('topic.pay') + this.paidInformation.attachmentPrice + this.$t('topic.paymentViewAttachment')
       },

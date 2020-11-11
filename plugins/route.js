@@ -2,13 +2,14 @@
 // client执行顺序 => beforeEach - middleware - afterEach
 // server执行顺序 => beforeEach - afterEach - middleware
 import cookie from '../utils/parserCookie'
-const freePath = ['/pages/user/login-bind-phone', '/pages/user/login-bind', '/pages/user/phone-login-register', '/pages/user/phone-login', '/pages/user/register-bind-phone', '/pages/user/register-bind', '/pages/user/wechat', '/pages/user/login', '/pages/user/register', '/pages/site/info', '/pages/user/warning', '/pages/user/agreement', '/pages/user/agreement', '/pages/modify/findpwd', '/pages/site/partner-invite']
+const freePath = ['/user/wechat-bind-phone', '/user/login-bind-phone', '/user/login-bind', '/user/phone-login-register', '/user/phone-login', '/user/register-bind-phone', '/user/register-bind', '/user/wechat', '/user/login', '/user/register', '/site/info', '/user/warning', '/user/agreement', '/user/agreement', '/modify/findpwd', '/site/partner-invite']
 export default ({ app }) => {
   const { store, router } = app
   router.beforeEach(async(to, from, next) => {
     if (process.client) {
+      if (router.history.pending) router.history.current = router.history.pending // fix spa 模式下，动态路由
       // 登录页不判断站点关闭
-      if (from.path === '/pages/site/close' && to.path === '/pages/user/login') return next()
+      if (from.path === '/site/close' && to.path === '/user/login') return next()
       // 获取站点信息
       if (!store.state.site.info.id) {
         try {
@@ -20,8 +21,8 @@ export default ({ app }) => {
             if (errors[0].code === 'site_closed') {
               await store
                 .dispatch('forum/setError', { code: errors[0].code, detail: errors[0].detail[0] })
-              if (to.path === '/pages/site/close') return next()
-              next({ path: '/pages/site/close' })
+              if (to.path === '/site/close') return next()
+              next({ path: '/site/close' })
               return
             }
           }
@@ -50,7 +51,7 @@ export default ({ app }) => {
       const { attributes: { set_site: site_info }} = store.state.site.info
       const { attributes: user_info } = store.state.user.info
       if (site_info.site_mode && site_info.site_mode === 'pay') {
-        if (!userId || (user_info && !user_info.paid)) return next({ path: '/pages/site/info' })
+        if (!userId || (user_info && !user_info.paid)) return next({ path: '/site/info' })
       }
       return next()
     }

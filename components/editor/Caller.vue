@@ -47,7 +47,7 @@
     <div class="bottom">
       <div class="container">
         <span class="text">{{ $t('post.chosen') + ' ' + selectedFriends.length + ' ' + $t('topic.personUnit') }}</span>
-        <el-button size="medium" type="primary" @click="$emit('selectedCaller', formatValue())">{{ $t('post.confirmChoice') }}</el-button>
+        <el-button :disabled="selectedFriends.length === 0" size="medium" type="primary" @click="$emit('selectedCaller', formatValue())">{{ $t('post.confirmChoice') }}</el-button>
       </div>
     </div>
   </message-box>

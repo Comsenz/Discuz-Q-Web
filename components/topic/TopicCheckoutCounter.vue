@@ -3,7 +3,12 @@
     <div class="top">
       <div class="row">
         <div class="head">{{ $t('pay.payProduct') }}</div>
-        <div class="body product-information">
+        <!--问答帖-->
+        <div v-if="threadType === 5" class="body product-information">
+          <span class="title">{{ askOrWatchAnswer === 'ask' ? $t('post.askHim') : $t('topic.watchAnswer') }}</span>
+          <span>{{ $t('post.answerer') + beAskedUser.username }}</span>
+        </div>
+        <div v-else class="body product-information">
           <span v-if="rewardOrPay === 'reward'" class="title">{{ $t('pay.supportAuthor') + $t('pay.keepWriting') }}</span>
           <span v-else class="title">{{ $t('pay.supportAuthor') + $t(`pay.${text[threadType]}`) + $t('pay.getRight') }}</span>
           <span>{{ $t('topic.author') + ': ' + (user.username || '') }}</span>
@@ -29,7 +34,7 @@
           </div>
         </div>
       </div>
-      <div class="row">
+      <div v-if="showAnonymous" class="row">
         <div class="head">{{ $t('pay.hideAvatar') }}</div>
         <div class="body hide-avatar" @click="hideAvatar = !hideAvatar">
           <svg-icon v-if="hideAvatar" style="font-size: 18px" type="checked" />
@@ -39,7 +44,7 @@
       </div>
       <div class="row">
         <div class="head">{{ $t('pay.payType') }}</div>
-        <div class="body pay-way">
+        <div v-if="showWechatPay" class="body pay-way">
           <div class="pay-card" :class="{'pay-card': true, 'selected': payWay === 'wxPay'}" @click="payWay = 'wxPay'">
             <div class="detail">
               <div class="pay-title">
@@ -70,11 +75,11 @@
                 <span>{{ $t('pay.walletPay') }}</span>
                 <div class="pay-tip">
                   <div v-if="enoughBalance">
-                    <nuxt-link v-if="!userWallet.canWalletPay" to="/pages/my/wallet" class="not-enough-balance">{{ $t('pay.needToResetPassword') }}</nuxt-link>
+                    <nuxt-link v-if="!userWallet.canWalletPay" to="/my/wallet" class="not-enough-balance">{{ $t('pay.needToResetPassword') }}</nuxt-link>
                     <div>{{ $t('pay.walletBalance') }}</div>
                   </div>
                   <div v-else>
-                    <nuxt-link v-if="!userWallet.canWalletPay" to="/pages/my/wallet" class="not-enough-balance">{{ $t('pay.needToResetPassword') }}</nuxt-link>
+                    <nuxt-link v-if="!userWallet.canWalletPay" to="/my/wallet" class="not-enough-balance">{{ $t('pay.needToResetPassword') }}</nuxt-link>
                     <span v-else class="not-enough-balance">{{ $t('pay.walletBalanceNo') }}</span>
                   </div>
                   <div>
@@ -136,12 +141,28 @@ export default {
     rewardOrPay: {
       type: String,
       default: ''
+    },
+    beAskedUser: {
+      type: Object,
+      default: () => {}
+    },
+    showAnonymous: {
+      type: Boolean,
+      default: true
+    },
+    askOrWatchAnswer: {
+      type: String,
+      default: 'ask'
+    },
+    showWechatPay: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
     return {
       hideAvatar: false,
-      text: ['getRemainingContent', 'getRemainingContent', 'getVideo', 'getPicture'],
+      text: ['getRemainingContent', 'getRemainingContent', 'getVideo', 'getPicture', 'getAudio'],
       payWay: 'wxPay',
       rewardAmount: '',
       defaultAmounts: ['1', '2', '5', '10', '20', '50', '88', '128'],

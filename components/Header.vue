@@ -57,12 +57,12 @@
         />
         <nuxt-link
           v-if="userInfo.username && userInfo.id"
-          :to="`/pages/profile/index?userId=${userInfo.id}`"
+          :to="`/user/${userInfo.id}`"
           class="menu-item user-name text-hidden"
         >
           {{ userInfo.username }}
         </nuxt-link>
-        <nuxt-link to="/pages/my/notice" class="menu-item notice-btn">
+        <nuxt-link to="/my/notice" class="menu-item notice-btn">
           <span class="flex">
             {{ $t('home.tabsNews') }}
             <span
@@ -71,7 +71,7 @@
             >{{ userInfo.unreadNotifications > 99 ? '99+' : userInfo.unreadNotifications }}</span>
           </span>
         </nuxt-link>
-        <nuxt-link to="/pages/my/profile" class="menu-item">{{ $t('profile.personalhomepage') }}</nuxt-link>
+        <nuxt-link to="/my/profile" class="menu-item">{{ $t('profile.personalhomepage') }}</nuxt-link>
         <div class="menu-item" @click="logout">{{ $t('user.logout') }}</div>
       </div>
     </div>
@@ -116,7 +116,7 @@ export default {
   watch: {
     // 监听路由变化
     $route(to) {
-      if (to.path === '/pages/site/close') {
+      if (to.path === '/site/close') {
         this.siteClose = true
       } else {
         this.siteClose = false
@@ -131,10 +131,10 @@ export default {
     if (process.client && this.$route.query.q) {
       this.inputVal = this.$route.query.q
     }
-    if (process.client && this.$route.path !== '/pages/site/close') {
+    if (process.client && this.$route.path !== '/site/close') {
       window.setTimeout(this.reloadUserInfo(), 5000)
     }
-    if (this.$route.path === '/pages/site/close') {
+    if (this.$route.path === '/site/close') {
       this.siteClose = true
     }
     this.$nextTick(() => {
@@ -182,7 +182,7 @@ export default {
     // 跳转搜索页面
     onClickSearch() {
       if (this.inputVal) {
-        this.$router.push(`/pages/site/search?q=${this.inputVal}`)
+        this.$router.push(`/site/search?q=${this.inputVal}`)
       }
     },
     // 跳转首页

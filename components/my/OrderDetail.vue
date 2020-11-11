@@ -158,7 +158,7 @@ export default {
   },
   methods: {
     setCurrentTime() {
-      const date = window.currentTime || new Date()
+      const date = (process.client && window.currentTime) || new Date()
       const year = date.getFullYear()
       let month = date.getMonth() + 1
       month = month < 10 ? `0${month}` : month
@@ -298,6 +298,21 @@ export default {
         case 4: {
           // 付费用户组
           return this.$t('profile.paygroup')
+        }
+        case 7: {
+          // 付费查看主题附件
+          const thread = item.thread ? item.thread.title : this.$t('profile.thethemewasdeleted')
+          return `付费查看了主题的附件 ${thread}`
+        }
+        case 5: {
+          // 付费查看问答
+          const thread = item.thread ? item.thread.title : this.$t('profile.thethemewasdeleted')
+          return `付费查看了问答 ${thread}`
+        }
+        case 6: {
+          // 付费围观
+          const thread = item.thread ? item.thread.title : this.$t('profile.thethemewasdeleted')
+          return `付费围观了问答 ${thread}`
         }
         default:
           return item.type

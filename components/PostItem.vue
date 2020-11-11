@@ -1,10 +1,20 @@
 <template>
-  <div v-if="item.type < 4" class="post-container">
+  <div class="post-container">
     <div v-if="item.isEssence" class="essence">
       <svg-icon type="index-essence" />
     </div>
     <avatar
-      v-if="item.user"
+      v-if="item.type === 5 && item.question && item.question.is_answer === 1 && item.question.beUser"
+      :user="{ id: item.question.beUser.id,
+               username: item.question.beUser.username,
+               avatarUrl: item.question.beUser.avatarUrl,
+               isReal: item.question.beUser.isReal
+      }"
+      :prevent-jump="canDetail"
+      class="avatar"
+    />
+    <avatar
+      v-else-if="item.user"
       :user="{ id: item.user.id,
                username: item.user.username,
                avatarUrl: item.user.avatarUrl,
@@ -15,7 +25,16 @@
     />
     <div class="main-cont">
       <div class="top-flex">
-        <nuxt-link v-if="item.user" :to="`/pages/profile/index?userId=${item.user.id}`" class="user-info">
+        <nuxt-link v-if="item.type === 5 && item.question && item.question.is_answer === 1 && item.question.beUser" :to="item.user.id > 0 ? `/user/${item.question.beUser.id}` : ''" class="user-info">
+          <span class="user-name">{{ item.question.beUser.username }}</span>
+          <span
+            v-if="item.question.beUser && item.question.beUser.groups && item.question.beUser.groups.length > 0 && item.question.beUser.groups[0].isDisplay"
+            class="admin"
+          >
+            ({{ item.question.beUser.groups[0].name }})
+          </span>
+        </nuxt-link>
+        <nuxt-link v-else-if="item.user" :to="item.user.id > 0 ? `/user/${item.user.id}` : ''" class="user-info">
           <span class="user-name">{{ item.user.username }}</span>
           <span
             v-if="item.user && item.user.groups && item.user.groups.length > 0 && item.user.groups[0].isDisplay"
@@ -32,30 +51,20 @@
       <div v-if="item.type === 5">
         <!-- 未回答 -->
         <template v-if="item.question && item.question.is_answer === 0">
-          <nuxt-link
-            v-if="item.user"
-            :to="`/pages/profile/index?userId=${item.user.id}`"
-            class="blue"
-          >@{{ item.user.username }}</nuxt-link>
           {{ $t('topic.be') }}
           <nuxt-link
             v-if="item.question && item.question.beUser"
-            :to="`/pages/profile/index?userId=${item.question.beUser.id}`"
+            :to="item.question.beUser.id > 0 ? `/user/${item.question.beUser.id}` : ''"
             class="blue"
           >@{{ item.question.beUser.username }}</nuxt-link>
           {{ $t('topic.question') }}
         </template>
         <!-- 已回答 -->
         <template v-if="item.question && item.question.is_answer === 1">
-          <nuxt-link
-            v-if="item.question && item.question.beUser"
-            :to="`/pages/profile/index?userId=${item.question.beUser.id}`"
-            class="blue"
-          >@{{ item.question.beUser.username }}</nuxt-link>
           {{ $t('topic.answer') }}
           <nuxt-link
             v-if="item.user"
-            :to="`/pages/profile/index?userId=${item.user.id}`"
+            :to="item.user.id > 0 ? `/user/${item.user.id}` : ''"
             class="blue"
           >@{{ item.user.username }}</nuxt-link>
           {{ $t('topic.of') }}{{ $t('topic.question') }}
@@ -160,10 +169,17 @@
             </div>
           </div>
         </div>
+        <!-- 商品 -->
+        <product-item v-if="item.type === 6" :item="item && item.firstPost && item.firstPost.postGoods" />
+        <!-- 语音 -->
+        <div v-if="item.type === 4" @click.self="toDetail">
+          <audio-player :file="item && item.threadAudio" :current-audio="currentAudio" @play="play" @pause="pause" @seek="seek" @seeking="seeking" />
+          <audio :id="`audio-player${item._jv && item._jv.id}`" class="audio-player" :src="currentAudio.url" style="display: none" />
+        </div>
         <!-- 位置 -->
         <nuxt-link
           v-if="item.location"
-          :to="`/pages/topic/position?longitude=${item.longitude}&latitude=${item.latitude}`"
+          :to="`/topic/position?longitude=${item.longitude}&latitude=${item.latitude}`"
           class="location"
         >
           <span class="flex">
@@ -240,7 +256,17 @@ export default {
     return {
       loading: false,
       showVideoPop: false, // 视频弹窗
-      isLiked: false // 当前主题是否点赞
+      isLiked: false, // 当前主题是否点赞
+      currentAudio: {
+        id: '',
+        url: '',
+        currentTime: '',
+        duration: '',
+        audio: '',
+        seeking: false,
+        isPlay: false,
+        isLoading: false
+      }
     }
   },
   computed: {
@@ -258,6 +284,10 @@ export default {
       deep: true,
       immediate: true
     }
+  },
+  mounted() {
+    // 初始化audio标签
+    this.currentAudio.audio = document.getElementById(`audio-player${this.item && this.item._jv && this.item._jv.id}`)
   },
   methods: {
     // 点赞
@@ -302,28 +332,16 @@ export default {
     },
     // 跳转详情页
     toDetail() {
-      if (this.canDetail) {
-        this.$message.warning('加入站点后才可以预览')
-        return
-      }
       if (!this.canViewPostsFn()) return
       this.routerLink()
     },
     // 点击图片 判断是否付费， 未付费跳转详情页
     onClickImage() {
-      if (this.canDetail) {
-        this.$message.warning('加入站点后才可以预览')
-        return
-      }
       if (!this.unpaid || !this.canViewPostsFn()) return
       this.routerLink()
     },
     // 点击视频 判断是否付费， 未付费跳转详情页
     openVideo() {
-      if (this.canDetail) {
-        this.$message.warning('加入站点后才可以预览')
-        return
-      }
       if (!this.canViewPostsFn()) return
       if (this.unpaid) {
         this.routerLink()
@@ -334,7 +352,7 @@ export default {
     // 详情路由
     routerLink() {
       window.open(
-        `/topic/index?id=${this.item._jv && this.item._jv.id}`,
+        `/content/${this.item._jv && this.item._jv.id}`,
         '_blank'
       )
     },
@@ -349,7 +367,11 @@ export default {
     // 是否有查看详情的权限
     canViewPostsFn() {
       if (!this.item.canViewPosts) {
-        this.$message.error(this.$t('home.noPostingTopic'))
+        this.$message.warning(this.$t('home.noPostingTopic'))
+        return false
+      }
+      if (this.canDetail) {
+        this.$message.warning(this.$t('topic.joinAfterView'))
         return false
       }
       return true
@@ -363,6 +385,65 @@ export default {
       return extensionList.indexOf(extension.toUpperCase()) > 0
         ? extension.toUpperCase()
         : 'UNKNOWN'
+    },
+    // 语音播放
+    play(file) {
+      if (this.unpaid) {
+        this.routerLink()
+        return
+      }
+      if (!this.canViewPostsFn()) return
+      if (this.currentAudio.id !== file._jv.id) {
+        this.resetAudio(this.currentAudio.audio)
+        this.currentAudio.url = file.url || file.media_url
+        this.currentAudio.id = file._jv.id
+        this.currentAudio.audio.src = this.currentAudio.url
+        this.currentAudio.isLoading = true
+        this.currentAudio.audio.load()
+      }
+      window.setTimeout(() => {
+        this.currentAudio.audio.play()
+        this.currentAudio.isPlay = true
+        this.currentAudio.audio.addEventListener('timeupdate', this.onProgressing)
+        this.currentAudio.audio.addEventListener('ended', this.onEnded)
+        this.$emit('audioPlay', this.currentAudio.id)
+      }, 0)
+    },
+    // 进度的展示
+    onProgressing() {
+      if (this.currentAudio.seeking) return
+      this.currentAudio.isLoading = false
+      this.currentAudio.duration = this.currentAudio.audio.duration
+      this.currentAudio.currentTime = this.currentAudio.audio.currentTime
+    },
+    // 结束
+    onEnded() {
+      this.resetAudio(this.currentAudio.audio)
+    },
+    // 初始化audio
+    resetAudio(audio) {
+      audio.removeEventListener('timeupdate', this.onProgressing)
+      audio.removeEventListener('ended', this.onEnded)
+      this.currentAudio.isPlay = false
+      this.currentAudio.duration = ''
+      this.currentAudio.currentTime = ''
+    },
+    // 暂停
+    pause() {
+      this.currentAudio.isLoading = false
+      this.currentAudio.isPlay = false
+      this.currentAudio.audio.pause()
+    },
+    // 进度跳拖动完成
+    seek(time) {
+      this.currentAudio.seeking = false
+      this.currentAudio.currentTime = time
+      this.currentAudio.audio.currentTime = time
+    },
+    // 进度跳拖动中
+    seeking(time) {
+      this.currentAudio.seeking = true
+      this.currentAudio.currentTime = time
     }
   }
 }

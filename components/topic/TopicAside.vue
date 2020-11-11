@@ -43,6 +43,7 @@ export default {
       loading: true,
       billboard: [
         { key: 'threadCount', count: '', text: this.$t('home.thread') },
+        { key: 'questionCount', count: '', text: this.$t('profile.question') },
         { key: 'likedCount', count: '', text: this.$t('topic.getLike') },
         { key: 'followCount', count: '', text: this.$t('home.followed') },
         { key: 'fansCount', count: '', text: this.$t('profile.followers') }
@@ -51,9 +52,9 @@ export default {
   },
   computed: {
     canOpera() {
-      if (this.author.id) {
-        const userId = this.$store.getters['session/get']('userId')
-        return userId > 0 && userId !== this.author.id.toString()
+      const userId = this.$store.getters['session/get']('userId')
+      if (this.author.id && this.author.id > 0) { // 作者 = 当前用户 && 不是匿名用户
+        return parseInt(userId) > 0 && userId !== this.author.id.toString()
       }
       return false
     }
@@ -115,7 +116,7 @@ export default {
       })
     },
     goToPage(item) {
-      process.client && window.open(`/topic/index?id=${item._jv.id}`)
+      process.client && window.open(`/content/${item._jv.id}`)
     }
   }
 }

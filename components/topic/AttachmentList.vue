@@ -1,16 +1,16 @@
 <template>
-  <div class="attachment-item" @click.self="downloadAttachment(file.url)">
+  <div class="attachment-item" @click.self="downloadAttachment(file.url, file.fileName)">
     <div class="info">
       <div>
         <svg-icon :type="extensionValidate(file.extension)" style="font-size: 18px; vertical-align: middle;" />
         <span class="file-name">{{ file.fileName }}</span>
       </div>
-      <span class="size">{{ parseInt(file.fileSize).toLocaleString() }} KB</span>
+      <span class="size">{{ parseInt((file.fileSize / 1024).toString()).toLocaleString() }} KB</span>
     </div>
     <div class="action">
       <div v-if="!unpaid">
         <span v-if="canReview" class="download" @click.self="preview(file.url)">{{ $t('post.preview') }}</span>
-        <span class="download" @click.self="downloadAttachment(file.url)">{{ $t('post.download') }}</span>
+        <span class="download" @click.self="downloadAttachment(file.url, file.fileName)">{{ $t('post.download') }}</span>
       </div>
       <span v-else>{{ $t('post.paidAfterDownload') }}</span>
     </div>
@@ -82,9 +82,27 @@ export default {
     }
   },
   methods: {
-    downloadAttachment(url) {
+    downloadAttachment(url, name) {
       if (this.unpaid) return
-      if (process.client) window.open(url, '_self')
+      const xhr = new XMLHttpRequest()
+      xhr.open('get', '/api' + url.split('/api')[1]) // 使用相当地址
+      xhr.responseType = 'blob'
+      xhr.send()
+      xhr.onload = function() {
+        if (this.status === 200 || this.status === 304) {
+          const fileReader = new FileReader()
+          fileReader.readAsDataURL(this.response)
+          fileReader.onload = function() {
+            const a = document.createElement('a')
+            a.style.display = 'none'
+            a.href = this.result
+            a.download = name
+            document.body.appendChild(a)
+            a.click()
+            document.body.removeChild(a)
+          }
+        }
+      }
     },
     extensionValidate(extension) {
       return extensionList.indexOf(extension.toUpperCase()) > 0 ? extension.toUpperCase() : 'UNKNOWN'

@@ -12,6 +12,8 @@
       <li v-if="can_create_thread_long" @click.stop="toRouter(1)">{{ $t('home.invitation') }}</li>
       <li v-if="can_create_thread_image" @click.stop="toRouter(3)">{{ $t('home.picture') }}</li>
       <li v-if="can_create_thread_video" @click.stop="toRouter(2)">{{ $t('home.video') }}</li>
+      <li v-if="can_create_thread_question" @click.stop="toRouter(5)">{{ $t('home.question') }}</li>
+      <li v-if="can_create_thread_goods" @click.stop="toRouter(6)">{{ $t('home.product') }}</li>
     </ul>
     <template slot="reference">
       <slot name="button">
@@ -29,10 +31,12 @@ export default {
       userId: this.$store.getters['session/get']('userId'), // 获取当前登陆用户的ID
       visible: false,
       noCreateThread: false, // 是否有创建主题的权限
-      can_create_thread: true, // 是否有发文字权限
+      can_create_thread: true, // 是否有发文字贴权限
       can_create_thread_long: true, // 是否有发帖子权限
-      can_create_thread_video: true, // 是否有发视频权限
-      can_create_thread_image: true // 是否有发图片权限
+      can_create_thread_video: true, // 是否有发视频贴权限
+      can_create_thread_image: true, // 是否有发图片贴权限
+      can_create_thread_question: true, // 是否有发问答贴权限
+      can_create_thread_goods: true // 是否有发商品贴权限
     }
   },
   computed: {
@@ -57,7 +61,9 @@ export default {
         if (!_other.can_create_thread &&
         !_other.can_create_thread_long &&
         !_other.can_create_thread_video &&
-        !_other.can_create_thread_image) {
+        !_other.can_create_thread_image &&
+        !_other.can_create_thread_question &&
+        !_other.can_create_thread_goods) {
           this.$message.error(this.$t('home.noPostingPermission'))
           return
         }
@@ -99,12 +105,20 @@ export default {
         if (!_other.can_create_thread_image) {
           this.can_create_thread_image = false
         }
+        // 判断发问答贴权限
+        if (!_other.can_create_thread_question) {
+          this.can_create_thread_question = false
+        }
+        // 判断发商品贴权限
+        if (!_other.can_create_thread_goods) {
+          this.can_create_thread_goods = false
+        }
       }
       this.visible = !this.visible
     },
     // 跳往发帖页
     toRouter(val) {
-      this.$router.push(`/topic/post?type=${val}${this.categoryId ? `&categoryId=${this.categoryId}` : ''}`)
+      this.$router.push(`/content/post?type=${val}${this.categoryId ? `&categoryId=${this.categoryId}` : ''}`)
     }
   }
 }

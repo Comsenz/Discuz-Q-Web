@@ -32,25 +32,23 @@
         @loadMore="getComment('scroll')"
       />
     </template>
-    <message-box v-if="Object.keys(editComment).length > 0" :title="$t('topic.editComment')" @close="closeEditPop">
-      <div class="edit-box">
-        <avatar-component :author="editComment.user" :size="50">
-          {{ $t('topic.publishAt') + ' ' + timerDiff(editComment.updatedAt) + $t('topic.before') }}..
-        </avatar-component>
-        <editor
-          style="margin-top: 20px;"
-          editor-style="comment"
-          class="edit-comment-editor"
-          selector="edit-comment-editor"
-          :edit-resource-show="editResourceShow"
-          :on-publish="onEditCommentPublish"
-          :type-information="commentType"
-          :post.sync="editCommentPost"
-          :is-edit="true"
-          @publish="postEditCommentPublish"
-        />
-      </div>
-    </message-box>
+    <el-dialog :title="$t('topic.editComment')" :visible="Object.keys(editComment).length > 0" width="820px" destroy-on-close @close="closeEditPop">
+      <avatar-component :author="editComment.user || {}" :size="50">
+        {{ $t('topic.publishAt') + ' ' + timerDiff(editComment.updatedAt) + $t('topic.before') }}..
+      </avatar-component>
+      <editor
+        style="margin-top: 20px;"
+        editor-style="comment"
+        class="edit-comment-editor"
+        selector="edit-comment-editor"
+        :edit-resource-show="editResourceShow"
+        :on-publish="onEditCommentPublish"
+        :type-information="commentType"
+        :post.sync="editCommentPost"
+        :is-edit="true"
+        @publish="postEditCommentPublish"
+      />
+    </el-dialog>
   </div>
 </template>
 
@@ -77,7 +75,7 @@ export default {
       postCount: 0,
       pageLimit: 5,
       pageNumber: 1,
-      isPositiveSort: false,
+      isPositiveSort: true,
       onCommentPublish: false,
       onEditCommentPublish: false,
       comment: { text: '', imageList: [], attachedList: [] },
@@ -258,6 +256,30 @@ export default {
   }
 }
 </script>
+
+<style>
+.el-dialog {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0 !important;
+}
+.el-dialog .el-dialog__body {
+  padding: 20px;
+}
+.el-dialog .el-dialog__title {
+  color: #6d6d6d;
+  font-size: 16px;
+  font-weight: 700;
+}
+.el-dialog .el-dialog__header {
+  padding-bottom: 0;
+}
+.el-dialog .el-icon-close {
+  font-size: 22px;
+}
+</style>
 
 <style lang="scss" scoped>
   @import '@/assets/css/variable/color.scss';

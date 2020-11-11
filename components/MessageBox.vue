@@ -1,7 +1,7 @@
 <template>
   <div>
     <Cover />
-    <div class="message-box" :style="{overflow: overflow}">
+    <div class="message-box" :style="{overflow: overflow, width: width} ">
       <div class="container-title">
         <div class="title">{{ title }}</div>
         <svg-icon style="font-size: 14px; cursor: pointer; fill: #6d6d6d" type="close" @click="$emit('close')" />
@@ -16,6 +16,10 @@
 export default {
   name: 'TopicCheckoutCounter',
   props: {
+    width: {
+      type: String,
+      default: '820px'
+    },
     title: {
       type: String,
       default: ''

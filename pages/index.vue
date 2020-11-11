@@ -5,7 +5,7 @@
       <div v-if="threadsStickyData.length > 0" class="list-top">
         <div v-for="(item, index) in threadsStickyData" :key="index" class="list-top-item">
           <div class="top-label">{{ $t('home.sticky') }}</div>
-          <nuxt-link :to="`/topic/index?id=${item._jv && item._jv.id}`" target="_blank" class="top-title">
+          <nuxt-link :to="`/content/${item._jv && item._jv.id}`" target="_blank" class="top-title">
             <template v-if="item.type === 1">
               {{ item.title }}
             </template>
@@ -20,7 +20,11 @@
         </div>
       </div>
       <div class="post-list">
-        <post-item v-for="(item, index) in threadsData" :key="index" :item="item" />
+        <template v-for="(item, index) in threadsData">
+          <!-- 语音贴 -->
+          <post-item v-if="item.type === 4" :ref="`audio${ item && item.threadAudio && item.threadAudio._jv && item.threadAudio._jv.id}`" :key="index" :item="item" @audioPlay="audioPlay" />
+          <post-item v-else :key="index" :item="item" />
+        </template>
         <list-load-more
           :loading="loading"
           :has-more="hasMore"
@@ -32,7 +36,7 @@
     </main>
     <aside class="cont-right">
       <div class="category background-color">
-        <category :post-loading="loading" :list="categoryData" @onChange="onChangeCategory" />
+        <category :list="categoryData" @onChange="onChangeCategory" />
       </div>
       <div class="background-color">
         <advertising />
@@ -49,6 +53,7 @@
 import s9e from '@/utils/s9e'
 import handleError from '@/mixin/handleError'
 import env from '@/utils/env'
+const threadInclude = 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio'
 export default {
   layout: 'custom_layout',
   name: 'Index',
@@ -62,16 +67,15 @@ export default {
       'filter[isSticky]': 'yes',
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no',
-      'filter[categoryId]': query.categoryId,
       'page[number]': 1,
       include: 'firstPost'
     }
     const threadsParams = {
-      include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser',
+      include: threadInclude,
       'filter[isSticky]': 'no',
       'filter[isApproved]': 1,
       'filter[isDeleted]': 'no',
-      'filter[categoryId]': query.categoryId,
+      'filter[isDisplay]': 'yes',
       'page[number]': 1,
       'page[limit]': 10
     }
@@ -81,10 +85,17 @@ export default {
     }
     try {
       const resData = {}
+      const siteInfo = await store.dispatch('site/getSiteInfo')
       const threadsStickyData = await store.dispatch('jv/get', ['threads', { params: threadsStickyParams }])
       const threadsData = await store.dispatch('jv/get', ['threads', { params: threadsParams }])
       const categoryData = await store.dispatch('jv/get', ['categories', {}])
       const recommendUser = await store.dispatch('jv/get', ['users/recommended', { params: userParams }])
+      // head
+      if (siteInfo && siteInfo.attributes && siteInfo.attributes.set_site) {
+        resData.headTitle = siteInfo.attributes.set_site.site_title || siteInfo.attributes.set_site.site_name || 'Discuz! Q'
+        resData.headKeywords = siteInfo.attributes.set_site.site_keywords
+        resData.headDesc = siteInfo.attributes.set_site.site_introduction
+      }
       // 处理一下data
       if (Array.isArray(threadsStickyData)) {
         resData.threadsStickyData = threadsStickyData
@@ -161,7 +172,6 @@ export default {
       recommendUserData: [], // 推荐用户列表
       pageNum: 1, // 当前页码
       pageSize: 10, // 每页多少条数据
-      categoryId: 0, // 分类id 0全部
       threadType: '', // 主题类型 0普通 1长文 2视频 3图片（'' 不筛选）
       sort: '', // 排序
       threadEssence: '', // 是否精华帖
@@ -170,7 +180,10 @@ export default {
       timer: null, // 轮询获取新主题 定时器
       threadCount: 0, // 主题总数
       total: 0, // 新的主题数，通过轮询获取
-      htitle: '\u200E'
+      headTitle: '\u200E',
+      headKeywords: '',
+      headDesc: '',
+      currentAudioId: ''
     }
   },
   computed: {
@@ -181,12 +194,23 @@ export default {
       return this.$store.state.site.info.attributes || {}
     }
   },
+  watch: {
+    forums: {
+      handler(val) {
+        if (val && val.set_site) {
+          this.headTitle = val.set_site.site_title || val.set_site.site_name || 'Discuz! Q'
+          this.headKeywords = val.set_site.site_keywords
+          this.headDesc = val.set_site.site_introduction
+        }
+      },
+      deep: true
+    }
+  },
   mounted() {
     if (this.forums && this.forums.set_site) {
-      this.htitle = this.forums.set_site.site_name ? this.forums.set_site.site_name : 'Discuz! Q'
-    }
-    if (this.$route.query.categoryId) {
-      this.categoryId = this.$route.query.categoryId
+      this.headTitle = this.forums.set_site.site_title || this.forums.set_site.site_name || 'Discuz! Q'
+      this.headKeywords = this.forums.set_site.site_keywords
+      this.headDesc = this.forums.set_site.site_introduction
     }
     if (this.threadsStickyData.length === 0) {
       this.getThreadsSticky()
@@ -216,7 +240,6 @@ export default {
         'filter[isSticky]': 'yes',
         'filter[isApproved]': 1,
         'filter[isDeleted]': 'no',
-        'filter[categoryId]': this.categoryId,
         include: ['firstPost']
       }
       this.$store.dispatch('jv/get', ['threads', { params }]).then((data) => {
@@ -227,11 +250,11 @@ export default {
     getThreadsList() {
       this.loading = true
       const params = {
-        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser',
+        include: threadInclude,
         'filter[isSticky]': 'no',
         'filter[isApproved]': 1,
         'filter[isDeleted]': 'no',
-        'filter[categoryId]': this.categoryId,
+        'filter[isDisplay]': 'yes',
         'filter[type]': this.threadType,
         'filter[isEssence]': this.threadEssence,
         'filter[fromUserId]': this.fromUserId,
@@ -285,7 +308,7 @@ export default {
         'filter[isSticky]': 'no',
         'filter[isApproved]': 1,
         'filter[isDeleted]': 'no',
-        'filter[categoryId]': this.categoryId,
+        'filter[isDisplay]': 'yes',
         'filter[type]': this.threadType,
         'filter[isEssence]': this.threadEssence,
         'filter[fromUserId]': this.fromUserId,
@@ -295,7 +318,7 @@ export default {
         if (data && data._jv) {
           const _threadCount = (data._jv.json && data._jv.json.meta && data._jv.json.meta.threadCount) || 0
           if (this.threadCount > 0) {
-            this.total = _threadCount - this.threadCount > 0 ? _threadCount - this.threadCount : 0
+            this.total = (_threadCount - this.threadCount) > 0 ? _threadCount - this.threadCount : 0
           }
         }
       })
@@ -309,11 +332,9 @@ export default {
     },
     // 点击分类
     onChangeCategory(id) {
-      this.$router.push({ url: '/', query: id !== 0 ? { categoryId: id } : {}})
-      this.categoryId = id
-      this.reloadThreadsList()
-      this.threadsStickyData = []
-      this.getThreadsSticky()
+      if (id !== 0) {
+        this.$router.push(`/category/${id}`)
+      }
     },
     // 筛选
     onChangeFilter(val) {
@@ -344,11 +365,22 @@ export default {
     formatRichText(html) {
       // eslint-disable-next-line no-param-reassign
       return s9e.parse(html)
+    },
+    // 语音互斥播放
+    audioPlay(id) {
+      if (this.currentAudioId && this.currentAudioId !== id) {
+        this.$refs[`audio${this.currentAudioId}`][0].pause()
+      }
+      this.currentAudioId = id
     }
   },
   head() {
     return {
-      title: this.htitle
+      title: this.headTitle,
+      meta: [
+        { hid: 'keywords', name: 'keywords', content: this.headKeywords },
+        { hid: 'description', name: 'description', content: this.headDesc }
+      ]
     }
   }
 }
