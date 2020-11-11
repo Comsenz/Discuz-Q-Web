@@ -26,10 +26,9 @@
         </div>
       </div>
       <div class="friends">
-        <div class="title">{{ $t('post.myFriends') }}</div>
         <div v-loading="qaFriendsLoading" class="container-caller">
           <div
-            v-for="(user, index) in qaFriends"
+            v-for="(user, index) in qaFriendsRecommend"
             :key="index"
             :class="{ caller: true, selected: selectedFriend.username === user.username }"
             @click="selectedFriend = user"
@@ -49,13 +48,13 @@
 </template>
 
 <script>
-const include = 'fromUser,toUser.groups'
 import handleError from '@/mixin/handleError'
 export default {
   name: 'Caller',
   mixins: [handleError],
   data() {
     return {
+      qaFriendsRecommend: [],
       qaFriends: [],
       qaFriendsLoading: true,
       selectedFriend: {},
@@ -85,14 +84,22 @@ export default {
   methods: {
     getQaFriends() {
       const params = {
-        'filter[type]': 2,
-        'filter[canBeAsked]': 'yes',
-        include
+        'filter[canBeAsked]': 'yes'
       }
-      return this.$store.dispatch('jv/get', ['follow', { params }]).then(data => {
+      return this.$store.dispatch('jv/get', ['/users', { params }]).then(data => {
         this.qaFriendsLoading = false
-        this.qaFriends = data.map(item => item.fromUser)
+        this.qaFriends = [...data]
+        if (this.qaFriends.length === 0) return
+        const limit = this.qaFriends.length > 10 ? 10 : this.qaFriends.length
+        while (this.qaFriendsRecommend.length < limit) {
+          const index = this.getRandom(this.qaFriends.length)
+          this.qaFriendsRecommend.push(this.qaFriends[index])
+          this.qaFriends.splice(index, 1) // 在原数据中除掉已进入推荐的，避免重复
+        }
       }, e => this.handleError(e))
+    },
+    getRandom(length) {
+      return Math.floor(Math.random() * length)
     },
     searchUser(e) {
       this.searchValue = e.target.value
