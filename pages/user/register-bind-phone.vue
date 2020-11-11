@@ -91,7 +91,7 @@ export default {
       passerror: false,
       mobileToken: '',
       phoneNumber: '',
-      preurl: ''
+      preurl: '/'
     }
   },
   computed: {

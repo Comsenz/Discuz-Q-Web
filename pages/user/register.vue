@@ -85,7 +85,7 @@ export default {
       ischeck: true,
       loading: false,
       passerror: false,
-      preurl: ''
+      preurl: '/'
     }
   },
   computed: {

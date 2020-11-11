@@ -42,7 +42,7 @@ export default {
       wechatLoginTimer: null, // 微信登录定时器
       activeName: '0',
       ischeck: true,
-      preurl: ''
+      preurl: '/'
     }
   },
   computed: {

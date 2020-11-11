@@ -103,7 +103,7 @@ export default {
       nickname: '',
       headimgurl: '',
       token: '', // 微信绑定token
-      preurl: ''
+      preurl: '/'
     }
   },
   computed: {

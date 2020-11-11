@@ -56,7 +56,7 @@ export default {
       ischeck: true,
       mobileToken: '',
       phoneNumber: '',
-      preurl: ''
+      preurl: '/'
     }
   },
   computed: {

@@ -62,7 +62,7 @@ export default {
       loading: false,
       canReg: false,
       ischeck: true,
-      preurl: ''
+      preurl: '/'
     }
   },
   computed: {

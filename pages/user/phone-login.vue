@@ -52,7 +52,7 @@ export default {
       canClick: true,
       ischeck: true,
       loading: false,
-      preurl: ''
+      preurl: '/'
     }
   },
   computed: {
