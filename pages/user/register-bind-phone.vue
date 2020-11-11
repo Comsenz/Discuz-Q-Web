@@ -90,7 +90,8 @@ export default {
       loading: false,
       passerror: false,
       mobileToken: '',
-      phoneNumber: ''
+      phoneNumber: '',
+      preurl: ''
     }
   },
   computed: {
@@ -99,7 +100,10 @@ export default {
     }
   },
   mounted() {
-    const { validate, code, phoneNumber } = this.$route.query
+    const { validate, code, phoneNumber, preurl } = this.$route.query
+    if (preurl) {
+      this.preurl = preurl
+    }
     if (process.client) {
       this.mobileToken = localStorage.getItem('mobileToken')
     }
@@ -236,7 +240,7 @@ export default {
         })
     },
     jump2Login() {
-      this.$router.push(`/user/login-bind-phone?&validate=${this.validate}&code=${this.code}&phoneNumber=${this.phoneNumber}`)
+      this.$router.push(`/user/login-bind-phone?&validate=${this.validate}&code=${this.code}&phoneNumber=${this.phoneNumber}&preurl=${this.preurl}`)
     }
   }
 }

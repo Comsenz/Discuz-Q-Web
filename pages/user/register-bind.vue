@@ -102,7 +102,8 @@ export default {
       passerror: false,
       nickname: '',
       headimgurl: '',
-      token: '' // 微信绑定token
+      token: '', // 微信绑定token
+      preurl: ''
     }
   },
   computed: {
@@ -114,7 +115,10 @@ export default {
     }
   },
   mounted() {
-    const { validate, code, nickname, headimgurl } = this.$route.query
+    const { validate, code, nickname, headimgurl, preurl } = this.$route.query
+    if (preurl) {
+      this.preurl = preurl
+    }
     if (process.client) this.token = localStorage.getItem('wechat')
     if (nickname) {
       this.nickname = nickname
@@ -252,7 +256,7 @@ export default {
         })
     },
     jump2Login() {
-      this.$router.push(`/user/login-bind?nickname=${this.nickname}&headimgurl=${this.headimgurl}`)
+      this.$router.push(`/user/login-bind?nickname=${this.nickname}&headimgurl=${this.headimgurl}&preurl=${this.preurl}`)
     }
   }
 }

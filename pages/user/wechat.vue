@@ -41,7 +41,8 @@ export default {
       wechatLogin: {}, // 微信扫码登录信息
       wechatLoginTimer: null, // 微信登录定时器
       activeName: '0',
-      ischeck: true
+      ischeck: true,
+      preurl: ''
     }
   },
   computed: {
@@ -50,7 +51,10 @@ export default {
     }
   },
   mounted() {
-    const { code } = this.$route.query
+    const { code, preurl } = this.$route.query
+    if (preurl) {
+      this.preurl = preurl
+    }
     if (code !== 'undefined') {
       this.code = code
     }
@@ -128,13 +132,13 @@ export default {
       })
     },
     toUserlogin() {
-      this.$router.push(`/user/login?code=${this.code}`)
+      this.$router.push(`/user/login?code=${this.code}&preurl=${this.preurl}`)
     },
     toPhonelogin() {
       if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
-        this.$router.push(`/user/phone-login-register?code=${this.code}`)
+        this.$router.push(`/user/phone-login-register?code=${this.code}&preurl=${this.preurl}`)
       } else {
-        this.$router.push(`/user/phone-login?code=${this.code}`)
+        this.$router.push(`/user/phone-login?code=${this.code}&preurl=${this.preurl}`)
       }
     }
   }

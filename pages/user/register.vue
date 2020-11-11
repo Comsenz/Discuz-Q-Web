@@ -84,7 +84,8 @@ export default {
       randstr: '',
       ischeck: true,
       loading: false,
-      passerror: false
+      passerror: false,
+      preurl: ''
     }
   },
   computed: {
@@ -93,7 +94,10 @@ export default {
     }
   },
   mounted() {
-    const { validate, code } = this.$route.query
+    const { validate, code, preurl } = this.$route.query
+    if (preurl) {
+      this.preurl = preurl
+    }
     if (validate) {
       this.validate = JSON.parse(validate)
     }
@@ -223,7 +227,7 @@ export default {
         })
     },
     jump2Login() {
-      this.$router.push(`/user/login?&validate=${this.validate}&code=${this.code}`)
+      this.$router.push(`/user/login?&validate=${this.validate}&code=${this.code}&preurl=${this.preurl}`)
     }
   }
 }
