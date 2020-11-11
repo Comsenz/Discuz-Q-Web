@@ -2,7 +2,7 @@
   <div class="container">
     <main class="cont-left">
       <index-filter @onChangeFilter="onChangeFilter" @onChangeType="onChangeType" @onChangeSort="onChangeSort" />
-      <div v-if="threadsStickyData.length > 0" class="list-top">
+      <div v-if="threadsStickyData.length > 0">
         <div v-for="(item, index) in threadsStickyData" :key="index" class="list-top-item">
           <div class="top-label">{{ $t('home.sticky') }}</div>
           <nuxt-link :to="`/thread/${item._jv && item._jv.id}`" target="_blank" class="top-title">
@@ -19,20 +19,18 @@
           <span class="refresh" @click="reloadThreadsList">{{ $t('home.clickRefresh') }}</span>
         </div>
       </div>
-      <div class="post-list">
-        <template v-for="(item, index) in threadsData">
-          <!-- 语音贴 -->
-          <post-item v-if="item.type === 4" :ref="`audio${ item && item.threadAudio && item.threadAudio._jv && item.threadAudio._jv.id}`" :key="index" :item="item" @audioPlay="audioPlay" />
-          <post-item v-else :key="index" :item="item" />
-        </template>
-        <list-load-more
-          :loading="loading"
-          :has-more="hasMore"
-          :page-num="pageNum"
-          :length="threadsData.length"
-          @loadMore="loadMore"
-        />
-      </div>
+      <template v-for="(item, index) in threadsData">
+        <!-- 语音贴 -->
+        <post-item v-if="item.type === 4" :ref="`audio${ item && item.threadAudio && item.threadAudio._jv && item.threadAudio._jv.id}`" :key="index" :item="item" @audioPlay="audioPlay" />
+        <post-item v-else :key="index" :item="item" />
+      </template>
+      <list-load-more
+        :loading="loading"
+        :has-more="hasMore"
+        :page-num="pageNum"
+        :length="threadsData.length"
+        @loadMore="loadMore"
+      />
     </main>
     <aside class="cont-right">
       <div class="category background-color">
@@ -41,7 +39,7 @@
       <div class="background-color">
         <advertising />
       </div>
-      <div class="recommend-user background-color">
+      <div class="background-color">
         <recommend-user :list="recommendUserData" />
       </div>
       <copyright :forums="forums" />
@@ -194,7 +192,7 @@ export default {
       return this.$store.state.site.info.attributes || {}
     }
   },
-  /* watch: {
+  watch: {
     forums: {
       handler(val) {
         if (val && val.set_site) {
@@ -205,7 +203,7 @@ export default {
       },
       deep: true
     }
-  },*/
+  },
   mounted() {
     if (this.forums && this.forums.set_site) {
       this.headTitle = this.forums.set_site.site_title || this.forums.set_site.site_name || 'Discuz! Q'
