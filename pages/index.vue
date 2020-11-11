@@ -9,7 +9,7 @@
             <template v-if="item.type === 1">
               {{ item.title }}
             </template>
-            <div v-else v-html="$xss(formatRichText(item.firstPost && item.firstPost.summary))" />
+            <span v-else v-html="$xss(formatRichText(item.firstPost && item.firstPost.summary))" />
           </nuxt-link>
         </div>
       </div>
@@ -194,7 +194,7 @@ export default {
       return this.$store.state.site.info.attributes || {}
     }
   },
-  watch: {
+  /* watch: {
     forums: {
       handler(val) {
         if (val && val.set_site) {
@@ -205,7 +205,7 @@ export default {
       },
       deep: true
     }
-  },
+  },*/
   mounted() {
     if (this.forums && this.forums.set_site) {
       this.headTitle = this.forums.set_site.site_title || this.forums.set_site.site_name || 'Discuz! Q'
