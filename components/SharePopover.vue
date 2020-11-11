@@ -78,7 +78,7 @@ export default {
         // 话题详情
         path = window.location.href
       } else {
-        path = `${window.location.protocol}//${window.location.host}/topic/index?id=${this.threadsId}`
+        path = `${window.location.protocol}//${window.location.host}/content/${this.threadsId}`
       }
       this.createQrcode(path)
     },
