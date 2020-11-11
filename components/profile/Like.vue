@@ -86,7 +86,7 @@ export default {
             // eslint-disable-next-line no-param-reassign
             val.firstPost.isLiked = true
           })
-          this.data = [...this.data, ...ress]
+          this.data = ress
           if (res._jv) {
             this.hasMore = this.data.length < res._jv.json.meta.threadCount
           }

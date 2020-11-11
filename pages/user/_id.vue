@@ -518,10 +518,11 @@ export default {
       this.$store.dispatch('jv/get', `users/${this.currentLoginId}/deny`).then((res) => {
         this.unbundUserData = []
         this.unbundUserData.push(Number(this.currentLoginId))
-        res.forEach((v, i) => {
-          this.unbundUserData.push(res[i].id)
+        const ress = JSON.parse(JSON.stringify(res))
+        ress.forEach((v, i) => {
+          this.unbundUserData.push(ress[i].id)
         })
-        const data = res.filter(item => item.id.toString() === this.userId)
+        const data = ress.filter(item => item.id.toString() === this.userId)
         this.isShield = data.length > 0
       }, e => this.handleError(e))
         .finally(() => {
