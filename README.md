@@ -24,7 +24,7 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 
 ### 打包前配置
 
-修改根目录下面的```config.js```配置文件
+修改根目录下面的```config.js```配置文件，其中```DEV_API_URL```是本地开发的时候需要配置的api请求域名，```SSR_API_URL```是在生产环境开启ssr模式的时候需要配置的api请求域名
 
 
 ### 安装依赖
