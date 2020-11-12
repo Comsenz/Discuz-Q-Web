@@ -816,7 +816,9 @@ export default {
       essence: '加精',
       sticky: '置顶',
       deletePosts: '删除回复',
-      canBeReward: '允许被打赏'
+      canBeReward: '允许被打赏',
+      editOwnThreadOrPost: '编辑发布的主题或回复',
+      hideOwnThreadOrPost: '删除发布的主题或回复'
     },
     createThread: {
       0: '发布文本',
