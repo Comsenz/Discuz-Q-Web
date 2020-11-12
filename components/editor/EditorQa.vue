@@ -69,9 +69,25 @@ export default {
       return this.siteMasterScale ? 1 - this.siteMasterScale : ''
     }
   },
+  watch: {
+    question: {
+      handler(val) {
+        if (val.beUser) {
+          this.beAskedUser = val.beUser
+        }
+      },
+      deep: true,
+      immediate: true
+    }
+  },
   // TODO beAskedUser 回显
   mounted() {
     console.log(this.forums, 'forums')
+    console.log('被提问信息', this.question)
+    if (this.question.beUser) {
+      this.beAskedUser = this.question.beUser
+    }
+    console.log(this.beAskedUser)
   },
   methods: {
     selectedQaCaller(user) {

@@ -132,14 +132,36 @@ export default {
     },
     currentUser() {
       return this.$store.state.user.info.attributes || {}
+    },
+    beaskId() {
+      return this.$route.query.beaskId
     }
   },
   mounted() {
     if (['0', '1', '2', '3', '5', '6'].indexOf(this.type) < 0) return this.$router.replace('/error')
     this.getCategoryList()
     this.getThread()
+    if (this.beaskId) {
+      this.getBeAskUserInfo()
+    }
   },
   methods: {
+    getBeAskUserInfo() {
+      const params = {
+        include: 'groups'
+      }
+      this.$store
+        .dispatch('jv/get', [`users/${this.beaskId}`, { params }])
+        .then((res) => {
+          if (res) {
+            this.question.beUser = res
+            console.log('提问', this.question)
+          }
+        })
+        .catch((err) => {
+          this.handleError(err)
+        })
+    },
     getCategoryList() {
       this.$store.dispatch('jv/get', ['categories', {}]).then(res => {
         this.categoryList = res

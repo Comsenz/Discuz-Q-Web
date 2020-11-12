@@ -3,6 +3,7 @@
 // server执行顺序 => beforeEach - afterEach - middleware
 import cookie from '../utils/parserCookie'
 const freePath = ['/user/wechat-bind-phone', '/user/login-bind-phone', '/user/login-bind', '/user/phone-login-register', '/user/phone-login', '/user/register-bind-phone', '/user/register-bind', '/user/wechat', '/user/login', '/user/register', '/site/info', '/user/warning', '/user/agreement', '/user/agreement', '/modify/findpwd', '/site/partner-invite', '/modify/resetpwdsuccess']
+const loginPath = ['/user/wechat-bind-phone', '/user/login-bind-phone', '/user/login-bind', '/user/phone-login-register', '/user/phone-login', '/user/register-bind-phone', '/user/register-bind', '/user/wechat', '/user/login', '/user/register']
 export default ({ app }) => {
   const { store, router } = app
   router.beforeEach(async(to, from, next) => {
@@ -37,6 +38,12 @@ export default ({ app }) => {
         } catch (error) {
           // 清除用户信息
           store.commit('user/SET_USER_INFO', {})
+        }
+      }
+      // 登录后进入登录注册页面跳回首页
+      if (loginPath.includes(to.path)) {
+        if (userId) {
+          return next({ path: '/' })
         }
       }
 
