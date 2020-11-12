@@ -2,19 +2,8 @@
   <div class="index-top-conttainer">
     <div class="index-filter">
       <template v-for="(item, index) in filterQuery">
-        <template v-if="item.value === 'followed'">
-          <div
-            v-if=" userId > 0"
-            :key="index"
-            class="filter-btn"
-            :class="{ 'active': query.filter === item.value }"
-            @click="onClickFilter(item.value)"
-          >
-            {{ item.label }}
-          </div>
-        </template>
         <div
-          v-else
+          v-if="item.isShow"
           :key="index"
           class="filter-btn"
           :class="{ 'active': query.filter === item.value }"
@@ -64,13 +53,16 @@ export default {
       // 筛选按钮
       filterQuery: [{
         label: this.$t('home.all'), // 所有
-        value: ''
+        value: '',
+        isShow: true
       }, {
         label: this.$t('home.essence'), // 精华
-        value: 'isEssence'
+        value: 'isEssence',
+        isShow: true
       }, {
         label: this.$t('home.followed'), // 已关注
-        value: 'followed'
+        value: 'followed',
+        isShow: false
       }],
       // 类型
       filterType: [{
@@ -119,6 +111,23 @@ export default {
   computed: {
     userId() {
       return this.$store.getters['session/get']('userId')
+    }
+  },
+  watch: {
+    userId(val) {
+      // 登录才显示“已关注”
+      if (val > 0) {
+        this.filterQuery[2].isShow = true
+      } else {
+        this.filterQuery[2].isShow = false
+      }
+    }
+  },
+  mounted() {
+    if (this.userId > 0) {
+      this.filterQuery[2].isShow = true
+    } else {
+      this.filterQuery[2].isShow = false
     }
   },
   methods: {
