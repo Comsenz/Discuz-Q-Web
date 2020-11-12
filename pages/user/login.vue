@@ -61,7 +61,8 @@ export default {
       code: '', // 注册邀请码
       loading: false,
       canReg: false,
-      ischeck: true
+      ischeck: true,
+      preurl: '/'
     }
   },
   computed: {
@@ -70,7 +71,10 @@ export default {
     }
   },
   mounted() {
-    const { code } = this.$route.query
+    const { code, preurl } = this.$route.query
+    if (preurl) {
+      this.preurl = preurl
+    }
     if (code !== 'undefined') {
       this.code = code
     }
@@ -138,19 +142,19 @@ export default {
       }
     },
     toRegister() {
-      this.$router.push(`/user/register?code=${this.code}`)
+      this.$router.push(`/user/register?code=${this.code}&preurl=${this.preurl}`)
     },
     iscanReg() {
       return [this.canReg && this.forums && this.forums.set_reg && (this.forums.set_reg.register_type === 0) ? '' : 'noreg']
     },
     toWechat() {
-      this.$router.push(`/user/wechat?code=${this.code}`)
+      this.$router.push(`/user/wechat?code=${this.code}&preurl=${this.preurl}`)
     },
     toPhonelogin() {
       if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
-        this.$router.push(`/user/phone-login-register?code=${this.code}`)
+        this.$router.push(`/user/phone-login-register?code=${this.code}&preurl=${this.preurl}`)
       } else {
-        this.$router.push(`/user/phone-login?code=${this.code}`)
+        this.$router.push(`/user/phone-login?code=${this.code}&preurl=${this.preurl}`)
       }
     }
   }

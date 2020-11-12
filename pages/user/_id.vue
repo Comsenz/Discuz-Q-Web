@@ -33,16 +33,20 @@
             name="1"
           />
           <el-tab-pane
-            :label="$t('profile.likes')+ ` (${userInfo.likedCount || 0})`"
+            :label="$t('profile.question')+ ` (${userInfo.questionCount || 0})`"
             name="2"
           />
           <el-tab-pane
-            :label="$t('profile.following')+ ` (${userInfo.followCount || 0})`"
+            :label="$t('profile.likes')+ ` (${userInfo.likedCount || 0})`"
             name="3"
           />
           <el-tab-pane
-            :label="$t('profile.followers')+ ` (${userInfo.fansCount || 0})`"
+            :label="$t('profile.following')+ ` (${userInfo.followCount || 0})`"
             name="4"
+          />
+          <el-tab-pane
+            :label="$t('profile.followers')+ ` (${userInfo.fansCount || 0})`"
+            name="5"
           />
 
         </el-tabs>
@@ -153,6 +157,14 @@
           class="h-button1"
           @click="chat"
         >{{ $t('profile.privateMessage') }}</el-button>
+        <el-button
+          v-if="can_create_thread_question && canBeAsked"
+          type="primary"
+          plain
+          size="small"
+          class="h-button1"
+          @click="ask"
+        >向Ta提问</el-button>
       </div>
       <chat-box
         v-if="chatting"
@@ -273,7 +285,7 @@ export default {
       'page[number]': 1,
       'page[limit]': 20,
       'filter[isApproved]': 1,
-      'filter[userId]': 714,
+      'filter[userId]': params.id,
       'filter[type]': 5,
       'filter[answer]': 'yes'
     }
@@ -353,6 +365,8 @@ export default {
       activeName: '1', // 默认激活tab
       profilename: '\u200E',
       can_create_dialog: false, // 创建私信权利
+      can_create_thread_question: false, // 发起提问权利
+      canBeAsked: false,
       headFixed: false,
       loading: false,
       dialog: { id: '', name: '' },
@@ -387,6 +401,9 @@ export default {
         if (val.set_site && val.set_site.site_name) {
           this.site_name = val.set_site.site_name
         }
+        if (val.other && val.other.can_create_thread_question) {
+          this.can_create_thread_question = true
+        }
       },
       deep: true,
       immediate: true
@@ -413,6 +430,9 @@ export default {
     window.removeEventListener('scroll', this.handleScroll)
   },
   methods: {
+    ask() {
+      this.$router.push(`/thread/post?type=5&beaskId=${this.userId}`)
+    },
     handleScroll() {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
       if (scrollTop > 220) {
@@ -452,6 +472,7 @@ export default {
               this.profilename = `${this.dialog.name + this.$t('profile.myperson')} - ${this.site_name}`
               this.userInfo = res
               this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
+              this.canBeAsked = res.canBeAsked
             }
           }))
         .catch((err) => {
@@ -518,10 +539,11 @@ export default {
       this.$store.dispatch('jv/get', `users/${this.currentLoginId}/deny`).then((res) => {
         this.unbundUserData = []
         this.unbundUserData.push(Number(this.currentLoginId))
-        res.forEach((v, i) => {
-          this.unbundUserData.push(res[i].id)
+        const ress = JSON.parse(JSON.stringify(res))
+        ress.forEach((v, i) => {
+          this.unbundUserData.push(ress[i].id)
         })
-        const data = res.filter(item => item.id.toString() === this.userId)
+        const data = ress.filter(item => item.id.toString() === this.userId)
         this.isShield = data.length > 0
       }, e => this.handleError(e))
         .finally(() => {
@@ -605,20 +627,20 @@ export default {
       .info-content {
         color: #333333;
         margin-top: 10px;
-        width: 680px;
+        width: 628px;
         overflow: hidden;
         /* height: 80px; */
         overflow-wrap: break-word;
         /* line-break: anywhere; */
         text-overflow: ellipsis;
         @media screen and (max-width: 1005px) {
-          width: 600px;
+          width: 548px;
         }
-        @media screen and (max-width: 930px) {
-          width: 510px;
+        @media screen and (max-width: 950px) {
+          width: 458px;
         }
         @media screen and (max-width: 830px) {
-          width: 430px;
+          width: 372px;
         }
       }
     }

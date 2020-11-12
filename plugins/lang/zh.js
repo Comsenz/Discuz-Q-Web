@@ -248,9 +248,10 @@ export default {
     callFriends: '@圈友',
     callAnswer: '选择解答人',
     myFriends: '我的好友',
+    recommendAnswer: '推荐解答人',
     chosen: '已选择',
     confirmChoice: '确定选择',
-    searchFriendsCanBeAsd: '请输入昵称，来搜索可被提问的圈友',
+    searchFriendsCanBeAsd: '请输入昵称，来搜索可被提问的用户',
     searchFriends: '请输入昵称，来搜索圈友',
     topicInputTip: '请选择或直接输入#话题#',
     pleaseInputPostTitle: '请输入文章标题',
@@ -437,6 +438,7 @@ export default {
     of: '的',
     question: '提问：',
     answer: '回答了',
+    answered: '已回答',
     joinAfterView: '加入站点后才可以预览'
   },
   pay: {

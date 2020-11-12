@@ -78,7 +78,7 @@ export default {
   },
   methods: {
     handleCommand({ command, item }) {
-      if (command === 'toEdit') return this.$router.push(`/content/post?type=${this.thread.type}&operating=edit&threadId=${this.thread._jv.id}`)
+      if (command === 'toEdit') return this.$router.push(`/thread/post?type=${this.thread.type}&operating=edit&threadId=${this.thread._jv.id}`)
       if (command === 'isDeleted') return this.deleteConfirm(item)
       this.$emit('managementSelected', item)
     },

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="global">
     <Header />
     <div class="app-cont">
       <Nuxt />

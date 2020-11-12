@@ -18,7 +18,8 @@
       >
         <svg-icon style="font-size: 20px; margin-top: 10px; fill: #8590A6" type="drop-down" />
       </div>
-      <button v-if="command[usersIndex].showButton && command[usersIndex].buttonText && threadType !== 5" @click="onClick(command, usersIndex)">
+      <!--商品帖 和 问答帖 不支持打赏-->
+      <button v-if="command[usersIndex].showButton && command[usersIndex].buttonText && threadType !== 5 && threadType !== 6" @click="onClick(command, usersIndex)">
         <svg-icon style="font-size: 16px; fill: white; margin-right: 10px" :type="command[usersIndex].icon" />
         <span>{{ command[usersIndex].buttonText }}</span>
       </button>
@@ -60,7 +61,7 @@ export default {
   },
   data() {
     return {
-      payButtonText: ['', this.$t('topic.paymentViewRemainingContent'), this.$t('topic.paymentViewVideo'), this.$t('topic.paymentViewPicture'), this.$t('topic.paymentViewPicture')],
+      payButtonText: ['', this.$t('topic.paymentViewRemainingContent'), this.$t('topic.paymentViewVideo'), this.$t('topic.paymentViewPicture'), this.$t('topic.paymentViewAudio')],
       command: [
         {
           value: 24, // value 是每次加载的头像数量

@@ -279,6 +279,10 @@ $em: 16px;
   ol { display: block; padding-left: 2 * $em; margin: 1em 0; list-style: revert; }
   ul > li { display: list-item; align-items: baseline; text-align: match-parent; }
   ol ul { list-style-type: circle; }
+  li[data-task-state="checked"]
+  { margin-left: -32px; list-style-type: none; text-decoration: line-through rgba(0, 0, 0, .6); }
+  li[data-task-state="unchecked"]
+  { margin-left: -32px; list-style-type: none; }
   u { text-decoration: underline; }
   .hide { display: none; }
   del { display: inline; }

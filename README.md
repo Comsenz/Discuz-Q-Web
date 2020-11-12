@@ -24,7 +24,9 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 
 ### 打包前配置
 
-修改根目录下面的```config.js```配置文件
+修改根目录下面的```config.js```配置文件，其中```DEV_API_URL```是本地二次开发的时候需要配置的api请求域名，```SSR_API_URL```是在生产环境开启ssr模式的时候需要配置的api请求域名
+
+只有生产环境使用了ssr，才需要配置```SSR_API_URL```,静态化部署可以忽略
 
 
 ### 安装依赖
@@ -48,10 +50,10 @@ npm run build
  pm2 start npm --name "DiscuzQ" -- run start
 ```
 
-## 不包含ssr的静态化部署
+## 不包含ssr的spa模式部署
 
 ```
-npm run generate
+npm run build:spa
 ```
 
 生成```dist```目录，访问```index.html```即可
