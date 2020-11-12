@@ -47,10 +47,12 @@
             </div>
           </div>
         </div>
-        <div v-if="totalPage" class="pagination">
-          <div v-show="pageNumberPagination > 1" class="pageButton" @click="prePage">上一页</div>
-          <span>{{ pageNumberPagination }}</span>
-          <div v-show="pageNumberPagination < totalPage" class="pageButton" @click="nextPage">下一页</div>
+        <div v-if="totalPage" class="container-pagination">
+          <div class="pagination">
+            <svg-icon :class="{ 'page-button': true,'pre-button': true, disabled: pageNumberPagination <= 1 }" type="drop-down" @click="prePage" />
+            <span>{{ pageNumberPagination }}</span>
+            <svg-icon :class="{ 'page-button': true,'next-button': true, disabled: pageNumberPagination >= totalPage }" type="drop-down" @click="nextPage" />
+          </div>
         </div>
       </div>
     </div>
@@ -127,14 +129,13 @@ export default {
       return this.$store.dispatch('jv/get', ['/users', { params }]).then(data => {
         // TODO 响应页数判断
         const { _jv: { json: { meta }}} = data
-        const xxx = JSON.parse(JSON.stringify(data))
-        xxx.forEach(item => { item.username += `--${page}` }) // 检查页码用的
         this.totalPage = meta.pageCount
         obj.loading = false
-        obj.list = xxx
+        obj.list = [...data]
       }, e => this.handleError(e))
     },
     prePage() {
+      if (this.pageNumberPagination <= 1) return
       this.$refs.currentQaUser.classList.add('transfer-right')
       this.$refs.preQaUser.classList.add('transfer-right')
       setTimeout(() => {
@@ -152,6 +153,7 @@ export default {
       }, 310)
     },
     nextPage() {
+      if (this.pageNumberPagination >= this.totalPage) return
       this.$refs.currentQaUser.classList.add('transfer-left')
       this.$refs.nextQaUser.classList.add('transfer-left')
       setTimeout(() => {
@@ -306,10 +308,40 @@ export default {
       > .title {
         font-size: 16px;
       }
-      > .pagination {
+      > .container-pagination {
         display: flex;
-        > .pageButton {
-          cursor: pointer;
+        justify-content: center;
+        > .pagination {
+          margin-top: 10px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: #8590A6;
+          > span {
+            user-select: none;
+          }
+          > .page-button {
+            cursor: pointer;
+            font-size: 18px;
+            &:hover {
+              color: $color-blue-base;
+            }
+            &:active {
+              color: $color-blue-deep;
+            }
+            &.disabled {
+              color: #eee;
+              cursor: not-allowed;
+            }
+          }
+          > .pre-button {
+            margin-right: 10px;
+            transform: rotate(90deg);
+          }
+          > .next-button {
+            margin-left: 10px;
+            transform: rotate(-90deg);
+          }
         }
       }
       > .container-user-list {

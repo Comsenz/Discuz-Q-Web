@@ -43,8 +43,9 @@
             ({{ item.user.groups[0].name }})
           </span>
         </nuxt-link>
-        <div v-if="item.createdAt" class="time">
-          {{ $t("topic.publishAt") }} {{ item.createdAt | formatDate }}
+        <div class="time">
+          <div v-if="item.type === 5 && item.question && item.question.is_answer === 1" class="answered">{{ $t('topic.answered') }}</div>
+          <template v-if="item.createdAt">{{ $t("topic.publishAt") }} {{ item.createdAt | formatDate }}</template>
         </div>
       </div>
       <!-- 问答贴 -->
@@ -502,6 +503,17 @@ export default {
     .time {
       color: $font-color-grey;
       font-size: 12px;
+      display: flex;
+      align-items: center;
+      .answered{
+        border: 1px solid #e7e7e7;
+        background: #f7f7f7;
+        height: 20px;
+        line-height: 18px;
+        padding:0 12px;
+        border-radius: 10px;
+        margin-right: 10px;
+      }
     }
     .title {
       display: inline-block;

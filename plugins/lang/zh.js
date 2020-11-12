@@ -438,6 +438,7 @@ export default {
     of: '的',
     question: '提问：',
     answer: '回答了',
+    answered: '已回答',
     joinAfterView: '加入站点后才可以预览'
   },
   pay: {
