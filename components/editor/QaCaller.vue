@@ -129,11 +129,9 @@ export default {
       return this.$store.dispatch('jv/get', ['/users', { params }]).then(data => {
         // TODO 响应页数判断
         const { _jv: { json: { meta }}} = data
-        const xxx = JSON.parse(JSON.stringify(data))
-        xxx.forEach(item => { item.username += `--${page}` }) // 检查页码用的
         this.totalPage = meta.pageCount
         obj.loading = false
-        obj.list = xxx
+        obj.list = [...data]
       }, e => this.handleError(e))
     },
     prePage() {
