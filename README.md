@@ -50,10 +50,10 @@ npm run build
  pm2 start npm --name "DiscuzQ" -- run start
 ```
 
-## 不包含ssr的静态化部署
+## 不包含ssr的spa模式部署
 
 ```
-npm run generate
+npm run build:spa
 ```
 
 生成```dist```目录，访问```index.html```即可
