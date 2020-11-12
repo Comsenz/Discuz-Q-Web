@@ -3,7 +3,7 @@
     <Avatar :user="author" :size="size" :round="round" />
     <div class="title-info">
       <div class="author-name">
-        <span class="username"> {{ author.username }}</span>
+        <span class="username"> <nuxt-link :to="'/user/' + author.id">{{ author.username }}</nuxt-link></span>
         <span v-if="author.groups && author.groups[0] && author.groups[0].isDisplay" class="group">（{{ author.groups[0].name }}）</span>
       </div>
       <div class="timer">
