@@ -14,7 +14,7 @@
     <div class="info">
       <div class="info-header">
         <div class="title">{{ item.title }}</div>
-        <div class="price">{{ $t('post.yuanItem') + item.price + $t('post.yuan') }}</div>
+        <div v-if="item.price > 0" class="price">{{ $t('post.yuanItem') + item.price + $t('post.yuan') }}</div>
       </div>
       <div class="btn"><svg-icon type="product-icon" class="icon" />{{ $t('post.buyProudct') }}</div>
     </div>

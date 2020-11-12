@@ -51,7 +51,8 @@ export default {
       isPaid: false, // 是否付费
       canClick: true,
       ischeck: true,
-      loading: false
+      loading: false,
+      preurl: '/'
     }
   },
   computed: {
@@ -60,7 +61,10 @@ export default {
     }
   },
   mounted() {
-    const { code } = this.$route.query
+    const { code, preurl } = this.$route.query
+    if (preurl) {
+      this.preurl = preurl
+    }
     if (code !== 'undefined') {
       this.code = code
     }
@@ -166,10 +170,10 @@ export default {
       }
     },
     toWechat() {
-      this.$router.push(`/user/wechat?code=${this.code}`)
+      this.$router.push(`/user/wechat?code=${this.code}&preurl=${this.preurl}`)
     },
     toUserlogin() {
-      this.$router.push(`/user/login?code=${this.code}`)
+      this.$router.push(`/user/login?code=${this.code}&preurl=${this.preurl}`)
     }
   }
 }

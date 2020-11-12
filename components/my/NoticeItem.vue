@@ -57,20 +57,20 @@
       </div>
       <nuxt-link
         v-if="item.post_content"
-        :to="`/content/comment?threadId=${item.thread_id}&commentId=${item.reply_post_id !== 0
+        :to="`/thread/comment?threadId=${item.thread_id}&commentId=${item.reply_post_id !== 0
           ? item.reply_post_id : item.post_id}`"
         class="post-content"
         v-html="$xss(item.post_content)"
       />
       <nuxt-link
         v-if="item.answer_content"
-        :to="`/content/${item.thread_id}`"
+        :to="`/thread/${item.thread_id}`"
         class="post-content"
         v-html="$xss(item.answer_content)"
       />
       <nuxt-link
         v-if="(item.thread_title || item.content) && item.type !== 'system'"
-        :to="`/content/${item.thread_id}`"
+        :to="`/thread/${item.thread_id}`"
         class="thread"
         target="_blank"
       >

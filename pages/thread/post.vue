@@ -238,7 +238,7 @@ export default {
     },
     checkPublish() {
       if (!this.isLogin()) return
-      // 0 文字帖 1 帖子 2 视频 3 图片
+      // 0 文字帖 1 帖子 2 视频 3 图片 4 音频 5 问答 6 商品
       if (!this.categorySelectedId) return this.$message.warning(this.$t('post.theClassifyCanNotBeBlank'))
       if (this.post.text.length > this.typeInformation[this.type].textLimit) return this.$message.warning(this.$t('post.messageLengthCannotOver'))
       if (this.type === '0' && !this.post.text) return this.$message.warning(this.$t('post.theContentCanNotBeBlank'))
@@ -268,7 +268,7 @@ export default {
       this.onPublish = true
       if (this.isEditor) {
         return Promise.all([this.editThreadPublish(), this.editPostPublish()]).then(dataArray => {
-          this.$router.push(`/content/${dataArray[0]._jv.id}`)
+          this.$router.push(`/thread/${dataArray[0]._jv.id}`)
         }, e => this.handleError(e)).finally(() => {
           this.onPublish = false
         })
@@ -302,7 +302,7 @@ export default {
         }
       }
       return this.$store.dispatch('jv/post', params).then(data => {
-        this.$router.push(`/content/${data._jv.id}`)
+        this.$router.push(`/thread/${data._jv.id}`)
       }, e => this.handleError(e)).finally(() => {
         this.onPublish = false
       })

@@ -111,7 +111,8 @@ export default {
       threadsData: [],
       loading: true,
       canDetail: false,
-      currentAudioId: ''
+      currentAudioId: '',
+      preurl: '/'
     }
   },
   computed: {
@@ -128,6 +129,7 @@ export default {
     }
   },
   mounted() {
+    this.preurl = this.$route.fullPath
     if (this.userId) this.userinfo()
     this.loadThreads()
     this.site_price = this.forums && this.forums.set_site && this.forums.set_site.site_price
@@ -155,7 +157,7 @@ export default {
       })
     },
     tologin() {
-      this.$router.push('/user/login')
+      this.$router.push(`/user/login?preurl=${this.preurl}`)
     },
     // 支付方式选择完成点击确定时
     paysureShow() {

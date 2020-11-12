@@ -4,43 +4,45 @@ module.exports = {
       this.toregister(url, code)
     },
     toregister(url = '/', code) {
+      const preurl = this.$route.fullPath
       if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 0) {
         // 用户名模式
-        this.$router.push(`/user/register?code=${code}`)
+        this.$router.push(`/user/register?code=${code}&preurl=${preurl}`)
       }
       if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
         // 手机模式
-        this.$router.push(`/user/phone-login-register?code=${code}`)
+        this.$router.push(`/user/phone-login-register?code=${code}&preurl=${preurl}`)
       }
       if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 2) {
         //  微信模式
         if (this.forums && this.forums.passport && this.forums.passport.oplatform_close && this.forums.passport.offiaccount_close) {
-          this.$router.push(`/user/wechat?code=${code}`)
+          this.$router.push(`/user/wechat?code=${code}&preurl=${preurl}`)
         } else if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_sms) {
-          this.$router.push(`/user/phone-login-register?code=${code}`)
+          this.$router.push(`/user/phone-login-register?code=${code}&preurl=${preurl}`)
         } else {
-          this.$router.push(`/user/register?code=${code}`)
+          this.$router.push(`/user/register?code=${code}&preurl=${preurl}`)
         }
       }
     },
     headerTologin() {
+      const preurl = this.$route.fullPath
       if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 0) {
         // 用户名模式
-        this.$router.push(`/user/login`)
+        this.$router.push(`/user/login?preurl=${preurl}`)
       } else if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
         // 手机模式
-        this.$router.push(`/user/phone-login-register`)
+        this.$router.push(`/user/phone-login-register?preurl=${preurl}`)
       } else if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 2) {
         //  微信模式
         if (this.forums && this.forums.passport && this.forums.passport.oplatform_close && this.forums.passport.offiaccount_close) {
-          this.$router.push(`/user/wechat`)
+          this.$router.push(`/user/wechat?preurl=${preurl}`)
         } else if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_sms) {
-          this.$router.push(`/user/phone-login-register`)
+          this.$router.push(`/user/phone-login-register?preurl=${preurl}`)
         } else {
-          this.$router.push(`/user/login`)
+          this.$router.push(`/user/login?preurl=${preurl}`)
         }
       } else {
-        this.$router.push(`/user/login`)
+        this.$router.push(`/user/login?preurl=${preurl}`)
       }
     },
     logind() {
@@ -60,7 +62,7 @@ module.exports = {
           this.isPaid = this.user.paid
         }
         if (this.site_mode !== 'pay' || this.isPaid) {
-          this.$router.push('/')
+          this.$router.push(`${this.preurl}`)
         }
         if (this.site_mode === 'pay' && !this.isPaid) {
           this.$router.push('/site/info')

@@ -109,7 +109,7 @@ export default {
       }
       this.$store.dispatch('jv/get', ['users', { params }]).then((res) => {
         const data = res
-        data.forEach((v, i) => {
+        res && data.forEach((v, i) => {
           data[i].groupName = v.groups[0] ? v.groups[0].name : ''
         })
         this.userCount = data._jv.json.meta.total

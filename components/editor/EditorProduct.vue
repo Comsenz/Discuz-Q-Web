@@ -15,7 +15,7 @@
             {{ addedProduct.title }}
           </div>
           <div class="bottom">
-            <span class="price">{{ $t('post.yuanItem') + addedProduct.price + $t('post.yuan') }}</span>
+            <span class="price">{{ addedProduct.price > 0 ? $t('post.yuanItem') + addedProduct.price + $t('post.yuan') : '' }}</span>
             <svg-icon type="delete" class="icon" @click="remove" />
           </div>
         </div>

@@ -26,17 +26,31 @@
         </div>
       </div>
       <div class="friends">
-        <div class="title">{{ $t('post.myFriends') }}</div>
-        <div v-loading="qaFriendsLoading" class="container-caller">
-          <div
-            v-for="(user, index) in qaFriends"
-            :key="index"
-            :class="{ caller: true, selected: selectedFriend.username === user.username }"
-            @click="selectedFriend = user"
-          >
-            <avatar :user="user" size="30" round prevent-jump />
-            <span>{{ user.username }}</span>
+        <div class="title">{{ $t('post.recommendAnswer') }}</div>
+        <div class="container-user-list">
+          <div ref="preQaUser" v-loading="preQaUsers.loading" class="container-caller prePage">
+            <div v-for="(user, index) in preQaUsers.list" :key="index" :class="{ caller: true, selected: selectedFriend.username === user.username }" @click="selectedFriend = user">
+              <avatar :user="user" size="30" round prevent-jump />
+              <span>{{ user.username }}</span>
+            </div>
           </div>
+          <div ref="currentQaUser" v-loading="currentQaUsers.loading" class="container-caller currentPage">
+            <div v-for="(user, index) in currentQaUsers.list" :key="index" :class="{ caller: true, selected: selectedFriend.username === user.username }" @click="selectedFriend = user">
+              <avatar :user="user" size="30" round prevent-jump />
+              <span>{{ user.username }}</span>
+            </div>
+          </div>
+          <div ref="nextQaUser" v-loading="nextQaUsers.loading" class="container-caller nextPage">
+            <div v-for="(user, index) in nextQaUsers.list" :key="index" :class="{ caller: true, selected: selectedFriend.username === user.username }" @click="selectedFriend = user">
+              <avatar :user="user" size="30" round prevent-jump />
+              <span>{{ user.username }}</span>
+            </div>
+          </div>
+        </div>
+        <div v-if="totalPage" class="pagination">
+          <div v-show="pageNumberPagination > 1" class="pageButton" @click="prePage">上一页</div>
+          <span>{{ pageNumberPagination }}</span>
+          <div v-show="pageNumberPagination < totalPage" class="pageButton" @click="nextPage">下一页</div>
         </div>
       </div>
     </div>
@@ -49,15 +63,18 @@
 </template>
 
 <script>
-const include = 'fromUser,toUser.groups'
 import handleError from '@/mixin/handleError'
 export default {
   name: 'Caller',
   mixins: [handleError],
   data() {
     return {
-      qaFriends: [],
-      qaFriendsLoading: true,
+      preQaUsers: { loading: true, list: [] },
+      currentQaUsers: { loading: true, list: [] },
+      nextQaUsers: { loading: true, list: [] },
+      preTimerId: null,
+      nextTimerId: null,
+      qaFriendsLoading: false,
       selectedFriend: {},
       searchList: [],
       searchValue: '',
@@ -65,7 +82,10 @@ export default {
       loading: false,
       setTimeoutId: null,
       pageLimit: 10,
-      pageNumber: 1
+      pageNumber: 1,
+      pageLimitPagination: 10,
+      pageNumberPagination: 1,
+      totalPage: ''
     }
   },
   computed: {
@@ -80,19 +100,73 @@ export default {
     }
   },
   mounted() {
-    this.getQaFriends()
+    this.initUserList()
   },
   methods: {
-    getQaFriends() {
-      const params = {
-        'filter[type]': 2,
-        'filter[canBeAsked]': 'yes',
-        include
+    initUserList() {
+      if (this.pageNumberPagination === 1) { // 第一页
+        this.getUserList(this.pageNumberPagination, this.currentQaUsers)
+        this.getUserList(this.pageNumberPagination + 1, this.nextQaUsers)
+      } else if (this.pageNumberPagination === (this.totalPage || 10)) { // 最后一页
+        this.getUserList(this.pageNumberPagination - 1, this.preQaUsers)
+        this.getUserList(this.pageNumberPagination + 1, this.currentQaUsers)
+      } else { // 中间页
+        this.getUserList(this.pageNumberPagination - 1, this.preQaUsers)
+        this.getUserList(this.pageNumberPagination, this.currentQaUsers)
+        this.getUserList(this.pageNumberPagination + 1, this.nextQaUsers)
       }
-      return this.$store.dispatch('jv/get', ['follow', { params }]).then(data => {
-        this.qaFriendsLoading = false
-        this.qaFriends = data.map(item => item.fromUser)
+    },
+    getUserList(page, obj) {
+      if (obj.list.length > 0) return // 减少请求
+      obj.loading = true
+      const params = {
+        'filter[canBeAsked]': 'yes',
+        'page[limit]': this.pageLimitPagination,
+        'page[number]': page
+      }
+      return this.$store.dispatch('jv/get', ['/users', { params }]).then(data => {
+        // TODO 响应页数判断
+        const { _jv: { json: { meta }}} = data
+        const xxx = JSON.parse(JSON.stringify(data))
+        xxx.forEach(item => { item.username += `--${page}` }) // 检查页码用的
+        this.totalPage = meta.pageCount
+        obj.loading = false
+        obj.list = xxx
       }, e => this.handleError(e))
+    },
+    prePage() {
+      this.$refs.currentQaUser.classList.add('transfer-right')
+      this.$refs.preQaUser.classList.add('transfer-right')
+      setTimeout(() => {
+        this.$refs.currentQaUser.classList.remove('transfer-right')
+        this.$refs.preQaUser.classList.remove('transfer-right')
+        this.nextQaUsers = this.currentQaUsers
+        this.currentQaUsers = this.preQaUsers
+        this.preQaUsers = { loading: true, list: [] }
+      }, 300)
+      this.pageNumberPagination -= 1
+      if (this.preTimerId) window.clearTimeout(this.preTimerId)
+      this.preTimerId = setTimeout(() => {
+        this.preTimerId = null
+        this.initUserList()
+      }, 310)
+    },
+    nextPage() {
+      this.$refs.currentQaUser.classList.add('transfer-left')
+      this.$refs.nextQaUser.classList.add('transfer-left')
+      setTimeout(() => {
+        this.$refs.currentQaUser.classList.remove('transfer-left')
+        this.$refs.nextQaUser.classList.remove('transfer-left')
+        this.preQaUsers = this.currentQaUsers
+        this.currentQaUsers = this.nextQaUsers
+        this.nextQaUsers = { loading: true, list: [] }
+      }, 300)
+      this.pageNumberPagination += 1
+      if (this.nextTimerId) window.clearTimeout(this.nextTimerId)
+      this.nextTimerId = setTimeout(() => {
+        this.initUserList()
+        this.nextTimerId = null
+      }, 310)
     },
     searchUser(e) {
       this.searchValue = e.target.value
@@ -129,11 +203,6 @@ export default {
         this.getSearchList()
       }
     },
-    // formatValue() {
-    //   let callerList = [...this.selectedFriend]
-    //   callerList = callerList.map(item => item + ' ')
-    //   return ' @' + callerList.join('@')
-    // },
     selectFriendFromUl(user) {
       this.selectedFriend = user
       this.clear()
@@ -237,32 +306,67 @@ export default {
       > .title {
         font-size: 16px;
       }
-
-      > .container-caller {
-        margin-top: 16px;
+      > .pagination {
         display: flex;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-        > .caller {
+        > .pageButton {
           cursor: pointer;
+        }
+      }
+      > .container-user-list {
+        margin-top: 16px;
+        width: 740px;
+        height: 150px;
+        white-space: nowrap;
+        position: relative;
+        overflow: hidden;
+        > .container-caller {
+          width: 740px;
+          height: 150px;
           display: inline-flex;
-          align-items: center;
-          margin-right: 10px;
-          margin-bottom: 10px;
-          padding: 0 5px;
-          height: 40px;
-          line-height: 40px;
-          min-width: 120px;
-          background: $background-color-grey;
-          font-size: 14px;
-          border-radius: 20px;
-          > span {
-            margin: 0 5px;
+          justify-content: flex-start;
+          flex-wrap: wrap;
+          position: absolute;
+          &.prePage {
+            top: 0;
+            left: -740px
           }
+          &.nextPage {
+            top: 0;
+            left: 740px
+          }
+          &.currentPage {
+            top: 0;
+            left: 0;
+          }
+          &.transfer-left {
+            transform: translateX(-740px);
+            transition: all .3s ease;
+          }
+          &.transfer-right {
+            transform: translateX(740px);
+            transition: all .3s ease;
+          }
+          > .caller {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            padding: 0 5px;
+            height: 40px;
+            line-height: 40px;
+            min-width: 120px;
+            background: $background-color-grey;
+            font-size: 14px;
+            border-radius: 20px;
+            > span {
+              margin: 0 5px;
+            }
 
-          &.selected {
-            background: #E5F2FF;
-            border: 1px solid #CCDDFF;
+            &.selected {
+              background: #E5F2FF;
+              border: 1px solid #CCDDFF;
+            }
           }
         }
       }
