@@ -158,7 +158,7 @@
           @click="chat"
         >{{ $t('profile.privateMessage') }}</el-button>
         <el-button
-          v-if="can_create_thread_question"
+          v-if="can_create_thread_question && canBeAsked"
           type="primary"
           plain
           size="small"
@@ -285,7 +285,7 @@ export default {
       'page[number]': 1,
       'page[limit]': 20,
       'filter[isApproved]': 1,
-      'filter[userId]': 714,
+      'filter[userId]': params.id,
       'filter[type]': 5,
       'filter[answer]': 'yes'
     }
@@ -366,6 +366,7 @@ export default {
       profilename: '\u200E',
       can_create_dialog: false, // 创建私信权利
       can_create_thread_question: false, // 发起提问权利
+      canBeAsked: false,
       headFixed: false,
       loading: false,
       dialog: { id: '', name: '' },
@@ -471,6 +472,7 @@ export default {
               this.profilename = `${this.dialog.name + this.$t('profile.myperson')} - ${this.site_name}`
               this.userInfo = res
               this.userInfo.groupsName = this.userInfo.groups ? this.userInfo.groups[0].name : ''
+              this.canBeAsked = res.canBeAsked
             }
           }))
         .catch((err) => {
