@@ -55,6 +55,7 @@ export default [
   },
   { // 分类页
     h5: '/',
-    pc: '/category'
+    pc: '/category',
+    dynamic: 'id'
   }
 ]
