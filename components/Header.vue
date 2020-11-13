@@ -153,7 +153,7 @@ export default {
       this.$store
         .dispatch('session/logout')
         .then(() => {
-          this.headerTologin2()
+          location.href = `${this.$route.fullPath}`
         })
     },
     // 轮询获取用户信息，用于判断是否有新消息
