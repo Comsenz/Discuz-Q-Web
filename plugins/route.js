@@ -2,11 +2,21 @@
 // client执行顺序 => beforeEach - middleware - afterEach
 // server执行顺序 => beforeEach - afterEach - middleware
 import cookie from '../utils/parserCookie'
+import routerHash from './routerHash'
 const freePath = ['/user/wechat-bind-phone', '/user/login-bind-phone', '/user/login-bind', '/user/phone-login-register', '/user/phone-login', '/user/register-bind-phone', '/user/register-bind', '/user/wechat', '/user/login', '/user/register', '/site/info', '/user/warning', '/user/agreement', '/user/agreement', '/modify/findpwd', '/site/partner-invite', '/modify/resetpwdsuccess']
 const loginPath = ['/user/wechat-bind-phone', '/user/login-bind-phone', '/user/login-bind', '/user/phone-login-register', '/user/phone-login', '/user/register-bind-phone', '/user/register-bind', '/user/wechat', '/user/login', '/user/register']
+
 export default ({ app }) => {
   const { store, router } = app
   router.beforeEach(async(to, from, next) => {
+    // H5 路由跳转
+    const path = to.path
+    let query = '?'
+    for (const key in to.query) query += `${key}=${to.query[key]}&`
+    routerHash.forEach(item => {
+      if (item.h5 === path) item.dynamic ? next({ path: item.pc + '/' + to.query[item.dynamic] }) : next({ path: item.pc + '/' + query })
+    })
+
     if (process.client) {
       if (router.history.pending) router.history.current = router.history.pending // fix spa 模式下，动态路由
       // 登录页不判断站点关闭

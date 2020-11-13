@@ -22,7 +22,7 @@ function callback(binding, vnode) {
       if (process.client) {
         Message.warning('请登录')
         window.setTimeout(() => {
-          location.href = '/user/login'
+          location.href = '/user/login?preurl=/'
         }, 1000)
       }
     } else {
