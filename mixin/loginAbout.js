@@ -68,6 +68,27 @@ module.exports = {
           this.$router.push('/site/info')
         }
       })
+    },
+    headerTologin2() {
+      const preurl = this.$route.fullPath
+      if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 0) {
+        // 用户名模式
+        location.href = `/user/login?preurl=${preurl}`
+      } else if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
+        // 手机模式
+        location.href = `/user/phone-login-register?preurl=${preurl}`
+      } else if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 2) {
+        //  微信模式
+        if (this.forums && this.forums.passport && this.forums.passport.oplatform_close && this.forums.passport.offiaccount_close) {
+          location.href = `/user/wechat?preurl=${preurl}`
+        } else if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_sms) {
+          location.href = `/user/phone-login-register?preurl=${preurl}`
+        } else {
+          location.href = `/user/login?preurl=${preurl}`
+        }
+      } else {
+        location.href = `/user/login?preurl=${preurl}`
+      }
     }
   }
 }
