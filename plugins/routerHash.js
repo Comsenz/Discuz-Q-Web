@@ -89,14 +89,5 @@ export default [{ // 详情页
 { // 我的收藏
   h5: '/pages/my/favorite',
   pc: '/my/favorite'
-},
-{ // 消息页
-  h5: '/',
-  pc: '/my/notice'
-},
-{ // 分类页
-  h5: '/',
-  pc: '/category',
-  dynamic: 'id'
 }
 ]
