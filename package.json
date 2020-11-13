@@ -1,6 +1,6 @@
 {
   "name": "Discuz-Q-Web",
-  "version": "2.0.201001",
+  "version": "2.1.201112",
   "private": true,
   "scripts": {
     "dev": "nuxt",
