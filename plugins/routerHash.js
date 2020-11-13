@@ -12,40 +12,44 @@ export default [{ // 详情页
   h5: '/pages/topic/comment',
   pc: '/thread/comment'
 },
-{
+{ // 注册绑定
   h5: '/pages/user/register-bind',
   pc: '/user/register-bind'
 },
-{
-  h5: '/pages/user/register-bind',
-  pc: '/user/register-bind'
-},
-{
+{ // 注册
   h5: '/pages/user/register',
   pc: '/user/register'
 },
-{
+{ // 手机号注册登录
+  h5: '/pages/user/phone-login-register',
+  pc: '/user/phone-login-register'
+},
+{ // 注册
   h5: '/pages/user/login',
   pc: '/user/login'
+},
+{ // 手机号登录
+  h5: '/pages/user/phone-login',
+  pc: '/user/phone-login'
 },
 { // 个人主页
   h5: '/pages/profile/index',
   pc: '/user',
   dynamic: 'id'
 },
-{
+{ // 钱包
   h5: '/pages/my/wallet',
   pc: '/my/wallet'
 },
-{
+{ // 我的资料
   h5: '/pages/my/profile',
   pc: '/my/profile'
 },
-{
+{ // 用户屏蔽
   h5: '/pages/my/shield',
   pc: '/my/shield'
 },
-{
+{ // 站点信息
   h5: '/pages/site/info',
   pc: '/site/info'
 },
