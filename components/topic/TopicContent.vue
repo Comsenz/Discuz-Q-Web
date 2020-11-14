@@ -11,7 +11,7 @@
       </div>
     </div>
     <!--帖子只展示图文混排的图片-->
-    <div v-if="article.images && article.images.length > 0 && threadType !== 1" v-viewer="{url: 'data-source'}" class="images" @click="unpaid ? openVideo() : ''">
+    <div v-if="article.images && article.images.length > 0" v-viewer="{url: 'data-source'}" class="images" @click="unpaid ? openVideo() : ''">
       <el-image v-for="(image, index) in article.images" :key="index" class="image" :data-source="unpaid ? '' : image.url" :src="image.thumbUrl" :alt="image.filename" fit="cover">
         <div slot="placeholder" class="image-slot">
           <i class="el-icon-loading" />

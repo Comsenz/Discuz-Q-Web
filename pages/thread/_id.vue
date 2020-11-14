@@ -191,6 +191,12 @@ export default {
       this.initActions(this.thread, this.article)
       this.initLocation(this.thread)
       this.initQuestion(this.thread)
+      this.filterImages()
+    },
+    filterImages() {
+      if (this.article.contentAttachIds && this.article.contentAttachIds.length > 0 && this.article.images && this.article.images.length > 0) {
+        this.article.images = this.article.images.filter(image => this.article.contentAttachIds.indexOf(image._jv.id) < 0)
+      }
     },
     initQuestion(data) {
       if (!data.question) return
