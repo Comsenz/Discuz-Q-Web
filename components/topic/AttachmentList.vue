@@ -85,7 +85,7 @@ export default {
     downloadAttachment(url, name) {
       if (this.unpaid) return
       const xhr = new XMLHttpRequest()
-      xhr.open('get', '/api' + url.split('/api')[1]) // 使用相当地址
+      xhr.open('get', url)
       xhr.responseType = 'blob'
       xhr.send()
       xhr.onload = function() {

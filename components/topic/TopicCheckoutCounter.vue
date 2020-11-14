@@ -94,7 +94,7 @@
       </div>
     </div>
     <div class="bottom">
-      <span>￥ {{ showAmount + $t('pay.rmb') + $t('pay.payTo') + '，' + user.username || '' }} {{ $t('pay.ofAccount') }}</span>
+      <span>￥ {{ showAmount + $t('pay.rmb') + $t('pay.payTo') + '，' + (beAskedUser.username || user.username) }} {{ payWay === 'wxPay' ? $t('pay.ofAccount') : $t('pay.ofWalletAccount') }}</span>
       <el-button
         v-show="payWay === 'wxPay'"
         type="primary"
@@ -108,6 +108,7 @@
         :disabled="!enoughBalance || !userWallet.canWalletPay"
         type="primary"
         class="checkout-button"
+        style="margin: 0"
         @click="$emit('paying', { payWay, hideAvatar, rewardAmount: formatToFixed(rewardAmount) })"
       >
         {{ $t('pay.surePay') }}

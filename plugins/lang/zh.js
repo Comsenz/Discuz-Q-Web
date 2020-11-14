@@ -480,6 +480,7 @@ export default {
     cancel: '取消',
     payTo: '将支付到',
     ofAccount: '对应的微信账户',
+    ofWalletAccount: '对应的钱包账户',
     cashtext: '需确保在微信开启了“允许通过手机号向我转账”的功能，否则将无法收到提现转账，开通方式为“微信-收付款-向银行卡或手机号转账-手机号收款设置“。',
     surePay: '确认支付',
     scanPay: '扫码支付',
@@ -833,7 +834,7 @@ export default {
     createThreadLong: '发布帖子',
     createThreadVideo: '发布视频',
     createThreadGoods: '发布商品',
-    createThreadPaid: '发布付费贴和被打赏',
+    createThreadPaid: '发布付费内容',
     attachment: {
       create: ['上传附件', '上传图片'],
       view: ['查看附件', '查看图片'],
