@@ -21,6 +21,16 @@ export default {
       return this.$store.state.site.info.attributes || {}
     }
   },
+  watch: {
+    forums: {
+      handler(val) {
+        if (val && val.set_site) {
+          this.site_name = val.set_site.site_name ? val.set_site.site_name : 'Discuz! Q'
+        }
+      },
+      deep: true
+    }
+  },
   mounted() {
     this.site_name = this.forums && this.forums.set_site && this.forums.set_site.site_name ? this.forums.set_site.site_name : 'Discuz! Q'
     this.createQrcode(window.location.href)
