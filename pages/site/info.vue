@@ -126,6 +126,13 @@ export default {
   watch: {
     userId(id) {
       if (id) this.userinfo()
+    },
+    forums: {
+      handler(val) {
+        if (val.set_site && val.set_site.site_price) {
+          this.site_price = (1 * val.set_site.site_price).toFixed(2)
+        }
+      }
     }
   },
   mounted() {
