@@ -126,14 +126,19 @@ export default {
   watch: {
     userId(id) {
       if (id) this.userinfo()
+    },
+    forums: {
+      handler(val) {
+        if (val.set_site && val.set_site.site_price) {
+          this.site_price = (1 * val.set_site.site_price).toFixed(2)
+        }
+      }
     }
   },
   mounted() {
     this.preurl = this.$route.fullPath
     if (this.userId) this.userinfo()
     this.loadThreads()
-    this.site_price = this.forums && this.forums.set_site && this.forums.set_site.site_price
-      ? (1 * this.forums.set_site.site_price).toFixed(2) : 0
     if (this.forums.set_site && this.forums.set_site.site_mode || !this.userId) {
       this.canDetail = true
     }
