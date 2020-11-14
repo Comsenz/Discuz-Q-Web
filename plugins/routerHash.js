@@ -35,7 +35,7 @@ export default [{ // 详情页
 { // 个人主页
   h5: '/pages/profile/index',
   pc: '/user',
-  dynamic: 'id'
+  dynamic: 'userId'
 },
 { // 钱包
   h5: '/pages/my/wallet',
