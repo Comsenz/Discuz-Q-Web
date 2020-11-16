@@ -139,6 +139,13 @@ export default {
       return this.$store.state.site.info.attributes || {}
     }
   },
+  watch: {
+    userId(val) {
+      if (val && this.totalMoney === 0) {
+        this.getIncome()
+      }
+    }
+  },
   mounted() {
     this.getInvite()
     this.getIncome()
@@ -159,6 +166,7 @@ export default {
     },
     // 获取累计收益
     getIncome() {
+      if (!this.userId) return
       const params = {
         'filter[user]': this.userId,
         'filter[change_type]': '33, 62, 34',
