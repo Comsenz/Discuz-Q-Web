@@ -112,12 +112,15 @@ export default {
   watch: {
     groupMap: {
       handler() {
-        this.getInviteList()
+        if (this.inviteList.length === 0) {
+          this.getInviteList()
+        }
       },
       deep: true
     }
   },
   mounted() {
+    this.getInviteList()
   },
   methods: {
     // 获取邀请列表
