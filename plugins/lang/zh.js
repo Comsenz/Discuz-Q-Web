@@ -819,17 +819,10 @@ export default {
       deletePosts: '删除回复',
       canBeReward: '允许被打赏',
       editOwnThreadOrPost: '编辑发布的主题或回复',
-      hideOwnThreadOrPost: '删除发布的主题或回复'
+      hideOwnThreadOrPost: '删除发布的主题或回复',
+      freeViewPosts: ['', '免费查看付费帖子', '免费查看付费视频', '免费查看付费图片', '免费查看付费语音', '免费查看付费问答']
     },
-    createThread: {
-      0: '发布文本',
-      1: '发布帖子',
-      2: '发布视频',
-      3: '发布图片',
-      4: '发布语音',
-      5: '发布问答',
-      6: '发布商品'
-    },
+    createThread: ['发布文本', '发布帖子', '发布视频', '发布图片', '发布语音', '发布问答', '发布商品'],
     createThreadImage: '发布图片',
     createThreadLong: '发布帖子',
     createThreadVideo: '发布视频',
