@@ -134,6 +134,7 @@ export default {
     },
     // 获取用户详情收益
     getIncomeDetailList() {
+      if (!this.userId) return
       this.loading = true
       const params = {
         include: 'sourceUser',
