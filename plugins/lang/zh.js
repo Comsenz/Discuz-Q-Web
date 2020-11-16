@@ -480,6 +480,7 @@ export default {
     cancel: '取消',
     payTo: '将支付到',
     ofAccount: '对应的微信账户',
+    ofWalletAccount: '对应的钱包账户',
     cashtext: '需确保在微信开启了“允许通过手机号向我转账”的功能，否则将无法收到提现转账，开通方式为“微信-收付款-向银行卡或手机号转账-手机号收款设置“。',
     surePay: '确认支付',
     scanPay: '扫码支付',
@@ -818,22 +819,15 @@ export default {
       deletePosts: '删除回复',
       canBeReward: '允许被打赏',
       editOwnThreadOrPost: '编辑发布的主题或回复',
-      hideOwnThreadOrPost: '删除发布的主题或回复'
+      hideOwnThreadOrPost: '删除发布的主题或回复',
+      freeViewPosts: ['', '免费查看付费帖子', '免费查看付费视频', '免费查看付费图片', '免费查看付费语音', '免费查看付费问答']
     },
-    createThread: {
-      0: '发布文本',
-      1: '发布帖子',
-      2: '发布视频',
-      3: '发布图片',
-      4: '发布语音',
-      5: '发布问答',
-      6: '发布商品'
-    },
+    createThread: ['发布文本', '发布帖子', '发布视频', '发布图片', '发布语音', '发布问答', '发布商品'],
     createThreadImage: '发布图片',
     createThreadLong: '发布帖子',
     createThreadVideo: '发布视频',
     createThreadGoods: '发布商品',
-    createThreadPaid: '发布付费贴和被打赏',
+    createThreadPaid: '发布付费内容',
     attachment: {
       create: ['上传附件', '上传图片'],
       view: ['查看附件', '查看图片'],

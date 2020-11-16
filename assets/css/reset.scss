@@ -280,9 +280,20 @@ $em: 16px;
   ul > li { display: list-item; align-items: baseline; text-align: match-parent; }
   ol ul { list-style-type: circle; }
   li[data-task-state="checked"]
-  { margin-left: -32px; list-style-type: none; text-decoration: line-through rgba(0, 0, 0, .6); }
+  { margin-left: -20px; list-style-type: none; text-decoration: line-through rgba(0, 0, 0, .6); }
+  li[data-task-state="checked"] input {position: relative}
+  li[data-task-state="checked"] input:before {
+    font: normal normal normal 14px/1;
+    content: "✓";
+    font-size: 17px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-53%) scale(.73);
+    color: #006CD1;
+  }
   li[data-task-state="unchecked"]
-  { margin-left: -32px; list-style-type: none; }
+  { margin-left: -20px; list-style-type: none; }
   u { text-decoration: underline; }
   .hide { display: none; }
   del { display: inline; }
