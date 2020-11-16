@@ -213,7 +213,7 @@ export default {
     userDeleted: '该用户已被删除',
     InvalidParameterValue: '腾讯云配置参数错误',
     wallet_error: '钱包错误',
-    content_banned: '内容被拒绝',
+    content_banned: '当前用户名包含紧张注册的词语',
     trade_error: '交易错误',
     order_type_error: '订单类型错误',
     order_amount_error: '订单金额有误',
