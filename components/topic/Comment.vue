@@ -82,7 +82,7 @@ export default {
       editResourceShow: { showUploadImg: false, showUploadVideo: false, showUploadAttached: false },
       editCommentPost: { text: '', imageList: [], attachedList: [] },
       editComment: {},
-      commentType: { type: 10, textLimit: 450, showPayment: false, showTitle: false, showImage: true, showVideo: false,
+      commentType: { type: 10, textLimit: 5000, showPayment: false, showTitle: false, showImage: true, showVideo: false,
         showAttached: false, showEmoji: true, showTopic: false, showCaller: true, placeholder: '写下我的评论 ...' },
       commitLoading: false,
       scrollLoading: false,

@@ -70,16 +70,16 @@ export default {
       editResourceShow: { showUploadImg: false, showUploadVideo: false, showUploadAttached: false },
       typeInformation: {
         // 0 文字帖 1 帖子 2 视频 3 图片 4 语音 5 问答 6 商品
-        0: { type: 0, headerText: 'postText', textLimit: 450, showPayment: false, showTitle: false, showImage: false, showVideo: false,
+        0: { type: 0, headerText: 'postText', textLimit: 5000, showPayment: false, showTitle: false, showImage: false, showVideo: false,
           showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
-        1: { type: 1, headerText: 'postPost', textLimit: 10000, showPayment: true, showTitle: true, showImage: true, showVideo: false,
+        1: { type: 1, headerText: 'postPost', textLimit: 49999, showPayment: true, showTitle: true, showImage: true, showVideo: false,
           showAttached: true, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
-        2: { type: 2, headerText: 'postVideo', textLimit: 450, showPayment: true, showTitle: false, showImage: false, showVideo: true,
+        2: { type: 2, headerText: 'postVideo', textLimit: 5000, showPayment: true, showTitle: false, showImage: false, showVideo: true,
           showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
-        3: { type: 3, headerText: 'postImage', textLimit: 450, showPayment: true, showTitle: false, showImage: true, showVideo: false,
+        3: { type: 3, headerText: 'postImage', textLimit: 5000, showPayment: true, showTitle: false, showImage: true, showVideo: false,
           showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
         // 语音帖不需要发帖
@@ -87,11 +87,11 @@ export default {
         //   showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
         // TODO 问答帖
-        5: { type: 5, headerText: 'postQA', textLimit: 450, showPayment: false, showTitle: false, showImage: true, showVideo: false,
+        5: { type: 5, headerText: 'postQA', textLimit: 5000, showPayment: false, showTitle: false, showImage: true, showVideo: false,
           showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' },
 
         // TODO 商品帖
-        6: { type: 6, headerText: 'postProduct', textLimit: 450, showPayment: false, showTitle: false, showImage: true, showVideo: false,
+        6: { type: 6, headerText: 'postProduct', textLimit: 5000, showPayment: false, showTitle: false, showImage: true, showVideo: false,
           showAttached: false, showEmoji: true, showTopic: true, showCaller: true, placeholder: '请输入您要发表的内容 ...' }
       },
       categorySelectedId: '',

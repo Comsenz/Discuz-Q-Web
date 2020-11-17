@@ -91,7 +91,7 @@ export default {
   },
   data() {
     return {
-      answerType: { type: 15, textLimit: 450, showPayment: false, showTitle: false, showImage: true, showVideo: false,
+      answerType: { type: 15, textLimit: 5000, showPayment: false, showTitle: false, showImage: true, showVideo: false,
         showAttached: false, showEmoji: true, showTopic: false, showCaller: true, placeholder: '写下我的评论 ...' },
       editResourceShow: { showUploadImg: false, showUploadVideo: false, showUploadAttached: false },
       answer: { text: '', imageList: [], attachedList: [] },
