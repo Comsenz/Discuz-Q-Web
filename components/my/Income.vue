@@ -134,12 +134,20 @@ export default {
       return this.$store.state.site.info.attributes || {}
     }
   },
+  watch: {
+    userId(val) {
+      if (val && this.incomeList.length === 0) {
+        this.getIncomeList()
+      }
+    }
+  },
   mounted() {
     this.getIncomeList()
   },
   methods: {
     // 收益列表
     getIncomeList() {
+      if (!this.userId) return
       this.loading = true
       const params = {
         include: 'sourceUser',
