@@ -321,3 +321,21 @@ $em: 16px;
     }
   }
 }
+
+// 修改 v-viewer 样式
+.viewer-toolbar ul li {
+  width: 40px !important;
+  height: 40px !important;
+  position: relative;
+}
+.viewer-toolbar ul li.viewer-large {
+  width: 45px !important;
+  height: 45px !important;
+}
+.viewer-toolbar ul li:before {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) scale(1.2) !important;
+  margin: 0 !important;
+}
