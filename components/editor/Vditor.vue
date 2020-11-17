@@ -5,7 +5,7 @@
       <emoji-list v-show="showEmoji" class="action-vditor" @selectEmoji="selectActions" />
     </div>
     <div id="vditor" />
-    <span v-if="textLimit" class="tip">{{ textLimit>= textLength ? $t('post.note', { num: textLimit - textLength }) : $t('post.exceed', { num: textLength - typeInformation.textLimit }) }}</span>
+    <span v-if="textLimit" class="tip">{{ textLimit >= textLength ? $t('post.note', { num: textLimit - textLength }) : $t('post.exceed', { num: textLength - typeInformation.textLimit }) }}</span>
     <caller v-if="showCaller" @close="$emit('close')" @selectedCaller="selectActions" />
     <el-button class="button-publish" :loading="onPublish" type="primary" size="small" @click="publish">{{ $t('post.post') }}</el-button>
   </div>
@@ -39,7 +39,7 @@ export default {
     },
     textLimit: {
       type: [Number, String],
-      default: 450
+      default: 49999
     },
     textLength: {
       type: [Number, String],
@@ -95,6 +95,7 @@ export default {
         placeholder: this.placeholder,
         mode: 'wysiwyg',
         tab: '    ',
+        input: value => { this.$emit('textChange', value) },
         toolbar: [
           { hotkey: '', name: '@', tipPosition: 'ne', tip: '@ 好友', className: 'right', icon: call,
             click: () => {
