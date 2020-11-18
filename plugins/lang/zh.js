@@ -312,7 +312,7 @@ export default {
     fromWeChatApplet: '来自微信小程序',
     pleaseEnterAPostTitle: '请输入帖子标题',
     buyProudct: '购买商品',
-    supportedLink: '现以支持以下商品链接',
+    supportedLink: '现已支持以下商品链接',
     jd: '京东',
     taobao: '淘宝',
     tmall: '天猫',
