@@ -1,9 +1,23 @@
 <template>
-  <message :title="$t('profile.towithdrawal')" @close="$emit('close')">
+  <message v-if="userInfo" :title="$t('profile.towithdrawal')" @close="$emit('close')">
     <div class="top">
       <div class="row">
-        <div class="head">{{ $t('modify.wechatpayee') }}</div>
-        <div class="body reward">
+        <div v-if="cashtype" class="head">微信号</div>
+        <div v-else class="head">{{ $t('modify.wechatpayee') }}</div>
+        <div v-if="cashtype" class="body reward">
+          <label v-if="userInfo.wechat && userInfo.wechat.nickname">
+            <input
+              v-model="userInfo.wechat.nickname"
+              placeholder="微信号"
+              type="text"
+              class="rinput ript"
+            >
+          </label>
+          <span v-else style="font-size:12px;">
+            您的用户账号未绑定微信号,请绑定微信号后再进行提现
+          </span>
+        </div>
+        <div v-else class="body reward">
           <label>
             <input
               v-model="withdrawlNumber"
@@ -76,7 +90,10 @@
       </div>
     </div>
     <div class="bottom">
-      <span style="font-size:14px">
+      <span v-if="cashtype" style="font-size:14px">
+        ￥{{ contint || 0 }}{{ $t('pay.rmb') + $t('profile.withdrawalto') + (userInfo && userInfo.wechat && userInfo.wechat.nickname ? userInfo.wechat.nickname : '') }}{{ $t('pay.ofAccount') }}
+      </span>
+      <span v-else style="font-size:14px">
         ￥{{ contint || 0 }}{{ $t('pay.rmb') + $t('profile.withdrawalto') + withdrawlNumber || '' }}{{ $t('pay.ofAccount') }}
       </span>
       <el-button size="medium" type="primary" class="border" @click="btncash">{{ $t('profile.comfirmwithdrawal' ) }}</el-button>
@@ -125,29 +142,73 @@ export default {
       ticket: '', // 腾讯云验证码返回票据
       randstr: '', // 腾讯云验证码返回随机字符串
       captchaResult: {},
-      forums: '',
       withdrawlNumber: '',
       cashtype: 0
     }
   },
+  computed: {
+    forums() {
+      return this.$store.state.site.info.attributes || {}
+    }
+  },
+  watch: {
+    forums: {
+      handler(val) {
+        if (val.paycenter && val.paycenter.wxpay_mchpay_close) {
+          this.cashtype = 1
+        } else {
+          this.cashtype = 0
+        }
+      },
+      deep: true,
+      immediate: true
+    }
+  },
   mounted() {
-    this.setmydata()
+    this.userinfo()
     this.forumsdata()
   },
   methods: {
+    userinfo() {
+      const params = {
+        include: 'groups,wechat'
+      }
+      this.$store.dispatch('jv/get', [`users/${this.userId}`, { params }]).then(
+        (res) => {
+          this.userInfo = res
+          this.setmydata()
+          this.userInfo.groupsName = this.userInfo.groups
+            ? this.userInfo.groups[0].name
+            : ''
+        },
+        (e) => {
+          const { response: { data: { errors }}} = e
+          if (errors && Array.isArray(errors) && errors.length > 0 && errors[0]) {
+            const error = errors[0].detail && errors[0].detail.length > 0 ? errors[0].detail[0] : errors[0].code
+            if (error === 'Invalid includes [wechat]') {
+              this.$message.error(error)
+              localStorage.removeItem('access_token')
+              localStorage.removeItem('user_id')
+              window.location.replace('/')
+            } else {
+              const errorText = errors[0].detail && errors[0].detail.length > 0 ? errors[0].detail[0] : this.$t(`core.${error}`)
+              this.$message.error(errorText)
+            }
+          }
+        }
+      )
+    },
     setmydata() {
-      this.userInfo = this.$store.state.user.info
-      this.name = this.userInfo.attributes.username
-      this.balance = this.userInfo.attributes.walletBalance
-      this.usertestphon = this.userInfo.attributes.mobile
-      this.userphon = this.userInfo.attributes.originalMobile
+      this.name = this.userInfo.username
+      this.balance = this.userInfo.walletBalance
+      this.usertestphon = this.userInfo.mobile
+      this.userphon = this.userInfo.originalMobile
       this.withdrawlNumber = this.userphon
       if (!this.usertestphon) {
         this.disabtype = true
       }
     },
     forumsdata() {
-      this.forums = this.$store.state.site.info.attributes
       this.cost = this.forums.set_cash.cash_rate
       this.percentage = this.forums.set_cash.cash_rate * 100
       this.cashtype = this.forums.paycenter && this.forums.paycenter.wxpay_mchpay_close ? 1 : 0
