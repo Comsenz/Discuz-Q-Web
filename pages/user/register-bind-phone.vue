@@ -225,6 +225,15 @@ export default {
             res &&
             res.data &&
             res.data.errors &&
+            res.data.errors[0].code === 'content_banned'
+          ) {
+            this.$message.error('当前用户名包含禁止注册的词语')
+            return
+          }
+          if (
+            res &&
+            res.data &&
+            res.data.errors &&
             res.data.errors[0]
           ) {
             const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code
