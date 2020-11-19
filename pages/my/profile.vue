@@ -836,7 +836,7 @@ export default {
         this.$confirm(`
         <i class="el-icon-warning" style=" width: 25px;height: 25px;font-size: 25px;color: #E6A23C;position: absolute;left: 0px;"></i>
         <p style="margin-left:40px;">确定解除微信绑定?</p>
-        <p style="margin-bottom:50px;margin-left:40px;margin-top:10px;">您确定要解除微信${this.userInfo.wechat.nickname}和用户账号的绑定么？</p>`, {
+        <p style="margin-bottom:50px;margin-left:40px;margin-top:10px;">解绑后，您的微信号将不再绑定当前账号，即无法再登录当前账号，确认解除绑定吗？</p>`, {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           dangerouslyUseHTMLString: true
