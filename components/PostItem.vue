@@ -519,9 +519,6 @@ export default {
       display: inline-block;
       font-size: 16px;
       margin-bottom: 6px;
-      @include text-hidden();
-      flex: 0 0 60%;
-
     }
     .icon-pay-yuan {
       height: 24px;
