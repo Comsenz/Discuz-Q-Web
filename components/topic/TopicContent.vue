@@ -111,7 +111,7 @@ export default {
         },
         // 实际查看的图片链接
         url(image) {
-          return image && image.src && image.src.split('&imageMogr2')[0]
+          return image && image.src && image.src.split('imageMogr2')[0].replace(/[&?]$/, '')
         }
       },
       currentAudio: {
