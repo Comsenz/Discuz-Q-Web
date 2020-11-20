@@ -105,8 +105,13 @@ export default {
     return {
       showVideoPop: false,
       options: {
+        // 过滤表情
         filter(image) {
           return [...image.classList].indexOf('qq-emotion') < 0
+        },
+        // 实际查看的图片链接
+        url(image) {
+          return image && image.src && image.src.split('&imageMogr2')[0]
         }
       },
       currentAudio: {
@@ -285,10 +290,6 @@ export default {
           margin-bottom: 5px
         }
       }
-    }
-
-    > .container-audio {
-
     }
 
     > .container-attachment {
