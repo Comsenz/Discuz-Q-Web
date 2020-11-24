@@ -5,6 +5,7 @@
 </template>
 <script>
 export default {
+  name: 'Loading',
   props: {
     loading: {
       type: Boolean,

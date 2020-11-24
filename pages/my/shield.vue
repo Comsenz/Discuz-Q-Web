@@ -215,6 +215,7 @@
 import head from '@/mixin/head'
 import handleError from '@/mixin/handleError'
 export default {
+  name: 'Shield',
   layout: 'center_layout',
   mixins: [head, handleError],
   data() {

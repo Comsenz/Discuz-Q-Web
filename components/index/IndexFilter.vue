@@ -48,6 +48,7 @@
 </template>
 <script>
 export default {
+  name: 'IndexFilter',
   data() {
     return {
       // 筛选按钮

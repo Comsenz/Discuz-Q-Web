@@ -52,7 +52,7 @@ import env from '@/utils/env'
 import head from '@/mixin/head'
 export default {
   layout: 'custom_layout',
-  name: 'TopicContent',
+  name: 'TopicList',
   mixins: [handleError, head],
   // 异步数据用法
   async asyncData({ store }, callback) {

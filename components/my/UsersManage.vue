@@ -184,6 +184,7 @@
 import handleError from '@/mixin/handleError'
 import { time2MinuteOrHour, dateDay } from '@/utils/time'
 export default {
+  name: 'UsersManage',
   filters: {
     formatDate(date) {
       return time2MinuteOrHour(date)

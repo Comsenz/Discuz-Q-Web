@@ -112,6 +112,7 @@ import loginAbout from '@/mixin/loginAbout'
 import handleError from '@/mixin/handleError'
 import head from '@/mixin/head'
 export default {
+  name: 'PartnerInvite',
   mixins: [loginAbout, handleError, head],
   data() {
     return {

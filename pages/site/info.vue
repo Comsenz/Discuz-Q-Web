@@ -98,6 +98,7 @@ import handleError from '@/mixin/handleError'
 import head from '@/mixin/head'
 let payWechat = null
 export default {
+  name: 'SiteInfo',
   mixins: [head, handleError],
   data() {
     return {

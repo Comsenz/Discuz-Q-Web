@@ -26,6 +26,7 @@
 </template>
 <script>
 export default {
+  name: 'CreatePostPopover',
   data() {
     return {
       userId: this.$store.getters['session/get']('userId'), // 获取当前登陆用户的ID

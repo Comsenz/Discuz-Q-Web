@@ -257,6 +257,7 @@ import handleError from '@/mixin/handleError'
 import env from '@/utils/env'
 const threadInclude = 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio'
 export default {
+  name: 'Index',
   layout: 'custom_layout',
   mixins: [handleError],
   // 异步数据用法

@@ -22,6 +22,7 @@
 <script>
 import head from '@/mixin/head'
 export default {
+  name: 'Warning',
   mixins: [head],
   data() {
     return {

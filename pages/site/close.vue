@@ -9,6 +9,7 @@
 <script>
 export default {
   // layout: 'error_layout',
+  name: 'Close',
   data() {
     return {
       close_tips: '',

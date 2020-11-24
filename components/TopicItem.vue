@@ -84,6 +84,7 @@ import s9e from '@/utils/s9e'
 import { time2MinuteOrHour } from '@/utils/time'
 import handleError from '@/mixin/handleError'
 export default {
+  name: 'TopicItem',
   filters: {
     formatDate(date) {
       return time2MinuteOrHour(date)

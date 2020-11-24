@@ -52,6 +52,7 @@ import handleError from '@/mixin/handleError'
 import loginAbout from '@/mixin/loginAbout'
 
 export default {
+  name: 'LoginBind',
   mixins: [head, handleError, loginAbout],
   data() {
     return {

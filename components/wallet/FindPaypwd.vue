@@ -55,7 +55,7 @@ import { status } from '@/store/modules/jsonapi-vuex/index'
 import handleError from '@/mixin/handleError'
 import tencentCaptcha from '@/mixin/tencentCaptcha'
 export default {
-  name: 'Phonecode',
+  name: 'FindPaypwd',
   mixins: [
     tencentCaptcha, handleError
   ],

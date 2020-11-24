@@ -125,6 +125,7 @@ import { time2MinuteOrHour } from '@/utils/time'
 import handleError from '@/mixin/handleError'
 
 export default {
+  name: 'CashDialog',
   mixins: [
     handleError
   ],

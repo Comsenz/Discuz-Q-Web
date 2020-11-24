@@ -51,6 +51,7 @@
 import handleError from '@/mixin/handleError'
 
 export default {
+  name: 'TopicReport',
   mixins: [handleError],
   props: {
     threadId: {

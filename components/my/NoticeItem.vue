@@ -118,6 +118,7 @@
 import handleError from '@/mixin/handleError'
 import timerDiff from '@/mixin/timerDiff'
 export default {
+  name: 'NoticeItem',
   mixins: [timerDiff, handleError],
   props: {
     item: {

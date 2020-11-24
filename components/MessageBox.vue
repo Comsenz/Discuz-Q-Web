@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  name: 'TopicCheckoutCounter',
+  name: 'MessageBox',
   props: {
     width: {
       type: String,

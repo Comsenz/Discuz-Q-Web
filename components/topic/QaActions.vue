@@ -48,20 +48,6 @@
         @publish="answerPublish"
       />
     </el-dialog>
-    <!--    <message-box v-if="showAnswerEditor" :title="$t('topic.answerQuestion')" @close="closeEditor">-->
-    <!--      <div class="editor-box">-->
-    <!--        <editor-->
-    <!--          editor-style="comment"-->
-    <!--          class="edit-answer-editor"-->
-    <!--          selector="edit-answer-editor"-->
-    <!--          :edit-resource-show="editResourceShow"-->
-    <!--          :on-publish="onAnswerPublish"-->
-    <!--          :type-information="answerType"-->
-    <!--          :post.sync="answer"-->
-    <!--          @publish="answerPublish"-->
-    <!--        />-->
-    <!--      </div>-->
-    <!--    </message-box>-->
   </div>
 </template>
 

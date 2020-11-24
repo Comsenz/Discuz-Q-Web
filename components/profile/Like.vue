@@ -36,6 +36,7 @@ import { status } from '@/store/modules/jsonapi-vuex/index'
 import handleError from '@/mixin/handleError'
 
 export default {
+  name: 'Like',
   mixins: [handleError],
   props: {
     userId: {

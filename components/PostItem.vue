@@ -220,6 +220,7 @@ import { time2MinuteOrHour } from '@/utils/time'
 import { extensionList } from '@/constant/extensionList'
 import handleError from '@/mixin/handleError'
 export default {
+  name: 'PostItem',
   filters: {
     formatDate(date) {
       return time2MinuteOrHour(date)

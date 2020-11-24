@@ -78,6 +78,7 @@
 <script>
 import { time2MinuteOrHour } from '@/utils/time'
 export default {
+  name: 'ChatItem',
   filters: {
     formatDate(date) {
       return time2MinuteOrHour(date)

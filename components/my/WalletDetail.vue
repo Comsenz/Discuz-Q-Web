@@ -110,6 +110,7 @@ import { status } from '@/store/modules/jsonapi-vuex/index'
 import { time2MinuteOrHour } from '@/utils/time'
 import handleError from '@/mixin/handleError'
 export default {
+  name: 'WalletDetail',
   mixins: [
     handleError
   ],

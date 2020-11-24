@@ -67,7 +67,7 @@
 <script>
 import handleError from '@/mixin/handleError'
 export default {
-  name: 'Caller',
+  name: 'QaCaller',
   mixins: [handleError],
   data() {
     return {

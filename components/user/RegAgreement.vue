@@ -26,7 +26,7 @@
 
 <script>
 export default {
-  name: 'Regagreement',
+  name: 'RegAgreement',
   props: {
     check: {
       type: Boolean,

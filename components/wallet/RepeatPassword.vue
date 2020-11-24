@@ -27,7 +27,7 @@
 
 <script>
 export default {
-  name: 'SetNewpasword',
+  name: 'RepeatPassword',
   props: {
     error: {
       type: Boolean,

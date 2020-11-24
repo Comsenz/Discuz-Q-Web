@@ -12,6 +12,7 @@
 import stringToColor from '@/utils/stringToColor'
 
 export default {
+  name: 'Avatar',
   props: {
     user: {
       type: [Object, String],

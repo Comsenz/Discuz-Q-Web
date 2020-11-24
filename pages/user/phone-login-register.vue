@@ -38,6 +38,7 @@ import countDown from '@/mixin/countDown'
 import loginAbout from '@/mixin/loginAbout'
 
 export default {
+  name: 'PhoneLoginRegister',
   mixins: [head, handleError, tencentCaptcha, countDown, loginAbout],
   data() {
     return {

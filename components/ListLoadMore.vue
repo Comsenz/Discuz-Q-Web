@@ -16,6 +16,7 @@
 <script>
 import scroll from '@/mixin/scroll'
 export default {
+  name: 'ListLoadMore',
   mixins: [scroll],
   props: {
     loading: {

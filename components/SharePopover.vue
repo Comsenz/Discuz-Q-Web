@@ -33,6 +33,7 @@
 <script>
 const QRCode = process.client && require('qrcodejs2')
 export default {
+  name: 'SharePopover',
   props: {
     threadsId: {
       type: [String, Number],

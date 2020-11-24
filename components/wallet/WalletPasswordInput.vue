@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: 'WalletpassInput',
+  name: 'WalletPasswordInput',
   props: {
     error: {
       type: Boolean,

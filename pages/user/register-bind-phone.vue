@@ -67,6 +67,7 @@ import loginAbout from '@/mixin/loginAbout'
 const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
 
 export default {
+  name: 'RegisterBindPhone',
   mixins: [
     head, handleError, tcaptchs, loginAbout
   ],

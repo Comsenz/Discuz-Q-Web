@@ -45,7 +45,7 @@ import env from '@/utils/env'
 const threadInclude = 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio'
 export default {
   layout: 'custom_layout',
-  name: 'Index',
+  name: 'Position',
   mixins: [head, handleError],
   // 异步数据用法
   async asyncData({ store, query }, callback) {

@@ -33,6 +33,7 @@ import head from '@/mixin/head'
 import handleError from '@/mixin/handleError'
 import loginAbout from '@/mixin/loginAbout'
 export default {
+  name: 'Wechat',
   mixins: [head, handleError, loginAbout],
   data() {
     return {

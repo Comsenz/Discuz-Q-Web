@@ -51,6 +51,7 @@ import countDown from '@/mixin/countDown'
 import loginAbout from '@/mixin/loginAbout'
 
 export default {
+  name: 'WechatBindPhone',
   mixins: [
     head, handleError, tencentCaptcha, countDown, loginAbout
   ],

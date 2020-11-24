@@ -22,7 +22,7 @@
 
 <script>
 export default {
-  name: 'TopicPassword',
+  name: 'TopicWxPay',
   props: {
     qrCode: {
       type: String,

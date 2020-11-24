@@ -38,7 +38,7 @@ import env from '@/utils/env'
 import head from '@/mixin/head'
 export default {
   layout: 'custom_layout',
-  name: 'Index',
+  name: 'SearchUser',
   mixins: [handleError, head],
   // 异步数据用法
   async asyncData({ store }, callback) {

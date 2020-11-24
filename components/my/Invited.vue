@@ -104,6 +104,7 @@
 import handleError from '@/mixin/handleError'
 import { time2MinuteOrHour } from '@/utils/time'
 export default {
+  name: 'Invited',
   filters: {
     formatDate(date) {
       return time2MinuteOrHour(date)

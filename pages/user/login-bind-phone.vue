@@ -40,6 +40,7 @@ import handleError from '@/mixin/handleError'
 import loginAbout from '@/mixin/loginAbout'
 import head from '@/mixin/head'
 export default {
+  name: 'LoginBindPhone',
   mixins: [head, handleError, loginAbout],
   data() {
     return {

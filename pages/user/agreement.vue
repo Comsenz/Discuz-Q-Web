@@ -9,6 +9,7 @@
 
 <script>
 export default {
+  name: 'Agreement',
   data() {
     return {
       type: '',

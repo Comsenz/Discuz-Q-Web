@@ -68,6 +68,7 @@
 import handleError from '@/mixin/handleError'
 import { timestamp2day } from '@/utils/time'
 export default {
+  name: 'InvitedUser',
   mixins: [handleError],
   props: {
     groupMap: {

@@ -63,6 +63,7 @@ import loginAbout from '@/mixin/loginAbout'
 const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
 
 export default {
+  name: 'Register',
   mixins: [
     head, handleError, tcaptchs, loginAbout
   ],
