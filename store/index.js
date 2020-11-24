@@ -7,8 +7,8 @@ export const mutations = {
 }
 
 // https://github.com/mrichar1/jsonapi-vuex
-import { jsonapiModule } from '../library/jsonapi-vuex/index'
-import session from '../store/modules/session'
+import { jsonapiModule } from './modules/jsonapi-vuex/index'
+import session from './modules/session'
 import site from './modules/site'
 import user from './modules/user'
 

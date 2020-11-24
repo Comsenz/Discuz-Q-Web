@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { status } from '@/library/jsonapi-vuex/index'
+import { status } from '@/store/modules/jsonapi-vuex/index'
 import handleError from '@/mixin/handleError'
 import tencentCaptcha from '@/mixin/tencentCaptcha'
 export default {

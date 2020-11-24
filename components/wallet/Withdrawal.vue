@@ -102,7 +102,7 @@
 </template>
 
 <script>
-import { status } from '@/library/jsonapi-vuex/index'
+import { status } from '@/store/modules/jsonapi-vuex/index'
 import handleError from '@/mixin/handleError'
 import countDown from '@/mixin/countDown'
 const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''

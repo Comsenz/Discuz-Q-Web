@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import { status } from '@/library/jsonapi-vuex/index'
+import { status } from '@/store/modules/jsonapi-vuex/index'
 import handleError from '@/mixin/handleError'
 import head from '@/mixin/head'
 let payWechat = null

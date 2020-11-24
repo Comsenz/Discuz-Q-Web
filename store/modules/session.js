@@ -1,6 +1,6 @@
 /* eslint no-underscore-dangle: ["error", { "allow": ["_jv"] }] */
 import service from '@/api/request'
-import { utils } from '@/library/jsonapi-vuex/index'
+import { utils } from '@/store/modules/jsonapi-vuex/index'
 import {
   SET_USER_ID,
   CHECK_SESSION,

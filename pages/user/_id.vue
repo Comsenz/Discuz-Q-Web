@@ -252,7 +252,7 @@
 </template>
 
 <script>
-import { status } from '@/library/jsonapi-vuex/index'
+import { status } from '@/store/modules/jsonapi-vuex/index'
 import handleError from '@/mixin/handleError'
 import env from '@/utils/env'
 const threadInclude = 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio'

@@ -107,7 +107,7 @@
 </template>
 
 <script>
-import { status } from '@/library/jsonapi-vuex/index'
+import { status } from '@/store/modules/jsonapi-vuex/index'
 import loginAbout from '@/mixin/loginAbout'
 import handleError from '@/mixin/handleError'
 import head from '@/mixin/head'

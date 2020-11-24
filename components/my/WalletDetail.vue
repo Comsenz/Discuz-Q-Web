@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import { status } from '@/library/jsonapi-vuex/index'
+import { status } from '@/store/modules/jsonapi-vuex/index'
 import { time2MinuteOrHour } from '@/utils/time'
 import handleError from '@/mixin/handleError'
 export default {
