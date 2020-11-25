@@ -176,8 +176,13 @@ export default {
         this.isEditor = true
         if (this.textarea) this.$nextTick(() => { this.textarea.style.height = this.textarea.scrollHeight + 'px' }) // TODO 重置textarea 待优
         if (data.firstPost.images.length > 0) {
+          const contentAttachIds = data.firstPost.contentAttachIds
+          let imageList = data.firstPost.images
+          if (contentAttachIds.length > 0 && this.type === '1') {
+            imageList = imageList.filter(image => contentAttachIds.indexOf(image._jv.id) < 0)
+          }
           this.editResourceShow.showUploadImg = true
-          this.initThreadResource(this.post.imageList, data.firstPost.images)
+          this.initThreadResource(this.post.imageList, imageList)
         }
         if (data.firstPost.attachments.length > 0) {
           this.editResourceShow.showUploadAttached = true
