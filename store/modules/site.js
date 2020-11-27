@@ -3,7 +3,7 @@ import service from '@/api/request'
 
 const state = () => {
   return {
-    info: {}
+    info: {} // 站点信息
   }
 }
 

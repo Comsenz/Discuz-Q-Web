@@ -6,8 +6,6 @@ import {
   CHECK_SESSION,
   SET_ACCESS_TOKEN,
   SET_AUTH,
-  SET_CATEGORYID,
-  SET_CATEGORYINDEX,
   DELETE_USER_ID,
   DELETE_ACCESS_TOKEN
 } from '@/store/types/session'
@@ -119,12 +117,6 @@ const mutations = {
   },
   [SET_AUTH](state, payload) {
     state.auth = payload
-  },
-  [SET_CATEGORYID](state, payload) {
-    state.categoryId = payload
-  },
-  [SET_CATEGORYINDEX](state, payload) {
-    state.categoryIndex = payload
   },
   // 删除用户id
   [DELETE_USER_ID](state) {

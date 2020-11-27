@@ -89,7 +89,8 @@ export default {
     { src: '@/plugins/cropper', ssr: false },
     { src: '@/plugins/viewer', ssr: false },
     { src: '@/plugins/dzqjs', ssr: false },
-    { src: '@/plugins/statisticsCode', ssr: false }
+    { src: '@/plugins/statisticsCode', ssr: false },
+    { src: '@/plugins/virtualScroller', ssr: false }
   ],
   /*
   ** Auto import components
