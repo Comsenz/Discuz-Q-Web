@@ -3,7 +3,7 @@ import service from '@/api/request'
 
 const state = () => {
   return {
-    info: {}
+    info: {} // 用户信息
   }
 }
 
@@ -16,6 +16,7 @@ const mutations = {
 const actions = {
   /**
    * 获取用户信息
+   * @param {*} userId 用户id
    */
   getUserInfo: ({ dispatch, commit }, userId) => {
     return new Promise((resolve, reject) => {

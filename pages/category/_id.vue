@@ -19,20 +19,38 @@
           <span class="refresh" @click="reloadThreadsList">{{ $t('home.clickRefresh') }}</span>
         </div>
       </div>
-      <div class="post-list">
+      <!-- <div class="post-list">
         <template v-for="(item, index) in threadsData">
-          <!-- 语音贴 -->
           <post-item v-if="item.type === 4" :ref="`audio${ item && item.threadAudio && item.threadAudio._jv && item.threadAudio._jv.id}`" :key="index" :item="item" @audioPlay="audioPlay" />
           <post-item v-else :key="index" :item="item" />
         </template>
-        <list-load-more
-          :loading="loading"
-          :has-more="hasMore"
-          :page-num="pageNum"
-          :length="threadsData.length"
-          @loadMore="loadMore"
-        />
-      </div>
+      </div> -->
+      <!-- 长列表优化 -->
+      <dynamic-scroller
+        :items="threadsData"
+        :min-item-size="120"
+        page-mode
+      >
+        <template v-slot="{ item, index, active }">
+          <dynamic-scroller-item
+            :item="item"
+            :active="active"
+            :data-index="index"
+          >
+            <post-item v-if="item.type === 4" :ref="`audio${ item && item.threadAudio && item.threadAudio._jv && item.threadAudio._jv.id}`" :key="index" :item="item" @audioPlay="audioPlay" />
+            <post-item v-else :key="index" :item="item" />
+          </dynamic-scroller-item>
+        </template>
+        <template #after>
+          <list-load-more
+            :loading="loading"
+            :has-more="hasMore"
+            :page-num="pageNum"
+            :length="threadsData.length"
+            @loadMore="loadMore"
+          />
+        </template>
+      </dynamic-scroller>
     </main>
     <aside class="cont-right">
       <div class="category background-color">
@@ -109,6 +127,9 @@ export default {
       }
       if (Array.isArray(threadsData)) {
         resData.threadsData = threadsData
+        threadsData.forEach(item => {
+          item.id = item._jv && item._jv.id
+        })
       } else if (threadsData && threadsData._jv && threadsData._jv.json) {
         const _threadsData = threadsData._jv.json.data || []
         _threadsData.forEach((item, index) => {
@@ -260,18 +281,22 @@ export default {
       }
       this.$store.dispatch('jv/get', ['threads', { params }]).then((data) => {
         this.hasMore = data.length === this.pageSize
-        const _threadCount = (data &&
-          data._jv &&
-          data._jv.json &&
-          data._jv.json.meta &&
-          data._jv.json.meta.threadCount) || 0
+        const _data = data
+        Array.isArray(_data) && _data.forEach(item => {
+          item.id = item._jv && item._jv.id
+        })
+        const _threadCount = (_data &&
+          _data._jv &&
+          _data._jv.json &&
+          _data._jv.json.meta &&
+          _data._jv.json.meta.threadCount) || 0
         if (this.pageNum === 1) {
-          this.threadsData = data
+          this.threadsData = _data
           this.threadCount = _threadCount
         } else {
-          this.threadsData = [...this.threadsData, ...data]
+          this.threadsData = [...this.threadsData, ..._data]
         }
-        if (data && data._jv) {
+        if (_data && _data._jv) {
           this.hasMore = this.threadsData.length < _threadCount
         }
         // 加载成功 页码加1，为加载更多做准备

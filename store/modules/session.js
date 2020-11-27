@@ -6,14 +6,14 @@ import {
   CHECK_SESSION,
   SET_ACCESS_TOKEN,
   SET_AUTH,
-  SET_CATEGORYID,
-  SET_CATEGORYINDEX,
   DELETE_USER_ID,
   DELETE_ACCESS_TOKEN
 } from '@/store/types/session'
 
 const accessToken = process.client ? localStorage.getItem('access_token') : ''
-
+/**
+   * 设置用户信息
+   */
 const setUserInfoStore = (context, results, resolve) => {
   const resData = utils.jsonapiToNorm(results.data.data)
   context.commit(SET_USER_ID, resData._jv.id)
@@ -24,12 +24,10 @@ const setUserInfoStore = (context, results, resolve) => {
 
 const state = () => {
   return {
-    userId: 0,
-    wxLogin: false,
-    accessToken,
-    auth: {},
-    categoryId: 0,
-    categoryIndex: 0
+    userId: 0, // 用户id
+    wxLogin: false, // 是否微信登录
+    accessToken, // 鉴权token
+    auth: {}
   }
 }
 
@@ -77,7 +75,6 @@ const actions = {
         })
     })
   },
-
   h5Register: (context, payload = {}) => {
     // const options = { custom: { showTost: false }}
     return new Promise(resolve => {
@@ -92,6 +89,7 @@ const actions = {
         })
     })
   },
+  // 退出登录
   logout: context => {
     return new Promise(resolve => {
       context.commit(DELETE_USER_ID)
@@ -115,12 +113,6 @@ const mutations = {
   },
   [SET_AUTH](state, payload) {
     state.auth = payload
-  },
-  [SET_CATEGORYID](state, payload) {
-    state.categoryId = payload
-  },
-  [SET_CATEGORYINDEX](state, payload) {
-    state.categoryIndex = payload
   },
   [DELETE_USER_ID](state) {
     if (process.client) localStorage.removeItem('user_id')
