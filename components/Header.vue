@@ -99,7 +99,8 @@ export default {
       userInfoTimer: null, // 定时器
       offsetTop: 0,
       imgurl: require('@/assets/logo.png'),
-      islogin: true
+      islogin: true,
+      preurl: '/'
     }
   },
   computed: {
@@ -124,7 +125,10 @@ export default {
     }
   },
   mounted() {
-    const { code } = this.$route.query
+    const { code, preurl } = this.$route.query
+    if (preurl) {
+      this.preurl = preurl
+    }
     if (code !== 'undefined') {
       this.code = code
     }
