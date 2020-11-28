@@ -36,7 +36,7 @@
             :data-index="index"
           >
             <post-item v-if="item.type === 4" :ref="`audio${ item && item.threadAudio && item.threadAudio._jv && item.threadAudio._jv.id}`" :key="index" :item="item" @audioPlay="audioPlay" />
-            <post-item v-else :key="index" :item="item" />
+            <post-item v-else :key="index" :item="item" @showVideoFn="showVideoFn" />
           </dynamic-scroller-item>
         </template>
         <template #after>
@@ -62,6 +62,13 @@
       </div>
       <copyright :forums="forums" />
     </aside>
+    <!-- 视频播放弹窗 -->
+    <video-pop
+      v-if="showVideoPop"
+      :cover-url="threadVideo.cover_url"
+      :url="threadVideo.media_url"
+      @remove="showVideoPop = false"
+    />
   </div>
 </template>
 
@@ -202,7 +209,9 @@ export default {
       headTitle: '\u200E',
       headKeywords: '',
       headDesc: '',
-      currentAudioId: ''
+      currentAudioId: '',
+      showVideoPop: false, // 显示视频弹窗
+      threadVideo: {} // 当前显示的视频信息
     }
   },
   computed: {
@@ -402,6 +411,11 @@ export default {
         this.$refs[`audio${this.currentAudioId}`].pause()
       }
       this.currentAudioId = id
+    },
+    // 视频播放弹窗
+    showVideoFn(video) {
+      this.threadVideo = video
+      this.showVideoPop = true
     }
   },
   head() {
