@@ -140,12 +140,6 @@
             <div v-else class="no-cover">{{ $t("home.noPoster") }}</div>
             <svg-icon type="video-play" class="video-play" />
           </div>
-          <video-pop
-            v-if="showVideoPop"
-            :cover-url="item.threadVideo.cover_url"
-            :url="item.threadVideo.media_url"
-            @remove="showVideoPop = false"
-          />
           <!-- 附件 -->
           <div
             v-if="
@@ -212,6 +206,13 @@
         </div>
       </template>
     </div>
+    <!-- 视频播放弹窗 -->
+    <video-pop
+      v-if="showVideoPop"
+      :cover-url="item.threadVideo.cover_url"
+      :url="item.threadVideo.media_url"
+      @remove="showVideoPop = false"
+    />
   </div>
 </template>
 <script>
@@ -371,7 +372,12 @@ export default {
       if (this.unpaid) {
         this.routerLink()
       } else {
-        this.showVideoPop = true
+        // 由于使用长列表的优化的插件后，transform里面不能有fixed
+        if (this.$route.path === '/' || this.$route.path === '/site/search' || this.$route.name === 'category-id') {
+          this.$emit('showVideoFn', this.item.threadVideo)
+        } else {
+          this.showVideoPop = true
+        }
       }
     },
     // 详情路由
