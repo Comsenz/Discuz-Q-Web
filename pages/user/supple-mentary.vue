@@ -1,7 +1,7 @@
 <template>
   <!-- 补充信息 -->
   <div class="supple">
-    <h2 class="supple-title">填写补充信息</h2>
+    <h2 class="supple-title">{{ $t('user.supplementary') }}</h2>
     <div v-for="(item, index) in dataList" :key="index" class="supple-content">
       <div class="supple-content__item">
         <div class="supple-content__item__title">

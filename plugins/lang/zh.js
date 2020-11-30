@@ -1096,6 +1096,7 @@ export default {
     registerReason: '注册原因',
     submit: '提交',
     inputcontent: '请输入内容',
+    supplementary: '填写补充信息',
     username: '请输入您的用户名',
     password: '请输入您的登录密码',
     reason: '请输入注册原因',

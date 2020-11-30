@@ -63,8 +63,6 @@ module.exports = {
     },
     logind(loginInfo) {
       // 新用户去填拓展信息，老用户直接登陆
-      // this.$message.success(this.$t('user.registerSuccess'))
-      // this.$router.push('/user/supple-mentary')
       if (loginInfo && loginInfo.isNew) {
         this.$router.push('/user/supple-mentary')
         return
