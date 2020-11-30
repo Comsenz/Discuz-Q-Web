@@ -6,10 +6,6 @@
   </el-backtop>
 </template>
 
-<script>
-export default {}
-</script>
-
 <style lang='scss' scoped>
 .back-top-container{
   @media (min-width:1200px){
