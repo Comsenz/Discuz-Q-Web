@@ -89,7 +89,8 @@ export default {
     { src: '@/plugins/cropper', ssr: false },
     { src: '@/plugins/viewer', ssr: false },
     { src: '@/plugins/dzqjs', ssr: false },
-    { src: '@/plugins/statisticsCode', ssr: false }
+    { src: '@/plugins/statisticsCode', ssr: false },
+    { src: '@/plugins/virtualScroller', ssr: false }
   ],
   /*
   ** Auto import components
@@ -139,13 +140,22 @@ export default {
     extractCSS: isProduction,
     optimization: {
       splitChunks: {
+        chunks: 'all',
+        minSize: 100 * 100,
+        maxSize: 10000 * 100,
         cacheGroups: {
-          styles: {
-            name: 'styles',
-            test: /\.(css|vue|scss)$/,
-            chunks: 'all',
-            enforce: true
-          }
+          // styles: {
+          //   name: 'styles',
+          //   test: /\.(css|vue|scss)$/,
+          //   chunks: 'all',
+          //   enforce: true
+          // },
+          // vendors: {
+          //   chunks: 'initial',
+          //   // 提升权重，先抽离第三方模块，再抽离公共模块，要不然执行抽离公共模块就截止不会往下执行
+          //   priority: 100,
+          //   test: /[\\/]node_modules[\\/]/
+          // }
         }
       }
     },

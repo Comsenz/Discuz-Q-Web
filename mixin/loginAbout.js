@@ -4,7 +4,15 @@ module.exports = {
       this.toregister(url, code)
     },
     toregister(url = '/', code) {
-      const preurl = this.$route.fullPath
+      const loginPath = ['/user/wechat-bind-phone', '/user/login-bind-phone', '/user/login-bind', '/user/phone-login-register', '/user/phone-login', '/user/register-bind-phone', '/user/register-bind', '/user/wechat', '/user/login', '/user/register']
+      let preurl
+      if (loginPath.includes(this.$route.path)) {
+        if (this.preurl) {
+          preurl = this.preurl
+        }
+      } else {
+        preurl = this.$route.fullPath
+      }
       if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 0) {
         // 用户名模式
         this.$router.push(`/user/register?code=${code}&preurl=${preurl}`)
@@ -25,7 +33,15 @@ module.exports = {
       }
     },
     headerTologin() {
-      const preurl = this.$route.fullPath
+      const loginPath = ['/user/wechat-bind-phone', '/user/login-bind-phone', '/user/login-bind', '/user/phone-login-register', '/user/phone-login', '/user/register-bind-phone', '/user/register-bind', '/user/wechat', '/user/login', '/user/register']
+      let preurl
+      if (loginPath.includes(this.$route.path)) {
+        if (this.preurl) {
+          preurl = this.preurl
+        }
+      } else {
+        preurl = this.$route.fullPath
+      }
       if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 0) {
         // 用户名模式
         this.$router.push(`/user/login?preurl=${preurl}`)
@@ -79,7 +95,15 @@ module.exports = {
       })
     },
     headerTologin2() {
-      const preurl = this.$route.fullPath
+      const loginPath = ['/user/wechat-bind-phone', '/user/login-bind-phone', '/user/login-bind', '/user/phone-login-register', '/user/phone-login', '/user/register-bind-phone', '/user/register-bind', '/user/wechat', '/user/login', '/user/register']
+      let preurl
+      if (loginPath.includes(this.$route.path)) {
+        if (this.preurl) {
+          preurl = this.preurl
+        }
+      } else {
+        preurl = this.$route.fullPath
+      }
       if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 0) {
         // 用户名模式
         location.href = `/user/login?preurl=${preurl}`

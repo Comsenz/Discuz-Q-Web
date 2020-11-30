@@ -6,14 +6,13 @@ import {
   CHECK_SESSION,
   SET_ACCESS_TOKEN,
   SET_AUTH,
-  SET_CATEGORYID,
-  SET_CATEGORYINDEX,
   DELETE_USER_ID,
   DELETE_ACCESS_TOKEN
 } from '@/store/types/session'
 
 const accessToken = process.client ? localStorage.getItem('access_token') : ''
 
+// 设置用户id,token
 const setUserInfoStore = (context, results, resolve) => {
   const resData = utils.jsonapiToNorm(results.data.data)
   context.commit(SET_USER_ID, resData._jv.id)
@@ -24,9 +23,9 @@ const setUserInfoStore = (context, results, resolve) => {
 
 const state = () => {
   return {
-    userId: 0,
+    userId: 0, // 用户id
     wxLogin: false,
-    accessToken,
+    accessToken, // 用户token
     auth: {},
     categoryId: 0,
     categoryIndex: 0
@@ -49,7 +48,7 @@ const actions = {
   setAuth: (context, payload) => {
     context.commit(SET_AUTH, payload)
   },
-
+  // 手机号验证码登录
   verificationCodeh5Login: (context, payload = {}) => {
     return new Promise(resolve => {
       return service
@@ -63,7 +62,7 @@ const actions = {
         })
     })
   },
-
+  // 用户登录
   h5Login: (context, payload = {}) => {
     return new Promise(resolve => {
       return service
@@ -77,7 +76,7 @@ const actions = {
         })
     })
   },
-
+  // 用户注册
   h5Register: (context, payload = {}) => {
     // const options = { custom: { showTost: false }}
     return new Promise(resolve => {
@@ -92,6 +91,7 @@ const actions = {
         })
     })
   },
+  // 退出登录
   logout: context => {
     return new Promise(resolve => {
       context.commit(DELETE_USER_ID)
@@ -102,6 +102,7 @@ const actions = {
 }
 
 const mutations = {
+  // 设置用户id
   [SET_USER_ID](state, payload) {
     if (process.client) localStorage.setItem('user_id', payload)
     state.userId = payload
@@ -109,6 +110,7 @@ const mutations = {
   [CHECK_SESSION](state, payload) {
     state.wxLogin = payload
   },
+  // 设置用户token
   [SET_ACCESS_TOKEN](state, payload) {
     if (process.client) localStorage.setItem('access_token', payload)
     state.accessToken = payload
@@ -116,16 +118,12 @@ const mutations = {
   [SET_AUTH](state, payload) {
     state.auth = payload
   },
-  [SET_CATEGORYID](state, payload) {
-    state.categoryId = payload
-  },
-  [SET_CATEGORYINDEX](state, payload) {
-    state.categoryIndex = payload
-  },
+  // 删除用户id
   [DELETE_USER_ID](state) {
     if (process.client) localStorage.removeItem('user_id')
     state.userId = 0
   },
+  // 删除用户token
   [DELETE_ACCESS_TOKEN](state) {
     if (process.client) localStorage.removeItem('access_token')
     state.accessToken = ''

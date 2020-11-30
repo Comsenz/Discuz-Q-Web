@@ -35,20 +35,32 @@
         </template>
       </div>
       <div class="count">{{ $t('home.invitation') }} {{ threadCount }} {{ $t('topic.item') }}</div>
-      <div class="post-list">
-        <template v-for="(item, index) in threadsList">
-          <!-- 语音贴 -->
-          <post-item v-if="item.type === 4" :ref="`audio${ item && item.threadAudio && item.threadAudio._jv && item.threadAudio._jv.id}`" :key="index" :item="item" @audioPlay="audioPlay" />
-          <post-item v-else :key="index" :item="item" />
+      <!-- 长列表优化 -->
+      <dynamic-scroller
+        :items="threadsList"
+        :min-item-size="120"
+        page-mode
+      >
+        <template v-slot="{ item, index, active }">
+          <dynamic-scroller-item
+            :item="item"
+            :active="active"
+            :data-index="index"
+          >
+            <post-item v-if="item.type === 4" :ref="`audio${ item && item.threadAudio && item.threadAudio._jv && item.threadAudio._jv.id}`" :key="index" :item="item" @audioPlay="audioPlay" />
+            <post-item v-else :key="index" :item="item" @showVideoFn="showVideoFn" />
+          </dynamic-scroller-item>
         </template>
-        <list-load-more
-          :loading="loading"
-          :has-more="hasMore"
-          :page-num="pageNum"
-          :length="threadsList.length"
-          @loadMore="loadMore"
-        />
-      </div>
+        <template #after>
+          <list-load-more
+            :loading="loading"
+            :has-more="hasMore"
+            :page-num="pageNum"
+            :length="threadsList.length"
+            @loadMore="loadMore"
+          />
+        </template>
+      </dynamic-scroller>
     </main>
     <aside class="cont-right">
       <div class="category background-color">
@@ -57,6 +69,13 @@
       <advertising />
       <copyright :forums="forums" />
     </aside>
+    <!-- 视频播放弹窗 -->
+    <video-pop
+      v-if="showVideoPop"
+      :cover-url="threadVideo.cover_url"
+      :url="threadVideo.media_url"
+      @remove="showVideoPop = false"
+    />
   </div>
 </template>
 
@@ -106,7 +125,9 @@ export default {
       userList: [],
       userLoading: false,
       userPageSize: 3,
-      currentAudioId: ''
+      currentAudioId: '',
+      showVideoPop: false, // 显示视频弹窗
+      threadVideo: {} // 当前显示的视频信息
     }
   },
   computed: {
@@ -171,14 +192,18 @@ export default {
       this.$store.dispatch('jv/get', ['threads', { params }]).then((res) => {
         this.hasMore = res.length === this.pageSize
         this.threadCount = res._jv.json.meta.threadCount
+        const _res = res
+        Array.isArray(_res) && _res.forEach(item => {
+          item.id = item._jv && item._jv.id
+        })
         if (this.pageNum === 1) {
-          this.threadsList = res
+          this.threadsList = _res
         } else {
-          this.threadsList = [...this.threadsList, ...res]
+          this.threadsList = [...this.threadsList, ..._res]
         }
         this.pageNum += 1
-        if (res._jv) {
-          this.hasMore = this.threadsList.length < res._jv.json.meta.threadCount
+        if (_res._jv) {
+          this.hasMore = this.threadsList.length < _res._jv.json.meta.threadCount
         }
       }, (e) => {
         this.handleError(e)
@@ -212,6 +237,11 @@ export default {
         this.$refs[`audio${this.currentAudioId}`][0].pause()
       }
       this.currentAudioId = id
+    },
+    // 视频播放弹窗
+    showVideoFn(video) {
+      this.threadVideo = video
+      this.showVideoPop = true
     }
   }
 }

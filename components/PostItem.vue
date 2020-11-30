@@ -140,12 +140,6 @@
             <div v-else class="no-cover">{{ $t("home.noPoster") }}</div>
             <svg-icon type="video-play" class="video-play" />
           </div>
-          <video-pop
-            v-if="showVideoPop"
-            :cover-url="item.threadVideo.cover_url"
-            :url="item.threadVideo.media_url"
-            @remove="showVideoPop = false"
-          />
           <!-- 附件 -->
           <div
             v-if="
@@ -191,12 +185,12 @@
         <!-- 操作 -->
         <div v-if="!canDetail" class="bottom-handle">
           <div class="left">
-            <div v-permission:handleLike="''" class="btn like" :class="{ liked: isLiked }">
-              <svg-icon v-permission:handleLike="''" type="like" class="icon" />
+            <div class="btn like" :class="{ liked: isLiked }" @click="handleLike">
+              <svg-icon type="like" class="icon" @click="handleLike" />
               {{ isLiked ? $t("topic.liked") : $t("topic.like") }}
               {{ likeCount > 0 ? likeCount : "" }}
             </div>
-            <div v-permission:toDetail="''" class="btn comment">
+            <div class="btn comment" @click="toDetail">
               <svg-icon type="post-comment" class="icon" />
               {{ $t("topic.comment") }}
               {{ item.postCount - 1 > 0 ? item.postCount - 1 : "" }}
@@ -212,6 +206,13 @@
         </div>
       </template>
     </div>
+    <!-- 视频播放弹窗 -->
+    <video-pop
+      v-if="showVideoPop"
+      :cover-url="item.threadVideo.cover_url"
+      :url="item.threadVideo.media_url"
+      @remove="showVideoPop = false"
+    />
   </div>
 </template>
 <script>
@@ -219,6 +220,8 @@ import s9e from '@/utils/s9e'
 import { time2MinuteOrHour } from '@/utils/time'
 import { extensionList } from '@/constant/extensionList'
 import handleError from '@/mixin/handleError'
+import loginAbout from '@/mixin/loginAbout'
+
 export default {
   name: 'PostItem',
   filters: {
@@ -226,7 +229,7 @@ export default {
       return time2MinuteOrHour(date)
     }
   },
-  mixins: [handleError],
+  mixins: [handleError, loginAbout],
   props: {
     // 主题详情
     item: {
@@ -275,6 +278,9 @@ export default {
     // 当前主题是否付费
     unpaid() {
       return !(this.item.paid || parseFloat(this.item.price) === 0)
+    },
+    forums() {
+      return this.$store.state.site.info.attributes || {}
     }
   },
   watch: {
@@ -294,48 +300,66 @@ export default {
   methods: {
     // 点赞
     handleLike() {
-      if (this.loading) return
-      if (!this.item.firstPost.canLike) {
-        this.$message.error(this.$t('topic.noThreadLikePermission'))
-        return
-      }
-      this.loading = true
-      const isLiked = !this.isLiked
-      const params = {
-        _jv: {
-          type: 'posts',
-          id:
+      if (!this.$store.getters['session/get']('isLogin')) {
+        if (process.client) {
+          this.$message.warning('请登录')
+          window.setTimeout(() => {
+            this.headerTologin()
+          }, 1000)
+        }
+      } else {
+        if (this.loading) return
+        if (!this.item.firstPost.canLike) {
+          this.$message.error(this.$t('topic.noThreadLikePermission'))
+          return
+        }
+        this.loading = true
+        const isLiked = !this.isLiked
+        const params = {
+          _jv: {
+            type: 'posts',
+            id:
             this.item.firstPost &&
             this.item.firstPost._jv &&
             this.item.firstPost._jv.id
-        },
-        isLiked
-      }
-      return this.$store
-        .dispatch('jv/patch', params)
-        .then(
-          () => {
-            this.$message.success(isLiked ? this.$t('discuzq.msgBox.likeSuccess') : this.$t('discuzq.msgBox.cancelLikeSuccess'))
-            if (isLiked) {
-              this.likeCount += 1
-            } else {
-              this.likeCount -= 1
-            }
-            this.isLiked = isLiked
-            this.$emit('change')
           },
-          (e) => {
-            this.handleError(e)
-          }
-        )
-        .finally(() => {
-          this.loading = false
-        })
+          isLiked
+        }
+        return this.$store
+          .dispatch('jv/patch', params)
+          .then(
+            () => {
+              this.$message.success(isLiked ? this.$t('discuzq.msgBox.likeSuccess') : this.$t('discuzq.msgBox.cancelLikeSuccess'))
+              if (isLiked) {
+                this.likeCount += 1
+              } else {
+                this.likeCount -= 1
+              }
+              this.isLiked = isLiked
+              this.$emit('change')
+            },
+            (e) => {
+              this.handleError(e)
+            }
+          )
+          .finally(() => {
+            this.loading = false
+          })
+      }
     },
     // 跳转详情页
     toDetail() {
-      if (!this.canViewPostsFn()) return
-      this.routerLink()
+      if (!this.$store.getters['session/get']('isLogin')) {
+        if (process.client) {
+          this.$message.warning('请登录')
+          window.setTimeout(() => {
+            this.headerTologin()
+          }, 1000)
+        }
+      } else {
+        if (!this.canViewPostsFn()) return
+        this.routerLink()
+      }
     },
     // 点击图片 判断是否付费， 未付费跳转详情页
     onClickImage() {
@@ -348,7 +372,12 @@ export default {
       if (this.unpaid) {
         this.routerLink()
       } else {
-        this.showVideoPop = true
+        // 由于使用长列表的优化的插件后，transform里面不能有fixed
+        if (this.$route.path === '/' || this.$route.path === '/site/search' || this.$route.name === 'category-id') {
+          this.$emit('showVideoFn', this.item.threadVideo)
+        } else {
+          this.showVideoPop = true
+        }
       }
     },
     // 详情路由

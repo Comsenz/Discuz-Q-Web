@@ -12,6 +12,9 @@ export default ({ app }) => {
     const path = to.path
     let query = '?'
     for (const key in to.query) query += `${key}=${to.query[key]}&`
+    if (path === '/' && query && query.indexOf('categoryId') >= 0) { // 首页特殊处理
+      next({ path: '/category/' + to.query.categoryId })
+    }
     routerHash.forEach(item => {
       if (item.h5 === path) item.dynamic ? next({ path: item.pc + '/' + to.query[item.dynamic] }) : next({ path: item.pc + '/' + query })
     })

@@ -36,7 +36,8 @@ import {
   Badge,
   RadioGroup,
   Radio,
-  Switch
+  Switch,
+  Backtop
 } from 'element-ui'
 
 Vue.use(Button, { locale })
@@ -71,6 +72,7 @@ Vue.use(Badge, { locale })
 Vue.use(RadioGroup, { locale })
 Vue.use(Radio, { locale })
 Vue.use(Switch, { locale })
+Vue.use(Backtop, { locale })
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
