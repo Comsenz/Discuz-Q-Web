@@ -127,8 +127,7 @@ export default {
           .then((res) => {
             this.loading = false
             if (res && res.data && res.data.data && res.data.data.id) {
-              this.logind()
-              this.$message.success(this.$t('user.loginSuccess'))
+              this.logind(res)
             }
             if (
               res &&
@@ -140,8 +139,7 @@ export default {
                 const mobileToken = res.data.errors[0].token
                 localStorage.setItem('mobileToken', mobileToken)
               }
-              this.logind()
-              this.$message.success(this.$t('user.loginSuccess'))
+              this.logind(res)
               return
             }
             if (

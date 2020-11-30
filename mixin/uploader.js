@@ -12,8 +12,8 @@ module.exports = {
     }
   },
   methods: {
-    onClick() {
-      this.input.dispatchEvent(new MouseEvent('click'))
+    uploaderFile(obj) {
+      obj.dispatchEvent(new MouseEvent('click'))
     },
     onInput(e) {
       const files = e.target.files
@@ -56,12 +56,12 @@ module.exports = {
         const files = resList.map(item => item.data.data)
         const _fileList = [...this.fileList]
         files.forEach(item => _fileList.push({ id: item.id, name: item.attributes.fileName, url: item.attributes.url }))
-        this.input.value = ''
+        this.currentInput.value = ''
         this.$emit('success', _fileList)
         this.$emit(`update:onUpload`, false)
       }, (e) => {
         // 失败的时候取消对应的预览照片
-        this.input.value = ''
+        this.currentInput.value = ''
         const length = promiseList.length
         this.$emit(`update:onUpload`, false)
         this.previewFiles.splice(this.previewFiles.length - length, length)
@@ -77,7 +77,7 @@ module.exports = {
         this.previewFiles[index].deleted = true // 删除动画
         const _fileList = [...this.fileList]
         _fileList.splice(index, 1)
-        this.$emit('remove', _fileList) // 避免和回显冲突，先修改 fileList
+        this.$emit('remove', _fileList, index) // 避免和回显冲突，先修改 fileList
         setTimeout(() => {
           this.previewFiles.splice(index, 1)
           this.$message.success('删除成功')
