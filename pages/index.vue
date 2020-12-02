@@ -235,6 +235,9 @@ export default {
     }
   },
   mounted() {
+    /* IFTRUE_test */
+    console.log(333333)
+    /* FITRUE_test */
     if (this.forums && this.forums.set_site) {
       this.headTitle = this.forums.set_site.site_title || this.forums.set_site.site_name || 'Discuz! Q'
       this.headKeywords = this.forums.set_site.site_keywords

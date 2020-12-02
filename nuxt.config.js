@@ -29,6 +29,14 @@ const plugins = [
 if (isProduction) {
   plugins.push('transform-remove-console')
 }
+
+const conditionalCompiler = {
+  loader: 'js-conditional-compile-loader',
+  options: {
+    test: process.env.SCENE === 'test'
+  }
+}
+
 export default {
   env: {
     domain: config.SSR_API_URL || DEV_API_URL,
@@ -179,6 +187,13 @@ export default {
           exclude: /(node_modules)/
         })
       }
+
+      config.module.rules.push({
+        enforce: 'pre',
+        test: /\.(js|vue|css|scss)$/,
+        loader: conditionalCompiler,
+        exclude: /(node_modules)/
+      })
 
       // 排除 nuxt 原配置的影响,Nuxt 默认有vue-loader,会处理svg,img等
       // 找到匹配.svg的规则,然后将存放svg文件的目录排除

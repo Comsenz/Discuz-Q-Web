@@ -3,7 +3,8 @@
   "version": "2.1.201112",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
+    "dev": "nuxt --fix",
+    "dev:test": "SCENE=test nuxt",
     "build:spa": "nuxt build --spa",
     "build": "nuxt build",
     "start": "nuxt start",
@@ -48,6 +49,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-vue": "^6.2.2",
+    "js-conditional-compile-loader": "^1.0.14",
     "qrcodejs2": "^0.0.2",
     "sass": "^1.26.10",
     "sass-loader": "^9.0.3",
