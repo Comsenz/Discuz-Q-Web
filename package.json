@@ -3,16 +3,20 @@
   "version": "2.1.201112",
   "private": true,
   "scripts": {
-    "dev": "nuxt --fix",
-    "dev:test": "SCENE=test nuxt",
-    "build:spa": "nuxt build --spa",
-    "build": "nuxt build",
-    "start": "nuxt start",
+    "dev": "SCENE=default nuxt --fix",
+    "build:spa": "SCENE=default nuxt build --spa",
+    "build": "SCENE=default nuxt build",
+    "start": "SCENE=default nuxt start",
     "build:ssr": "npm run build && npm run start",
     "generate": "nuxt generate",
     "analyze": "nuxt build --analyze",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "lintfix": "eslint --fix --ext .js,.vue --ignore-path .gitignore ."
+    "lintfix": "eslint --fix --ext .js,.vue --ignore-path .gitignore .",
+    "dev:pay": "SCENE=pay nuxt",
+    "build:pay-spa": "SCENE=pay nuxt build --spa",
+    "build:pay": "SCENE=pay nuxt build",
+    "start:pay": "SCENE=pay nuxt start",
+    "build:pay-ssr": "npm run build:pay && npm run start:pay"
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.12.1",

@@ -30,10 +30,12 @@ if (isProduction) {
   plugins.push('transform-remove-console')
 }
 
+// 条件编译
 const conditionalCompiler = {
   loader: 'js-conditional-compile-loader',
   options: {
-    test: process.env.SCENE === 'test'
+    default: process.env.SCENE === 'default',
+    pay: process.env.SCENE === 'pay'
   }
 }
 
