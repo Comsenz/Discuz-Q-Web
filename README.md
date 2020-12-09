@@ -58,7 +58,13 @@ npm run build:spa
 
 生成```dist```目录，访问```index.html```即可
 
+## 多场景开发规范
 
+1. [开发规范](./docs/MANY-SCENARIOS.md)
+
+
+## 项目版本管理
+1. [Git 分支开发工作流](./docs/GIT_BRANCH_FLOW.md)
 
 ## 项目目录结构说明
 ```
