@@ -123,11 +123,13 @@
 import { status } from '@/store/modules/jsonapi-vuex/index'
 import { time2MinuteOrHour } from '@/utils/time'
 import handleError from '@/mixin/handleError'
+import filterTime from '@/mixin/filterTime'
 
 export default {
   name: 'CashDialog',
   mixins: [
-    handleError
+    handleError, filterTime
+
   ],
   data() {
     return {
@@ -181,13 +183,6 @@ export default {
     this.getList()
   },
   methods: {
-    setCurrentTime() {
-      const date = (process.client && window.currentTime) || new Date()
-      const year = date.getFullYear()
-      let month = date.getMonth() + 1
-      month = month < 10 ? `0${month}` : month
-      this.date = `${year}-${month}`
-    },
     // 用户信息
     getUserInfo() {
       this.userInfo = this.$store.state.user.info.attributes
@@ -203,7 +198,7 @@ export default {
         'page[number]': this.pageNum2,
         'page[limit]': this.pageSize2,
         'filter[start_time]': `${this.date}-01-00-00-00`,
-        'filter[end_time]': `${this.date}-${days}-00-00-00`
+        'filter[end_time]': `${this.date}-${days}-23-59-59`
       }
       // 过滤时间或查看类型，重新设置当前页码和提现数据
       if (type && type === 'filter') {
