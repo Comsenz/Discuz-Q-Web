@@ -108,6 +108,9 @@ export default {
       } else if (this.verifyCode === '') {
         this.$message.error('验证码不能为空')
         this.loading = false
+      } else if (!this.ischeck) {
+        this.$message.error('请同意协议')
+        this.loading = false
       } else {
         const params = {
           data: {

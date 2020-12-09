@@ -2,7 +2,7 @@
   <div class="orderDetail">
     <div class="selector">
       <el-date-picker
-        v-model="date4"
+        v-model="date"
         type="month"
         placeholder="选择月"
         suffix-icon="el-icon-arrow"
@@ -47,7 +47,7 @@
           :label="$t('profile.desc')"
         >
           <template slot-scope="scope">
-            <span class="desc">{{ scope.row.titleType }}</span>
+            <span class="desc" @click="toTopic(scope)">{{ scope.row.titleType }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -113,10 +113,11 @@
 import { status } from '@/store/modules/jsonapi-vuex/index'
 import { time2MinuteOrHour } from '@/utils/time'
 import handleError from '@/mixin/handleError'
+import filterTime from '@/mixin/filterTime'
 export default {
   name: 'OrderDetail',
   mixins: [
-    handleError
+    handleError, filterTime
   ],
   data() {
     return {
@@ -125,7 +126,7 @@ export default {
       value: '',
       pageSize4: 10, // 订单每页展示的数目
       pageNum4: 1, // 订单当前页数
-      date4: '', // 订单日期
+      date: '', // 订单日期
       filterSelected4: '', // 订单状态过滤内容的id
       dataList4: [], // 订单数据
       total4: 0, // 订单记录总记录数
@@ -158,12 +159,11 @@ export default {
     this.getList4()
   },
   methods: {
-    setCurrentTime() {
-      const date = (process.client && window.currentTime) || new Date()
-      const year = date.getFullYear()
-      let month = date.getMonth() + 1
-      month = month < 10 ? `0${month}` : month
-      this.date4 = `${year}-${month}`
+    toTopic(scope) {
+      if (!scope.row.thread) {
+        return
+      }
+      this.$router.push(`/topic/index?id=${scope.row.thread._jv.id}`)
     },
     // 金额排序
     sortAmount(str1, str2) {
@@ -202,8 +202,8 @@ export default {
     },
     // 订单日期选中
     bindDateChange4(e) {
-      this.date4 = e
-      if (this.date4 !== null) {
+      this.date = e
+      if (this.date !== null) {
         this.getList4('filter')
       }
     },
@@ -215,7 +215,7 @@ export default {
     // 获取订单数据
     getList4(type) {
       this.loading = true
-      const dateArr = this.date4.split('-')
+      const dateArr = this.date.split('-')
       const days = new Date(dateArr[0], dateArr[1], 0).getDate()
       // status 0 待付款，1 已付款 ，2取消订单，3支付失败，4 订单已过期
       const params = {
@@ -223,8 +223,8 @@ export default {
         'filter[user]': this.userId,
         'page[number]': this.pageNum4,
         'page[limit]': this.pageSize4,
-        'filter[start_time]': `${this.date4}-01-00-00-00`,
-        'filter[end_time]': `${this.date4}-${days}-00-00-00`
+        'filter[start_time]': `${this.date}-01-00-00-00`,
+        'filter[end_time]': `${this.date}-${days}-23-59-59`
       }
       if (type && type === 'filter') {
         params.pageNum4 = 1
@@ -343,6 +343,7 @@ export default {
   }
   .desc:hover {
     color: #1878f3;
+    cursor: pointer;
   }
   .pagination {
     margin-top: 15px;

@@ -2,7 +2,7 @@
   <div class="walletDetail">
     <div class="selector">
       <el-date-picker
-        v-model="date2"
+        v-model="date"
         type="month"
         placeholder="选择月"
         suffix-icon="el-icon-arrow"
@@ -43,7 +43,7 @@
           :label="$t('profile.desc')"
         >
           <template slot-scope="scope">
-            <span class="desc">{{ scope.row.change_desc }}</span>
+            <span class="desc" @click="toTopic(scope)">{{ scope.row.change_desc }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -109,10 +109,11 @@
 import { status } from '@/store/modules/jsonapi-vuex/index'
 import { time2MinuteOrHour } from '@/utils/time'
 import handleError from '@/mixin/handleError'
+import filterTime from '@/mixin/filterTime'
 export default {
   name: 'WalletDetail',
   mixins: [
-    handleError
+    handleError, filterTime
   ],
   data() {
     return {
@@ -121,7 +122,7 @@ export default {
       value: '', // 提现记录被选择到的类型id
       pageSize2: 10, // 钱包明细每页展示的数目
       pageNum2: 1, // 钱包明细当前页数
-      date2: '', // 钱包明细日期
+      date: '', // 钱包明细日期
       filterSelected2: '', // 钱包明细状态过滤内容的id
       dataList2: [], // 钱包明细数据
       total2: 0, // 钱包qi记录总记录数
@@ -179,12 +180,11 @@ export default {
     this.getList2()
   },
   methods: {
-    setCurrentTime() {
-      const date = (process.client && window.currentTime) || new Date()
-      const year = date.getFullYear()
-      let month = date.getMonth() + 1
-      month = month < 10 ? `0${month}` : month
-      this.date2 = `${year}-${month}`
+    toTopic(scope) {
+      if (!scope.row.order || !scope.row.order.thread) {
+        return
+      }
+      this.$router.push(`/topic/index?id=${scope.row.order.thread._jv.id}`)
     },
     // 金额排序
     sortAmount(str1, str2) {
@@ -234,8 +234,8 @@ export default {
     },
     // 钱包明细日期选中
     bindDateChange2(e) {
-      this.date2 = e
-      if (this.date2 !== null) {
+      this.date = e
+      if (this.date !== null) {
         this.getList2('filter')
       }
     },
@@ -247,7 +247,7 @@ export default {
     // 获取钱包明细数据
     getList2(type) {
       this.loading = true
-      const dateArr = this.date2.split('-')
+      const dateArr = this.date.split('-')
       const days = new Date(dateArr[0], dateArr[1], 0).getDate()
       // change_type 10提现冻结，11提现成功，12提现解冻，30注册收入，31打赏收入，32人工收入，50人工支出
       const params = {
@@ -256,8 +256,8 @@ export default {
         'page[number]': this.pageNum2,
         'page[limit]': this.pageSize2,
         'filter[change_type_exclude]': '11,81',
-        'filter[start_time]': `${this.date2}-01-00-00-00`,
-        'filter[end_time]': `${this.date2}-${days}-00-00-00`
+        'filter[start_time]': `${this.date}-01-00-00-00`,
+        'filter[end_time]': `${this.date}-${days}-23-59-59`
       }
       // 过滤时间或查看类型，重新设置当前页码和提现数据
       if (type && type === 'filter') {
@@ -382,6 +382,7 @@ export default {
   }
   .desc:hover{
     color:#1878f3;
+    cursor: pointer;
   }
   .pagination {
     margin-top: 15px;
