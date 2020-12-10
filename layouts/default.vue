@@ -9,6 +9,7 @@
       </div>
     </div>
     <Footer />
+    <BackTop />
   </div>
 </template>
 
