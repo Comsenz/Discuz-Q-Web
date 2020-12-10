@@ -4,6 +4,7 @@
     <div class="app-cont">
       <Nuxt />
     </div>
+    <BackTop />
     <!-- <Footer /> -->
   </div>
 </template>
