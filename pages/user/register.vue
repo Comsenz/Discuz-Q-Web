@@ -32,7 +32,7 @@
             />
             <div v-if="passerror" class="passerror">{{ $t('modify.reenter') }}</div>
           </div>
-          <div v-if="validate">
+          <!-- <div v-if="validate">
             <span class="title2">{{ $t('user.registerReason') }}</span>
             <el-input
               v-model="Reason"
@@ -40,11 +40,11 @@
               class="reg-input"
               @keyup.enter.native="register"
             />
-          </div>
+          </div> -->
           <div class="agreement">
             <reg-agreement @check="check" />
           </div>
-          <el-button type="primary" class="r-button" @click="register">{{ $t('user.register') }}</el-button>
+          <el-button type="primary" class="r-button" @click="register">{{ $t('profile.registernext') }}</el-button>
           <div class="tologin">
             <span
               @click="jump2Login"
@@ -196,8 +196,7 @@ export default {
         .then((res) => {
           this.loading = false
           if (res && res.data && res.data.data && res.data.data.id) {
-            this.logind()
-            this.$message.success(this.$t('user.registerSuccess'))
+            this.logind(res)
           }
           if (
             res &&

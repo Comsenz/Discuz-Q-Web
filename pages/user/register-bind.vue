@@ -225,8 +225,7 @@ export default {
         .then((res) => {
           this.loading = false
           if (res && res.data && res.data.data && res.data.data.id) {
-            this.logind()
-            this.$message.success(this.$t('user.registerSuccess'))
+            this.logind(res)
           }
           if (
             res &&

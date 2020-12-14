@@ -10,9 +10,9 @@
         </div>
       </div>
     </template>
-    <div v-show="previewFiles.length < limit" class="upload" @click="onClick">
-      <input id="upload" :accept="accept" type="file" multiple @input="onInput">
-      <svg-icon class="upload-icon" type="add" style="fill: #1878F3" />
+    <div v-show="previewFiles.length < limit" class="upload" @click="onClick($event)">
+      <input id="upload" ref="uploadImage" :accept="accept" type="file" multiple @input="onInput">
+      <svg-icon class="upload-icon" type="add" />
     </div>
   </div>
 </template>
@@ -60,7 +60,8 @@ export default {
   },
   data() {
     return {
-      previewFiles: []
+      previewFiles: [],
+      currentInput: ''
     }
   },
   computed: {
@@ -69,6 +70,13 @@ export default {
     },
     service() {
       return service
+    }
+  },
+  methods: {
+    onClick() {
+      const currentObj = this.$refs.uploadImage
+      this.currentInput = currentObj
+      this.uploaderFile(currentObj)
     }
   }
 }
@@ -166,6 +174,7 @@ export default {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+      color: #1878F3;
     }
   }
 }

@@ -194,6 +194,7 @@ export default {
       this.filterImages()
     },
     filterImages() {
+      this.article.imageSource = this.article.images // 把原图路径记为 imageSource
       if (this.article.contentAttachIds && this.article.contentAttachIds.length > 0 && this.article.images && this.article.images.length > 0) {
         this.article.images = this.article.images.filter(image => this.article.contentAttachIds.indexOf(image._jv.id) < 0)
       }

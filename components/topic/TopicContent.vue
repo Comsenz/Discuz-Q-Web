@@ -110,8 +110,9 @@ export default {
           return [...image.classList].indexOf('qq-emotion') < 0
         },
         // 实际查看的图片链接
-        url(image) {
-          return image && image.src && image.src.split('imageMogr2')[0].replace(/[&?]$/, '')
+        url: thumbImage => {
+          const image = this.article.imageSource.filter(item => item.fileName === thumbImage.alt)
+          return image.length > 0 ? image[0].url : thumbImage.src
         }
       },
       currentAudio: {
