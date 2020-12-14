@@ -5,7 +5,7 @@
       <emoji-list v-show="showEmoji" class="action-vditor" @selectEmoji="selectActions" />
     </div>
     <div id="vditor" />
-    <span v-if="textLimit" class="tip">{{ textLimit >= textLength ? $t('post.note', {num: textLimit - textLength}) : $t('post.exceed', {num: textLength - typeInformation.textLimit}) }}</span>
+    <span v-if="textLimit" class="tip">{{ textLimit >= textLength ? $t('post.note', {num: textLimit - textLength}) : $t('post.exceed', {num: textLength - textLimit}) }}</span>
     <caller v-if="showCaller" @close="$emit('close')" @selectedCaller="selectActions" />
     <el-button class="button-publish" :loading="onPublish" type="primary" size="small" @click="publish">{{ $t('post.post') }}</el-button>
   </div>
