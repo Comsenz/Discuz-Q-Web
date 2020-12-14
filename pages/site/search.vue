@@ -47,8 +47,8 @@
             :active="active"
             :data-index="index"
           >
-            <post-item v-if="item.type === 4" :ref="`audio${ item && item.threadAudio && item.threadAudio._jv && item.threadAudio._jv.id}`" :key="index" :item="item" @audioPlay="audioPlay" />
-            <post-item v-else :key="index" :item="item" @showVideoFn="showVideoFn" />
+            <post-item v-if="item.type === 4" :ref="`audio${ item && item.threadAudio && item.threadAudio._jv && item.threadAudio._jv.id}`" :key="index" :item="item" :lazy="false" @audioPlay="audioPlay" />
+            <post-item v-else :key="index" :item="item" :lazy="false" @showVideoFn="showVideoFn" />
           </dynamic-scroller-item>
         </template>
         <template #after>

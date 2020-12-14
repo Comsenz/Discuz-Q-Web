@@ -2,8 +2,8 @@
   <div v-viewer class="container-upload">
     <div class="upload">
       <span class="attachment-list">{{ $t('post.attachmentList') }}</span>
-      <span class="add-attachment" @click="onClick">{{ $t('post.addAttachment') }}</span>
-      <input id="upload" :accept="accept" type="file" multiple @input="onInput">
+      <span class="add-attachment" @click="onClick">{{ addTips || $t('post.addAttachment') }}</span>
+      <input id="upload" ref="uploadFile" :accept="accept" type="file" multiple @input="onInput">
     </div>
     <div v-for="(file, index) in previewFiles" :key="index" :class="{ 'preview-item': true, 'deleted': file.deleted }">
       <div class="container-item">
@@ -58,6 +58,10 @@ export default {
       type: Boolean,
       default: false
     },
+    addTips: {
+      type: String,
+      default: ''
+    },
     type: {
       type: Number,
       default: 0
@@ -65,7 +69,8 @@ export default {
   },
   data() {
     return {
-      previewFiles: []
+      previewFiles: [],
+      currentInput: ''
     }
   },
   computed: {
@@ -77,6 +82,11 @@ export default {
     }
   },
   methods: {
+    onClick() {
+      const currentObj = this.$refs.uploadFile
+      this.currentInput = currentObj
+      this.uploaderFile(currentObj)
+    },
     extensionValidate(fileName) {
       const extension = fileName.split('.')[fileName.split('.').length - 1]
       return extensionList.indexOf(extension.toUpperCase()) > 0 ? extension.toUpperCase() : 'UNKNOWN'

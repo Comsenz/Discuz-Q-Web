@@ -349,17 +349,8 @@ export default {
     },
     // 跳转详情页
     toDetail() {
-      if (!this.$store.getters['session/get']('isLogin')) {
-        if (process.client) {
-          this.$message.warning('请登录')
-          window.setTimeout(() => {
-            this.headerTologin()
-          }, 1000)
-        }
-      } else {
-        if (!this.canViewPostsFn()) return
-        this.routerLink()
-      }
+      if (!this.canViewPostsFn()) return
+      this.routerLink()
     },
     // 点击图片 判断是否付费， 未付费跳转详情页
     onClickImage() {
@@ -398,7 +389,16 @@ export default {
     // 是否有查看详情的权限
     canViewPostsFn() {
       if (!this.item.canViewPosts) {
-        this.$message.warning(this.$t('home.noPostingTopic'))
+        if (!this.$store.getters['session/get']('isLogin')) {
+          if (process.client) {
+            this.$message.warning(this.$t('core.not_authenticated'))
+            window.setTimeout(() => {
+              this.headerTologin()
+            }, 1000)
+          }
+        } else {
+          this.$message.warning(this.$t('home.noPostingTopic'))
+        }
         return false
       }
       if (this.canDetail) {
