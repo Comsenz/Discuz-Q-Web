@@ -5,7 +5,6 @@
       :alt="item.title"
       fit="cover"
       class="image"
-      lazy
     >
       <div slot="placeholder" class="image-slot">
         <i class="el-icon-loading" />

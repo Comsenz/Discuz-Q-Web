@@ -5,7 +5,7 @@
       <emoji-list v-show="showEmoji" class="action-vditor" @selectEmoji="selectActions" />
     </div>
     <div id="vditor" />
-    <span v-if="textLimit" class="tip">{{ textLimit >= textLength ? $t('post.note', { num: textLimit - textLength }) : $t('post.exceed', { num: textLength - typeInformation.textLimit }) }}</span>
+    <span v-if="textLimit" class="tip">{{ textLimit >= textLength ? $t('post.note', {num: textLimit - textLength}) : $t('post.exceed', {num: textLength - textLimit}) }}</span>
     <caller v-if="showCaller" @close="$emit('close')" @selectedCaller="selectActions" />
     <el-button class="button-publish" :loading="onPublish" type="primary" size="small" @click="publish">{{ $t('post.post') }}</el-button>
   </div>
@@ -74,13 +74,14 @@ export default {
     return {
       vditor: {},
       input: {},
-      range: []
+      range: [],
+      afterVditorInit: false
     }
   },
   watch: {
     isEdit: {
       handler(isEdit) {
-        if (isEdit && this.text && this.vditor) this.vditor.setValue(this.text, false)
+        if (isEdit && this.text) this.setDefaultValue()
       },
       immediate: true
     }
@@ -97,29 +98,43 @@ export default {
         tab: '    ',
         input: value => { this.$emit('textChange', value) },
         toolbar: [
-          { hotkey: '', name: '@', tipPosition: 'ne', tip: '@ 好友', className: 'right', icon: call,
+          {
+            hotkey: '', name: '@', tipPosition: 'ne', tip: '@ 好友', className: 'right', icon: call,
             click: () => {
               this.range = getSelection().getRangeAt(0)
               this.$emit('onActions', 'showCaller')
             }
           },
-          { hotkey: '', name: '#', tipPosition: 'ne', tip: '新增话题', className: 'right', icon: topic,
+          {
+            hotkey: '', name: '#', tipPosition: 'ne', tip: '新增话题', className: 'right', icon: topic,
             click: () => {
               this.range = getSelection().getRangeAt(0)
               this.$emit('onActions', 'showTopic')
             }
           },
-          { hotkey: '', name: 'my-emoji', tipPosition: 'ne', tip: '插入表情', className: 'right', icon: emoji,
+          {
+            hotkey: '', name: 'my-emoji', tipPosition: 'ne', tip: '插入表情', className: 'right', icon: emoji,
             click: () => {
               this.range = getSelection().getRangeAt(0)
               this.$emit('onActions', 'showEmoji')
             }
           },
           'headings', 'bold', 'italic', 'strike', 'link', 'list', 'ordered-list', 'check', 'outdent', 'indent', 'quote',
-          { hotkey: '', name: 'picture', tipPosition: 'ne', tip: '插入图片', className: 'right', icon: picture, click: () => { this.uploader() } },
+          {
+            hotkey: '',
+            name: 'picture',
+            tipPosition: 'ne',
+            tip: '插入图片',
+            className: 'right',
+            icon: picture,
+            click: () => { this.uploader() }
+          },
           'line', 'code', 'inline-code', 'table', 'both', 'br', 'undo', 'redo'],
         toolbarConfig: { pin: true },
-        cache: { enable: false }
+        cache: { enable: false },
+        after: () => {
+          this.afterVditorInit = true
+        }
       })
     },
     uploader() {
@@ -184,6 +199,13 @@ export default {
       const value = this.vditor.getValue()
       this.$emit('textChange', value)
       this.$emit('publish')
+    },
+    setDefaultValue() {
+      if (this.afterVditorInit) {
+        this.vditor.setValue(this.text, false)
+      } else {
+        setTimeout(this.setDefaultValue, 100)
+      }
     }
   }
 }
@@ -193,20 +215,29 @@ export default {
 .vditor-container {
   position: relative;
   margin-top: 20px;
-  ::v-deep a { color: #1878F3; &:hover { border-bottom: 1px solid #1878F3; } }
+
+  ::v-deep a {
+    color: #1878F3;
+
+    &:hover {
+      border-bottom: 1px solid #1878F3;
+    }
+  }
 
   > .sticky-box { // 保证 topicList 和 emojiList 的定位正确
     position: sticky;
-    background: rgba(0,0,0,0);
+    background: rgba(0, 0, 0, 0);
     top: 65px;
     z-index: 1000;
     height: 1px;
+
     > .action-vditor {
       position: absolute;
       top: 38px;
       left: 2px;
     }
   }
+
   > .tip {
     position: absolute;
     color: #D0D4DC;
@@ -214,14 +245,17 @@ export default {
     z-index: 10;
     right: 10px;
   }
+
   > .button-publish {
     margin-top: 20px;
   }
+
   ::v-deep.vditor-toolbar {
     background: #F5F6F7;
     top: 65px;
     padding-left: 10px !important;
   }
+
   ::v-deep.vditor-content pre {
     padding: 13px !important;
   }

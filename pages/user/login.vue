@@ -112,10 +112,9 @@ export default {
           .then((res) => {
             this.loading = false
             if (res && res.data && res.data.data && res.data.data.id) {
-              this.logind()
+              this.logind(res)
               this.userName = ''
               this.passWord = ''
-              this.$message.success('登录成功')
             }
             if (
               res &&

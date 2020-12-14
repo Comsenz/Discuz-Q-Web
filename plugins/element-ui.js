@@ -11,6 +11,7 @@ import {
   Tabs,
   TabPane,
   Checkbox,
+  CheckboxGroup,
   Loading,
   Dropdown,
   DropdownMenu,
@@ -45,6 +46,7 @@ Vue.use(Image, { locale })
 Vue.use(Tabs, { locale })
 Vue.use(TabPane, { locale })
 Vue.use(Checkbox, { locale })
+Vue.use(CheckboxGroup, { locale })
 Vue.use(Loading, { locale })
 Vue.use(Dropdown, { locale })
 Vue.use(DropdownMenu, { locale })

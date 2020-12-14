@@ -98,7 +98,7 @@ export default {
           this.$store.dispatch('jv/get', [`users/${userId}`, { params }]).then((res) => {
             if (res.username) {
               this.$message.success(this.$t('user.loginSuccess'))
-              this.logind()
+              this.logind(res)
             }
           })
         }

@@ -61,7 +61,14 @@ module.exports = {
         this.$router.push(`/user/login?preurl=${preurl}`)
       }
     },
-    logind() {
+    logind(loginInfo) {
+      // 新用户去填拓展信息，老用户直接登陆
+      if (loginInfo && loginInfo.isNew) {
+        this.$router.push('/user/supple-mentary')
+        return
+      } else {
+        this.$message.success(this.$t('user.loginSuccess'))
+      }
       const userId = this.$store.getters['session/get']('userId')
       if (!userId) return
       const params = {

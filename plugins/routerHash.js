@@ -32,6 +32,10 @@ export default [{ // 详情页
   h5: '/pages/user/phone-login',
   pc: '/user/phone-login'
 },
+{ // 拓展信息
+  h5: '/pages/user/supple-mentary',
+  pc: '/user/supple-mentary'
+},
 { // 个人主页
   h5: '/pages/profile/index',
   pc: '/user',
