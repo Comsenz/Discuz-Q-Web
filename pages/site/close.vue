@@ -14,21 +14,21 @@ export default {
     return {
       close_tips: '',
       forums: ''
-    }
+    };
   },
   mounted() {
-    this.getSiteInfo()
+    this.getSiteInfo();
     this.$store.dispatch('jv/get', '/forum').then((res) => {
-      this.forums = res
+      this.forums = res;
       if (this.forums && this.forums.set_site && !this.forums.set_site.site_close) {
-        window.location.replace('/')
+        window.location.replace('/');
       }
-    })
+    });
   },
   methods: {
     async getSiteInfo() {
-      const error = this.$store.state.forum.error
-      this.close_tips = error ? error.detail : ''
+      const error = this.$store.state.forum.error;
+      this.close_tips = error ? error.detail : '';
       // try {
       //   await this.$store.dispatch('site/getSiteInfo')
       // } catch (e) {
@@ -42,9 +42,9 @@ export default {
   head() {
     return {
       title: this.$t('site.siteClose')
-    }
+    };
   }
-}
+};
 </script>
 <style lang='scss' scoped>
 .close-info{

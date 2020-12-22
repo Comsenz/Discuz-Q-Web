@@ -1,22 +1,44 @@
 <template>
-  <a v-if="user" class="avatar-a" :href="preventJump || isAnonymous ? 'javascript:void(0)' : ('/user/' + user.id)" :class="[sizeClass]">
-    <img v-if="avatarUrl && !errorUrl" :src="user.avatarUrl" class="img" :class="[sizeClass, roundClass]" :alt="user.username" @error="error">
-    <span v-else-if="styleText" :class="['avatar', sizeClass, roundClass]" :style="styleText">
+  <a
+    v-if="user"
+    class="avatar-a"
+    :href="
+      preventJump || isAnonymous ? 'javascript:void(0)' : '/user/' + user.id
+    "
+    :class="[sizeClass]"
+  >
+    <img
+      v-if="avatarUrl && !errorUrl"
+      :src="user.avatarUrl"
+      class="img"
+      :class="[sizeClass, roundClass]"
+      :alt="user.username"
+      @error="error"
+    >
+    <span
+      v-else-if="styleText"
+      :class="['avatar', sizeClass, roundClass]"
+      :style="styleText"
+    >
       {{ usernameAt }}
     </span>
-    <svg-icon v-if="user.isReal" type="auth" :class="{'auth-icon': true, 'auth-icon-round': round}" />
+    <svg-icon
+      v-if="user.isReal"
+      type="auth"
+      :class="{ 'auth-icon': true, 'auth-icon-round': round }"
+    />
   </a>
 </template>
 
 <script>
-import stringToColor from '@/utils/stringToColor'
+import stringToColor from '@/utils/stringToColor';
 
 export default {
   name: 'Avatar',
   props: {
     user: {
       type: [Object, String],
-      default: () => { }
+      default: () => {}
     },
     size: {
       type: [Number, String],
@@ -46,34 +68,46 @@ export default {
         35: 'font-size: 18px;line-height: 30px;border-radius: 2px',
         20: 'font-size: 10px;line-height: 20px;border-radius: 2px'
       }
-    }
+    };
   },
   computed: {
     avatarUrl() {
-      return this.user.avatarUrl && this.user.avatarUrl.indexOf('/static/noavatar.gif') !== 0
+      return (
+        this.user.avatarUrl
+        && this.user.avatarUrl.indexOf('/static/noavatar.gif') !== 0
+      );
     },
     usernameAt() {
-      return this.user.username ? this.user.username.charAt(0).toUpperCase() : ''
+      return this.user.username
+        ? this.user.username.charAt(0).toUpperCase()
+        : '';
     },
     styleText() {
-      return `background-color: #${stringToColor(this.usernameAt)};${this.sizes[this.size]}`
+      return `background-color: #${stringToColor(this.usernameAt)};${
+        this.sizes[this.size]
+      }`;
     },
     sizeClass() {
-      return ['avatar-size-' + this.size, this.preventJump ? 'prevent-jump' : '']
+      return [
+        `avatar-size-${this.size}`,
+        this.preventJump ? 'prevent-jump' : ''
+      ];
     },
     isAnonymous() {
-      return this.user._jv && this.user._jv.id && parseInt(this.user._jv.id) < 0
+      return (
+        this.user._jv && this.user._jv.id && parseInt(this.user._jv.id) < 0
+      );
     },
     roundClass() {
-      return this.round ? 'round' : ''
+      return this.round ? 'round' : '';
     }
   },
   methods: {
     error() {
-      this.errorUrl = true
+      this.errorUrl = true;
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -133,8 +167,8 @@ export default {
 .round {
   border-radius: 50% !important;
 }
-.avatar-a{
-  display:block;
+.avatar-a {
+  display: block;
   position: relative;
 }
 .avatar {
@@ -155,10 +189,10 @@ export default {
   right: 0;
   bottom: 0;
 }
-.img{
+.img {
   object-fit: cover;
 }
-.prevent-jump{
+.prevent-jump {
   cursor: default;
 }
 </style>

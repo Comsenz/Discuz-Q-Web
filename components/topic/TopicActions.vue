@@ -49,24 +49,24 @@ export default {
   },
   methods: {
     onClick(action) {
-      if (action.command) this.$emit('clickAction', action)
+      if (action.command) this.$emit('clickAction', action);
     },
     copyLink() {
-      const oInput = document.createElement('input')
+      const oInput = document.createElement('input');
       if (process.client) {
-        oInput.value = window.location.href
-        oInput.id = 'copyInput'
-        document.body.appendChild(oInput)
-        oInput.select()
-        document.execCommand('Copy')
+        oInput.value = window.location.href;
+        oInput.id = 'copyInput';
+        document.body.appendChild(oInput);
+        oInput.select();
+        document.execCommand('Copy');
       }
-      this.$message.success('链接复制成功')
+      this.$message.success('链接复制成功');
       setTimeout(() => {
-        oInput.remove()
-      }, 100)
+        oInput.remove();
+      }, 100);
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

@@ -8,10 +8,7 @@
         size="medium"
         @change="onChangeFilter"
       >
-        <el-option
-          :label="$t('manage.allIdentity')"
-          value=""
-        />
+        <el-option :label="$t('manage.allIdentity')" value="" />
         <el-option
           v-for="item in groupList"
           :key="item.value"
@@ -21,7 +18,7 @@
       </el-select>
       <div class="content">
         <template v-if="!loading">
-          {{ $t('manage.userTotal', { total }) }}
+          {{ $t("manage.userTotal", { total }) }}
         </template>
       </div>
       <!-- 搜索 -->
@@ -33,10 +30,7 @@
         @keyup.enter.native="onClickSearch"
         @input="onClickSearch"
       >
-        <i
-          slot="suffix"
-          class="el-icon-search el-input__icon"
-        />
+        <i slot="suffix" class="el-icon-search el-input__icon" />
       </el-input>
       <!-- 批量操作 -->
       <el-select
@@ -62,10 +56,16 @@
         trigger="click"
         @command="handleCommandInvite"
       >
-        <el-button type="primary" size="medium" class="create-url">{{ $t('manage.generateInvitationUrl') }}</el-button>
+        <el-button type="primary" size="medium" class="create-url">{{
+          $t("manage.generateInvitationUrl")
+        }}</el-button>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item v-for="(item,index) in groupInviteList" :key="index" :command="item.value">
-            {{ item.label + $t('manage.invitationUrl') }}
+          <el-dropdown-item
+            v-for="(item, index) in groupInviteList"
+            :key="index"
+            :command="item.value"
+          >
+            {{ item.label + $t("manage.invitationUrl") }}
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -77,43 +77,42 @@
       style="width: 100%"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column
-        type="selection"
-        width="35"
-      />
-      <el-table-column
-        :label="$t('manage.userName')"
-        min-width="100"
-      >
+      <el-table-column type="selection" width="35" />
+      <el-table-column :label="$t('manage.userName')" min-width="100">
         <template slot-scope="scope">
           <div class="flex">
             <avatar
-              :user="{ id: scope.row.id, username: scope.row.username, avatarUrl: scope.row.avatarUrl}"
+              :user="{
+                id: scope.row.id,
+                username: scope.row.username,
+                avatarUrl: scope.row.avatarUrl
+              }"
               :size="30"
               :round="true"
             />
-            <nuxt-link
-              :to="`/user/${scope.row.id}`"
-              class="user-name"
-            >{{ scope.row.username }}</nuxt-link>
+            <nuxt-link :to="`/user/${scope.row.id}`" class="user-name">{{
+              scope.row.username
+            }}</nuxt-link>
           </div>
         </template>
       </el-table-column>
       <el-table-column :label="$t('manage.identity')">
         <template slot-scope="scope">
-          {{ scope.row.groups && scope.row.groups.length > 0 && scope.row.groups[0] ? scope.row.groups[0].name : '' }}
+          {{
+            scope.row.groups &&
+              scope.row.groups.length > 0 &&
+              scope.row.groups[0]
+              ? scope.row.groups[0].name
+              : ""
+          }}
         </template>
       </el-table-column>
-      <el-table-column
-        :label="$t('profile.status')"
-        min-width="60"
-      >
+      <el-table-column :label="$t('profile.status')" min-width="60">
         <template slot-scope="scope">
-          <template v-if="scope.row.status === 0">{{ $t('manage.normal') }}</template>
-          <span
-            v-else
-            class="red"
-          >{{ $t('manage.disable') }}</span>
+          <template v-if="scope.row.status === 0">{{
+            $t("manage.normal")
+          }}</template>
+          <span v-else class="red">{{ $t("manage.disable") }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('manage.circleAge')">
@@ -128,7 +127,12 @@
         <template slot-scope="scope">{{ scope.row.updatedAt | formatDate }}</template>
       </el-table-column> -->
       <el-table-column
-        v-if="forums && forums.other && (forums.other.can_edit_user_group || forums.other.can_edit_user_status)"
+        v-if="
+          forums &&
+            forums.other &&
+            (forums.other.can_edit_user_group ||
+              forums.other.can_edit_user_status)
+        "
         fixed="right"
         :label="$t('manage.operate')"
         width="80"
@@ -141,24 +145,38 @@
             @command="handleCommand"
           >
             <span class="el-dropdown-link">
-              {{ $t('manage.modifyRole') }}
+              {{ $t("manage.modifyRole") }}
             </span>
             <el-dropdown-menu slot="dropdown">
-              <template v-if="forums && forums.other && forums.other.can_edit_user_group">
+              <template
+                v-if="
+                  forums && forums.other && forums.other.can_edit_user_group
+                "
+              >
                 <el-dropdown-item
-                  v-for="(item,index) in groupInviteList"
+                  v-for="(item, index) in groupInviteList"
                   :key="index"
-                  :command="{'userId':scope.row._jv.id, 'command':item.value}"
-                >{{ $t('manage.set') + item.label }}</el-dropdown-item>
+                  :command="{ userId: scope.row._jv.id, command: item.value }"
+                >{{ $t("manage.set") + item.label }}</el-dropdown-item>
               </template>
               <el-dropdown-item
-                v-if="forums && forums.other && forums.other.can_edit_user_status && scope.row.status === 0"
-                :command="{'userId':scope.row._jv.id, 'command':'disable'}"
-              >{{ $t('manage.disable') }}</el-dropdown-item>
+                v-if="
+                  forums &&
+                    forums.other &&
+                    forums.other.can_edit_user_status &&
+                    scope.row.status === 0
+                "
+                :command="{ userId: scope.row._jv.id, command: 'disable' }"
+              >{{ $t("manage.disable") }}</el-dropdown-item>
               <el-dropdown-item
-                v-else-if="forums && forums.other && forums.other.can_edit_user_status && scope.row.status === 1"
-                :command="{'userId':scope.row._jv.id, 'command':'normal'}"
-              >{{ $t('manage.cancelDisable') }}</el-dropdown-item>
+                v-else-if="
+                  forums &&
+                    forums.other &&
+                    forums.other.can_edit_user_status &&
+                    scope.row.status === 1
+                "
+                :command="{ userId: scope.row._jv.id, command: 'normal' }"
+              >{{ $t("manage.cancelDisable") }}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -181,16 +199,16 @@
   </div>
 </template>
 <script>
-import handleError from '@/mixin/handleError'
-import { time2MinuteOrHour, dateDay } from '@/utils/time'
+import handleError from '@/mixin/handleError';
+import { time2MinuteOrHour, dateDay } from '@/utils/time';
 export default {
   name: 'UsersManage',
   filters: {
     formatDate(date) {
-      return time2MinuteOrHour(date)
+      return time2MinuteOrHour(date);
     },
     formatDateDay(date) {
-      return dateDay(date)
+      return dateDay(date);
     }
   },
   mixins: [handleError],
@@ -216,123 +234,132 @@ export default {
       multipleSelection: [], // 多选
       layout: 'total, sizes, prev, pager, next, jumper',
       isPad: false
-    }
+    };
   },
   computed: {
     forums() {
-      return this.$store.state.site.info.attributes || {}
+      return this.$store.state.site.info.attributes || {};
     },
     userInfo() {
-      return this.$store.state.user.info.attributes || {}
+      return this.$store.state.user.info.attributes || {};
     }
   },
   mounted() {
-    this.getUserList()
-    this.getGroupList()
+    this.getUserList();
+    this.getGroupList();
   },
   methods: {
     // 获取用户组
     getGroupList() {
-      this.$store.dispatch('jv/get', ['groups', { }]).then((res) => {
+      this.$store.dispatch('jv/get', ['groups', {}]).then(res => {
         if (res && Array.isArray(res) && res.length > 0) {
-          res.forEach((item) => {
+          res.forEach(item => {
             this.groupList.push({
               label: item.name,
               value: item._jv.id
-            })
-          })
+            });
+          });
         }
-      })
+      });
     },
     // 用户用户列表
     getUserList() {
-      this.loading = true
+      this.loading = true;
       const params = {
         include: 'groups',
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         'filter[group_id][]': this.groupId,
         'filter[username]': `*${this.searchText}*`
-      }
-      this.$store.dispatch('jv/get', ['users', { params }]).then((res) => {
-        if (res) {
-          this.total = res._jv.json.meta.total
-          this.userList = res
-          this.reloadForums()
-        }
-      }, (e) => {
-        this.handleError(e)
-      })
+      };
+      this.$store
+        .dispatch('jv/get', ['users', { params }])
+        .then(
+          res => {
+            if (res) {
+              this.total = res._jv.json.meta.total;
+              this.userList = res;
+              this.reloadForums();
+            }
+          },
+          e => {
+            this.handleError(e);
+          }
+        )
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     // 刷新一下站点信息
     async reloadForums() {
       try {
-        await this.$store.dispatch('site/getSiteInfo')
+        await this.$store.dispatch('site/getSiteInfo');
       } catch (err) {
-        console.log('getUserInfo err', err)
+        console.log('getUserInfo err', err);
       }
     },
     // 搜索
     onClickSearch() {
-      this.reloadList()
+      this.reloadList();
     },
     // 过滤用户组
     onChangeFilter(e) {
       if (e) {
-        this.groupId = [e]
+        this.groupId = [e];
       } else {
-        this.groupId = []
+        this.groupId = [];
       }
-      this.reloadList()
+      this.reloadList();
     },
     // 重新加载列表
     reloadList() {
-      this.pageNum = 1
-      this.getUserList()
+      this.pageNum = 1;
+      this.getUserList();
     },
     handleSizeChange(val) {
-      this.pageNum = 1
-      this.pageSize = val
-      this.getUserList()
+      this.pageNum = 1;
+      this.pageSize = val;
+      this.getUserList();
     },
     handleCurrentChange(val) {
-      this.pageNum = val
-      this.getUserList()
+      this.pageNum = val;
+      this.getUserList();
     },
     // 配置身份下拉框
     handleCommand(e) {
       if (e.command === 'disable' || e.command === 'normal') {
-        const status = e.command === 'disable' ? 1 : 0
-        this.modifyUserStatus(status, e.userId)
+        const status = e.command === 'disable' ? 1 : 0;
+        this.modifyUserStatus(status, e.userId);
       } else {
-        this.modifyUserGroup(e.command, e.userId)
+        this.modifyUserGroup(e.command, e.userId);
       }
     },
     // 多选操作
     handleSelectionChange(val) {
-      this.multipleSelection = val
+      this.multipleSelection = val;
     },
     // 批量操作
     onChangeGroup(val) {
-      this.modifyUserGroup(val)
-      this.handleValue = ''
+      this.modifyUserGroup(val);
+      this.handleValue = '';
     },
     // 编辑用户身份
     modifyUserGroup(groupId, userId) {
-      if (this.forums && this.forums.other && !this.forums.other.can_edit_user_group) {
-        return this.$message.error(this.$t('core.permission_denied'))
+      if (
+        this.forums
+        && this.forums.other
+        && !this.forums.other.can_edit_user_group
+      ) {
+        return this.$message.error(this.$t('core.permission_denied'));
       }
-      const data = []
+      const data = [];
       if (userId && groupId) {
         data.push({
           attributes: {
             id: userId,
             groupId: parseInt(groupId, 10)
           }
-        })
+        });
       } else {
         if (this.multipleSelection && this.multipleSelection.length > 0) {
           for (let i = 0; i < this.multipleSelection.length; i += 1) {
@@ -341,11 +368,11 @@ export default {
                 id: this.multipleSelection[i].id,
                 groupId: parseInt(groupId, 10)
               }
-            })
+            });
           }
         } else {
-          this.$message.error(this.$t('manage.selectUser'))
-          return
+          this.$message.error(this.$t('manage.selectUser'));
+          return;
         }
       }
       const params = [
@@ -359,32 +386,48 @@ export default {
             data
           }
         }
-      ]
-      this.loading = true
-      this.$store.dispatch('jv/patch', params).then((res) => {
-        if (res) {
-          if (res._jv && res._jv.json && res._jv.json.data && res._jv.json.data.length > 0 && res._jv.json.data[0].attributes && res._jv.json.data[0].attributes.error === 'Permission Denied') {
-            return this.$message.error(this.$t('manage.modifyFail'))
+      ];
+      this.loading = true;
+      this.$store
+        .dispatch('jv/patch', params)
+        .then(
+          res => {
+            if (res) {
+              if (
+                res._jv
+                && res._jv.json
+                && res._jv.json.data
+                && res._jv.json.data.length > 0
+                && res._jv.json.data[0].attributes
+                && res._jv.json.data[0].attributes.error === 'Permission Denied'
+              ) {
+                return this.$message.error(this.$t('manage.modifyFail'));
+              }
+              this.$message.success(this.$t('discuzq.msgBox.modifySuccess'));
+              this.getUserList();
+            }
+          },
+          e => {
+            this.handleError(e);
           }
-          this.$message.success(this.$t('discuzq.msgBox.modifySuccess'))
-          this.getUserList()
-        }
-      }, (e) => {
-        this.handleError(e)
-      })
+        )
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     // 修改用户状态
     modifyUserStatus(status, userId) {
       // 是否有编辑用户的权限
-      if (this.forums && this.forums.other && !this.forums.other.can_edit_user_status) {
-        return this.$message.error(this.$t('core.permission_denied'))
+      if (
+        this.forums
+        && this.forums.other
+        && !this.forums.other.can_edit_user_status
+      ) {
+        return this.$message.error(this.$t('core.permission_denied'));
       }
       // 不可以编辑自己
       if (+this.userInfo.id === +userId) {
-        return this.$message.error(this.$t('core.no_edit_self'))
+        return this.$message.error(this.$t('core.no_edit_self'));
       }
       const params = {
         data: {
@@ -392,23 +435,31 @@ export default {
             status
           }
         }
-      }
-      this.loading = true
-      this.$store.dispatch('jv/patch', [{ _jv: { type: `users/${userId}` }}, { data: params }]).then((res) => {
-        if (res) {
-          this.$message.success(this.$t('discuzq.msgBox.modifySuccess'))
-          this.getUserList()
-        }
-      }, (e) => {
-        this.handleError(e)
-      })
+      };
+      this.loading = true;
+      this.$store
+        .dispatch('jv/patch', [
+          { _jv: { type: `users/${userId}` }},
+          { data: params }
+        ])
+        .then(
+          res => {
+            if (res) {
+              this.$message.success(this.$t('discuzq.msgBox.modifySuccess'));
+              this.getUserList();
+            }
+          },
+          e => {
+            this.handleError(e);
+          }
+        )
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     // 生成邀请链接
     handleCommandInvite(command) {
-      this.createAdminInvite(command)
+      this.createAdminInvite(command);
     },
     // 管理员创建邀请链接
     createAdminInvite(groupId) {
@@ -418,30 +469,35 @@ export default {
             group_id: groupId
           }
         }
-      }
-      this.$store.dispatch('jv/post', [{ _jv: { type: 'invite' }}, { data: params }]).then((res) => {
-        this.copyLink(res.code)
-      }, (e) => {
-        this.handleError(e)
-      })
+      };
+      this.$store
+        .dispatch('jv/post', [{ _jv: { type: 'invite' }}, { data: params }])
+        .then(
+          res => {
+            this.copyLink(res.code);
+          },
+          e => {
+            this.handleError(e);
+          }
+        );
     },
     // 复制链接
     copyLink(code) {
-      const oInput = document.createElement('input')
+      const oInput = document.createElement('input');
       if (process.client) {
-        oInput.value = `${window.location.protocol}//${window.location.host}/site/partner-invite?code=${code}`
-        oInput.id = 'copyInput'
-        document.body.appendChild(oInput)
-        oInput.select()
-        document.execCommand('Copy')
+        oInput.value = `${window.location.protocol}//${window.location.host}/site/partner-invite?code=${code}`;
+        oInput.id = 'copyInput';
+        document.body.appendChild(oInput);
+        oInput.select();
+        document.execCommand('Copy');
       }
-      this.$message.success(this.$t('discuzq.msgBox.copySuccess'))
+      this.$message.success(this.$t('discuzq.msgBox.copySuccess'));
       setTimeout(() => {
-        oInput.remove()
-      }, 100)
+        oInput.remove();
+      }, 100);
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 @import "@/assets/css/variable/color.scss";
@@ -468,7 +524,7 @@ export default {
       width: 110px;
     }
   }
-  .el-select-margin{
+  .el-select-margin {
     margin-left: 10px;
   }
   .el-input {
@@ -531,8 +587,8 @@ export default {
   display: flex;
   align-items: center;
 }
-.create-url{
-  padding:10px;
+.create-url {
+  padding: 10px;
   margin-left: 10px;
 }
 </style>

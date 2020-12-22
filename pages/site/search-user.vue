@@ -33,9 +33,9 @@
 </template>
 
 <script>
-import handleError from '@/mixin/handleError'
-import env from '@/utils/env'
-import head from '@/mixin/head'
+import handleError from '@/mixin/handleError';
+import env from '@/utils/env';
+import head from '@/mixin/head';
 export default {
   layout: 'custom_layout',
   name: 'SearchUser',
@@ -43,23 +43,23 @@ export default {
   // 异步数据用法
   async asyncData({ store }, callback) {
     if (!env.isSpider) {
-      callback(null, {})
+      callback(null, {});
     }
     try {
-      const resData = {}
-      const categoryData = await store.dispatch('jv/get', ['categories', {}])
+      const resData = {};
+      const categoryData = await store.dispatch('jv/get', ['categories', {}]);
       if (Array.isArray(categoryData)) {
-        resData.categoryData = categoryData
+        resData.categoryData = categoryData;
       } else if (categoryData && categoryData._jv && categoryData._jv.json) {
-        const _categoryData = categoryData._jv.json.data || []
+        const _categoryData = categoryData._jv.json.data || [];
         _categoryData.forEach((item, index) => {
-          _categoryData[index] = { ...item, ...item.attributes, _jv: { id: item.id }}
-        })
-        resData.categoryData = _categoryData
+          _categoryData[index] = { ...item, ...item.attributes, _jv: { id: item.id }};
+        });
+        resData.categoryData = _categoryData;
       }
-      callback(null, resData)
+      callback(null, resData);
     } catch (error) {
-      callback(null, {})
+      callback(null, {});
     }
   },
   data() {
@@ -74,31 +74,31 @@ export default {
       userCount: 0,
       userList: [],
       title: this.$t('search.search')
-    }
+    };
   },
   computed: {
     forums() {
-      return this.$store.state.site.info.attributes || {}
+      return this.$store.state.site.info.attributes || {};
     }
   },
   watch: {
     $route: 'init'
   },
   mounted() {
-    this.init()
+    this.init();
   },
   methods: {
     init() {
       if (this.$route.query.categoryId) {
-        this.categoryId = this.$route.query.categoryId
+        this.categoryId = this.$route.query.categoryId;
       }
       if (this.$route.query.value) {
-        this.value = this.$route.query.value
-        this.reloadList()
+        this.value = this.$route.query.value;
+        this.reloadList();
       }
     },
     getUserList() {
-      this.loading = true
+      this.loading = true;
       const params = {
         include: 'groups',
         sort: 'createdAt',
@@ -106,42 +106,42 @@ export default {
         'page[limit]': this.pageSize,
         'page[number]': this.pageNum,
         'filter[username]': `*${this.value}*`
-      }
+      };
       this.$store.dispatch('jv/get', ['users', { params }]).then((res) => {
-        const data = res
+        const data = res;
         res && data.forEach((v, i) => {
-          data[i].groupName = v.groups[0] ? v.groups[0].name : ''
-        })
-        this.userCount = data._jv.json.meta.total
-        this.hasMore = data.length === this.pageSize
+          data[i].groupName = v.groups[0] ? v.groups[0].name : '';
+        });
+        this.userCount = data._jv.json.meta.total;
+        this.hasMore = data.length === this.pageSize;
         if (this.pageNum === 1) {
-          this.userList = data
+          this.userList = data;
         } else {
-          this.userList = [...this.userList, ...data]
+          this.userList = [...this.userList, ...data];
         }
-        this.pageNum += 1
+        this.pageNum += 1;
         if (data._jv) {
-          this.hasMore = this.userList.length < data._jv.json.meta.total
+          this.hasMore = this.userList.length < data._jv.json.meta.total;
         }
       }, (e) => {
-        this.handleError(e)
+        this.handleError(e);
       })
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
 
     loadMore() {
-      this.getUserList()
+      this.getUserList();
     },
     // 重新加载列表
     reloadList() {
-      this.pageNum = 1
-      this.userList = []
-      this.getUserList()
+      this.pageNum = 1;
+      this.userList = [];
+      this.getUserList();
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import videoJs from 'video.js'
+import videoJs from 'video.js';
 export default {
   name: 'VideoPop',
   props: {
@@ -29,38 +29,38 @@ export default {
         controls: true
       },
       player: null
-    }
+    };
   },
   mounted() {
-    document.addEventListener('click', this.removeVideoPop)
-    this.initVideoJs()
+    document.addEventListener('click', this.removeVideoPop);
+    this.initVideoJs();
   },
   methods: {
     initVideoJs() {
-      const self = this
+      const self = this;
       this.player = videoJs('videoPlayer', this.options, function onPlayerReady() {
-        videoJs.log('Your player is ready!')
-        this.play()
+        videoJs.log('Your player is ready!');
+        this.play();
         this.on('error', () => {
-          this.errorDisplay.close()
-          this.createModal(self.$t('core.videoError'))
-        })
-      })
+          this.errorDisplay.close();
+          this.createModal(self.$t('core.videoError'));
+        });
+      });
     },
     removeVideoPop(e) {
-      let pass = true
-      const path = e.path || (e.composedPath && e.composedPath())
+      let pass = true;
+      const path = e.path || (e.composedPath && e.composedPath());
       path.forEach(item => {
-        if (item.id === 'video-pop') pass = false
-        if (item.classList && item.classList.contains('svg-icon-video-play')) pass = false
-      })
-      if (!pass) return
-      this.$emit('remove')
-      this.player.dispose()
-      document.removeEventListener('click', this.removeVideoPop)
+        if (item.id === 'video-pop') pass = false;
+        if (item.classList && item.classList.contains('svg-icon-video-play')) pass = false;
+      });
+      if (!pass) return;
+      this.$emit('remove');
+      this.player.dispose();
+      document.removeEventListener('click', this.removeVideoPop);
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

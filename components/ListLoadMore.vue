@@ -14,7 +14,7 @@
   </div>
 </template>
 <script>
-import scroll from '@/mixin/scroll'
+import scroll from '@/mixin/scroll';
 export default {
   name: 'ListLoadMore',
   mixins: [scroll],
@@ -47,7 +47,7 @@ export default {
     loadMoreText: {
       type: String,
       default() {
-        return this.$t('topic.showMore')
+        return this.$t('topic.showMore');
       }
     }
   },
@@ -55,13 +55,13 @@ export default {
     // 滚动加载更多，每5页停止滚动加载
     scrollLoadMore() {
       if ((this.pageNum - 1) % 5 > 0 && !this.loading && this.hasMore) {
-        this.loadMore()
+        this.loadMore();
       }
     },
     // 点击加载更多
     loadMore() {
-      this.$emit('loadMore')
+      this.$emit('loadMore');
     }
   }
-}
+};
 </script>

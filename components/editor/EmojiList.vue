@@ -12,20 +12,20 @@ export default {
   data() {
     return {
       emojiList: []
-    }
+    };
   },
   mounted() {
-    this.getEmojiList()
+    this.getEmojiList();
   },
   methods: {
     getEmojiList() {
       this.$store.dispatch('jv/get', ['emoji', {}]).then(data => {
-        this.emojiList = data
+        this.emojiList = data;
         // TODO this.$store.commit('emoji/SET_EMOJI', this.list)
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

@@ -51,9 +51,9 @@
 </template>
 
 <script>
-import { status } from '@/store/modules/jsonapi-vuex/index'
-import handleError from '@/mixin/handleError'
-import tencentCaptcha from '@/mixin/tencentCaptcha'
+import { status } from '@/store/modules/jsonapi-vuex/index';
+import handleError from '@/mixin/handleError';
+import tencentCaptcha from '@/mixin/tencentCaptcha';
 export default {
   name: 'FindPaypwd',
   mixins: [
@@ -82,56 +82,56 @@ export default {
       username: '',
       realphoneNumber: '',
       userId: this.$store.getters['session/get']('userId') // 获取当前登陆用户的ID
-    }
+    };
   },
   mounted() {
-    this.phoneNumber = this.mobile
-    this.realphoneNumber = this.phonenum
+    this.phoneNumber = this.mobile;
+    this.realphoneNumber = this.phonenum;
   },
   methods: {
     onInput(e) {
-      this.phoneNumber = e.target.value.replace(/[^\d]/g, '')
-      this.isVerifyDisabled = this.phoneNumber.length !== 11
+      this.phoneNumber = e.target.value.replace(/[^\d]/g, '');
+      this.isVerifyDisabled = this.phoneNumber.length !== 11;
     },
     countDown(interval) {
-      this.canCountDown = true
-      this.countDownSecond = interval
+      this.canCountDown = true;
+      this.countDownSecond = interval;
       const countDownInterval = setInterval(() => {
-        this.countDownSecond -= 1
+        this.countDownSecond -= 1;
         if (this.countDownSecond === 0) {
-          this.canCountDown = false
-          clearInterval(countDownInterval)
+          this.canCountDown = false;
+          clearInterval(countDownInterval);
         }
-      }, 1000)
+      }, 1000);
     },
     async sendVerifyCode() {
       let params = {
         _jv: { type: 'sms/send' },
         mobile: this.realphoneNumber,
         type: 'reset_pay_pwd'
-      }
-      params = await this.checkCaptcha(params)
+      };
+      params = await this.checkCaptcha(params);
       status.run(() => this.$store.dispatch('jv/post', params))
         .then((res) => {
-          if (res.interval) this.countDown(res.interval)
+          if (res.interval) this.countDown(res.interval);
         }, (e) => {
           const { response:
             {
               data: { errors }
             }
-          } = e
-          if (errors[0]) return this.$message.error(errors[0].detail[0])
-        })
+          } = e;
+          if (errors[0]) return this.$message.error(errors[0].detail[0]);
+        });
     },
     submit() {
       if (this.verifyCode === '') {
-        this.$message.error('验证码不能为空')
+        this.$message.error('验证码不能为空');
       } else if (this.newPassword === '') {
-        this.$message.error('新密码不能为空')
+        this.$message.error('新密码不能为空');
       } else if (this.newPasswordRepeat === '') {
-        this.$message.error('重复密码不能为空')
+        this.$message.error('重复密码不能为空');
       } else if (this.newPassword !== this.newPasswordRepeat) {
-        this.$message.error('二次密码输入不一致')
+        this.$message.error('二次密码输入不一致');
       } else {
         const params = {
           _jv: { type: 'sms/verify' },
@@ -140,16 +140,16 @@ export default {
           pay_password: this.newPassword,
           pay_password_confirmation: this.newPasswordRepeat,
           type: 'reset_pay_pwd'
-        }
+        };
         status.run(() => this.$store.dispatch('jv/post', params))
           .then(() => {
-            this.$message.success(this.$t('modify.paymentsucceed'))
-            this.$emit('close')
-          }, e => this.handleError(e))
+            this.$message.success(this.$t('modify.paymentsucceed'));
+            this.$emit('close');
+          }, e => this.handleError(e));
       }
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

@@ -1,15 +1,15 @@
-import axios from 'axios'
-import Qs from 'qs'
-import config from '../config'
+import axios from 'axios';
+import Qs from 'qs';
+import config from '../config';
 
-let baseURL = '/api'
+let baseURL = '/api';
 
 // SSR 服务端 baseURL 修正处理
 if (process.server === true) {
   if (process.env.NODE_ENV === 'production') {
-    baseURL = `${config.SSR_API_URL}${baseURL}`
+    baseURL = `${config.SSR_API_URL}${baseURL}`;
   } else {
-    baseURL = `http://127.0.0.1:${process.env.npm_package_config_nuxt_port || 3000}${baseURL}`
+    baseURL = `http://127.0.0.1:${process.env.npm_package_config_nuxt_port || 3000}${baseURL}`;
   }
 }
 
@@ -21,35 +21,35 @@ const service = axios.create({
     Qs.stringify(params, {
       arrayFormat: 'repeat'
     })
-})
+});
 
 // Request 拦截器
 service.interceptors.request.use(
   oConfig => {
-    oConfig.headers['Accept'] = 'application/vnd.api+json'
+    oConfig.headers['Accept'] = 'application/vnd.api+json';
 
     if (process.client && localStorage.getItem('access_token')) {
-      oConfig.headers['authorization'] = `Bearer ${localStorage.getItem('access_token')}`
+      oConfig.headers['authorization'] = `Bearer ${localStorage.getItem('access_token')}`;
     }
 
     // 由于腾讯的网络环境不能发PATCH请求，所有的PATCH请求要改一下，改成用POST，然后在header里加 x-http-method-override: patch
     if (oConfig.method === 'patch') {
-      oConfig.method = 'post'
-      oConfig.headers['x-http-method-override'] = 'patch'
+      oConfig.method = 'post';
+      oConfig.headers['x-http-method-override'] = 'patch';
     }
 
-    return oConfig
+    return oConfig;
   },
   oError => {
-    return Promise.reject(oError)
+    return Promise.reject(oError);
   }
-)
+);
 // Respone 拦截器
 service.interceptors.response.use(
   oRes => {
     // console.log(new Date(oRes.headers.date), '正确事件')
-    if (process.client) window.currentTime = new Date(oRes.headers.date)
-    return oRes
+    if (process.client) window.currentTime = new Date(oRes.headers.date);
+    return oRes;
   },
   oError => {
     if (oError.response && oError.response.data && oError.response.data.errors) {
@@ -58,24 +58,24 @@ service.interceptors.response.use(
           case 'access_denied':
             // token 无效 重新请求
             if (process.client) {
-              localStorage.removeItem('access_token')
-              localStorage.removeItem('user_id')
-              window.location.reload()
+              localStorage.removeItem('access_token');
+              localStorage.removeItem('user_id');
+              window.location.reload();
             }
             // delete response.config.header.Authorization;
-            break
+            break;
           case 'model_not_found':
-            console.log('模型未找到')
-            break
+            console.log('模型未找到');
+            break;
           case 'permission_denied':
-            console.log('没有查看权限')
-            break
+            console.log('没有查看权限');
+            break;
           case 'site_closed':
-            console.log('site_closed')
-            break
+            console.log('site_closed');
+            break;
           case 'not_install':
           case 'ban_user':
-            break
+            break;
           default:
           // if (response.config.custom.showTost) {
           //   clearTimeout(tostTimeout);
@@ -93,10 +93,10 @@ service.interceptors.response.use(
           //   });
           // }
         }
-      })
+      });
     }
-    return Promise.reject(oError)
+    return Promise.reject(oError);
   }
-)
+);
 
-export default service
+export default service;

@@ -65,8 +65,8 @@
   </div>
 </template>
 <script>
-import handleError from '@/mixin/handleError'
-import { timestamp2day } from '@/utils/time'
+import handleError from '@/mixin/handleError';
+import { timestamp2day } from '@/utils/time';
 export default {
   name: 'InvitedUser',
   mixins: [handleError],
@@ -100,160 +100,160 @@ export default {
         label: this.$t('manage.overdue'),
         value: 3
       }]
-    }
+    };
   },
   computed: {
     forums() {
-      return this.$store.state.site.info.attributes || {}
+      return this.$store.state.site.info.attributes || {};
     },
     userInfo() {
-      return this.$store.state.user.info.attributes || {}
+      return this.$store.state.user.info.attributes || {};
     }
   },
   watch: {
     groupMap: {
       handler() {
         if (this.inviteList.length === 0) {
-          this.getInviteList()
+          this.getInviteList();
         }
       },
       deep: true
     }
   },
   mounted() {
-    this.getInviteList()
+    this.getInviteList();
   },
   methods: {
     // 获取邀请列表
     getInviteList() {
-      this.loading = true
+      this.loading = true;
       const params = {
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         'filter[status]': this.selectedStatus
-      }
+      };
       this.$store.dispatch('jv/get', ['invite', { params }]).then((res) => {
         if (res) {
-          this.total = res._jv.json.meta.total
-          const list = res
-          const _groupMap = this.groupMap
+          this.total = res._jv.json.meta.total;
+          const list = res;
+          const _groupMap = this.groupMap;
           if (list && list.length > 0) {
             list.forEach((item) => {
-              const day = timestamp2day(item.endtime)
+              const day = timestamp2day(item.endtime);
               if (item.status === 1) {
-                item.time = this.$t('manage.remainDay', { day })
+                item.time = this.$t('manage.remainDay', { day });
               } else {
-                item.time = this.$t('manage.remain0Day')
+                item.time = this.$t('manage.remain0Day');
               }
-              item.title = _groupMap[item.group_id] + this.$t('manage.invitationUrl')
-            })
+              item.title = _groupMap[item.group_id] + this.$t('manage.invitationUrl');
+            });
           }
-          this.inviteList = list
+          this.inviteList = list;
         }
       }, (e) => {
-        this.handleError(e)
+        this.handleError(e);
       })
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     // 管理员创建邀请链接
     createAdminInvite(groupId) {
-      if (this.loading) return
-      this.loading = true
+      if (this.loading) return;
+      this.loading = true;
       const params = {
         data: {
           attributes: {
             group_id: groupId
           }
         }
-      }
+      };
       this.$store.dispatch('jv/post', [{ _jv: { type: 'invite' }}, { data: params }]).then(() => {
-        this.reloadList()
+        this.reloadList();
       }, (e) => {
-        this.handleError(e)
+        this.handleError(e);
       })
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     // 删除链接
     deleteInvite(id) {
-      if (this.loading) return
+      if (this.loading) return;
       const params = {
         _jv: {
           type: 'invite',
           id
         }
-      }
+      };
       this.$confirm(this.$t('manage.confirmDelete'), this.$t('discuzq.msgBox.title'), {
         confirmButtonText: this.$t('discuzq.msgBox.confirm'),
         cancelButtonText: this.$t('discuzq.msgBox.cancel')
       }).then(() => {
-        this.loading = true
+        this.loading = true;
         this.$store.dispatch('jv/delete', params).then(() => {
-          this.$message.success(this.$t('discuzq.msgBox.operateSuccess'))
-          this.reloadList()
+          this.$message.success(this.$t('discuzq.msgBox.operateSuccess'));
+          this.reloadList();
         }, (e) => {
-          this.handleError(e)
+          this.handleError(e);
         })
           .finally(() => {
-            this.loading = false
-          })
+            this.loading = false;
+          });
       })
-        .catch(() => {})
+        .catch(() => {});
     },
     // 复制链接到剪切板
     copyLink(code) {
-      const oInput = document.createElement('input')
+      const oInput = document.createElement('input');
       if (process.client) {
-        oInput.value = `${window.location.protocol}//${window.location.host}/site/partner-invite?code=${code}`
-        oInput.id = 'copyInput'
-        document.body.appendChild(oInput)
-        oInput.select()
-        document.execCommand('Copy')
+        oInput.value = `${window.location.protocol}//${window.location.host}/site/partner-invite?code=${code}`;
+        oInput.id = 'copyInput';
+        document.body.appendChild(oInput);
+        oInput.select();
+        document.execCommand('Copy');
       }
-      this.$message.success(this.$t('discuzq.msgBox.copySuccess'))
+      this.$message.success(this.$t('discuzq.msgBox.copySuccess'));
       setTimeout(() => {
-        oInput.remove()
-      }, 100)
+        oInput.remove();
+      }, 100);
     },
     // 重新加载列表
     reloadList() {
-      this.pageNum = 1
-      this.getInviteList()
+      this.pageNum = 1;
+      this.getInviteList();
     },
     // 分页
     handleSizeChange(val) {
-      this.pageNum = 1
-      this.pageSize = val
-      this.getInviteList()
+      this.pageNum = 1;
+      this.pageSize = val;
+      this.getInviteList();
     },
     // 每一页的数量
     handleCurrentChange(val) {
-      this.pageNum = val
-      this.getInviteList()
+      this.pageNum = val;
+      this.getInviteList();
     },
     // 格式化状态
     formatStatus(val) {
       if (this.statusList.find(item => item.value === val)) {
-        return this.statusList.find(item => item.value === val).label
+        return this.statusList.find(item => item.value === val).label;
       }
     },
     handleCommand(command) {
-      this.createAdminInvite(command)
+      this.createAdminInvite(command);
     },
     // 多选操作
     handleSelectionChange(val) {
-      this.multipleSelection = val
+      this.multipleSelection = val;
     },
     // 批量操作
     onChangeGroup(val) {
-      this.modifyUserGroup(val)
-      this.handleValue = ''
+      this.modifyUserGroup(val);
+      this.handleValue = '';
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 @import '@/assets/css/variable/color.scss';

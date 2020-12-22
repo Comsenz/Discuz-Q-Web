@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import head from '@/mixin/head'
+import head from '@/mixin/head';
 export default {
   layout: 'center_layout',
   name: 'UserManage',
@@ -32,11 +32,11 @@ export default {
       activeName: 'manage',
       groupMap: {},
       groupInviteList: []
-    }
+    };
   },
   computed: {
     forums() {
-      return this.$store.state.site.info.attributes
+      return this.$store.state.site.info.attributes;
     }
   },
   watch: {
@@ -44,7 +44,7 @@ export default {
       handler() {
         if (this.forums && this.forums.other) {
           if (!this.forums.other.can_edit_user_group && !this.forums.other.can_edit_user_status) {
-            this.activeName = 'invite'
+            this.activeName = 'invite';
           }
         }
       },
@@ -52,11 +52,11 @@ export default {
     }
   },
   mounted() {
-    this.getGroupList()
+    this.getGroupList();
     // 没有编辑用户组和状态的权限，就显示另一个tab
     if (this.forums && this.forums.other) {
       if (!this.forums.other.can_edit_user_group && !this.forums.other.can_edit_user_status) {
-        this.activeName = 'invite'
+        this.activeName = 'invite';
       }
     }
   },
@@ -65,26 +65,26 @@ export default {
     getGroupList() {
       const params = {
         'filter[type]': 'invite'
-      }
+      };
       this.$store.dispatch('jv/get', ['groups', { params }]).then((res) => {
         if (res && res.length > 0) {
-          const groupMap = {}
-          this.groupInviteList = []
+          const groupMap = {};
+          this.groupInviteList = [];
           res.forEach((item) => {
-            groupMap[item._jv.id] = item.name
+            groupMap[item._jv.id] = item.name;
             this.groupInviteList.push({
               label: item.name,
               value: item._jv.id
-            })
-          })
-          this.groupMap = groupMap
+            });
+          });
+          this.groupMap = groupMap;
         }
       }, (e) => {
-        this.handleError(e)
-      })
+        this.handleError(e);
+      });
     }
   }
-}
+};
 </script>
 <style lang='scss' scoped>
 @import '@/assets/css/variable/color.scss';

@@ -1,27 +1,54 @@
 <template>
   <div v-viewer class="container-upload">
     <template>
-      <div v-for="(image, index) in previewFiles" :key="index" :class="{ 'preview-item': true, 'deleted': image.deleted }">
+      <div
+        v-for="(image, index) in previewFiles"
+        :key="index"
+        :class="{ 'preview-item': true, deleted: image.deleted }"
+      >
         <img :src="image.url" alt="">
-        <el-progress v-show="image.progress < 100" :percentage="image.progress" color="#25A9F6" :show-text="false" class="progress" />
+        <el-progress
+          v-show="image.progress < 100"
+          :percentage="image.progress"
+          color="#25A9F6"
+          :show-text="false"
+          class="progress"
+        />
         <div v-show="image.progress < 100" class="cover">图片上传中...</div>
-        <div :class="{ 'upload-delete': true, 'show-delete': image.progress === 100}" @click="removeItem(index)">
+        <div
+          :class="{
+            'upload-delete': true,
+            'show-delete': image.progress === 100
+          }"
+          @click="removeItem(index)"
+        >
           <svg-icon type="delete" style="font-size: 14px; fill: white" />
         </div>
       </div>
     </template>
-    <div v-show="previewFiles.length < limit" class="upload" @click="onClick($event)">
-      <input id="upload" ref="uploadImage" :accept="accept" type="file" multiple @input="onInput">
+    <div
+      v-show="previewFiles.length < limit"
+      class="upload"
+      @click="onClick($event)"
+    >
+      <input
+        id="upload"
+        ref="uploadImage"
+        :accept="accept"
+        type="file"
+        multiple
+        @input="onInput"
+      >
       <svg-icon class="upload-icon" type="add" />
     </div>
   </div>
 </template>
 
 <script>
-import handleError from '@/mixin/handleError'
-import handleAttachmentError from '@/mixin/handleAttachmentError'
-import uploader from '@/mixin/uploader'
-import service from '@/api/request'
+import handleError from '@/mixin/handleError';
+import handleAttachmentError from '@/mixin/handleAttachmentError';
+import uploader from '@/mixin/uploader';
+import service from '@/api/request';
 
 export default {
   name: 'ImageUpload',
@@ -62,28 +89,28 @@ export default {
     return {
       previewFiles: [],
       currentInput: ''
-    }
+    };
   },
   computed: {
     input() {
-      return process.client ? document.getElementById('upload') : ''
+      return process.client ? document.getElementById('upload') : '';
     },
     service() {
-      return service
+      return service;
     }
   },
   methods: {
     onClick() {
-      const currentObj = this.$refs.uploadImage
-      this.currentInput = currentObj
-      this.uploaderFile(currentObj)
+      const currentObj = this.$refs.uploadImage;
+      this.currentInput = currentObj;
+      this.uploaderFile(currentObj);
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/css/variable/color.scss';
+@import "@/assets/css/variable/color.scss";
 
 .container-upload {
   display: flex;
@@ -127,7 +154,7 @@ export default {
       left: 0;
       width: 100%;
       height: 100%;
-      color: #6D6D6D;
+      color: #6d6d6d;
       background: rgba(255, 255, 255, 0.5);
       font-size: 12px;
       display: flex;
@@ -145,7 +172,7 @@ export default {
       display: none;
       justify-content: center;
       align-items: center;
-      background: rgba(0, 0,0 ,0.3);
+      background: rgba(0, 0, 0, 0.3);
     }
 
     &:hover {
@@ -174,7 +201,7 @@ export default {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      color: #1878F3;
+      color: #1878f3;
     }
   }
 }

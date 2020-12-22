@@ -5,12 +5,19 @@
       <el-tab-pane :label="$t('user.loginBindPhone')" name="0">
         <form>
           <div class="bindtext">
-            <div>{{ $t('user.phoneuser') }} <b>{{ phoneNumber }}</b> {{ $t('user.user') }}</div>
-            <div>{{ $t('user.loginToBind') }}</div>
+            <div>
+              {{ $t("user.phoneuser") }} <b>{{ phoneNumber }}</b>
+              {{ $t("user.user") }}
+            </div>
+            <div>{{ $t("user.loginToBind") }}</div>
           </div>
-          <span class="title">{{ $t('user.usrname') }}</span>
-          <el-input v-model="userName" :placeholder="$t('user.username')" class="reg-input" />
-          <span class="title2">{{ $t('user.pwd') }}</span>
+          <span class="title">{{ $t("user.usrname") }}</span>
+          <el-input
+            v-model="userName"
+            :placeholder="$t('user.username')"
+            class="reg-input"
+          />
+          <span class="title2">{{ $t("user.pwd") }}</span>
           <el-input
             v-model="passWord"
             :placeholder="$t('user.password')"
@@ -21,13 +28,16 @@
           />
           <div class="agreement">
             <el-checkbox v-model="checked" />
-            <span class="agree">{{ $t('user.status') }} </span>
+            <span class="agree">{{ $t("user.status") }} </span>
           </div>
-          <el-button type="primary" class="r-button" @click="UserLogin">{{ $t('user.loginbind') }}</el-button>
+          <el-button type="primary" class="r-button" @click="UserLogin">{{
+            $t("user.loginbind")
+          }}</el-button>
           <div class="logorreg">
             <span v-if="canReg">
-              {{ $t('user.noexist') }}
-              <span class="agreement_text" @click="toRegister"> {{ $t('user.registerbind') }}</span></span>
+              {{ $t("user.noexist") }}
+              <span class="agreement_text" @click="toRegister">
+                {{ $t("user.registerbind") }}</span></span>
           </div>
         </form>
       </el-tab-pane>
@@ -36,9 +46,9 @@
 </template>
 
 <script>
-import handleError from '@/mixin/handleError'
-import loginAbout from '@/mixin/loginAbout'
-import head from '@/mixin/head'
+import handleError from '@/mixin/handleError';
+import loginAbout from '@/mixin/loginAbout';
+import head from '@/mixin/head';
 export default {
   name: 'LoginBindPhone',
   mixins: [head, handleError, loginAbout],
@@ -58,47 +68,51 @@ export default {
       mobileToken: '',
       phoneNumber: '',
       preurl: '/'
-    }
+    };
   },
   computed: {
     forums() {
-      return this.$store.state.site.info.attributes || {}
+      return this.$store.state.site.info.attributes || {};
     }
   },
   mounted() {
-    const { phoneNumber, code, preurl } = this.$route.query
+    const { phoneNumber, code, preurl } = this.$route.query;
     if (preurl) {
-      this.preurl = preurl
+      this.preurl = preurl;
     }
     if (process.client) {
-      this.mobileToken = localStorage.getItem('mobileToken')
+      this.mobileToken = localStorage.getItem('mobileToken');
     }
     if (phoneNumber) {
-      this.phoneNumber = phoneNumber
+      this.phoneNumber = phoneNumber;
     }
     if (code !== 'undefined') {
-      this.code = code
+      this.code = code;
     }
     if (this.forums && this.forums.set_site && this.forums.set_site.site_mode) {
-      this.site_mode = this.forums.set_site.site_mode
+      this.site_mode = this.forums.set_site.site_mode;
     }
-    if (this.forums && this.forums.set_reg && this.forums.set_reg.register_close) {
-      this.canReg = true
+    if (
+      this.forums
+      && this.forums.set_reg
+      && this.forums.set_reg.register_close
+    ) {
+      this.canReg = true;
     }
   },
   methods: {
     check(value) {
-      this.ischeck = value
+      this.ischeck = value;
     },
     // 用户名登录
     UserLogin() {
-      this.loading = true
+      this.loading = true;
       if (this.userName === '') {
-        this.$message.error('用户名不能为空')
-        this.loading = false
+        this.$message.error('用户名不能为空');
+        this.loading = false;
       } else if (this.passWord === '') {
-        this.$message.error('密码不能为空')
-        this.loading = false
+        this.$message.error('密码不能为空');
+        this.loading = false;
       } else {
         const params = {
           data: {
@@ -108,50 +122,52 @@ export default {
               mobileToken: this.mobileToken
             }
           }
-        }
-        this.$store.dispatch('session/h5Login', params)
-          .then((res) => {
-            this.loading = false
+        };
+        this.$store
+          .dispatch('session/h5Login', params)
+          .then(res => {
+            this.loading = false;
             if (res && res.data && res.data.data && res.data.data.id) {
-              this.logind(res)
-              this.userName = ''
-              this.passWord = ''
+              this.logind(res);
+              this.userName = '';
+              this.passWord = '';
             }
             if (
-              res &&
-              res.data &&
-              res.data.errors &&
-              res.data.errors[0].code === 'register_validate'
+              res
+              && res.data
+              && res.data.errors
+              && res.data.errors[0].code === 'register_validate'
             ) {
-              this.$router.push(`/user/warning?username=${this.userName}`)
+              this.$router.push(`/user/warning?username=${this.userName}`);
             }
-            if (
-              res &&
-              res.data &&
-              res.data.errors &&
-              res.data.errors[0]
-            ) {
-              const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code
-              const errorText = res.data.errors[0].detail ? res.data.errors[0].detail[0] : this.$t(`core.${error}`)
-              this.$message.error(errorText)
+            if (res && res.data && res.data.errors && res.data.errors[0]) {
+              const error = res.data.errors[0].detail
+                ? res.data.errors[0].detail[0]
+                : res.data.errors[0].code;
+              const errorText = res.data.errors[0].detail
+                ? res.data.errors[0].detail[0]
+                : this.$t(`core.${error}`);
+              this.$message.error(errorText);
             }
           })
-          .catch((err) => {
-            this.loading = false
-            console.log(err)
-          })
+          .catch(err => {
+            this.loading = false;
+            console.log(err);
+          });
       }
     },
     toRegister() {
-      this.$router.push(`/user/register-bind-phone?code=${this.code}&phoneNumber=${this.phoneNumber}&preurl=${this.preurl}`)
+      this.$router.push(
+        `/user/register-bind-phone?code=${this.code}&phoneNumber=${this.phoneNumber}&preurl=${this.preurl}`
+      );
     },
     iscanReg() {
-      return [this.canReg ? '' : 'noreg']
+      return [this.canReg ? '' : 'noreg'];
     }
   }
-}
+};
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import "@/assets/css/variable/color.scss";
 ::v-deep input::-ms-reveal {
   display: none;
@@ -174,7 +190,7 @@ export default {
     border: none;
     background: transparent;
     box-shadow: none;
-    .bindtext{
+    .bindtext {
       font-size: 16px;
       margin-bottom: 40px;
     }
@@ -224,8 +240,8 @@ export default {
     }
   }
   .otherlogin {
-    font-size:50px;
-    margin-top:40px;
+    font-size: 50px;
+    margin-top: 40px;
     margin-left: 70px;
     .wechat-icon {
       cursor: pointer;

@@ -47,9 +47,9 @@
 </template>
 
 <script>
-import handleError from '@/mixin/handleError'
-import env from '@/utils/env'
-import head from '@/mixin/head'
+import handleError from '@/mixin/handleError';
+import env from '@/utils/env';
+import head from '@/mixin/head';
 export default {
   layout: 'custom_layout',
   name: 'TopicList',
@@ -57,42 +57,42 @@ export default {
   // 异步数据用法
   async asyncData({ store }, callback) {
     if (!env.isSpider) {
-      callback(null, {})
+      callback(null, {});
     }
     const topicsParams = {
       include: 'lastThread,lastThread.firstPost,lastThread.firstPost.images',
       'page[limit]': 10
-    }
+    };
     const userParams = {
       include: 'groups',
       limit: 4
-    }
+    };
     try {
-      const resData = {}
-      const topicsData = await store.dispatch('jv/get', ['topics', { params: topicsParams }])
-      const recommendUser = await store.dispatch('jv/get', ['users/recommended', { params: userParams }])
+      const resData = {};
+      const topicsData = await store.dispatch('jv/get', ['topics', { params: topicsParams }]);
+      const recommendUser = await store.dispatch('jv/get', ['users/recommended', { params: userParams }]);
       // 处理一下data
       if (Array.isArray(topicsData)) {
-        resData.topicsData = topicsData.slice(0, 10)
+        resData.topicsData = topicsData.slice(0, 10);
       } else if (topicsData && topicsData._jv && topicsData._jv.json) {
-        const _topicsData = topicsData._jv.json.data || []
+        const _topicsData = topicsData._jv.json.data || [];
         _topicsData.forEach((item, index) => {
-          _topicsData[index] = { ...item, ...item.attributes, _jv: { id: item.id }}
-        })
-        resData.topicsData = _topicsData
+          _topicsData[index] = { ...item, ...item.attributes, _jv: { id: item.id }};
+        });
+        resData.topicsData = _topicsData;
       }
       if (Array.isArray(recommendUser)) {
-        resData.recommendUserData = recommendUser
+        resData.recommendUserData = recommendUser;
       } else if (recommendUser && recommendUser._jv && recommendUser._jv.json) {
-        const _recommendUser = recommendUser._jv.json.data || []
+        const _recommendUser = recommendUser._jv.json.data || [];
         _recommendUser.forEach((item, index) => {
-          _recommendUser[index] = { ...item, ...item.attributes }
-        })
-        resData.recommendUserData = _recommendUser
+          _recommendUser[index] = { ...item, ...item.attributes };
+        });
+        resData.recommendUserData = _recommendUser;
       }
-      callback(null, resData)
+      callback(null, resData);
     } catch (e) {
-      callback(null, {})
+      callback(null, {});
     }
   },
   data() {
@@ -113,56 +113,56 @@ export default {
         value: '-threadCount'
       }],
       sort: ''
-    }
+    };
   },
   computed: {
     forums() {
-      return this.$store.state.site.info.attributes || {}
+      return this.$store.state.site.info.attributes || {};
     }
   },
   mounted() {
-    this.getTopicList()
+    this.getTopicList();
   },
   methods: {
     // 话题列表
     getTopicList() {
-      this.loading = true
+      this.loading = true;
       const params = {
         include: 'lastThread,lastThread.firstPost,lastThread.firstPost.images',
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         sort: this.sort
-      }
+      };
       this.$store.dispatch('jv/get', ['topics', { params }]).then((res) => {
-        this.hasMore = res.length === this.pageSize
+        this.hasMore = res.length === this.pageSize;
         if (this.pageNum === 1) {
-          this.topicsData = res
+          this.topicsData = res;
         } else {
-          this.topicsData = [...this.topicsData, ...res]
+          this.topicsData = [...this.topicsData, ...res];
         }
-        this.pageNum += 1
+        this.pageNum += 1;
         if (res && res._jv && res._jv.json && res._jv.json.meta) {
-          this.hasMore = this.topicsData.length < res._jv.json.meta.total
-          this.total = res._jv.json.meta.total
+          this.hasMore = this.topicsData.length < res._jv.json.meta.total;
+          this.total = res._jv.json.meta.total;
         }
       }, (e) => {
-        this.handleError(e)
+        this.handleError(e);
       })
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     loadMore() {
-      this.getTopicList()
+      this.getTopicList();
     },
     handleCommandSort(command) {
-      this.sort = command
-      this.pageNum = 1
-      this.topicsData = []
-      this.getTopicList()
+      this.sort = command;
+      this.pageNum = 1;
+      this.topicsData = [];
+      this.getTopicList();
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

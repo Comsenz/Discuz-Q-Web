@@ -1,6 +1,6 @@
 // import store from '@/store'
-import Vue from 'vue'
-import { Message } from 'element-ui'
+import Vue from 'vue';
+import { Message } from 'element-ui';
 /**
  * 自定义指令，检测用户是否有登录态
  * 使用： <a v-permission:fn="arg"></a>
@@ -14,26 +14,26 @@ import { Message } from 'element-ui'
  */
 function callback(binding, vnode) {
   return () => {
-    let token = ''
+    let token = '';
     if (process.client && localStorage.getItem('access_token')) {
-      token = localStorage.getItem('access_token')
+      token = localStorage.getItem('access_token');
     }
     if (!token) {
       if (process.client) {
-        Message.warning('请登录')
+        Message.warning('请登录');
         window.setTimeout(() => {
-          location.href = '/user/login?preurl=/'
-        }, 1000)
+          location.href = '/user/login?preurl=/';
+        }, 1000);
       }
     } else {
-      const that = vnode.context
-      that[binding.arg](binding.value)
+      const that = vnode.context;
+      that[binding.arg](binding.value);
     }
-  }
+  };
 }
 Vue.directive('permission', {
   bind: (el, binding, vnode) => {
     // el.removeEventListener('click', callback(binding, vnode), false)
-    el.addEventListener('click', callback(binding, vnode), false)
+    el.addEventListener('click', callback(binding, vnode), false);
   }
-})
+});

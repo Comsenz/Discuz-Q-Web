@@ -2,7 +2,15 @@
   <div v-if="forums" class="register">
     <el-tabs v-model="activeName" type="border-card" class="register-select">
       <!-- 快捷登录 -->
-      <el-tab-pane v-if="forums && forums.passport && forums.passport.oplatform_close" :label="forums && forums.set_reg && forums.set_reg.register_type !== 2 ? $t('user.quicklogin') : $t('user.quicklogin')+'/注册'" name="0">
+      <el-tab-pane
+        v-if="forums && forums.passport && forums.passport.oplatform_close"
+        :label="
+          forums && forums.set_reg && forums.set_reg.register_type !== 2
+            ? $t('user.quicklogin')
+            : $t('user.quicklogin') + '/注册'
+        "
+        name="0"
+      >
         <div class="quick">
           <div class="quick-container">
             <div class="qrcode">
@@ -11,15 +19,40 @@
             <div class="quick-title">
               <img src="@/assets/wechat.png">
               <span>
-                {{ forums && forums.set_reg && forums.set_reg.register_type !== 2 ? $t('user.wechatlogin') : $t('user.wechatlogin')+'/注册' }}
+                {{
+                  forums && forums.set_reg && forums.set_reg.register_type !== 2
+                    ? $t("user.wechatlogin")
+                    : $t("user.wechatlogin") + "/注册"
+                }}
               </span>
             </div>
             <div class="agreement">
-              <reg-agreement v-if="forums && forums.set_reg && forums.set_reg.register_type === 2" :check="false" @check="check" />
+              <reg-agreement
+                v-if="
+                  forums && forums.set_reg && forums.set_reg.register_type === 2
+                "
+                :check="false"
+                @check="check"
+              />
             </div>
             <div class="otherlogin">
-              <svg-icon v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms && forums.set_reg && forums.set_reg.register_type !== 2" class="phone-icon" type="phonelogin" @click="toPhonelogin" />
-              <svg-icon class="wechat-icon" type="userlogin" @click="toUserlogin" />
+              <svg-icon
+                v-if="
+                  forums &&
+                    forums.qcloud &&
+                    forums.qcloud.qcloud_sms &&
+                    forums.set_reg &&
+                    forums.set_reg.register_type !== 2
+                "
+                class="phone-icon"
+                type="phonelogin"
+                @click="toPhonelogin"
+              />
+              <svg-icon
+                class="wechat-icon"
+                type="userlogin"
+                @click="toUserlogin"
+              />
             </div>
           </div>
         </div>
@@ -29,9 +62,9 @@
 </template>
 
 <script>
-import head from '@/mixin/head'
-import handleError from '@/mixin/handleError'
-import loginAbout from '@/mixin/loginAbout'
+import head from '@/mixin/head';
+import handleError from '@/mixin/handleError';
+import loginAbout from '@/mixin/loginAbout';
 export default {
   name: 'Wechat',
   mixins: [head, handleError, loginAbout],
@@ -44,108 +77,162 @@ export default {
       activeName: '0',
       ischeck: true,
       preurl: '/'
-    }
+    };
   },
   computed: {
     forums() {
-      return this.$store.state.site.info.attributes || {}
+      return this.$store.state.site.info.attributes || {};
     }
   },
   mounted() {
-    const { code, preurl } = this.$route.query
+    const { code, preurl } = this.$route.query;
     if (preurl) {
-      this.preurl = preurl
+      this.preurl = preurl;
     }
     if (code !== 'undefined') {
-      this.code = code
+      this.code = code;
     }
     if (this.forums && this.forums.set_site && this.forums.set_site.site_mode) {
-      this.site_mode = this.forums.set_site.site_mode
+      this.site_mode = this.forums.set_site.site_mode;
     }
     // 微信登录初始化
-    this.createQRcode()
+    this.createQRcode();
   },
   destroyed() {
-    window.clearInterval(this.wechatLoginTimer)
+    window.clearInterval(this.wechatLoginTimer);
   },
   methods: {
     check(value) {
-      this.ischeck = value
+      this.ischeck = value;
     },
     // PC扫码登陆-生成二维码
     createQRcode() {
-      this.$store.dispatch('jv/get', '/oauth/wechat/pc/qrcode').then((res) => {
-        if (res) {
-          this.wechatLogin = res
-          const _this = this
-          this.wechatLoginTimer = setInterval(_this.getLoginStatus, 3000)
-        }
-      }, e => this.handleError(e))
+      this.$store.dispatch('jv/get', '/oauth/wechat/pc/qrcode').then(
+        res => {
+          if (res) {
+            this.wechatLogin = res;
+            const _this = this;
+            this.wechatLoginTimer = setInterval(_this.getLoginStatus, 3000);
+          }
+        },
+        e => this.handleError(e)
+      );
     },
     // 轮询查询微信是否登录成功
     getLoginStatus() {
-      if (this.wechatLogin && !this.wechatLogin.session_token) return
-      this.$store.dispatch('jv/get', `/oauth/wechat/pc/login/${this.wechatLogin.session_token}`).then((res) => {
-        if (res) {
-          clearInterval(this.wechatLoginTimer)
-          this.$store.commit('session/SET_USER_ID', res._jv.id)
-          this.$store.commit('session/CHECK_SESSION', true)
-          this.$store.commit('session/SET_ACCESS_TOKEN', res.access_token)
-          const userId = this.$store.getters['session/get']('userId')
-          const params = {
-            include: 'groups,wechat'
+      if (this.wechatLogin && !this.wechatLogin.session_token) return;
+      this.$store
+        .dispatch(
+          'jv/get',
+          `/oauth/wechat/pc/login/${this.wechatLogin.session_token}`
+        )
+        .then(
+          res => {
+            if (res) {
+              const loginRes = res;
+              // 用于新用户填拓展信息传用户id,和其他几种模式格式统一
+              loginRes.data = {
+                data: {
+                  id: res._jv.id,
+                  attributes: {
+                    new_user: !!loginRes.new_user
+                  }
+                }
+              };
+              clearInterval(this.wechatLoginTimer);
+              this.$store.commit('session/SET_USER_ID', res._jv.id);
+              this.$store.commit('session/CHECK_SESSION', true);
+              this.$store.commit('session/SET_ACCESS_TOKEN', res.access_token);
+              this.logind(loginRes);
+              // const userId = this.$store.getters['session/get']('userId');
+              // const params = {
+              //   include: 'groups,wechat'
+              // };
+              // this.$store
+              //   .dispatch('jv/get', [`users/${userId}`, { params }])
+              //   .then(res => {
+              //     if (res.username) {
+              //       this.$message.success(this.$t('user.loginSuccess'));
+              //       this.logind(res);
+              //     }
+              //   });
+            }
+          },
+          e => {
+            const {
+              response: {
+                data: { errors }
+              }
+            } = e;
+            if (Array.isArray(errors) && errors.length > 0) {
+              const error
+                = errors[0].detail && errors[0].detail.length > 0
+                  ? errors[0].detail[0]
+                  : errors[0].code;
+              const errorText
+                = errors[0].detail && errors[0].detail.length > 0
+                  ? errors[0].detail[0]
+                  : this.$t(`core.${error}`);
+              if (error === 'pc_qrcode_scanning_code') {
+                return;
+              } else if (error === 'no_bind_user') {
+                const nickname = errors[0].user.nickname;
+                const headimgurl = errors[0].user.headimgurl;
+                const token = errors[0].token;
+                if (process.client) localStorage.setItem('wechat', token);
+                if (
+                  this.forums
+                  && this.forums.set_reg
+                  && this.forums.set_reg.register_type === 0
+                ) {
+                  this.$router.push(
+                    `/user/register-bind?nickname=${nickname}&headimgurl=${headimgurl}`
+                  );
+                }
+                if (
+                  this.forums
+                  && this.forums.set_reg
+                  && this.forums.set_reg.register_type === 1
+                ) {
+                  this.$router.push(
+                    `/user/wechat-bind-phone?nickname=${nickname}&headimgurl=${headimgurl}`
+                  );
+                }
+                // if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 2) {
+                //   this.$message.success(this.$t('user.loginSuccess'))
+                //   this.logind()
+                // }
+              } else {
+                clearInterval(this.wechatLoginTimer);
+                this.$message.error(errorText);
+                this.createQRcode();
+              }
+            }
           }
-          this.$store.dispatch('jv/get', [`users/${userId}`, { params }]).then((res) => {
-            if (res.username) {
-              this.$message.success(this.$t('user.loginSuccess'))
-              this.logind(res)
-            }
-          })
-        }
-      }, (e) => {
-        const { response: { data: { errors }}} = e
-        if (Array.isArray(errors) && errors.length > 0) {
-          const error = errors[0].detail && errors[0].detail.length > 0 ? errors[0].detail[0] : errors[0].code
-          const errorText = errors[0].detail && errors[0].detail.length > 0 ? errors[0].detail[0] : this.$t(`core.${error}`)
-          if (error === 'pc_qrcode_scanning_code') {
-            return
-          } else if (error === 'no_bind_user') {
-            const nickname = errors[0].user.nickname
-            const headimgurl = errors[0].user.headimgurl
-            const token = errors[0].token
-            if (process.client) localStorage.setItem('wechat', token)
-            if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 0) {
-              this.$router.push(`/user/register-bind?nickname=${nickname}&headimgurl=${headimgurl}`)
-            }
-            if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
-              this.$router.push(`/user/wechat-bind-phone?nickname=${nickname}&headimgurl=${headimgurl}`)
-            }
-            // if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 2) {
-            //   this.$message.success(this.$t('user.loginSuccess'))
-            //   this.logind()
-            // }
-          } else {
-            clearInterval(this.wechatLoginTimer)
-            this.$message.error(errorText)
-            this.createQRcode()
-          }
-        }
-      })
+        );
     },
     toUserlogin() {
-      this.$router.push(`/user/login?code=${this.code}&preurl=${this.preurl}`)
+      this.$router.push(`/user/login?code=${this.code}&preurl=${this.preurl}`);
     },
     toPhonelogin() {
-      if (this.forums && this.forums.set_reg && this.forums.set_reg.register_type === 1) {
-        this.$router.push(`/user/phone-login-register?code=${this.code}&preurl=${this.preurl}`)
+      if (
+        this.forums
+        && this.forums.set_reg
+        && this.forums.set_reg.register_type === 1
+      ) {
+        this.$router.push(
+          `/user/phone-login-register?code=${this.code}&preurl=${this.preurl}`
+        );
       } else {
-        this.$router.push(`/user/phone-login?code=${this.code}&preurl=${this.preurl}`)
+        this.$router.push(
+          `/user/phone-login?code=${this.code}&preurl=${this.preurl}`
+        );
       }
     }
   }
-}
+};
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import "@/assets/css/variable/color.scss";
 ::v-deep input::-ms-reveal {
   display: none;
@@ -179,7 +266,7 @@ export default {
       .quick-container {
         flex: 1;
         text-align: center;
-        .agreement{
+        .agreement {
           margin-top: 5px;
         }
         .qrtext {
@@ -223,8 +310,8 @@ export default {
     }
   }
   .otherlogin {
-    font-size:50px;
-    margin-top:35px;
+    font-size: 50px;
+    margin-top: 35px;
     .wechat-icon {
       cursor: pointer;
     }
@@ -273,4 +360,3 @@ export default {
   margin-top: 7px;
 }
 </style>
-

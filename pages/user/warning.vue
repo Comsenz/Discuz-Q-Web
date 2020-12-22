@@ -4,7 +4,7 @@
     <h2 class="info-title">{{ $t('core.registerValidate') }}</h2>
     <!-- 付费信息部分 -->
     <div class="payinfo">
-      <p class="payinfo-title">感谢"{{ username }}"用户您的注册</p>
+      <p class="payinfo-title">感谢{{ username && `"${username}用户"` }}您的注册</p>
       <p>
         <span class="color">{{ $t('core.regcode') }}</span>
       </p>
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import head from '@/mixin/head'
+import head from '@/mixin/head';
 export default {
   name: 'Warning',
   mixins: [head],
@@ -28,20 +28,20 @@ export default {
     return {
       title: this.$t('core.registerValidate'),
       username: ''
-    }
+    };
   },
   mounted() {
-    const { username } = this.$route.query
+    const { username } = this.$route.query;
     if (username) {
-      this.username = username
+      this.username = username;
     }
   },
   methods: {
     home() {
-      this.$router.push('/')
+      this.$router.push('/');
     }
   }
-}
+};
 </script>
 <style lang='scss' scoped>
 .info {

@@ -115,8 +115,8 @@
   </div>
 </template>
 <script>
-import handleError from '@/mixin/handleError'
-import timerDiff from '@/mixin/timerDiff'
+import handleError from '@/mixin/handleError';
+import timerDiff from '@/mixin/timerDiff';
 export default {
   name: 'NoticeItem',
   mixins: [timerDiff, handleError],
@@ -144,12 +144,12 @@ export default {
         answersMe: this.$t('notice.answersMe'),
         questioned: this.$t('notice.questions')
       }
-    }
+    };
   },
   methods: {
 
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 @import "@/assets/css/variable/color.scss";

@@ -1,42 +1,77 @@
 <template>
   <div class="container">
     <main class="cont-left">
-      <index-filter @onChangeFilter="onChangeFilter" @onChangeType="onChangeType" @onChangeSort="onChangeSort" />
+      <index-filter
+        @onChangeFilter="onChangeFilter"
+        @onChangeType="onChangeType"
+        @onChangeSort="onChangeSort"
+      />
       <div v-if="threadsStickyData.length > 0">
-        <div v-for="(item, index) in threadsStickyData" :key="index" class="list-top-item">
-          <div class="top-label">{{ $t('home.sticky') }}</div>
-          <nuxt-link :to="`/thread/${item._jv && item._jv.id}`" target="_blank" class="top-title">
+        <div
+          v-for="(item, index) in threadsStickyData"
+          :key="index"
+          class="list-top-item"
+        >
+          <div class="top-label">{{ $t("home.sticky") }}</div>
+          <nuxt-link
+            :to="`/thread/${item._jv && item._jv.id}`"
+            target="_blank"
+            class="top-title"
+          >
             <template v-if="item.type === 1">
               {{ item.title }}
             </template>
-            <span v-else v-html="$xss(formatRichText(item.firstPost && item.firstPost.summary))" />
+            <span
+              v-else
+              v-html="
+                $xss(formatRichText(item.firstPost && item.firstPost.summary))
+              "
+            />
           </nuxt-link>
         </div>
       </div>
       <div v-if="total > 0" class="new-post">
         <div class="new-post-cont">
-          {{ $t('home.hasNewContent', { total }) }}
-          <span class="refresh" @click="reloadThreadsList">{{ $t('home.clickRefresh') }}</span>
+          {{ $t("home.hasNewContent", { total }) }}
+          <span class="refresh" @click="reloadThreadsList">{{
+            $t("home.clickRefresh")
+          }}</span>
         </div>
       </div>
       <!-- <template v-for="(item, index) in threadsData">
-        <post-item v-if="item.type === 4" :ref="`audio${ item && item.threadAudio && item.threadAudio._jv && item.threadAudio._jv.id}`" :key="index" :item="item" @audioPlay="audioPlay" />
+        <post-item v-if="item.type === 4"
+        :ref="`audio${ item && item.threadAudio
+        && item.threadAudio._jv && item.threadAudio._jv.id}`" :key="index" :item="item" @audioPlay="audioPlay" />
         <post-item v-else :key="index" :item="item" />
       </template> -->
       <!-- 长列表优化 -->
-      <dynamic-scroller
-        :items="threadsData"
-        :min-item-size="120"
-        page-mode
-      >
+      <dynamic-scroller :items="threadsData" :min-item-size="120" page-mode>
         <template v-slot="{ item, index, active }">
           <dynamic-scroller-item
             :item="item"
             :active="active"
             :data-index="index"
           >
-            <post-item v-if="item.type === 4" :ref="`audio${ item && item.threadAudio && item.threadAudio._jv && item.threadAudio._jv.id}`" :key="index" :item="item" :lazy="false" @audioPlay="audioPlay" />
-            <post-item v-else :key="index" :item="item" :lazy="false" @showVideoFn="showVideoFn" />
+            <post-item
+              v-if="item.type === 4"
+              :ref="
+                `audio${item &&
+                  item.threadAudio &&
+                  item.threadAudio._jv &&
+                  item.threadAudio._jv.id}`
+              "
+              :key="index"
+              :item="item"
+              :lazy="false"
+              @audioPlay="audioPlay"
+            />
+            <post-item
+              v-else
+              :key="index"
+              :item="item"
+              :lazy="false"
+              @showVideoFn="showVideoFn"
+            />
           </dynamic-scroller-item>
         </template>
         <template #after>
@@ -73,10 +108,11 @@
 </template>
 
 <script>
-import s9e from '@/utils/s9e'
-import handleError from '@/mixin/handleError'
-import env from '@/utils/env'
-const threadInclude = 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio'
+import s9e from '@/utils/s9e';
+import handleError from '@/mixin/handleError';
+import env from '@/utils/env';
+// eslint-disable-next-line max-len
+const threadInclude = `user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio`;
 export default {
   layout: 'custom_layout',
   name: 'Index',
@@ -84,7 +120,7 @@ export default {
   // 异步数据用法
   async asyncData({ store, query }, callback) {
     if (!env.isSpider) {
-      callback(null, {})
+      callback(null, {});
     }
     const threadsStickyParams = {
       'filter[isSticky]': 'yes',
@@ -92,7 +128,7 @@ export default {
       'filter[isDeleted]': 'no',
       'page[number]': 1,
       include: 'firstPost'
-    }
+    };
     const threadsParams = {
       include: threadInclude,
       'filter[isSticky]': 'no',
@@ -101,46 +137,62 @@ export default {
       'filter[isDisplay]': 'yes',
       'page[number]': 1,
       'page[limit]': 10
-    }
+    };
     const userParams = {
       include: 'groups',
       limit: 4
-    }
+    };
     try {
-      const resData = {}
-      const siteInfo = await store.dispatch('site/getSiteInfo')
-      const threadsStickyData = await store.dispatch('jv/get', ['threads', { params: threadsStickyParams }])
-      const threadsData = await store.dispatch('jv/get', ['threads', { params: threadsParams }])
-      const categoryData = await store.dispatch('jv/get', ['categories', {}])
-      const recommendUser = await store.dispatch('jv/get', ['users/recommended', { params: userParams }])
+      const resData = {};
+      const siteInfo = await store.dispatch('site/getSiteInfo');
+      const threadsStickyData = await store.dispatch('jv/get', [
+        'threads',
+        { params: threadsStickyParams }
+      ]);
+      const threadsData = await store.dispatch('jv/get', [
+        'threads',
+        { params: threadsParams }
+      ]);
+      const categoryData = await store.dispatch('jv/get', ['categories', {}]);
+      const recommendUser = await store.dispatch('jv/get', [
+        'users/recommended',
+        { params: userParams }
+      ]);
       // head
       if (siteInfo && siteInfo.attributes && siteInfo.attributes.set_site) {
-        resData.headTitle = siteInfo.attributes.set_site.site_title || siteInfo.attributes.set_site.site_name || 'Discuz! Q'
-        resData.headKeywords = siteInfo.attributes.set_site.site_keywords
-        resData.headDesc = siteInfo.attributes.set_site.site_introduction
+        resData.headTitle
+          = siteInfo.attributes.set_site.site_title
+          || siteInfo.attributes.set_site.site_name
+          || 'Discuz! Q';
+        resData.headKeywords = siteInfo.attributes.set_site.site_keywords;
+        resData.headDesc = siteInfo.attributes.set_site.site_introduction;
       }
       // 处理一下data
       if (Array.isArray(threadsStickyData)) {
-        resData.threadsStickyData = threadsStickyData
-      } else if (threadsStickyData && threadsStickyData._jv && threadsStickyData._jv.json) {
-        const _threadsStickyData = threadsStickyData._jv.json.data || []
+        resData.threadsStickyData = threadsStickyData;
+      } else if (
+        threadsStickyData
+        && threadsStickyData._jv
+        && threadsStickyData._jv.json
+      ) {
+        const _threadsStickyData = threadsStickyData._jv.json.data || [];
         _threadsStickyData.forEach((item, index) => {
           _threadsStickyData[index] = {
             ...item,
             ...item.attributes,
             firstPost: item.relationships.firstPost.data,
             jv: { id: item.id }
-          }
-        })
-        resData.threadsStickyData = _threadsStickyData
+          };
+        });
+        resData.threadsStickyData = _threadsStickyData;
       }
       if (Array.isArray(threadsData)) {
         threadsData.forEach(item => {
-          item.id = item._jv && item._jv.id
-        })
-        resData.threadsData = threadsData
+          item.id = item._jv && item._jv.id;
+        });
+        resData.threadsData = threadsData;
       } else if (threadsData && threadsData._jv && threadsData._jv.json) {
-        const _threadsData = threadsData._jv.json.data || []
+        const _threadsData = threadsData._jv.json.data || [];
         _threadsData.forEach((item, index) => {
           _threadsData[index] = {
             ...item,
@@ -148,29 +200,33 @@ export default {
             firstPost: item.relationships.firstPost.data,
             user: item.relationships.user.data,
             _jv: { id: item.id }
-          }
-        })
-        resData.threadsData = _threadsData
+          };
+        });
+        resData.threadsData = _threadsData;
       }
       if (Array.isArray(categoryData)) {
-        resData.categoryData = categoryData
+        resData.categoryData = categoryData;
       } else if (categoryData && categoryData._jv && categoryData._jv.json) {
-        const _categoryData = categoryData._jv.json.data || []
+        const _categoryData = categoryData._jv.json.data || [];
         _categoryData.forEach((item, index) => {
-          _categoryData[index] = { ...item, ...item.attributes, _jv: { id: item.id }}
-        })
-        resData.categoryData = _categoryData
+          _categoryData[index] = {
+            ...item,
+            ...item.attributes,
+            _jv: { id: item.id }
+          };
+        });
+        resData.categoryData = _categoryData;
       }
       if (Array.isArray(recommendUser)) {
-        resData.recommendUserData = recommendUser
+        resData.recommendUserData = recommendUser;
       } else if (recommendUser && recommendUser._jv && recommendUser._jv.json) {
-        const _recommendUser = recommendUser._jv.json.data || []
+        const _recommendUser = recommendUser._jv.json.data || [];
         _recommendUser.forEach((item, index) => {
-          _recommendUser[index] = { ...item, ...item.attributes }
-        })
-        resData.recommendUserData = _recommendUser
+          _recommendUser[index] = { ...item, ...item.attributes };
+        });
+        resData.recommendUserData = _recommendUser;
       }
-      callback(null, resData)
+      callback(null, resData);
     } catch (error) {
       callback(null, {
         _error__abc: {
@@ -186,7 +242,7 @@ export default {
           request_keys: Object.keys(error.request || {}),
           response_keys: Object.keys(error.response || {})
         }
-      })
+      });
     }
   },
   data() {
@@ -212,23 +268,24 @@ export default {
       currentAudioId: '',
       showVideoPop: false, // 显示视频弹窗
       threadVideo: {} // 当前显示的视频信息
-    }
+    };
   },
   computed: {
     userId() {
-      return this.$store.getters['session/get']('userId')
+      return this.$store.getters['session/get']('userId');
     },
     forums() {
-      return this.$store.state.site.info.attributes || {}
+      return this.$store.state.site.info.attributes || {};
     }
   },
   watch: {
     forums: {
       handler(val) {
         if (val && val.set_site) {
-          this.headTitle = val.set_site.site_title || val.set_site.site_name || 'Discuz! Q'
-          this.headKeywords = val.set_site.site_keywords
-          this.headDesc = val.set_site.site_introduction
+          this.headTitle
+            = val.set_site.site_title || val.set_site.site_name || 'Discuz! Q';
+          this.headKeywords = val.set_site.site_keywords;
+          this.headDesc = val.set_site.site_introduction;
         }
       },
       deep: true
@@ -236,50 +293,53 @@ export default {
   },
   mounted() {
     /* IFTRUE_test */
-    console.log(333333)
+    console.log(333333);
     /* FITRUE_test */
     if (this.forums && this.forums.set_site) {
-      this.headTitle = this.forums.set_site.site_title || this.forums.set_site.site_name || 'Discuz! Q'
-      this.headKeywords = this.forums.set_site.site_keywords
-      this.headDesc = this.forums.set_site.site_introduction
+      this.headTitle
+        = this.forums.set_site.site_title
+        || this.forums.set_site.site_name
+        || 'Discuz! Q';
+      this.headKeywords = this.forums.set_site.site_keywords;
+      this.headDesc = this.forums.set_site.site_introduction;
     }
     if (this.threadsStickyData.length === 0) {
-      this.getThreadsSticky()
+      this.getThreadsSticky();
     }
     if (this.threadsData.length === 0) {
-      this.getThreadsList()
+      this.getThreadsList();
     } else {
       if (this.threadsData.length === this.pageSize) {
-        this.hasMore = true
+        this.hasMore = true;
       }
       if (this.timer) {
-        clearInterval(this.timer)
+        clearInterval(this.timer);
       }
       this.timer = setInterval(() => {
-        this.autoLoadThreads()
-      }, 30000)
+        this.autoLoadThreads();
+      }, 30000);
     }
   },
   destroyed() {
-    clearInterval(this.timer)
+    clearInterval(this.timer);
   },
   methods: {
     // 置顶主题
     getThreadsSticky() {
-      this.threadsStickyData = []
+      this.threadsStickyData = [];
       const params = {
         'filter[isSticky]': 'yes',
         'filter[isApproved]': 1,
         'filter[isDeleted]': 'no',
         include: ['firstPost']
-      }
-      this.$store.dispatch('jv/get', ['threads', { params }]).then((data) => {
-        this.threadsStickyData = [...data]
-      })
+      };
+      this.$store.dispatch('jv/get', ['threads', { params }]).then(data => {
+        this.threadsStickyData = [...data];
+      });
     },
     // 非置顶主题
     getThreadsList() {
-      this.loading = true
+      this.loading = true;
       const params = {
         include: threadInclude,
         'filter[isSticky]': 'no',
@@ -289,47 +349,55 @@ export default {
         'filter[type]': this.threadType,
         'filter[isEssence]': this.threadEssence,
         'filter[fromUserId]': this.fromUserId,
-        'sort': this.sort,
+        sort: this.sort,
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize
-      }
+      };
       if (this.threadType !== null) {
-        params['filter[type]'] = this.threadType
+        params['filter[type]'] = this.threadType;
       }
-      this.$store.dispatch('jv/get', ['threads', { params }]).then((data) => {
-        this.hasMore = data.length === this.pageSize
-        const _data = data
-        Array.isArray(_data) && _data.forEach(item => {
-          item.id = item._jv && item._jv.id
-        })
-        const _threadCount = (_data &&
-          _data._jv &&
-          _data._jv.json &&
-          _data._jv.json.meta &&
-          _data._jv.json.meta.threadCount) || 0
-        if (this.pageNum === 1) {
-          this.threadsData = _data
-          this.threadCount = _threadCount
-        } else {
-          this.threadsData = [...this.threadsData, ..._data]
-        }
-        if (_data && _data._jv) {
-          this.hasMore = this.threadsData.length < _threadCount
-        }
-        // 加载成功 页码加1，为加载更多做准备
-        this.pageNum += 1
-        if (this.timer) {
-          clearInterval(this.timer)
-        }
-        this.timer = setInterval(() => {
-          this.autoLoadThreads()
-        }, 30000)
-      }, (e) => {
-        this.handleError(e)
-      })
+      this.$store
+        .dispatch('jv/get', ['threads', { params }])
+        .then(
+          data => {
+            this.hasMore = data.length === this.pageSize;
+            const _data = data;
+            Array.isArray(_data)
+              && _data.forEach(item => {
+                item.id = item._jv && item._jv.id;
+              });
+            const _threadCount
+              = (_data
+                && _data._jv
+                && _data._jv.json
+                && _data._jv.json.meta
+                && _data._jv.json.meta.threadCount)
+              || 0;
+            if (this.pageNum === 1) {
+              this.threadsData = _data;
+              this.threadCount = _threadCount;
+            } else {
+              this.threadsData = [...this.threadsData, ..._data];
+            }
+            if (_data && _data._jv) {
+              this.hasMore = this.threadsData.length < _threadCount;
+            }
+            // 加载成功 页码加1，为加载更多做准备
+            this.pageNum += 1;
+            if (this.timer) {
+              clearInterval(this.timer);
+            }
+            this.timer = setInterval(() => {
+              this.autoLoadThreads();
+            }, 30000);
+          },
+          e => {
+            this.handleError(e);
+          }
+        )
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     // onLoading({ done, pushItems }) {
     //   pushItems(this.threadsData)
@@ -341,7 +409,7 @@ export default {
     loadMore() {
       // 在这里加1的话，遇到加载不成功的会不断加页码
       //  this.pageNum++
-      this.getThreadsList()
+      this.getThreadsList();
     },
     // 轮询查看是否有新主题
     autoLoadThreads() {
@@ -354,49 +422,56 @@ export default {
         'filter[isEssence]': this.threadEssence,
         'filter[fromUserId]': this.fromUserId,
         'page[limit]': 1
-      }
-      this.$store.dispatch('jv/get', ['threads', { params }]).then((data) => {
+      };
+      this.$store.dispatch('jv/get', ['threads', { params }]).then(data => {
         if (data && data._jv) {
-          const _threadCount = (data._jv.json && data._jv.json.meta && data._jv.json.meta.threadCount) || 0
+          const _threadCount
+            = (data._jv.json
+              && data._jv.json.meta
+              && data._jv.json.meta.threadCount)
+            || 0;
           if (this.threadCount > 0) {
-            this.total = (_threadCount - this.threadCount) > 0 ? _threadCount - this.threadCount : 0
+            this.total
+              = _threadCount - this.threadCount > 0
+                ? _threadCount - this.threadCount
+                : 0;
           }
         }
-      })
+      });
     },
     // 重新加载列表
     reloadThreadsList() {
-      this.pageNum = 1
-      this.total = 0
-      this.threadsData = []
-      this.getThreadsList()
+      this.pageNum = 1;
+      this.total = 0;
+      this.threadsData = [];
+      this.getThreadsList();
     },
     // 点击分类
     onChangeCategory(id) {
       if (id !== 0) {
-        this.$router.push(`/category/${id}`)
+        this.$router.push(`/category/${id}`);
       }
     },
     // 筛选
     onChangeFilter(val) {
-      this.threadEssence = ''
-      this.fromUserId = ''
+      this.threadEssence = '';
+      this.fromUserId = '';
       if (val === 'isEssence') {
-        this.threadEssence = 'yes'
+        this.threadEssence = 'yes';
       } else if (val === 'followed') {
-        this.fromUserId = this.userId
+        this.fromUserId = this.userId;
       }
-      this.reloadThreadsList()
+      this.reloadThreadsList();
     },
     // 类型
     onChangeType(val) {
-      this.threadType = val
-      this.reloadThreadsList()
+      this.threadType = val;
+      this.reloadThreadsList();
     },
     // 排序
     onChangeSort(val) {
-      this.sort = val
-      this.reloadThreadsList()
+      this.sort = val;
+      this.reloadThreadsList();
     },
     // 处理富文本里的图片宽度自适应
     // 1.去掉img标签里的style、width、height属性
@@ -405,20 +480,20 @@ export default {
     // 4.去掉<br/>标签			 * @param html			 * @returns {void|string|*}
     formatRichText(html) {
       // eslint-disable-next-line no-param-reassign
-      return s9e.parse(html)
+      return s9e.parse(html);
     },
     // 语音互斥播放
     audioPlay(id) {
-      console.log(id, this.$refs[`audio${this.currentAudioId}`])
+      console.log(id, this.$refs[`audio${this.currentAudioId}`]);
       if (this.currentAudioId && this.currentAudioId !== id) {
-        this.$refs[`audio${this.currentAudioId}`].pause()
+        this.$refs[`audio${this.currentAudioId}`].pause();
       }
-      this.currentAudioId = id
+      this.currentAudioId = id;
     },
     // 视频播放弹窗
     showVideoFn(video) {
-      this.threadVideo = video
-      this.showVideoPop = true
+      this.threadVideo = video;
+      this.showVideoPop = true;
     }
   },
   head() {
@@ -428,45 +503,45 @@ export default {
         { hid: 'keywords', name: 'keywords', content: this.headKeywords },
         { hid: 'description', name: 'description', content: this.headDesc }
       ]
-    }
+    };
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/css/variable/color.scss';
-@mixin background(){
+@import "@/assets/css/variable/color.scss";
+@mixin background() {
   background: #fff;
   border-radius: 5px;
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.03);
 }
-.app-cont{
+.app-cont {
   box-shadow: none;
 }
-.container{
-  display:flex;
-  background: #F4F5F6;
+.container {
+  display: flex;
+  background: #f4f5f6;
   width: 100%;
-  .cont-left{
-    flex:auto;
+  .cont-left {
+    flex: auto;
     @include background();
-    .hide{
+    .hide {
       position: relative;
       opacity: 0;
-      &.show{
+      &.show {
         opacity: 1;
       }
     }
-    .list-top-item{
+    .list-top-item {
       border-bottom: 1px solid $line-color-base;
       padding: 10.5px 22px;
       display: flex;
       align-items: center;
-      .top-label{
-        color:$font-color-grey;
+      .top-label {
+        color: $font-color-grey;
         margin-right: 20px;
       }
-      .top-title{
+      .top-title {
         color: #000;
         flex: 1;
         max-width: 425px;
@@ -485,53 +560,52 @@ export default {
         ::v-deep img {
           height: 19px;
         }
-        @media screen and ( max-width: 1005px ) {
+        @media screen and (max-width: 1005px) {
           ::v-deep img {
             height: 18px;
           }
         }
       }
-      &:hover{
-        .top-title{
-          color:$color-blue-base;
+      &:hover {
+        .top-title {
+          color: $color-blue-base;
         }
       }
     }
-    .new-post{
+    .new-post {
       padding: 10px 20px;
-      .new-post-cont{
-        background: #FDF6EC;
+      .new-post-cont {
+        background: #fdf6ec;
         border-radius: 5px;
-        text-align:center;
+        text-align: center;
         line-height: 19px;
-        color: #E6A23C;
-        padding:8px 0;
-        .refresh{
+        color: #e6a23c;
+        padding: 8px 0;
+        .refresh {
           color: $color-blue-base;
           cursor: pointer;
         }
       }
-
     }
   }
-  .cont-right{
-    margin-left:15px;
-    width:300px;
+  .cont-right {
+    margin-left: 15px;
+    width: 300px;
     flex: 0 0 300px;
-    @media screen and ( max-width: 1005px ) {
-      width:220px;
+    @media screen and (max-width: 1005px) {
+      width: 220px;
       flex: 0 0 220px;
     }
-    .background-color{
+    .background-color {
       @include background();
-       margin-bottom: 3px;
+      margin-bottom: 3px;
     }
-    .category{
+    .category {
       margin-bottom: 0;
     }
   }
 }
-.empty-icon{
+.empty-icon {
   margin-right: 6px;
 }
 </style>

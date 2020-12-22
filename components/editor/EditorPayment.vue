@@ -1,7 +1,7 @@
 <template>
   <div class="global">
     <div class="block">
-      <div class="text">{{ $t('post.isPay') }}:</div>
+      <div class="text">{{ $t("post.isPay") }}:</div>
       <el-select
         size="medium"
         :value="payment.paidType"
@@ -18,26 +18,33 @@
     </div>
     <div class="block">
       <div v-show="payment.paidType === 'paid'">
-        <div class="text">{{ $t('post.paymentAmount') }}:</div>
+        <div class="text">{{ $t("post.paymentAmount") }}:</div>
         <el-input
           v-model="price"
           size="medium"
           placeholder="0"
           maxlength="7"
-          @change="$emit('paymentChange', { key: 'price', value: parseFloat(price) })"
+          @change="
+            $emit('paymentChange', { key: 'price', value: parseFloat(price) })
+          "
           @input="onPriceInput"
         >
           <span slot="prefix" class="prefix">￥</span>
         </el-input>
       </div>
       <div v-show="payment.paidType === 'attachmentPaid' && type === 1">
-        <div class="text">{{ $t('post.paymentAmount') }}:</div>
+        <div class="text">{{ $t("post.paymentAmount") }}:</div>
         <el-input
           v-model="attachmentPrice"
           size="medium"
           placeholder="0"
           maxlength="7"
-          @change="$emit('paymentChange', { key: 'attachmentPrice', value: parseFloat(attachmentPrice) })"
+          @change="
+            $emit('paymentChange', {
+              key: 'attachmentPrice',
+              value: parseFloat(attachmentPrice)
+            })
+          "
           @input="onAttachmentPriceInput"
         >
           <span slot="prefix" class="prefix">￥</span>
@@ -46,11 +53,13 @@
     </div>
     <div class="block">
       <div v-show="payment.paidType === 'paid' && type === 1">
-        <div class="text">{{ $t('post.freeWord') }}:</div>
+        <div class="text">{{ $t("post.freeWord") }}:</div>
         <el-select
           size="medium"
           :value="freeWords"
-          @change="value => $emit('paymentChange', { key: 'freeWords', value: value })"
+          @change="
+            value => $emit('paymentChange', { key: 'freeWords', value: value })
+          "
         >
           <el-option
             v-for="item in freeWordsOptions"
@@ -65,7 +74,7 @@
 </template>
 
 <script>
-import formatAmount from '@/utils/formatAmount'
+import formatAmount from '@/utils/formatAmount';
 export default {
   name: 'EditorPayment',
   props: {
@@ -95,7 +104,8 @@ export default {
         {
           value: 'paid',
           label: this.$t('post.paidWatch')
-        }],
+        }
+      ],
       freeWordsOptions: [
         { value: 0, label: '0%' },
         { value: 0.1, label: '10%' },
@@ -104,83 +114,87 @@ export default {
         { value: 0.7, label: '70%' },
         { value: 1, label: '100%' }
       ]
-    }
+    };
   },
   watch: {
     payment: {
       handler(val) {
-        this.freeWords = val.freeWords || 0
-        this.price = val.price || 0
-        this.attachmentPrice = val.attachmentPrice || 0
+        this.freeWords = val.freeWords || 0;
+        this.price = val.price || 0;
+        this.attachmentPrice = val.attachmentPrice || 0;
       },
       immediate: true,
       deep: true
     },
     type: {
       handler(val) {
-        val === 1 && this.canUploadAttachments ? this.options.push({ value: 'attachmentPaid', label: this.$t('post.postFreeAttachmentPaid') }) : ''
+        val === 1 && this.canUploadAttachments
+          ? this.options.push({
+            value: 'attachmentPaid',
+            label: this.$t('post.postFreeAttachmentPaid')
+          })
+          : '';
       },
       immediate: true
     }
   },
   methods: {
     onPriceInput(value) {
-      this.price = formatAmount(value)
+      this.price = formatAmount(value);
     },
     onAttachmentPriceInput(value) {
-      this.attachmentPrice = formatAmount(value)
+      this.attachmentPrice = formatAmount(value);
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/css/variable/color.scss';
-  $font-color: #6D6D6D;
-  $height: 35px;
-  .global {
-    width: 100%;
+@import "@/assets/css/variable/color.scss";
+$font-color: #6d6d6d;
+$height: 35px;
+.global {
+  width: 100%;
+  display: flex;
+  margin-top: 20px;
+
+  > .block {
+    flex: 1;
     display: flex;
-    margin-top: 20px;
+    flex-direction: column;
+    margin-left: 22px;
+    font-size: 14px;
 
-    > .block {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      margin-left: 22px;
-      font-size: 14px;
+    &:first-child {
+      margin-left: 0;
+    }
 
-      &:first-child {
-        margin-left: 0;
-      }
+    .prefix {
+      line-height: 38px;
+      font-size: 16px;
+      color: $font-color;
+    }
 
-      .prefix {
-        line-height: 38px;
-        font-size: 16px;
-        color: $font-color
-      }
-
-      .text {
-        font-weight: bold;
-        color: $font-color;
-        margin-bottom: 10px;
-      }
+    .text {
+      font-weight: bold;
+      color: $font-color;
+      margin-bottom: 10px;
     }
   }
+}
 
-  ::v-deep.el-input {
+::v-deep.el-input {
+  background: $background-color-editor;
+  > input {
     background: $background-color-editor;
+  }
+}
+
+::v-deep.el-select {
+  > .el-input {
     > input {
       background: $background-color-editor;
     }
   }
-
-  ::v-deep.el-select {
-    > .el-input {
-      > input {
-        background: $background-color-editor;
-      }
-    }
-  }
-
+}
 </style>

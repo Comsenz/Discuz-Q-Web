@@ -107,28 +107,28 @@ export default {
         filterType: '',
         filterSort: ''
       }
-    }
+    };
   },
   computed: {
     userId() {
-      return this.$store.getters['session/get']('userId')
+      return this.$store.getters['session/get']('userId');
     }
   },
   watch: {
     userId(val) {
       // 登录才显示“已关注”
       if (val > 0) {
-        this.filterQuery[2].isShow = true
+        this.filterQuery[2].isShow = true;
       } else {
-        this.filterQuery[2].isShow = false
+        this.filterQuery[2].isShow = false;
       }
     }
   },
   mounted() {
     if (this.userId > 0) {
-      this.filterQuery[2].isShow = true
+      this.filterQuery[2].isShow = true;
     } else {
-      this.filterQuery[2].isShow = false
+      this.filterQuery[2].isShow = false;
     }
   },
   methods: {
@@ -136,25 +136,25 @@ export default {
     onClickFilter(val) {
       if (val === 'followed' && (!this.userId || +this.userId === 0)) {
         if (process.client) {
-          this.$message.error(this.$t('core.not_authenticated'))
+          this.$message.error(this.$t('core.not_authenticated'));
         }
-        return
+        return;
       }
-      this.query.filter = val
-      this.$emit('onChangeFilter', val)
+      this.query.filter = val;
+      this.$emit('onChangeFilter', val);
     },
     // 点击类型筛选，传值给父组件
     handleCommandType(command) {
-      this.query.filterType = command
-      this.$emit('onChangeType', command)
+      this.query.filterType = command;
+      this.$emit('onChangeType', command);
     },
     // 点击排序，传值给父组件
     handleCommandSort(command) {
-      this.query.filterSort = command
-      this.$emit('onChangeSort', command)
+      this.query.filterSort = command;
+      this.$emit('onChangeSort', command);
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 @import '@/assets/css/variable/color.scss';

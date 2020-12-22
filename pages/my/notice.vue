@@ -53,8 +53,8 @@
 </template>
 
 <script>
-import head from '@/mixin/head'
-import handleError from '@/mixin/handleError'
+import head from '@/mixin/head';
+import handleError from '@/mixin/handleError';
 export default {
   name: 'Notice',
   layout: 'center_layout',
@@ -103,90 +103,90 @@ export default {
       },
       chatting: false,
       dialogData: { id: '', name: '' }
-    }
+    };
   },
   computed: {
     userInfo() {
-      return this.$store.state.user.info.attributes || {}
+      return this.$store.state.user.info.attributes || {};
     },
     userId() {
-      return this.$store.getters['session/get']('userId')
+      return this.$store.getters['session/get']('userId');
     }
   },
   mounted() {
-    this.getDialogList()
+    this.getDialogList();
   },
   methods: {
     // 获取会话列表
     getDialogList() {
-      this.dialog.loading = true
+      this.dialog.loading = true;
       const params = {
         include: 'dialogMessage,sender,recipient,sender.groups,recipient.groups',
         sort: '-dialogMessageId',
         'page[number]': this.dialog.pageNum,
         'page[limit]': this.dialog.pageSize
-      }
+      };
       this.$store.dispatch('jv/get', ['dialog', { params }]).then(async(data) => {
-        this.dialog.hasMore = data.length === this.dialog.pageSize
+        this.dialog.hasMore = data.length === this.dialog.pageSize;
         if (this.dialog.pageNum === 1) {
-          this.dialog.list = data
+          this.dialog.list = data;
         } else {
-          this.dialog.list = [...this.dialog.list, ...data]
+          this.dialog.list = [...this.dialog.list, ...data];
         }
-        this.dialog.pageNum += 1
+        this.dialog.pageNum += 1;
         if (data._jv && data._jv.json && data._jv.json.meta) {
-          this.dialog.hasMore = this.dialog.list.length < data._jv.json.meta.total &&
-          this.dialog.list.length >= this.dialog.pageSize
-          this.surplus = data._jv.json.meta.total - this.dialog.list.length
+          this.dialog.hasMore = this.dialog.list.length < data._jv.json.meta.total
+          && this.dialog.list.length >= this.dialog.pageSize;
+          this.surplus = data._jv.json.meta.total - this.dialog.list.length;
         }
       }, (e) => {
-        this.handleError(e)
+        this.handleError(e);
       })
         .finally(() => {
-          this.dialog.loading = false
-        })
+          this.dialog.loading = false;
+        });
     },
     // 获取消息列表
     getNoticeList() {
-      this.loading = true
+      this.loading = true;
       const params = {
         'filter[type]': this.activeName,
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize
-      }
+      };
       // 财务通知里面包括提现信息
       if (this.activeName === 'rewarded') {
-        params['filter[type]'] = 'rewarded,withdrawal'
+        params['filter[type]'] = 'rewarded,withdrawal';
       }
       this.$store.dispatch('jv/get', ['notification', { params }]).then(async(data) => {
-        this.hasMore = data.length === this.pageSize
+        this.hasMore = data.length === this.pageSize;
         if (this.pageNum === 1) {
-          this.noticeList = data
+          this.noticeList = data;
         } else {
-          this.noticeList = [...this.noticeList, ...data]
+          this.noticeList = [...this.noticeList, ...data];
         }
         if (data._jv && data._jv.json && data._jv.json.meta) {
-          this.hasMore = this.noticeList.length < data._jv.json.meta.total && this.noticeList.length >= this.pageSize
-          this.surplus = data._jv.json.meta.total - this.noticeList.length
+          this.hasMore = this.noticeList.length < data._jv.json.meta.total && this.noticeList.length >= this.pageSize;
+          this.surplus = data._jv.json.meta.total - this.noticeList.length;
         }
-        this.pageNum += 1
+        this.pageNum += 1;
         try {
-          await this.$store.dispatch('user/getUserInfo', this.userInfo.id)
+          await this.$store.dispatch('user/getUserInfo', this.userInfo.id);
         } catch (err) {
-          console.log('getUserInfo err', err)
+          console.log('getUserInfo err', err);
         }
       }, (e) => {
-        this.handleError(e)
+        this.handleError(e);
       })
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     loadMore() {
-      this.getNoticeList()
+      this.getNoticeList();
     },
     loadMoreDialog() {
-      this.getDialogList()
+      this.getDialogList();
     },
     // 删除
     handleDelete(id, index, type) {
@@ -197,51 +197,51 @@ export default {
         if (type === 'chat') {
           this.$store.dispatch('jv/delete', `dialog/${id}`).then((res) => {
             if (res) {
-              this.$message.success(this.$t('topic.deleteSuccess'))
-              this.dialog.list.splice(index, 1)
+              this.$message.success(this.$t('topic.deleteSuccess'));
+              this.dialog.list.splice(index, 1);
             }
-          })
+          });
         } else {
           this.$store.dispatch('jv/delete', `notification/${id}`).then((res) => {
             if (res) {
-              this.$message.success(this.$t('topic.deleteSuccess'))
-              this.noticeList.splice(index, 1)
+              this.$message.success(this.$t('topic.deleteSuccess'));
+              this.noticeList.splice(index, 1);
             }
-          })
+          });
         }
       })
-        .catch(() => {})
+        .catch(() => {});
     },
     handleClick(e) {
       if (e.name !== 'chat') {
-        this.pageNum = 1
-        this.noticeList = []
-        this.getNoticeList()
+        this.pageNum = 1;
+        this.noticeList = [];
+        this.getNoticeList();
       } else {
-        this.dialog.pageNum = 1
-        this.dialog.list = []
-        this.getDialogList()
+        this.dialog.pageNum = 1;
+        this.dialog.list = [];
+        this.getDialogList();
       }
     },
     // 显示聊天框
     showChatBox(item) {
-      if (!item) return
-      this.dialogData.id = item._jv ? item._jv.id : ''
+      if (!item) return;
+      this.dialogData.id = item._jv ? item._jv.id : '';
       if (this.userId * 1 !== item.sender_user_id) {
-        this.dialogData.name = item.sender ? item.sender.username : ''
+        this.dialogData.name = item.sender ? item.sender.username : '';
       } else {
-        this.dialogData.name = item.recipient ? item.recipient.username : ''
+        this.dialogData.name = item.recipient ? item.recipient.username : '';
       }
-      this.chatting = true
+      this.chatting = true;
     },
     // 关闭聊天框
     closeChatBox() {
-      this.chatting = false
-      this.dialog.pageNum = 1
-      this.getDialogList()
+      this.chatting = false;
+      this.dialog.pageNum = 1;
+      this.getDialogList();
     }
   }
-}
+};
 </script>
 <style lang='scss' scoped>
 @import '@/assets/css/variable/color.scss';

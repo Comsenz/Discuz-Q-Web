@@ -120,10 +120,10 @@
 </template>
 
 <script>
-import { status } from '@/store/modules/jsonapi-vuex/index'
-import { time2MinuteOrHour } from '@/utils/time'
-import handleError from '@/mixin/handleError'
-import filterTime from '@/mixin/filterTime'
+import { status } from '@/store/modules/jsonapi-vuex/index';
+import { time2MinuteOrHour } from '@/utils/time';
+import handleError from '@/mixin/handleError';
+import filterTime from '@/mixin/filterTime';
 
 export default {
   name: 'CashDialog',
@@ -175,23 +175,23 @@ export default {
       userId: this.$store.getters['session/get']('userId'), // 获取当前登陆用户的ID
       userInfo: ''
 
-    }
+    };
   },
   mounted() {
-    this.setCurrentTime()
-    this.getUserInfo()
-    this.getList()
+    this.setCurrentTime();
+    this.getUserInfo();
+    this.getList();
   },
   methods: {
     // 用户信息
     getUserInfo() {
-      this.userInfo = this.$store.state.user.info.attributes
+      this.userInfo = this.$store.state.user.info.attributes;
     },
     // 获取提现数据
     getList(type) {
-      this.loading = true
-      const dateArr = this.date.split('-')
-      const days = new Date(dateArr[0], dateArr[1], 0).getDate()
+      this.loading = true;
+      const dateArr = this.date.split('-');
+      const days = new Date(dateArr[0], dateArr[1], 0).getDate();
       // cash_status(1-6) '待审核', '审核通过', '审核不通过', '待打款', '已打款', '打款失败'
       const params = {
         'filter[user]': this.userId,
@@ -199,102 +199,102 @@ export default {
         'page[limit]': this.pageSize2,
         'filter[start_time]': `${this.date}-01-00-00-00`,
         'filter[end_time]': `${this.date}-${days}-23-59-59`
-      }
+      };
       // 过滤时间或查看类型，重新设置当前页码和提现数据
       if (type && type === 'filter') {
-        params.pageNum = 1
-        this.dataList = []
+        params.pageNum = 1;
+        this.dataList = [];
       }
       // 当有选择某个分类类型时，添加新的过滤参数
       if (this.filterSelected !== '') {
-        params['filter[cash_status]'] = this.filterSelected
+        params['filter[cash_status]'] = this.filterSelected;
       }
       status
         .run(() => this.$store.dispatch('jv/get', ['wallet/cash', { params }]))
         .then((res) => {
           // 处理钱
-          this.sumMoney = this.handlemoney(res)
-          this.dataList = res
-          this.total = res._jv.json.meta.total
+          this.sumMoney = this.handlemoney(res);
+          this.dataList = res;
+          this.total = res._jv.json.meta.total;
         }, (e) => {
-          this.handleError(e)
+          this.handleError(e);
         })
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     // 提现日期选中
     bindDateChange(e) {
-      this.date = e
+      this.date = e;
       if (this.date !== null) {
-        this.getList('filter')
+        this.getList('filter');
       }
     },
     // 提现确认筛选类型
     confirm(e) {
-      this.filterSelected = e
-      this.getList('filter')
+      this.filterSelected = e;
+      this.getList('filter');
     },
     handleSelectionChange(val) {
-      this.multipleSelection = val
+      this.multipleSelection = val;
     },
     // 时间格式化
     dateFormat(row) {
-      return this.timeHandle(row.created_at)
+      return this.timeHandle(row.created_at);
     },
     // 处理时间
     timeHandle(time) {
-      return time2MinuteOrHour(time)
+      return time2MinuteOrHour(time);
     },
     // 提现状态格式化
     statusFormat(row) {
       switch (row.cash_status) {
-        case 1: return `<font style="color:#25A9F6">${this.$t('profile.tobereviewed')}</font>`
-        case 2: return `<font style="color:#09BB07">${this.$t('profile.approved')}</font>`
-        case 3: return `<font style="color:#FA5151">${this.$t('profile.auditfailed')}</font>`
-        case 4: return this.$t('profile.paymenttobemade')
-        case 5: return this.$t('profile.paymentsucceed')
-        case 6: return this.$t('profile.paymentfailed')
-        default: return '未知状态'
+        case 1: return `<font style="color:#25A9F6">${this.$t('profile.tobereviewed')}</font>`;
+        case 2: return `<font style="color:#09BB07">${this.$t('profile.approved')}</font>`;
+        case 3: return `<font style="color:#FA5151">${this.$t('profile.auditfailed')}</font>`;
+        case 4: return this.$t('profile.paymenttobemade');
+        case 5: return this.$t('profile.paymentsucceed');
+        case 6: return this.$t('profile.paymentfailed');
+        default: return '未知状态';
       }
     },
     // 提现状态格式化
     statusFormat2(row) {
       switch (row.cash_status) {
-        case 1: return this.$t('profile.tobereviewed')
-        case 2: return this.$t('profile.approved')
-        case 3: return this.$t('profile.auditfailed')
-        case 4: return this.$t('profile.paymenttobemade')
-        case 5: return this.$t('profile.paymentsucceed')
-        case 6: return this.$t('profile.paymentfailed')
-        default: return '未知状态'
+        case 1: return this.$t('profile.tobereviewed');
+        case 2: return this.$t('profile.approved');
+        case 3: return this.$t('profile.auditfailed');
+        case 4: return this.$t('profile.paymenttobemade');
+        case 5: return this.$t('profile.paymentsucceed');
+        case 6: return this.$t('profile.paymentfailed');
+        default: return '未知状态';
       }
     },
     // 处理提现钱包总金额
     handlemoney(result) {
-      const res = JSON.parse(JSON.stringify(result))
-      let sum = 0
+      const res = JSON.parse(JSON.stringify(result));
+      let sum = 0;
       res.forEach((item, index) => {
         // eslint-disable-next-line no-useless-escape
-        res[index] = parseFloat(item.cash_apply_amount.replace(/\+|\-|\*|\?/g, ''))
-        sum = sum + res[index]
-      })
+        res[index] = parseFloat(item.cash_apply_amount.replace(/\+|\-|\*|\?/g, ''));
+        sum = sum + res[index];
+      });
 
-      return sum.toFixed(2)
+      return sum.toFixed(2);
     },
     // 提现分页
     handleSizeChange(val) {
-      this.pageNum = 1
-      this.pageSize = val
-      this.getList()
+      this.pageNum = 1;
+      this.pageSize = val;
+      this.getList();
     },
     // 提现分页
     handleCurrentChange(val) {
-      this.pageNum = val
-      this.getList()
+      this.pageNum = val;
+      this.getList();
     }
   }
-}
+};
 </script>
 <style lang='scss' scoped>
 .cashDialog {

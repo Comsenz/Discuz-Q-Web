@@ -1,17 +1,17 @@
 
-import service from '@/api/request'
+import service from '@/api/request';
 
 const state = () => {
   return {
     info: {} // 站点信息
-  }
-}
+  };
+};
 
 const mutations = {
   SET_SITE_INFO(state, info = {}) {
-    state.info = info
+    state.info = info;
   }
-}
+};
 
 const actions = {
   /**
@@ -22,21 +22,21 @@ const actions = {
     return new Promise((resolve, reject) => {
       service.get('/forum', { params: { include: 'users' }}).then(res => {
         if (res.status === 200 && res.data && res.data.data) {
-          commit('SET_SITE_INFO', res.data.data)
-          resolve(res.data.data)
+          commit('SET_SITE_INFO', res.data.data);
+          resolve(res.data.data);
         } else {
-          reject()
+          reject();
         }
       }).catch(e => {
-        reject(e)
-      })
-    })
+        reject(e);
+      });
+    });
   }
-}
+};
 
 export default {
   namespaced: true,
   state,
   actions,
   mutations
-}
+};

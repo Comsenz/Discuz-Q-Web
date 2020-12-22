@@ -3,12 +3,16 @@
     <main class="cont-left">
       <div class="search-header">
         <div class="result-count">
-          {{ $t('search.find') }} <span v-if="q" class="keyword">"{{ q }}"</span>
-          {{ $t('search.searchresult') }} {{ userCount + threadCount }} {{ $t('topic.item') }}
+          {{ $t("search.find") }}
+          <span v-if="q" class="keyword">"{{ q }}"</span>
+          {{ $t("search.searchresult") }} {{ userCount + threadCount }}
+          {{ $t("topic.item") }}
         </div>
         <create-post-popover />
       </div>
-      <div class="count">{{ $t('search.users') + userCount + $t('search.usercount') }} </div>
+      <div class="count">
+        {{ $t("search.users") + userCount + $t("search.usercount") }}
+      </div>
       <div class="user-list">
         <div class="user-flex">
           <nuxt-link
@@ -20,35 +24,59 @@
             <avatar :user="item" :size="45" />
             <div class="info">
               <div class="name text-hidden">{{ item.username }}</div>
-              <div class="fans">{{ $t('profile.followers') }} {{ item.fansCount || 0 }}</div>
+              <div class="fans">
+                {{ $t("profile.followers") }} {{ item.fansCount || 0 }}
+              </div>
             </div>
           </nuxt-link>
         </div>
         <loading v-if="userLoading" />
         <template v-else>
-          <div v-if="userCount > userPageSize" class="user-load-more" @click="toUserList">
-            {{ $t('topic.showMore') }}{{ $t('search.users') }}
+          <div
+            v-if="userCount > userPageSize"
+            class="user-load-more"
+            @click="toUserList"
+          >
+            {{ $t("topic.showMore") }}{{ $t("search.users") }}
           </div>
           <div v-if="userList.length === 0" class="no-more">
-            <svg-icon type="empty" class="empty-icon" />{{ $t('search.norelatedusersfound') }}
+            <svg-icon type="empty" class="empty-icon" />{{
+              $t("search.norelatedusersfound")
+            }}
           </div>
         </template>
       </div>
-      <div class="count">{{ $t('home.invitation') }} {{ threadCount }} {{ $t('topic.item') }}</div>
+      <div class="count">
+        {{ $t("home.invitation") }} {{ threadCount }} {{ $t("topic.item") }}
+      </div>
       <!-- 长列表优化 -->
-      <dynamic-scroller
-        :items="threadsList"
-        :min-item-size="120"
-        page-mode
-      >
+      <dynamic-scroller :items="threadsList" :min-item-size="120" page-mode>
         <template v-slot="{ item, index, active }">
           <dynamic-scroller-item
             :item="item"
             :active="active"
             :data-index="index"
           >
-            <post-item v-if="item.type === 4" :ref="`audio${ item && item.threadAudio && item.threadAudio._jv && item.threadAudio._jv.id}`" :key="index" :item="item" :lazy="false" @audioPlay="audioPlay" />
-            <post-item v-else :key="index" :item="item" :lazy="false" @showVideoFn="showVideoFn" />
+            <post-item
+              v-if="item.type === 4"
+              :ref="
+                `audio${item &&
+                  item.threadAudio &&
+                  item.threadAudio._jv &&
+                  item.threadAudio._jv.id}`
+              "
+              :key="index"
+              :item="item"
+              :lazy="false"
+              @audioPlay="audioPlay"
+            />
+            <post-item
+              v-else
+              :key="index"
+              :item="item"
+              :lazy="false"
+              @showVideoFn="showVideoFn"
+            />
           </dynamic-scroller-item>
         </template>
         <template #after>
@@ -64,7 +92,11 @@
     </main>
     <aside class="cont-right">
       <div class="category background-color">
-        <category :post-loading="loading" :list="categoryData" @onChange="onChangeCategory" />
+        <category
+          :post-loading="loading"
+          :list="categoryData"
+          @onChange="onChangeCategory"
+        />
       </div>
       <advertising />
       <copyright :forums="forums" />
@@ -80,9 +112,9 @@
 </template>
 
 <script>
-import handleError from '@/mixin/handleError'
-import env from '@/utils/env'
-import head from '@/mixin/head'
+import handleError from '@/mixin/handleError';
+import env from '@/utils/env';
+import head from '@/mixin/head';
 export default {
   layout: 'custom_layout',
   name: 'Search',
@@ -90,23 +122,27 @@ export default {
   // 异步数据用法
   async asyncData({ store }, callback) {
     if (!env.isSpider) {
-      callback(null, {})
+      callback(null, {});
     }
     try {
-      const resData = {}
-      const categoryData = await store.dispatch('jv/get', ['categories', {}])
+      const resData = {};
+      const categoryData = await store.dispatch('jv/get', ['categories', {}]);
       if (Array.isArray(categoryData)) {
-        resData.categoryData = categoryData
+        resData.categoryData = categoryData;
       } else if (categoryData && categoryData._jv && categoryData._jv.json) {
-        const _categoryData = categoryData._jv.json.data || []
+        const _categoryData = categoryData._jv.json.data || [];
         _categoryData.forEach((item, index) => {
-          _categoryData[index] = { ...item, ...item.attributes, _jv: { id: item.id }}
-        })
-        resData.categoryData = _categoryData
+          _categoryData[index] = {
+            ...item,
+            ...item.attributes,
+            _jv: { id: item.id }
+          };
+        });
+        resData.categoryData = _categoryData;
       }
-      callback(null, resData)
+      callback(null, resData);
     } catch (error) {
-      callback(null, {})
+      callback(null, {});
     }
   },
   data() {
@@ -128,215 +164,229 @@ export default {
       currentAudioId: '',
       showVideoPop: false, // 显示视频弹窗
       threadVideo: {} // 当前显示的视频信息
-    }
+    };
   },
   computed: {
     forums() {
-      return this.$store.state.site.info.attributes || {}
+      return this.$store.state.site.info.attributes || {};
     }
   },
   watch: {
     $route: 'init'
   },
   mounted() {
-    this.init()
+    this.init();
   },
   methods: {
     init() {
       if (this.$route.query.categoryId) {
-        this.categoryId = this.$route.query.categoryId
+        this.categoryId = this.$route.query.categoryId;
       }
       if (this.$route.query.q) {
-        this.q = this.$route.query.q
-        this.getUserList()
-        this.pageNum = 1
-        this.getThreadsList()
+        this.q = this.$route.query.q;
+        this.getUserList();
+        this.pageNum = 1;
+        this.getThreadsList();
       }
     },
     getUserList() {
-      this.userList = []
-      this.userLoading = true
+      this.userList = [];
+      this.userLoading = true;
       const params = {
         include: 'groups',
         sort: 'createdAt',
         'page[limit]': this.userPageSize,
         'filter[status]': 'normal',
         'filter[username]': `*${this.q}*`
-      }
-      this.$store.dispatch('jv/get', ['users', { params }]).then((res) => {
-        const data = res
-        res && data.forEach((v, i) => {
-          data[i].groupName = v.groups[0] ? v.groups[0].name : ''
-        })
-        this.userCount = data._jv.json.meta.total
-        this.userList = data
-      }, (e) => {
-        this.handleError(e)
-      })
+      };
+      this.$store
+        .dispatch('jv/get', ['users', { params }])
+        .then(
+          res => {
+            const data = res;
+            res
+              && data.forEach((v, i) => {
+                data[i].groupName = v.groups[0] ? v.groups[0].name : '';
+              });
+            this.userCount = data._jv.json.meta.total;
+            this.userList = data;
+          },
+          e => {
+            this.handleError(e);
+          }
+        )
         .finally(() => {
-          this.userLoading = false
-        })
+          this.userLoading = false;
+        });
     },
     // 非置顶主题
     getThreadsList() {
-      this.loading = true
+      this.loading = true;
       const params = {
-        include: 'user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio',
+        // eslint-disable-next-line max-len
+        include: `user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio`,
         'filter[isApproved]': 1,
         'filter[isDeleted]': 'no',
         'filter[categoryId]': this.categoryId,
         'filter[q]': this.q,
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize
-      }
-      this.$store.dispatch('jv/get', ['threads', { params }]).then((res) => {
-        this.hasMore = res.length === this.pageSize
-        this.threadCount = res._jv.json.meta.threadCount
-        const _res = res
-        Array.isArray(_res) && _res.forEach(item => {
-          item.id = item._jv && item._jv.id
-        })
-        if (this.pageNum === 1) {
-          this.threadsList = _res
-        } else {
-          this.threadsList = [...this.threadsList, ..._res]
-        }
-        this.pageNum += 1
-        if (_res._jv) {
-          this.hasMore = this.threadsList.length < _res._jv.json.meta.threadCount
-        }
-      }, (e) => {
-        this.handleError(e)
-      })
+      };
+      this.$store
+        .dispatch('jv/get', ['threads', { params }])
+        .then(
+          res => {
+            this.hasMore = res.length === this.pageSize;
+            this.threadCount = res._jv.json.meta.threadCount;
+            const _res = res;
+            Array.isArray(_res)
+              && _res.forEach(item => {
+                item.id = item._jv && item._jv.id;
+              });
+            if (this.pageNum === 1) {
+              this.threadsList = _res;
+            } else {
+              this.threadsList = [...this.threadsList, ..._res];
+            }
+            this.pageNum += 1;
+            if (_res._jv) {
+              this.hasMore
+                = this.threadsList.length < _res._jv.json.meta.threadCount;
+            }
+          },
+          e => {
+            this.handleError(e);
+          }
+        )
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     loadMore() {
-      this.getThreadsList()
+      this.getThreadsList();
     },
     // 重新加载列表
     reloadThreadsList() {
-      this.pageNum = 1
-      this.threadsList = []
-      this.getThreadsList()
+      this.pageNum = 1;
+      this.threadsList = [];
+      this.getThreadsList();
     },
     // 点击分类
     onChangeCategory(id) {
-      this.categoryId = id
-      this.reloadThreadsList()
+      this.categoryId = id;
+      this.reloadThreadsList();
     },
     toUserList() {
       if (this.$route.query.q) {
-        this.$router.push(`/site/search-user?value=${this.$route.query.q}`)
+        this.$router.push(`/site/search-user?value=${this.$route.query.q}`);
       }
     },
     // 语音互斥播放
     audioPlay(id) {
       if (this.currentAudioId && this.currentAudioId !== id) {
-        this.$refs[`audio${this.currentAudioId}`][0].pause()
+        this.$refs[`audio${this.currentAudioId}`][0].pause();
       }
-      this.currentAudioId = id
+      this.currentAudioId = id;
     },
     // 视频播放弹窗
     showVideoFn(video) {
-      this.threadVideo = video
-      this.showVideoPop = true
+      this.threadVideo = video;
+      this.showVideoPop = true;
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/css/variable/color.scss';
-@mixin background(){
+@import "@/assets/css/variable/color.scss";
+@mixin background() {
   background: #fff;
   border-radius: 5px;
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.03);
 }
-.app-cont{
+.app-cont {
   box-shadow: none;
 }
-.container{
-  display:flex;
-  background: #F4F5F6;
+.container {
+  display: flex;
+  background: #f4f5f6;
   width: 100%;
-  .cont-left{
-    flex:auto;
+  .cont-left {
+    flex: auto;
     @include background();
-    .search-header{
+    .search-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding:18px 20px;
-      border-bottom: 1px solid #EFEFEF;
-      .result-count{
+      padding: 18px 20px;
+      border-bottom: 1px solid #efefef;
+      .result-count {
         font-size: 16px;
         margin-right: 20px;
-        .keyword{
-          color: #FA5151
+        .keyword {
+          color: #fa5151;
         }
       }
     }
-    .count{
+    .count {
       font-size: 16px;
       padding: 18px 20px 0;
     }
-    .user-list{
+    .user-list {
       padding: 18px 20px;
-      border-bottom: 1px solid #EFEFEF;
-      .user-flex{
+      border-bottom: 1px solid #efefef;
+      .user-flex {
         display: flex;
         align-items: center;
       }
-      .user-item{
+      .user-item {
         display: flex;
         align-items: center;
         margin-right: 80px;
-        @media screen and ( max-width: 1005px ) {
+        @media screen and (max-width: 1005px) {
           margin-right: 20px;
         }
-        .info{
+        .info {
           margin-left: 10px;
-          .name{
-            font-size:16px;
+          .name {
+            font-size: 16px;
             max-width: 100px;
-            @media screen and ( max-width: 1005px ) {
+            @media screen and (max-width: 1005px) {
               max-width: 80px;
             }
           }
-          .fans{
-            color: #8590A6;
+          .fans {
+            color: #8590a6;
             margin-top: 2px;
           }
         }
       }
-      .user-load-more{
-        color: #8590A6;
+      .user-load-more {
+        color: #8590a6;
         margin-top: 40px;
-        display:inline-block;
-        cursor:pointer;
+        display: inline-block;
+        cursor: pointer;
       }
     }
   }
-  .cont-right{
-    margin-left:15px;
-    width:300px;
+  .cont-right {
+    margin-left: 15px;
+    width: 300px;
     flex: 0 0 300px;
-    @media screen and ( max-width: 1005px ) {
-      width:220px;
+    @media screen and (max-width: 1005px) {
+      width: 220px;
       flex: 0 0 220px;
     }
-    .background-color{
+    .background-color {
       @include background();
-       margin-bottom: 16px;
+      margin-bottom: 16px;
     }
-    .category{
+    .category {
       margin-bottom: 0;
     }
   }
 }
-.empty-icon{
+.empty-icon {
   margin-right: 6px;
 }
 </style>

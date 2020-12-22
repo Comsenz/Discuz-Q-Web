@@ -101,13 +101,13 @@
   </div>
 </template>
 <script>
-import handleError from '@/mixin/handleError'
-import { time2MinuteOrHour } from '@/utils/time'
+import handleError from '@/mixin/handleError';
+import { time2MinuteOrHour } from '@/utils/time';
 export default {
   name: 'Invited',
   filters: {
     formatDate(date) {
-      return time2MinuteOrHour(date)
+      return time2MinuteOrHour(date);
     }
   },
   mixins: [handleError],
@@ -130,27 +130,27 @@ export default {
       totalMoney: 0,
       total: 0,
       inviteList: [] // 邀请列表
-    }
+    };
   },
   computed: {
     userId() {
-      return this.$store.state.user.info.id
+      return this.$store.state.user.info.id;
     },
     forums() {
-      return this.$store.state.site.info.attributes || {}
+      return this.$store.state.site.info.attributes || {};
     }
   },
   watch: {
     userId(val) {
       if (val && this.totalMoney === 0) {
-        this.getIncome()
+        this.getIncome();
       }
     }
   },
   mounted() {
-    this.getInvite()
-    this.getIncome()
-    this.getInviteList()
+    this.getInvite();
+    this.getIncome();
+    this.getInviteList();
   },
   methods: {
     // 获取成功邀请人数统计
@@ -158,122 +158,122 @@ export default {
       const params = {
         'page[number]': 1,
         'page[limit]': 1
-      }
+      };
       this.$store.dispatch('jv/get', ['invite/users', { params }]).then((res) => {
         if (res && res._jv && res._jv.json && res._jv.json.meta) {
-          this.inviteTotal = res._jv.json.meta.total
+          this.inviteTotal = res._jv.json.meta.total;
         }
-      })
+      });
     },
     // 获取累计收益
     getIncome() {
-      if (!this.userId) return
+      if (!this.userId) return;
       const params = {
         'filter[user]': this.userId,
         'filter[change_type]': '33, 62, 34',
         'page[number]': 1,
         'page[limit]': 1
-      }
+      };
       this.$store.dispatch('jv/get', ['wallet/log', { params }]).then((res) => {
         if (res && res._jv && res._jv.json && res._jv.json.meta) {
-          this.totalMoney = res._jv.json.meta.sumChangeAvailableAmount
+          this.totalMoney = res._jv.json.meta.sumChangeAvailableAmount;
         }
-      })
+      });
     },
     // 获取邀请列表
     getInviteList() {
-      this.loading = true
+      this.loading = true;
       const params = {
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         'filter[username]': this.searchText,
         sort: this.sort
-      }
+      };
       this.$store.dispatch('jv/get', ['invite/users', { params }]).then((res) => {
         if (res) {
-          this.inviteList = res
+          this.inviteList = res;
           if (res._jv && res._jv.json && res._jv.json.meta) {
-            this.total = res._jv.json.meta.total
+            this.total = res._jv.json.meta.total;
           }
         }
       }, (e) => {
-        this.handleError(e)
+        this.handleError(e);
       })
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     // 普通用户邀请
     createUserInvite() {
-      const canInviteUserScale = this.forums && this.forums.other && this.forums.other.can_invite_user_scale
+      const canInviteUserScale = this.forums && this.forums.other && this.forums.other.can_invite_user_scale;
       if (!canInviteUserScale) {
-        return this.$message.error(this.$t('core.permission_denied'))
+        return this.$message.error(this.$t('core.permission_denied'));
       }
       const params = {
         _jv: {
           type: 'userInviteCode'
         }
-      }
+      };
       this.$store.dispatch('jv/get', params).then((res) => {
         if (res && res._jv) {
-          this.copyLink(res._jv.code)
+          this.copyLink(res._jv.code);
         }
       }, (e) => {
-        this.handleError(e)
+        this.handleError(e);
       })
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     // 查看详情
     viewDetail(item) {
-      this.$emit('view-detail', item)
+      this.$emit('view-detail', item);
     },
     // 复制
     copyLink(code) {
-      const oInput = document.createElement('input')
+      const oInput = document.createElement('input');
       if (process.client) {
-        oInput.value = `${window.location.protocol}//${window.location.host}/site/partner-invite?code=${code}`
-        oInput.id = 'copyInput'
-        document.body.appendChild(oInput)
-        oInput.select()
-        document.execCommand('Copy')
+        oInput.value = `${window.location.protocol}//${window.location.host}/site/partner-invite?code=${code}`;
+        oInput.id = 'copyInput';
+        document.body.appendChild(oInput);
+        oInput.select();
+        document.execCommand('Copy');
       }
-      this.$message.success(this.$t('discuzq.msgBox.copySuccess'))
+      this.$message.success(this.$t('discuzq.msgBox.copySuccess'));
       setTimeout(() => {
-        oInput.remove()
-      }, 100)
+        oInput.remove();
+      }, 100);
     },
     // 排序
     sortChange(val) {
-      const { order } = val
+      const { order } = val;
       if (order === 'descending') {
-        this.sort = '-created_at'
+        this.sort = '-created_at';
       } else if (order === 'ascending') {
-        this.sort = 'created_at'
+        this.sort = 'created_at';
       } else {
-        this.sort = ''
+        this.sort = '';
       }
-      this.getInviteList()
+      this.getInviteList();
     },
     // 搜索
     onClickSearch() {
-      this.pageNum = 1
-      this.getInviteList()
+      this.pageNum = 1;
+      this.getInviteList();
     },
     // 分页
     handleSizeChange(val) {
-      this.pageNum = 1
-      this.pageSize = val
-      this.getInviteList()
+      this.pageNum = 1;
+      this.pageSize = val;
+      this.getInviteList();
     },
     // 每一页的数量
     handleCurrentChange(val) {
-      this.pageNum = val
-      this.getInviteList()
+      this.pageNum = val;
+      this.getInviteList();
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 @import "@/assets/css/variable/color.scss";

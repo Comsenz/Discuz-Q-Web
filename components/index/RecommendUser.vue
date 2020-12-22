@@ -15,7 +15,7 @@
   </div>
 </template>
 <script>
-import handleError from '@/mixin/handleError'
+import handleError from '@/mixin/handleError';
 export default {
   name: 'RecommendUser',
   mixins: [handleError],
@@ -32,17 +32,17 @@ export default {
       loading: false,
       pageNum: 1,
       pageSize: 4
-    }
+    };
   },
   computed: {
     forums() {
-      return this.$store.state.site.info.attributes || {}
+      return this.$store.state.site.info.attributes || {};
     }
   },
   watch: {
     list: {
       handler(val) {
-        this.userList = val
+        this.userList = val;
       },
       deep: true
     }
@@ -50,39 +50,39 @@ export default {
   mounted() {
     // 父组件是否有传值
     if (this.list.length === 0) {
-      this.getList()
+      this.getList();
     } else {
-      this.userList = this.list
+      this.userList = this.list;
     }
   },
   methods: {
     // 获取推荐用户列表
     getList() {
-      this.userList = []
-      this.loading = true
+      this.userList = [];
+      this.loading = true;
       const params = {
         include: 'groups',
         limit: this.pageSize
-      }
+      };
       this.$store.dispatch('jv/get', ['users/recommended', { params }]).then((res) => {
-        const data = res
+        const data = res;
         res && Array.isArray(res) && data.forEach((v, i) => {
-          data[i].groupName = v.groups[0] ? v.groups[0].name : ''
-        })
-        this.userList = data
+          data[i].groupName = v.groups[0] ? v.groups[0].name : '';
+        });
+        this.userList = data;
       }, (e) => {
-        this.handleError(e)
+        this.handleError(e);
       })
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     // 刷新
     refresh() {
-      this.getList()
+      this.getList();
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 @import '@/assets/css/variable/color.scss';

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /**
  * A class containing utility functions for use with jsonapi-vuex
  *
@@ -10,10 +11,10 @@
  * @param {object} conf - A jsonapi-vuex config object.
  */
 
-import Vue from 'vue'
-import get from 'lodash.get'
-import isEqual from 'lodash.isequal'
-import merge from 'lodash.merge'
+import Vue from 'vue';
+import get from 'lodash.get';
+import isEqual from 'lodash.isequal';
+import merge from 'lodash.merge';
 
 /**
  * Helper methods added to `_jv` by {@link module:jsonapi-vuex.utils.addJvHelpers}
@@ -31,9 +32,9 @@ import merge from 'lodash.merge'
 
 const Utils = class {
   constructor(conf) {
-    this.conf = conf
-    this.jvtag = conf.jvtag
-    this.context = null
+    this.conf = conf;
+    this.jvtag = conf.jvtag;
+    this.context = null;
   }
 
   /**
@@ -44,16 +45,16 @@ const Utils = class {
 
   _copy(data) {
     // Recursive object copying function (for 'simple' objects)
-    const out = Array.isArray(data) ? [] : {}
+    const out = Array.isArray(data) ? [] : {};
     for (const key in data) {
       // null is typeof 'object'
       if (typeof data[key] === 'object' && data[key] !== null) {
-        out[key] = this._copy(data[key])
+        out[key] = this._copy(data[key]);
       } else {
-        out[key] = data[key]
+        out[key] = data[key];
       }
     }
-    return out
+    return out;
   }
 
   /**
@@ -64,8 +65,8 @@ const Utils = class {
    */
   addJvHelpers(obj) {
     // Avoid 'this' confusion in property definitions
-    const { jvtag } = this
-    const { hasProperty } = this
+    const { jvtag } = this;
+    const { hasProperty } = this;
     if (obj[jvtag] && !hasProperty(obj[jvtag], 'isRel') && !hasProperty(obj[jvtag], 'isAttr')) {
       Object.assign(obj[jvtag], {
         /**
@@ -74,7 +75,7 @@ const Utils = class {
          * returns {boolean} true if the name given is a relationship of this object
          */
         isRel(name) {
-          return hasProperty(get(obj, [jvtag, 'relationships'], {}), name)
+          return hasProperty(get(obj, [jvtag, 'relationships'], {}), name);
         },
         /**
          * @memberof module:jsonapi-vuex.helpers
@@ -82,9 +83,9 @@ const Utils = class {
          * returns {boolean} true if the name given is an attribute of this object
          */
         isAttr(name) {
-          return name !== jvtag && hasProperty(obj, name) && !obj[jvtag].isRel(name)
+          return name !== jvtag && hasProperty(obj, name) && !obj[jvtag].isRel(name);
         }
-      })
+      });
     }
     /**
      * @memberof module:jsonapi-vuex.helpers
@@ -94,15 +95,15 @@ const Utils = class {
     if (hasProperty(obj, jvtag)) {
       Object.defineProperty(obj[jvtag], 'rels', {
         get() {
-          const rel = {}
+          const rel = {};
           for (const key of Object.keys(get(obj, [jvtag, 'relationships'], {}))) {
-            rel[key] = obj[key]
+            rel[key] = obj[key];
           }
-          return rel
+          return rel;
         },
         // Allow to be redefined
         configurable: true
-      })
+      });
       /**
        * @memberof module:jsonapi-vuex.helpers
        * @name attrs
@@ -110,19 +111,19 @@ const Utils = class {
        */
       Object.defineProperty(obj[jvtag], 'attrs', {
         get() {
-          const att = {}
+          const att = {};
           for (const [key, val] of Object.entries(obj)) {
             if (obj[jvtag].isAttr(key)) {
-              att[key] = val
+              att[key] = val;
             }
           }
-          return att
+          return att;
         },
         // Allow to be redefined
         configurable: true
-      })
+      });
     }
-    return obj
+    return obj;
   }
 
   /**
@@ -137,21 +138,21 @@ const Utils = class {
    */
   checkAndFollowRelationships(state, getters, records, seen) {
     if (this.conf.followRelationshipsData) {
-      let resData = {}
+      let resData = {};
       if (this.hasProperty(records, this.jvtag)) {
         // single item
-        resData = this.followRelationships(state, getters, records, seen)
+        resData = this.followRelationships(state, getters, records, seen);
       } else {
         // multiple items
         for (const [key, item] of Object.entries(records)) {
-          resData[key] = this.followRelationships(state, getters, item, seen)
+          resData[key] = this.followRelationships(state, getters, item, seen);
         }
       }
       if (resData) {
-        return resData
+        return resData;
       }
     }
-    return records
+    return records;
   }
 
   /**
@@ -166,32 +167,32 @@ const Utils = class {
    */
   cleanPatch(patch, state = {}, jvProps = []) {
     // Add helper properties (use a copy to prevent side-effects)
-    const modPatch = this.deepCopy(patch)
-    const attrs = get(modPatch, [this.jvtag, 'attrs'])
-    const clean = { [this.jvtag]: {}}
+    const modPatch = this.deepCopy(patch);
+    const attrs = get(modPatch, [this.jvtag, 'attrs']);
+    const clean = { [this.jvtag]: {}};
     // Only try to clean the patch if it exists in the store
-    const stateRecord = get(state, [modPatch[this.jvtag].type, modPatch[this.jvtag].id])
+    const stateRecord = get(state, [modPatch[this.jvtag].type, modPatch[this.jvtag].id]);
     if (stateRecord) {
       for (const [k, v] of Object.entries(attrs)) {
         if (!this.hasProperty(stateRecord, k) || !isEqual(stateRecord[k], v)) {
-          clean[k] = v
+          clean[k] = v;
         }
       }
     } else {
-      Object.assign(clean, attrs)
+      Object.assign(clean, attrs);
     }
 
     // Add _jv data, as required
-    clean[this.jvtag].type = patch[this.jvtag].type
-    clean[this.jvtag].id = patch[this.jvtag].id
+    clean[this.jvtag].type = patch[this.jvtag].type;
+    clean[this.jvtag].id = patch[this.jvtag].id;
     for (const prop of jvProps) {
-      const propVal = get(patch, [this.jvtag, prop])
+      const propVal = get(patch, [this.jvtag, prop]);
       if (propVal) {
-        clean[this.jvtag][prop] = propVal
+        clean[this.jvtag][prop] = propVal;
       }
     }
 
-    return clean
+    return clean;
   }
 
   /**
@@ -201,14 +202,14 @@ const Utils = class {
    * @return {object} A deep copied object, with Helper functions added
    */
   deepCopy(obj) {
-    let copyObj = this._copy(obj)
+    let copyObj = this._copy(obj);
     if (Object.entries(copyObj).length) {
       if (this.hasProperty(copyObj, this.jvtag)) {
-        copyObj = this.addJvHelpers(copyObj)
+        copyObj = this.addJvHelpers(copyObj);
       }
-      return copyObj
+      return copyObj;
     }
-    return obj
+    return obj;
   }
 
   /**
@@ -224,29 +225,29 @@ const Utils = class {
    * @return {object} records with relationships followed and helper functions added (see {@link module:jsonapi-vuex.utils.addJvHelpers})
    */
   followRelationships(state, getters, record, seen) {
-    const data = {}
+    const data = {};
 
     if (typeof Object.getOwnPropertyDescriptors === 'undefined') {
       Object.getOwnPropertyDescriptors = function(obj) {
         if (obj === null || obj === undefined) {
-          throw new TypeError('Cannot convert undefined or null to object')
+          throw new TypeError('Cannot convert undefined or null to object');
         }
-        const protoPropDescriptor = Object.getOwnPropertyDescriptor(obj, '__proto__')
-        const descriptors = protoPropDescriptor ? { ['__proto__']: protoPropDescriptor } : {}
+        const protoPropDescriptor = Object.getOwnPropertyDescriptor(obj, '__proto__');
+        const descriptors = protoPropDescriptor ? { ['__proto__']: protoPropDescriptor } : {};
 
         for (const name of Object.getOwnPropertyNames(obj)) {
-          descriptors[name] = Object.getOwnPropertyDescriptor(obj, name)
+          descriptors[name] = Object.getOwnPropertyDescriptor(obj, name);
         }
-        return descriptors
-      }
+        return descriptors;
+      };
     }
 
-    Object.defineProperties(data, Object.getOwnPropertyDescriptors(record))
+    Object.defineProperties(data, Object.getOwnPropertyDescriptors(record));
 
-    const relationships = this.getRelationships(getters, data, seen)
-    Object.defineProperties(data, Object.getOwnPropertyDescriptors(relationships))
+    const relationships = this.getRelationships(getters, data, seen);
+    Object.defineProperties(data, Object.getOwnPropertyDescriptors(relationships));
 
-    return this.addJvHelpers(data)
+    return this.addJvHelpers(data);
   }
 
   /**
@@ -263,47 +264,47 @@ const Utils = class {
    */
   getRelationships(getters, parent, seen = []) {
     // Avoid 'this' confusion in Object.defineProperty
-    const { conf } = this
-    const { jvtag } = this
-    const relationships = get(parent, [jvtag, 'relationships'], {})
-    const relationshipsData = {}
+    const { conf } = this;
+    const { jvtag } = this;
+    const relationships = get(parent, [jvtag, 'relationships'], {});
+    const relationshipsData = {};
     for (const relName of Object.keys(relationships)) {
-      const relations = get(relationships, [relName, 'data'])
-      relationshipsData[relName] = {}
+      const relations = get(relationships, [relName, 'data']);
+      relationshipsData[relName] = {};
       if (relations) {
-        const isItem = !Array.isArray(relations)
-        const relationsData = []
+        const isItem = !Array.isArray(relations);
+        const relationsData = [];
 
         for (const relation of isItem ? Array.of(relations) : relations) {
-          const relType = relation.type
-          const relId = relation.id
+          const relType = relation.type;
+          const relId = relation.id;
 
-          const current = [relName, relType, relId]
-          let data = {}
+          const current = [relName, relType, relId];
+          let data = {};
           // Stop if seen contains an array which matches 'current'
           if (!conf.recurseRelationships && seen.some(a => a.every((v, i) => v === current[i]))) {
-            data = { [jvtag]: { type: relType, id: relId }}
+            data = { [jvtag]: { type: relType, id: relId }};
           } else {
             // prettier-ignore
             data = getters.get(
               `${relType}/${relId}`,
               undefined,
               [...seen, [relName, relType, relId]]
-            )
+            );
           }
 
           if (relationsData.indexOf(data) === -1) {
-            relationsData.push(data)
+            relationsData.push(data);
           }
         }
         if (isItem) {
-          relationshipsData[relName] = relationsData[0]
+          relationshipsData[relName] = relationsData[0];
         } else {
-          relationshipsData[relName] = relationsData
+          relationshipsData[relName] = relationsData;
         }
       }
     }
-    return relationshipsData
+    return relationshipsData;
   }
 
   /**
@@ -313,13 +314,13 @@ const Utils = class {
    * @return {array} An array (optionally) containing type, id and rels
    */
   getTypeId(data) {
-    let type
-    let id
-    let rel
+    let type;
+    let id;
+    let rel;
     if (typeof data === 'string') {
-      [type, id, rel] = data.replace(/^\//, '').split('/')
+      [type, id, rel] = data.replace(/^\//, '').split('/');
     } else {
-      ({ type, id } = data[this.jvtag])
+      ({ type, id } = data[this.jvtag]);
     }
 
     // Spec: The values of the id and type members MUST be strings.
@@ -329,7 +330,7 @@ const Utils = class {
       type && encodeURIComponent(type),
       id && encodeURIComponent(id),
       rel && encodeURIComponent(rel)
-    ].filter(Boolean)
+    ].filter(Boolean);
   }
 
   /**
@@ -339,20 +340,20 @@ const Utils = class {
    * @return {string} The record's URL path
    */
   getURL(data, post = false) {
-    let path = data
+    let path = data;
     if (typeof data === 'object') {
       if (get(data, [this.jvtag, 'links', 'self']) && !post) {
-        path = data[this.jvtag].links.self
+        path = data[this.jvtag].links.self;
       } else {
-        const { type, id } = data[this.jvtag]
-        path = type
+        const { type, id } = data[this.jvtag];
+        path = type;
         // POST endpoints are always to collections, not items
         if (id && !post) {
-          path += `/${id}`
+          path += `/${id}`;
         }
       }
     }
-    return path
+    return path;
   }
 
   /**
@@ -362,7 +363,7 @@ const Utils = class {
    * @memberof module:jsonapi-vuex._internal
    */
   hasProperty(obj, prop) {
-    return Object.prototype.hasOwnProperty.call(obj, prop)
+    return Object.prototype.hasOwnProperty.call(obj, prop);
   }
 
   /**
@@ -372,19 +373,19 @@ const Utils = class {
    * @return {object} Restructured data
    */
   jsonapiToNorm(data) {
-    const norm = {}
+    const norm = {};
     if (Array.isArray(data)) {
       data.forEach(item => {
-        const { id } = item
+        const { id } = item;
         if (!this.hasProperty(norm, id)) {
-          norm[id] = {}
+          norm[id] = {};
         }
-        Object.assign(norm[id], this.jsonapiToNormItem(item))
-      })
+        Object.assign(norm[id], this.jsonapiToNormItem(item));
+      });
     } else {
-      Object.assign(norm, this.jsonapiToNormItem(data))
+      Object.assign(norm, this.jsonapiToNormItem(data));
     }
-    return norm
+    return norm;
   }
 
   /**
@@ -395,14 +396,14 @@ const Utils = class {
    */
   jsonapiToNormItem(data) {
     if (!data) {
-      return {}
+      return {};
     }
     // Move attributes to top-level, nest original jsonapi under _jv
-    const norm = { [this.jvtag]: data, ...data.attributes }
+    const norm = { [this.jvtag]: data, ...data.attributes };
     // Create a new object omitting attributes
-    const { attributes, ...normNoAttrs } = norm[this.jvtag] // eslint-disable-line no-unused-vars
-    norm[this.jvtag] = normNoAttrs
-    return norm
+    const { attributes, ...normNoAttrs } = norm[this.jvtag]; // eslint-disable-line no-unused-vars
+    norm[this.jvtag] = normNoAttrs;
+    return norm;
   }
 
   /**
@@ -412,19 +413,19 @@ const Utils = class {
    * @return {object} JSONAPI record
    */
   normToJsonapi(record) {
-    const jsonapi = []
+    const jsonapi = [];
     if (!this.hasProperty(record, this.jvtag)) {
       // Collection of id-indexed records
       for (const item of Object.values(record)) {
-        jsonapi.push(this.normToJsonapiItem(item))
+        jsonapi.push(this.normToJsonapiItem(item));
       }
     } else {
-      jsonapi.push(this.normToJsonapiItem(record))
+      jsonapi.push(this.normToJsonapiItem(record));
     }
     if (jsonapi.length === 1) {
-      return { data: jsonapi[0] }
+      return { data: jsonapi[0] };
     }
-    return { data: jsonapi }
+    return { data: jsonapi };
   }
 
   /**
@@ -434,21 +435,21 @@ const Utils = class {
    * @return {object}  JSONAPI record
    */
   normToJsonapiItem(data) {
-    const jsonapi = {}
+    const jsonapi = {};
     // Pick out expected resource members, if they exist
     for (const member of ['id', 'type', 'relationships', 'meta', 'links']) {
       if (this.hasProperty(data[this.jvtag], member)) {
-        jsonapi[member] = data[this.jvtag][member]
+        jsonapi[member] = data[this.jvtag][member];
       }
     }
     // User-generated data (e.g. post) has no helper functions
     if (this.hasProperty(data[this.jvtag], 'attrs')) {
-      jsonapi.attributes = data[this.jvtag].attrs
+      jsonapi.attributes = data[this.jvtag].attrs;
     } else {
-      jsonapi.attributes = { ...data }
-      delete jsonapi.attributes[this.jvtag]
+      jsonapi.attributes = { ...data };
+      delete jsonapi.attributes[this.jvtag];
     }
-    return jsonapi
+    return jsonapi;
   }
 
   /**
@@ -458,24 +459,24 @@ const Utils = class {
    * @return {object} Structured 'store' object
    */
   normToStore(record) {
-    const store = {}
+    const store = {};
     if (this.hasProperty(record, this.jvtag)) {
       // Convert item to look like a collection
-      record = { [record[this.jvtag].id]: record }
+      record = { [record[this.jvtag].id]: record };
     }
     for (const item of Object.values(record)) {
-      const { type, id } = item[this.jvtag]
+      const { type, id } = item[this.jvtag];
       if (!this.hasProperty(store, type)) {
-        store[type] = {}
+        store[type] = {};
       }
       if (this.conf.followRelationshipsData) {
         for (const rel in item[this.jvtag].rels) {
-          delete item[rel]
+          delete item[rel];
         }
       }
-      store[type][id] = item
+      store[type][id] = item;
     }
-    return store
+    return store;
   }
 
   /**
@@ -489,12 +490,12 @@ const Utils = class {
   preserveJSON(data, json) {
     if (this.conf.preserveJson && data) {
       if (!this.hasProperty(data, this.jvtag)) {
-        data[this.jvtag] = {}
+        data[this.jvtag] = {};
       }
       // Store original json in _jv
-      data[this.jvtag].json = json
+      data[this.jvtag].json = json;
     }
-    return data
+    return data;
   }
 
   /**
@@ -506,8 +507,8 @@ const Utils = class {
    */
   processIncludedRecords(context, results) {
     for (const item of get(results, ['data', 'included'], [])) {
-      const includedItem = this.jsonapiToNormItem(item)
-      context.commit('addRecords', includedItem)
+      const includedItem = this.jsonapiToNormItem(item);
+      context.commit('addRecords', includedItem);
     }
   }
 
@@ -520,18 +521,18 @@ const Utils = class {
    * @public
    */
   pushPayload(payload, context) {
-    this.context = context
+    this.context = context;
 
-    if (payload.included) payload.included.map(this.pushObject.bind(this))
+    if (payload.included) payload.included.map(this.pushObject.bind(this));
 
-    let result =
-      payload.data instanceof Array
+    let result
+      = payload.data instanceof Array
         ? payload.data.map(this.pushObject.bind(this))
-        : this.pushObject(payload.data)
+        : this.pushObject(payload.data);
 
-    result = this.preserveJSON(result, payload)
+    result = this.preserveJSON(result, payload);
 
-    return result
+    return result;
   }
 
   /**
@@ -544,13 +545,16 @@ const Utils = class {
    * @public
    */
   pushObject(data) {
-    let item = this.jsonapiToNormItem(data)
-    this.context.commit('addRecords', item)
+    let item = this.jsonapiToNormItem(data);
+    // 注册拓展的时候不存store,因为id为空，type一致
+    if (data.type !== 'user_sign_in') {
+      this.context.commit('addRecords', item);
+    }
 
     if (this.conf.followRelationshipsData) {
-      item = this.followRelationships(this.context.state, this.context.getters, item)
+      item = this.followRelationships(this.context.state, this.context.getters, item);
     }
-    return item
+    return item;
   }
 
   /**
@@ -563,9 +567,9 @@ const Utils = class {
    */
   unpackArgs(args) {
     if (Array.isArray(args)) {
-      return args
+      return args;
     }
-    return [args, {}]
+    return [args, {}];
   }
 
   /**
@@ -578,41 +582,41 @@ const Utils = class {
    * @param {boolean} merging - Whether or not to merge or overwrite records
    */
   updateRecords(state, records, merging = this.conf.mergeRecords) {
-    const storeRecords = this.normToStore(records)
+    const storeRecords = this.normToStore(records);
     for (const [type, item] of Object.entries(storeRecords)) {
       if (!this.hasProperty(state, type)) {
-        Vue.set(state, type, {})
+        Vue.set(state, type, {});
         // If there's no type, then there are no existing records to merge
-        merging = false
+        merging = false;
       }
       // eslint-disable-next-line prefer-const
       for (let [id, data] of Object.entries(item)) {
         if (merging) {
-          const oldRecord = get(state, [type, id])
+          const oldRecord = get(state, [type, id]);
           if (oldRecord) {
             if (
-              this.hasProperty(oldRecord, '_jv') &&
-              this.hasProperty(oldRecord._jv, 'relationships')
+              this.hasProperty(oldRecord, '_jv')
+              && this.hasProperty(oldRecord._jv, 'relationships')
             ) {
               Object.keys(oldRecord._jv.relationships).forEach(item => {
                 if (this.hasProperty(data, '_jv') && this.hasProperty(data._jv, 'relationships')) {
                   if (this.hasProperty(data._jv.relationships, item)) {
-                    oldRecord._jv.relationships[item] = data._jv.relationships[item]
+                    oldRecord._jv.relationships[item] = data._jv.relationships[item];
                   }
                 }
-              })
+              });
             }
             if (data._jv.type === 'users') {
-              data.avatarUrl = oldRecord.avatarUrl
+              data.avatarUrl = oldRecord.avatarUrl;
             }
-            data = merge(oldRecord, data)
+            data = merge(oldRecord, data);
           }
         }
-        Vue.set(state[type], id, data)
+        Vue.set(state[type], id, data);
       }
     }
   }
-}
+};
 
 /**
  * A class for tracking the status of actions.
@@ -626,19 +630,19 @@ const Utils = class {
  */
 const ActionStatus = class {
   constructor(maxID = -1) {
-    this.PENDING = 0
-    this.SUCCESS = 1
-    this.ERROR = -1
-    this.maxID = maxID || -1
-    this.status = {}
-    this.counter = 0
+    this.PENDING = 0;
+    this.SUCCESS = 1;
+    this.ERROR = -1;
+    this.maxID = maxID || -1;
+    this.status = {};
+    this.counter = 0;
   }
 
   _count() {
     if (this.counter === this.maxID) {
-      this.counter = 0
+      this.counter = 0;
     }
-    return ++this.counter
+    return ++this.counter;
   }
 
   /**
@@ -653,22 +657,22 @@ const ActionStatus = class {
    * @returns {integer} The status ID for this function.
    */
   run(func) {
-    const id = this._count()
-    this.status[id] = this.PENDING
+    const id = this._count();
+    this.status[id] = this.PENDING;
     const promise = new Promise((resolve, reject) => {
       func()
         .then(result => {
-          this.status[id] = this.SUCCESS
-          resolve(result)
+          this.status[id] = this.SUCCESS;
+          resolve(result);
         })
         .catch(error => {
-          this.status[id] = this.ERROR
-          reject(error)
-        })
-    })
-    promise._statusID = id
-    return promise
+          this.status[id] = this.ERROR;
+          reject(error);
+        });
+    });
+    promise._statusID = id;
+    return promise;
   }
-}
+};
 
-export { Utils, ActionStatus }
+export { Utils, ActionStatus };

@@ -29,7 +29,7 @@ export default {
       default: 'auto'
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

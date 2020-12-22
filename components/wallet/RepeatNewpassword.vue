@@ -36,15 +36,15 @@ export default {
   },
   data() {
     return {
-    }
+    };
   },
   methods: {
     empty() {
-      this.$refs.walletinput.deleat()
+      this.$refs.walletinput.deleat();
     }
   }
 
-}
+};
 </script>
 
 <style lang="scss" scoped>

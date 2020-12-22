@@ -16,7 +16,7 @@ export default {
       default: 32
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 .loading-container{

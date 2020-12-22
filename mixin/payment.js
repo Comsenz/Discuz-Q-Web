@@ -4,24 +4,24 @@ module.exports = {
       orderNo: '',
       paymentType: 0,
       paymentStatus: 0
-    }
+    };
   },
   methods: {
     createOrder(hideAvatar, amount = 0, type, paymentType, payeeId = '') {
-      if (this.defaultLoading) return
-      this.defaultLoading = true
+      if (this.defaultLoading) return;
+      this.defaultLoading = true;
       const params = {
         _jv: { type: `/orders` },
         is_anonymous: hideAvatar,
         type,
         amount
-      }
-      if (payeeId) params.payee_id = payeeId
-      if (this.threadId) params.thread_id = this.threadId
+      };
+      if (payeeId) params.payee_id = payeeId;
+      if (this.threadId) params.thread_id = this.threadId;
       return this.$store.dispatch('jv/post', params).then(data => {
-        this.orderNo = data.order_sn
-        this.paymentType = paymentType
-      }, e => this.handleError(e))
+        this.orderNo = data.order_sn;
+        this.paymentType = paymentType;
+      }, e => this.handleError(e));
     },
     payOrder(password = '') {
       const params = {
@@ -29,59 +29,60 @@ module.exports = {
         order_sn: this.orderNo,
         payment_type: this.paymentType,
         pay_password: password
-      }
+      };
       return this.$store.dispatch('jv/post', params).then(data => {
         if (this.paymentType === 10) {
-          return data.wechat_qrcode
+          return data.wechat_qrcode;
         } else {
-          this.$message.success(this.$t('pay.paySuccess'))
-          this.passwordError = false
-          this.showPasswordInput = false
-          return this.orderNo
+          this.$message.success(this.$t('pay.paySuccess'));
+          this.passwordError = false;
+          this.showPasswordInput = false;
+          return this.orderNo;
         }
       }, e => {
-        const { response: { data: { errors }}} = e
+        const { response: { data: { errors }}} = e;
         if (errors[0].code === 'pay_password_failures_times_toplimit') {
-          this.passwordError = true
-          this.passwordErrorTip = this.$t('core.pay_password_failures_times_toplimit')
-          return Promise.reject()
+          this.passwordError = true;
+          this.passwordErrorTip = this.$t('core.pay_password_failures_times_toplimit');
+          return Promise.reject();
         }
         if (errors[0].code === 'validation_error') {
-          this.passwordError = true
-          this.passwordErrorTip = errors[0].detail[0]
-          return Promise.reject()
+          this.passwordError = true;
+          this.passwordErrorTip = errors[0].detail[0];
+          return Promise.reject();
         }
-        this.handleError(e)
-      })
+        this.handleError(e);
+      });
     },
     wxPayActive() {
-      this.showWxPay = true
+      this.showWxPay = true;
       return new Promise((resolve, reject) => {
         const id = setInterval(() => {
           if (this.paymentStatus === 1) {
-            clearInterval(id)
-            this.showWxPay = false
-            this.$message.success(this.$t('pay.paySuccess'))
-            resolve(this.orderNo)
+            clearInterval(id);
+            this.showWxPay = false;
+            this.$message.success(this.$t('pay.paySuccess'));
+            resolve(this.orderNo);
           }
           if (!this.showWxPay) {
-            clearInterval(id)
-            reject()
+            clearInterval(id);
+            reject();
           }
-          this.getOrderStatus()
-        }, 1000)
-      })
+          this.getOrderStatus();
+        }, 1000);
+      });
     },
     getOrderStatus() {
-      const params = { _jv: { type: `/orders/${this.orderNo}` }, orderNo: this.orderNo }
+      const params = { _jv: { type: `/orders/${this.orderNo}` }, orderNo: this.orderNo };
       return this.$store.dispatch('jv/get', params).then(data => {
-        this.paymentStatus = data.status
-      }, e => this.handleError(e))
+        this.paymentStatus = data.status;
+      }, e => this.handleError(e));
     },
     onFindPassword() {
-      this.showPasswordInput = this.passwordError = false
-      this.passwordErrorTip = ''
-      this.findPassword = true
+      // eslint-disable-next-line no-multi-assign
+      this.showPasswordInput = this.passwordError = false;
+      this.passwordErrorTip = '';
+      this.findPassword = true;
     }
   }
-}
+};

@@ -1,34 +1,35 @@
 export default {
   get: function(name, cookie) {
-    const _cookie = cookie || process.client && document.cookie || ''
-    const cookieName = encodeURIComponent(name) + '='
-    const cookieStart = _cookie.indexOf(cookieName)
-    let val = null
+    // eslint-disable-next-line no-mixed-operators
+    const _cookie = cookie || process.client && document.cookie || '';
+    const cookieName = `${encodeURIComponent(name)}=`;
+    const cookieStart = _cookie.indexOf(cookieName);
+    let val = null;
 
     if (cookieStart > -1) {
-      let cookieEnd = _cookie.indexOf(';', cookieStart)
+      let cookieEnd = _cookie.indexOf(';', cookieStart);
       if (cookieEnd === -1) {
-        cookieEnd = _cookie.length
+        cookieEnd = _cookie.length;
       }
-      val = decodeURIComponent(_cookie.substring(cookieStart + cookieName.length, cookieEnd))
+      val = decodeURIComponent(_cookie.substring(cookieStart + cookieName.length, cookieEnd));
     }
 
-    return val
+    return val;
   },
   set: function(name, value, expires, path, domain, secure) {
-    let cookieText = encodeURIComponent(name) + '=' + encodeURIComponent(value)
+    let cookieText = `${encodeURIComponent(name)}=${encodeURIComponent(value)}`;
 
-    expires instanceof Date && (cookieText += '; expires' + expires.toGMTString())
+    expires instanceof Date && (cookieText += `; expires${expires.toGMTString()}`);
 
-    path && (cookieText += '; path=' + path)
+    path && (cookieText += `; path=${path}`);
 
-    domain && (cookieText += '; domain=' + domain)
+    domain && (cookieText += `; domain=${domain}`);
 
-    secure && (cookieText += '; secure')
+    secure && (cookieText += '; secure');
 
-    document.cookie = cookieText
+    document.cookie = cookieText;
   },
   remove: function(name, path, domain, secure) {
-    this.set(name, '', new Date(0), path, domain, secure)
+    this.set(name, '', new Date(0), path, domain, secure);
   }
-}
+};

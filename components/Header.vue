@@ -1,5 +1,5 @@
 <template>
-  <div ref="head" class="header isFixed">
+  <div v-if="!hideHeader" ref="head" class="header isFixed"> 
     <div class="header-container">
       <div class="flex">
         <div class="logo" @click="toIndex">
@@ -24,62 +24,64 @@
           <svg-icon slot="suffix" type="search" class="el-input__icon" @click="onClickSearch" />
         </el-input>
       </div>
-      <!-- 未登录 -->
-      <div v-if="siteClose || !islogin ">
-        <el-button
-          v-if="siteClose || !userId"
-          size="small"
-          class="h-button h-button1"
-          @click="login"
-        >
-          {{ $t('user.login') }}
-        </el-button>
-        <el-button
-          v-if="siteClose || !userId"
-          :disabled="(forums && forums.set_reg && !forums.set_reg.register_close) || siteClose"
-          size="small"
-          class="h-button h-button2"
-          @click="register"
-        >
-          {{ $t('user.register') }}
-        </el-button>
-      </div>
-      <!-- 已登录 -->
-      <div v-if="userId && JSON.stringify(userInfo) !== '{}' && !siteClose" class="flex">
-        <avatar
-          :user="{ id: userInfo.id,
-                   username: userInfo.username,
-                   avatarUrl: userInfo.avatarUrl,
-                   isReal: userInfo.isReal
-          }"
-          :size="35"
-          :round="true"
-        />
-        <nuxt-link
-          v-if="userInfo.username && userInfo.id"
-          :to="`/user/${userInfo.id}`"
-          class="menu-item user-name text-hidden"
-        >
-          {{ userInfo.username }}
-        </nuxt-link>
-        <nuxt-link to="/my/notice" class="menu-item notice-btn">
-          <span class="flex">
-            {{ $t('home.tabsNews') }}
-            <span
-              v-if="userInfo.unreadNotifications && userInfo.unreadNotifications > 0"
-              class="unread-notice"
-            >{{ userInfo.unreadNotifications > 99 ? '99+' : userInfo.unreadNotifications }}</span>
-          </span>
-        </nuxt-link>
-        <nuxt-link to="/my/profile" class="menu-item">{{ $t('profile.personalhomepage') }}</nuxt-link>
-        <div class="menu-item" @click="logout">{{ $t('user.logout') }}</div>
+      <div>
+        <!-- 未登录 -->
+        <div v-if="siteClose || !islogin ">
+          <el-button
+            v-if="siteClose || !userId"
+            size="small"
+            class="h-button h-button1"
+            @click="login"
+          >
+            {{ $t('user.login') }}
+          </el-button>
+          <el-button
+            v-if="siteClose || !userId"
+            :disabled="(forums && forums.set_reg && !forums.set_reg.register_close) || siteClose"
+            size="small"
+            class="h-button h-button2"
+            @click="register"
+          >
+            {{ $t('user.register') }}
+          </el-button>
+        </div>
+        <!-- 已登录 -->
+        <div v-if="userId && JSON.stringify(userInfo) !== '{}' && !siteClose" class="flex">
+          <avatar
+            :user="{ id: userInfo.id,
+                     username: userInfo.username,
+                     avatarUrl: userInfo.avatarUrl,
+                     isReal: userInfo.isReal
+            }"
+            :size="35"
+            :round="true"
+          />
+          <nuxt-link
+            v-if="userInfo.username && userInfo.id"
+            :to="`/user/${userInfo.id}`"
+            class="menu-item user-name text-hidden"
+          >
+            {{ userInfo.username }}
+          </nuxt-link>
+          <nuxt-link to="/my/notice" class="menu-item notice-btn">
+            <span class="flex">
+              {{ $t('home.tabsNews') }}
+              <span
+                v-if="userInfo.unreadNotifications && userInfo.unreadNotifications > 0"
+                class="unread-notice"
+              >{{ userInfo.unreadNotifications > 99 ? '99+' : userInfo.unreadNotifications }}</span>
+            </span>
+          </nuxt-link>
+          <nuxt-link to="/my/profile" class="menu-item">{{ $t('profile.personalhomepage') }}</nuxt-link>
+          <div class="menu-item" @click="logout">{{ $t('user.logout') }}</div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import loginAbout from '@/mixin/loginAbout'
+import loginAbout from '@/mixin/loginAbout';
 
 export default {
   name: 'Header',
@@ -100,55 +102,64 @@ export default {
       offsetTop: 0,
       imgurl: require('@/assets/logo.png'),
       islogin: true,
+      hideHeader: false, // 不需要头部右侧部分
       preurl: '/'
-    }
+    };
   },
   computed: {
     userId() {
-      return this.$store.state.user.info.id
+      return this.$store.state.user.info.id;
     },
     forums() {
-      return this.$store.state.site.info.attributes || {}
+      return this.$store.state.site.info.attributes || {};
     },
     userInfo() {
-      return this.$store.state.user.info.attributes || {}
+      return this.$store.state.user.info.attributes || {};
     }
   },
   watch: {
     // 监听路由变化
     $route(to) {
       if (to.path === '/site/close') {
-        this.siteClose = true
+        this.siteClose = true;
       } else {
-        this.siteClose = false
+        this.siteClose = false;
       }
     }
   },
   mounted() {
-    const { code, preurl } = this.$route.query
+    const { code, preurl } = this.$route.query;
     if (preurl) {
-      this.preurl = preurl
+      this.preurl = preurl;
     }
     if (code !== 'undefined') {
-      this.code = code
+      this.code = code;
     }
     if (process.client && this.$route.query.q) {
-      this.inputVal = this.$route.query.q
+      this.inputVal = this.$route.query.q;
     }
     if (process.client && this.$route.path !== '/site/close') {
-      window.setTimeout(this.reloadUserInfo(), 5000)
+      window.setTimeout(this.reloadUserInfo(), 5000);
     }
     if (this.$route.path === '/site/close') {
-      this.siteClose = true
+      this.siteClose = true;
+    }
+    if (this.$route.path === '/user/warning' && this.$store.getters['session/get']('isLogin')) {
+      // 用户审核页面如果有登录态先清除,从注册拓展过来的会有登录态，避免审核中点击回到首页大量报错审核中情况
+      this.$store.dispatch('session/logout');
     }
     this.$nextTick(() => {
-      const id = localStorage.getItem('user_id')
-      this.islogin = id
-    })
+      const id = localStorage.getItem('user_id');
+      this.islogin = id;
+    });
+    const items = ['/user/supple-mentary'];
+    if (items.indexOf(this.$route.path) !== -1) {
+      this.hideHeader = true;
+    }
   },
   destroyed() {
     if (process.client) {
-      window.clearInterval(this.userInfoTimer)
+      window.clearInterval(this.userInfoTimer);
     }
   },
   methods: {
@@ -157,48 +168,48 @@ export default {
       this.$store
         .dispatch('session/logout')
         .then(() => {
-          location.href = `${this.$route.fullPath}`
-        })
+          location.href = `${this.$route.fullPath}`;
+        });
     },
     // 轮询获取用户信息，用于判断是否有新消息
     reloadUserInfo() {
       if (this.userInfo && this.userInfo.id) {
-        window.clearInterval(this.userInfoTimer)
-        this.userInfoTimer = window.setInterval(this.getUserInfo, 60000)
+        window.clearInterval(this.userInfoTimer);
+        this.userInfoTimer = window.setInterval(this.getUserInfo, 60000);
       }
     },
     // 从store里面获取用户信息
     async getUserInfo() {
       try {
-        await this.$store.dispatch('user/getUserInfo', this.userId)
+        await this.$store.dispatch('user/getUserInfo', this.userId);
       } catch (err) {
-        console.log('header getUserInfo err', err)
+        console.log('header getUserInfo err', err);
       }
     },
     // 跳往注册页面
     register() {
-      this.toregister(this.code)
+      this.toregister(this.code);
     },
     // 跳转登录页面
     login() {
-      this.headerTologin()
+      this.headerTologin();
     },
     // 跳转搜索页面
     onClickSearch() {
       if (this.inputVal) {
-        this.$router.push(`/site/search?q=${this.inputVal}`)
+        this.$router.push(`/site/search?q=${this.inputVal}`);
       }
     },
     // 跳转首页
     toIndex() {
       if (this.$route.path === '/') {
-        window.location.href = '/'
+        window.location.href = '/';
       } else {
-        this.$router.push('/')
+        this.$router.push('/');
       }
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 @import '@/assets/css/variable/color.scss';

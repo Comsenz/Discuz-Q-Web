@@ -1,32 +1,64 @@
 <template>
   <div v-viewer class="container-upload">
     <div class="upload">
-      <span class="attachment-list">{{ $t('post.attachmentList') }}</span>
-      <span class="add-attachment" @click="onClick">{{ addTips || $t('post.addAttachment') }}</span>
-      <input id="upload" ref="uploadFile" :accept="accept" type="file" multiple @input="onInput">
+      <span class="attachment-list">{{ $t("post.attachmentList") }}</span>
+      <span class="add-attachment" @click="onClick">{{
+        addTips || $t("post.addAttachment")
+      }}</span>
+      <input
+        id="upload"
+        ref="uploadFile"
+        :accept="accept"
+        type="file"
+        multiple
+        @input="onInput"
+      >
     </div>
-    <div v-for="(file, index) in previewFiles" :key="index" :class="{ 'preview-item': true, 'deleted': file.deleted }">
+    <div
+      v-for="(file, index) in previewFiles"
+      :key="index"
+      :class="{ 'preview-item': true, deleted: file.deleted }"
+    >
       <div class="container-item">
         <div class="info">
-          <svg-icon :type="extensionValidate(file.name)" style="font-size: 18px; vertical-align: middle;" />
-          <span :class="{ 'file-name': true, 'uploading': file.progress < 100 }">{{ file.name }}</span>
+          <svg-icon
+            :type="extensionValidate(file.name)"
+            style="font-size: 18px; vertical-align: middle;"
+          />
+          <span
+            :class="{ 'file-name': true, uploading: file.progress < 100 }"
+          >{{ file.name }}</span>
         </div>
-        <span class="size">{{ parseInt((file.size / 1024).toString()).toLocaleString() }} KB</span>
-        <div v-show="file.progress < 100" class="progress" :style="{ width: file.progress + '%' }" />
+        <span
+          class="size"
+        >{{
+          parseInt((file.size / 1024).toString()).toLocaleString()
+        }}
+          KB</span>
+        <div
+          v-show="file.progress < 100"
+          class="progress"
+          :style="{ width: file.progress + '%' }"
+        />
       </div>
       <div class="remove">
-        <svg-icon v-show="file.progress && file.progress === 100" type="delete" class="remove-icon" @click="removeItem(index)" />
+        <svg-icon
+          v-show="file.progress && file.progress === 100"
+          type="delete"
+          class="remove-icon"
+          @click="removeItem(index)"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import handleError from '@/mixin/handleError'
-import handleAttachmentError from '@/mixin/handleAttachmentError'
-import { extensionList } from '@/constant/extensionList'
-import uploader from '@/mixin/uploader'
-import service from '@/api/request'
+import handleError from '@/mixin/handleError';
+import handleAttachmentError from '@/mixin/handleAttachmentError';
+import { extensionList } from '@/constant/extensionList';
+import uploader from '@/mixin/uploader';
+import service from '@/api/request';
 
 export default {
   name: 'AttachmentUpload',
@@ -71,32 +103,34 @@ export default {
     return {
       previewFiles: [],
       currentInput: ''
-    }
+    };
   },
   computed: {
     input() {
-      return process.client ? document.getElementById('upload') : ''
+      return process.client ? document.getElementById('upload') : '';
     },
     service() {
-      return service
+      return service;
     }
   },
   methods: {
     onClick() {
-      const currentObj = this.$refs.uploadFile
-      this.currentInput = currentObj
-      this.uploaderFile(currentObj)
+      const currentObj = this.$refs.uploadFile;
+      this.currentInput = currentObj;
+      this.uploaderFile(currentObj);
     },
     extensionValidate(fileName) {
-      const extension = fileName.split('.')[fileName.split('.').length - 1]
-      return extensionList.indexOf(extension.toUpperCase()) > 0 ? extension.toUpperCase() : 'UNKNOWN'
+      const extension = fileName.split('.')[fileName.split('.').length - 1];
+      return extensionList.indexOf(extension.toUpperCase()) > 0
+        ? extension.toUpperCase()
+        : 'UNKNOWN';
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/css/variable/color.scss';
+@import "@/assets/css/variable/color.scss";
 
 .container-upload {
   margin-top: 20px;
@@ -120,9 +154,9 @@ export default {
       > .remove-icon {
         cursor: pointer;
         font-size: 16px;
-        fill: #6D6D6D;
+        fill: #6d6d6d;
         &:hover {
-          fill: #1878F3;
+          fill: #1878f3;
         }
       }
     }
@@ -130,12 +164,12 @@ export default {
       flex: 1;
       padding: 0 10px;
       border-radius: 3px;
-      border: 1px solid #EDEDED;
+      border: 1px solid #ededed;
       display: flex;
       justify-content: space-between;
       align-items: center;
       height: 100%;
-      background: #F4F5F6;
+      background: #f4f5f6;
       .info {
         display: flex;
         align-items: center;
@@ -146,13 +180,13 @@ export default {
           font-size: 16px;
           color: #333;
           &.uploading {
-            color: #8590A6;
+            color: #8590a6;
           }
         }
       }
       > .size {
         font-size: 12px;
-        color: #B7B7B7;
+        color: #b7b7b7;
         z-index: 10;
       }
       > .progress {
@@ -171,7 +205,7 @@ export default {
       font-size: 14px;
     }
     .attachment-list {
-      color: #6D6D6D;
+      color: #6d6d6d;
       font-weight: bold;
     }
     .add-attachment {

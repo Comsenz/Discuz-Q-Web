@@ -1,9 +1,9 @@
-const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
+const tcaptchs = process.client ? require('@/utils/tcaptcha') : '';
 module.exports = {
   mixins: [tcaptchs],
   computed: {
     forums() {
-      return this.$store.state.site.info.attributes || {}
+      return this.$store.state.site.info.attributes || {};
     }
   },
   methods: {
@@ -13,15 +13,15 @@ module.exports = {
           // eslint-disable-next-line no-undef
           const captcha = new TencentCaptcha(this.forums.qcloud.qcloud_captcha_app_id, res => {
             if (res.ret === 0) {
-              params.captcha_rand_str = res.randstr
-              params.captcha_ticket = res.ticket
-              resolve(params)
-            } else reject(res)
-          })
-          return captcha.show()
+              params.captcha_rand_str = res.randstr;
+              params.captcha_ticket = res.ticket;
+              resolve(params);
+            } else reject(res);
+          });
+          return captcha.show();
         }
-        resolve(params)
-      })
+        resolve(params);
+      });
     }
   }
-}
+};

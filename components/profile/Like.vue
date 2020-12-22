@@ -5,7 +5,12 @@
         <!-- 语音贴 -->
         <post-item
           v-if="item.type === 4"
-          :ref="`audio${ item && item.threadAudio && item.threadAudio._jv && item.threadAudio._jv.id}`"
+          :ref="
+            `audio${item &&
+              item.threadAudio &&
+              item.threadAudio._jv &&
+              item.threadAudio._jv.id}`
+          "
           :key="index"
           :item="item"
           :lazy="false"
@@ -32,8 +37,8 @@
 </template>
 
 <script>
-import { status } from '@/store/modules/jsonapi-vuex/index'
-import handleError from '@/mixin/handleError'
+import { status } from '@/store/modules/jsonapi-vuex/index';
+import handleError from '@/mixin/handleError';
 
 export default {
   name: 'Like',
@@ -58,71 +63,77 @@ export default {
       hasMore: false,
       editThreadId: '',
       currentAudioId: '' // 当前播放语音id
-    }
+    };
   },
   mounted() {
-    this.data = this.likethreadsData
+    this.data = this.likethreadsData;
     if (this.data.length === 0) {
-      this.loadlikes()
+      this.loadlikes();
     }
   },
   methods: {
     // 加载当前点赞数据
     loadlikes() {
-      this.loading = true
+      this.loading = true;
       const params = {
+        // eslint-disable-next-line max-len
         include: 'user,user.groups,firstPost,firstPost.images,firstPost.postGoods,category,threadVideo,threadAudio,question',
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         'filter[isApproved]': 1,
         'filter[user_id]': this.userId
-      }
+      };
       status
-        .run(() => this.$store.dispatch('jv/get', ['threads/likes', { params }]))
-        .then((res) => {
-          this.loading = false
-          this.hasMore = res.length === this.pageSize
-          const ress = JSON.parse(JSON.stringify(res))
-          // ress.forEach((val) => {
-          // val.firstPost.isLiked = true
-          // })
-          this.data = [...this.data, ...ress]
-          if (res._jv) {
-            this.hasMore = this.data.length < res._jv.json.meta.threadCount
+        .run(() =>
+          this.$store.dispatch('jv/get', ['threads/likes', { params }])
+        )
+        .then(
+          res => {
+            this.loading = false;
+            this.hasMore = res.length === this.pageSize;
+            const ress = JSON.parse(JSON.stringify(res));
+            // ress.forEach((val) => {
+            // val.firstPost.isLiked = true
+            // })
+            this.data = [...this.data, ...ress];
+            if (res._jv) {
+              this.hasMore = this.data.length < res._jv.json.meta.threadCount;
+            }
+            this.pageNum += 1;
+          },
+          e => {
+            this.handleError(e);
           }
-          this.pageNum += 1
-        }, (e) => {
-          this.handleError(e)
-        })
+        )
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     loadMore() {
       if (this.hasMore) {
         // this.pageNum += 1
-        this.loadlikes()
+        this.loadlikes();
       }
     },
     changelike() {
-      this.pageNum = 1
-      this.data = []
-      this.$emit('changeFollow', { userId: this.userId })
-      this.loadlikes()
+      this.pageNum = 1;
+      this.data = [];
+      this.$emit('changeFollow', { userId: this.userId });
+      this.loadlikes();
     },
     // 语音互斥播放
     audioPlay(id) {
       if (this.currentAudioId && this.currentAudioId !== id) {
-        this.$refs[`audio${this.currentAudioId}`][0].pause()
+        this.$refs[`audio${this.currentAudioId}`][0].pause();
       }
-      this.currentAudioId = id
+      this.currentAudioId = id;
     }
   }
-}
+};
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import "@/assets/css/variable/color.scss";
-.like{
+.like {
   min-height: 820px;
 }
 .empty-icon {

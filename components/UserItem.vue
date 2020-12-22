@@ -60,15 +60,15 @@ export default {
     }
   },
   data() {
-    return {}
+    return {};
   },
   methods: {
     // 跳转详情
     toUser() {
-      this.$router.push(`/user/${this.item.id}`)
+      this.$router.push(`/user/${this.item.id}`);
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 @import "@/assets/css/variable/color.scss";

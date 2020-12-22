@@ -20,24 +20,24 @@ export default {
   data() {
     return {
       password: ''
-    }
+    };
   },
   mounted() {
-    document.addEventListener('keyup', this.onInput)
+    document.addEventListener('keyup', this.onInput);
   },
   methods: {
     onInput(e) {
       if (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(e.key) >= 0) {
-        this.password += e.key
+        this.password += e.key;
       }
-      if (this.password.length >= 6) return this.$emit('password', this.password.substr(0, 6))
-      if (e.key === 'Backspace') this.password = this.password.substr(0, this.password.length - 1)
+      if (this.password.length >= 6) return this.$emit('password', this.password.substr(0, 6));
+      if (e.key === 'Backspace') this.password = this.password.substr(0, this.password.length - 1);
     },
     deleat() {
-      this.password = ''
+      this.password = '';
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

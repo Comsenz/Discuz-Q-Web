@@ -78,8 +78,8 @@
 </template>
 
 <script>
-import { time2MinuteOrHour } from '@/utils/time'
-import handleError from '@/mixin/handleError'
+import { time2MinuteOrHour } from '@/utils/time';
+import handleError from '@/mixin/handleError';
 export default {
   name: 'FreezeAmount',
   mixins: [
@@ -92,7 +92,6 @@ export default {
       value: '', // 提现记录被选择到的类型id
       pageSize3: 10, // 冻结每页展示的数目
       pageNum3: 1, // 冻结当前页数
-      freeze_amount: '',
       filterSelected3: '', // 冻结状态过滤内容的id
       freezelist: [], // 冻结金额
       total3: 0, // 冻结金额记录总记录数
@@ -100,78 +99,78 @@ export default {
       userInfo: '',
       walletFreeze: 0
 
-    }
+    };
   },
   mounted() {
-    this.getUserInfo()
-    this.getFreezelist()
+    this.getUserInfo();
+    this.getFreezelist();
   },
   methods: {
     // 用户信息
     getUserInfo() {
-      this.userInfo = this.$store.state.user.info.attributes
-      this.walletFreeze = this.userInfo ? this.userInfo.walletFreeze : 0
+      this.userInfo = this.$store.state.user.info.attributes;
+      this.walletFreeze = this.userInfo ? this.userInfo.walletFreeze : 0;
     },
     // 冻结金额状态筛选类型
     confirm3(e) {
-      this.filterSelected3 = e
-      this.getFreezelist('filter')
+      this.filterSelected3 = e;
+      this.getFreezelist('filter');
     },
     // 金额格式化
     amountFormat(row) {
       // 订单
       if (row.amount > 0) {
-        return `<font color="09BB07">-￥${row.amount}</font>`
+        return `<font color="09BB07">-￥${row.amount}</font>`;
       }
       if (row > 0) {
-        return `<font color="09BB07">+￥${row}</font>`
+        return `<font color="09BB07">+￥${row}</font>`;
       }
-      return `<font style="color:#FA5151">-￥${row.substr(1)}</font>`
+      return `<font style="color:#FA5151">-￥${row.substr(1)}</font>`;
     },
     // 获取冻结金额列表数据
     getFreezelist() {
-      this.loading = true
+      this.loading = true;
       const params = {
         'filter[user]': this.userId,
         'filter[change_type]': '10,11,12,81,9,8', // 10提现冻结 11提现成功 12 提现解冻
         'page[number]': this.pageNum3,
         'page[limit]': this.pageSize3
-      }
+      };
       this.$store.dispatch('jv/get', ['wallet/log', { params }]).then((res) => {
-        this.total3 = res._jv.json.meta.total
-        this.freezelist = res
+        this.total3 = res._jv.json.meta.total;
+        this.freezelist = res;
       }, (e) => {
-        this.handleError(e)
+        this.handleError(e);
       })
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     // 金额排序
     sortAmount(str1, str2) {
-      return (str1.change_available_amount * 1) - (str2.change_available_amount * 1)
+      return (str1.change_available_amount * 1) - (str2.change_available_amount * 1);
     },
     // 时间格式化
     dateFormat(row) {
-      return this.timeHandle(row.created_at)
+      return this.timeHandle(row.created_at);
     },
     // 处理时间
     timeHandle(time) {
-      return time2MinuteOrHour(time)
+      return time2MinuteOrHour(time);
     },
     // 冻结金额分页
     handleSizeChange3(val) {
-      this.pageNum3 = 1
-      this.pageSize3 = val
-      this.getFreezelist()
+      this.pageNum3 = 1;
+      this.pageSize3 = val;
+      this.getFreezelist();
     },
     // 冻结金额分页
     handleCurrentChange3(val) {
-      this.pageNum3 = val
-      this.getFreezelist()
+      this.pageNum3 = val;
+      this.getFreezelist();
     }
   }
-}
+};
 </script>
 <style lang='scss' scoped>
 .freezeAmount {

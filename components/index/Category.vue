@@ -16,7 +16,7 @@
   </div>
 </template>
 <script>
-import handleError from '@/mixin/handleError'
+import handleError from '@/mixin/handleError';
 export default {
   name: 'Category',
   mixins: [handleError],
@@ -36,16 +36,16 @@ export default {
     return {
       selectId: 0,
       categoryList: []
-    }
+    };
   },
   watch: {
     list: {
       handler(val) {
-        let threadCount = 0 // 计算全部帖子数
+        let threadCount = 0; // 计算全部帖子数
         val.forEach((item) => {
-          threadCount += item.thread_count
-        })
-        this.categoryList = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), threadCount }, ...val]
+          threadCount += item.thread_count;
+        });
+        this.categoryList = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), threadCount }, ...val];
       },
       deep: true
     }
@@ -53,40 +53,40 @@ export default {
   mounted() {
     // 判断父组件有没有传值过来，没有重新获取一遍
     if (this.list.length === 0) {
-      this.getCategoryList()
+      this.getCategoryList();
     } else {
-      let threadCount = 0 // 计算全部帖子数
+      let threadCount = 0; // 计算全部帖子数
       this.list.forEach((item) => {
-        threadCount += item.thread_count
-      })
-      this.categoryList = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), threadCount }, ...this.list]
+        threadCount += item.thread_count;
+      });
+      this.categoryList = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), threadCount }, ...this.list];
     }
     if (this.$route.params.id) {
-      this.selectId = this.$route.params.id
+      this.selectId = this.$route.params.id;
     }
   },
   methods: {
     // 获取分类列表
     getCategoryList() {
       this.$store.dispatch('jv/get', ['categories', {}]).then((res) => {
-        const resData = [...res] || []
-        let threadCount = 0 // 计算全部帖子数
+        const resData = [...res] || [];
+        let threadCount = 0; // 计算全部帖子数
         resData.forEach((item) => {
-          threadCount += item.thread_count
-        })
-        this.categoryList = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), threadCount }, ...resData]
+          threadCount += item.thread_count;
+        });
+        this.categoryList = [{ _jv: { id: 0 }, name: this.$t('topic.whole'), threadCount }, ...resData];
       }, (e) => {
-        this.handleError(e)
-      })
+        this.handleError(e);
+      });
     },
     // 选中分类，传值给父组件
     onChange(id) {
-      if (this.postLoading) return
-      this.selectId = id
-      this.$emit('onChange', id)
+      if (this.postLoading) return;
+      this.selectId = id;
+      this.$emit('onChange', id);
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 @import '@/assets/css/variable/color.scss';

@@ -20,8 +20,8 @@
 </template>
 
 <script>
-import { status } from '@/store/modules/jsonapi-vuex/index'
-import handleError from '@/mixin/handleError'
+import { status } from '@/store/modules/jsonapi-vuex/index';
+import handleError from '@/mixin/handleError';
 
 export default {
   name: 'Question',
@@ -44,65 +44,70 @@ export default {
       currentLoginId: this.$store.getters['session/get']('userId'),
       loading: false,
       hasMore: false
-    }
+    };
   },
   mounted() {
-    this.askthreadsData = this.askthreadData
+    this.askthreadsData = this.askthreadData;
     if (this.askthreadsData.length === 0) {
-      this.loadThreads()
+      this.loadThreads();
     }
   },
   methods: {
     // 加载当前主题数据
     loadThreads() {
-      this.loading = true
+      this.loading = true;
       const params = {
         'filter[isDeleted]': 'no',
         sort: '-createdAt',
-        include: 'user,user.groups,firstPost,firstPost.images,firstPost.postGoods,category,threadVideo,threadAudio,question,question.beUser,question.beUser.groups',
+        // eslint-disable-next-line max-len
+        include: `user,user.groups,firstPost,firstPost.images,firstPost.postGoods,category,threadVideo,threadAudio,question,question.beUser,question.beUser.groups`,
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         'filter[isApproved]': 1,
         'filter[userId]': this.userId,
         'filter[type]': 5,
         'filter[answer]': 'yes'
-      }
+      };
       status
         .run(() => this.$store.dispatch('jv/get', ['threads', { params }]))
-        .then((res) => {
-          this.loading = false
-          this.hasMore = res.length === this.pageSize
-          this.askthreadsData = [...this.askthreadsData, ...res]
-          if (res._jv) {
-            this.hasMore = this.askthreadsData.length < res._jv.json.meta.threadCount
+        .then(
+          res => {
+            this.loading = false;
+            this.hasMore = res.length === this.pageSize;
+            this.askthreadsData = [...this.askthreadsData, ...res];
+            if (res._jv) {
+              this.hasMore
+                = this.askthreadsData.length < res._jv.json.meta.threadCount;
+            }
+            this.pageNum += 1;
+          },
+          e => {
+            this.handleError(e);
           }
-          this.pageNum += 1
-        }, (e) => {
-          this.handleError(e)
-        })
+        )
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     loadMore() {
       if (this.hasMore) {
-        this.loadThreads()
+        this.loadThreads();
       }
     },
     changelike() {
-      this.$emit('changeLike', { userId: this.userId })
+      this.$emit('changeLike', { userId: this.userId });
     },
     changetopiclike() {
-      this.pageNum = 1
-      this.askthreadsData = []
-      this.loadThreads()
+      this.pageNum = 1;
+      this.askthreadsData = [];
+      this.loadThreads();
     }
   }
-}
+};
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import "@/assets/css/variable/color.scss";
-.topic{
+.topic {
   min-height: 820px;
 }
 .empty-icon {

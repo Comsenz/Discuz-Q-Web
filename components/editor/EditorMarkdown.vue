@@ -40,37 +40,37 @@ export default {
         { icon: 'list', tip: '无序列表', code: '* ', fn: 'markdownPrefix' },
         { icon: 'order-list', tip: '有序列表', code: '1. ', fn: 'markdownPrefix' }
       ]
-    }
+    };
   },
   methods: {
     getSelection() {
-      this.selectionStart = document.querySelector(`.${this.selector} #textarea`).selectionStart
-      this.selectionEnd = document.querySelector(`.${this.selector} #textarea`).selectionEnd
+      this.selectionStart = document.querySelector(`.${this.selector} #textarea`).selectionStart;
+      this.selectionEnd = document.querySelector(`.${this.selector} #textarea`).selectionEnd;
     },
     editMarkdown(markdown) {
-      this.getSelection()
-      const frontText = this.text.slice(0, this.selectionStart)
-      const centerText = this.text.slice(this.selectionStart, this.selectionEnd)
-      const behindText = this.text.slice(this.selectionEnd, this.text.length)
-      this[markdown.fn](frontText, centerText, behindText, markdown.code, markdown.tip)
+      this.getSelection();
+      const frontText = this.text.slice(0, this.selectionStart);
+      const centerText = this.text.slice(this.selectionStart, this.selectionEnd);
+      const behindText = this.text.slice(this.selectionEnd, this.text.length);
+      this[markdown.fn](frontText, centerText, behindText, markdown.code, markdown.tip);
     },
     markdownWrap(frontText, centerText, behindText, code, tip) {
-      centerText = centerText || tip
-      const text = frontText + code + centerText + code + behindText
-      this.$emit('changeText', text)
+      centerText = centerText || tip;
+      const text = frontText + code + centerText + code + behindText;
+      this.$emit('changeText', text);
     },
     markdownPrefix(frontText, centerText, behindText, code, tip) {
-      const content = (centerText + behindText) || tip
-      frontText = frontText ? frontText + '\n' : ''
-      const text = frontText + code + content
-      this.$emit('changeText', text)
+      const content = (centerText + behindText) || tip;
+      frontText = frontText ? `${frontText}\n` : '';
+      const text = frontText + code + content;
+      this.$emit('changeText', text);
     },
     markdownUrl(frontText, centerText, behindText, code) {
-      const text = frontText + code + centerText + behindText
-      this.$emit('changeText', text)
+      const text = frontText + code + centerText + behindText;
+      this.$emit('changeText', text);
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

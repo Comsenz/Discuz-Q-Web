@@ -15,11 +15,11 @@ export default {
   name: 'GetLocation',
   computed: {
     key() {
-      const forums = this.$store.state.site.info.attributes
-      return forums.lbs.qq_lbs_key
+      const forums = this.$store.state.site.info.attributes;
+      return forums.lbs.qq_lbs_key;
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

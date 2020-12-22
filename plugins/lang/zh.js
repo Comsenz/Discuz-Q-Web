@@ -1160,4 +1160,4 @@ export default {
     repeatPost: '重复发帖',
     otherreason: '其他理由'
   }
-}
+};

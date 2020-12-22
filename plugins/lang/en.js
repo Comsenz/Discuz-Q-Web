@@ -417,4 +417,4 @@ export default {
     loginBindId: 'Login and bind WeChat ID',
     loginBind: 'Login and bind WeChat'
   }
-}
+};

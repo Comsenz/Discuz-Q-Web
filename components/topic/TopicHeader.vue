@@ -1,33 +1,53 @@
 <template>
   <div class="title">
     <avatar-component v-if="thread.type !== 5" :author="author">
-      {{ $t('topic.publishAt') }} {{ timerDiff(thread.createdAt) + $t('topic.before') }} ..
-      （{{ $t('topic.editAt') }} {{ timerDiff(thread.firstPost ? thread.firstPost.updatedAt : '') + $t('topic.before') }}）
+      {{ $t("topic.publishAt") }}
+      {{ timerDiff(thread.createdAt) + $t("topic.before") }} .. （{{
+        $t("topic.editAt")
+      }}
+      {{
+        timerDiff(thread.firstPost ? thread.firstPost.updatedAt : "") +
+          $t("topic.before")
+      }}）
     </avatar-component>
     <!--问答帖特殊展示-->
     <avatar-component v-else :author="author">
-      {{ timerDiff(thread.createdAt) + $t('topic.before') + '...' + $t('topic.to') }}
-      <nuxt-link :to="'/user/' + beAskedUser._jv.id" class="be-ask-user">{{ ' @' + beAskedUser.username }}</nuxt-link>
-      {{ ' ' + $t('topic.ask') }}
+      {{
+        timerDiff(thread.createdAt) +
+          $t("topic.before") +
+          "..." +
+          $t("topic.to")
+      }}
+      <nuxt-link :to="'/user/' + beAskedUser._jv.id" class="be-ask-user">{{
+        " @" + beAskedUser.username
+      }}</nuxt-link>
+      {{ " " + $t("topic.ask") }}
     </avatar-component>
     <div class="container-management">
       <el-dropdown
-        v-show="managementList.length > 0 && managementList.some(item => item.canOpera)"
+        v-show="
+          managementList.length > 0 &&
+            managementList.some(item => item.canOpera)
+        "
         class="dropdown"
         placement="bottom"
         trigger="click"
         @command="handleCommand"
-        @visible-change="visibile => isManagementDrop = visibile"
+        @visible-change="visibile => (isManagementDrop = visibile)"
       >
-        <div :class="{'management': true, 'on-drop': isManagementDrop}">
-          <svg-icon type="setting" class="icon-setting" style="font-size: 16px" />
-          <span> {{ $t('topic.management') }} </span>
+        <div :class="{ management: true, 'on-drop': isManagementDrop }">
+          <svg-icon
+            type="setting"
+            class="icon-setting"
+            style="font-size: 16px"
+          />
+          <span> {{ $t("topic.management") }} </span>
         </div>
         <el-dropdown-menu slot="dropdown" style="padding: 0 10px">
           <el-dropdown-item
             v-for="(item, index) in managementList"
             :key="index"
-            :command="{command: item.command ,item}"
+            :command="{ command: item.command, item }"
             style="border-bottom: 1px solid #EDEDED; width: 98px; text-align: center"
           >
             {{ item.text }}
@@ -36,9 +56,14 @@
       </el-dropdown>
       <div class="report" @click="reportClick">
         <svg-icon type="report" class="icon-setting" style="font-size: 16px" />
-        <span>{{ $t('report.reportTitle') }}</span>
+        <span>{{ $t("report.reportTitle") }}</span>
       </div>
-      <topic-report v-if="isReport" :thread-id="thread._jv.id" :type="1" @close="isReport = false" />
+      <topic-report
+        v-if="isReport"
+        :thread-id="thread._jv.id"
+        :type="1"
+        @close="isReport = false"
+      />
       <div v-if="thread.isEssence" class="essence">
         <svg-icon style="font-size: 25px;" type="essence" />
       </div>
@@ -47,7 +72,7 @@
 </template>
 
 <script>
-import timerDiff from '@/mixin/timerDiff'
+import timerDiff from '@/mixin/timerDiff';
 
 export default {
   name: 'TopicHeader',
@@ -55,11 +80,11 @@ export default {
   props: {
     author: {
       type: Object,
-      default: () => { }
+      default: () => {}
     },
     thread: {
       type: Object,
-      default: () => { }
+      default: () => {}
     },
     managementList: {
       type: Array,
@@ -74,26 +99,34 @@ export default {
     return {
       isManagementDrop: false,
       isReport: false
-    }
+    };
   },
   methods: {
     handleCommand({ command, item }) {
-      if (command === 'toEdit') return this.$router.push(`/thread/post?type=${this.thread.type}&operating=edit&threadId=${this.thread._jv.id}`)
-      if (command === 'isDeleted') return this.deleteConfirm(item)
-      this.$emit('managementSelected', item)
+      if (command === 'toEdit') {
+        return this.$router.push(
+          `/thread/post?type=${this.thread.type}&operating=edit&threadId=${this.thread._jv.id}`
+        );
+      }
+      if (command === 'isDeleted') return this.deleteConfirm(item);
+      this.$emit('managementSelected', item);
     },
     deleteConfirm(item) {
-      this.$confirm(this.$t('topic.confirmDelete'), this.$t('discuzq.msgBox.title'), {
-        confirmButtonText: this.$t('discuzq.msgBox.confirm'),
-        cancelButtonText: this.$t('discuzq.msgBox.cancel'),
-        type: 'warning'
-      }).then(() => this.$emit('managementSelected', item))
+      this.$confirm(
+        this.$t('topic.confirmDelete'),
+        this.$t('discuzq.msgBox.title'),
+        {
+          confirmButtonText: this.$t('discuzq.msgBox.confirm'),
+          cancelButtonText: this.$t('discuzq.msgBox.cancel'),
+          type: 'warning'
+        }
+      ).then(() => this.$emit('managementSelected', item));
     },
     reportClick() {
-      this.isReport = true
+      this.isReport = true;
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

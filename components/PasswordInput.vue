@@ -1,6 +1,10 @@
 <template>
   <div class="code">
-    <span v-for="(item, index) in 6" :key="index" :class="{'code-item': true, 'filled': password[index], 'error': error}">{{ password[index] ? '*' : ' ' }}</span>
+    <span
+      v-for="(item, index) in 6"
+      :key="index"
+      :class="{ 'code-item': true, filled: password[index], error: error }"
+    >{{ password[index] ? "*" : " " }}</span>
   </div>
 </template>
 
@@ -16,33 +20,41 @@ export default {
   data() {
     return {
       password: ''
-    }
+    };
   },
   watch: {
     error(val) {
-      if (val) this.password = ''
+      if (val) this.password = '';
     }
   },
   mounted() {
-    document.addEventListener('keyup', this.onInput)
+    document.addEventListener('keyup', this.onInput);
   },
   methods: {
     onInput(e) {
-      if (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(e.key) >= 0) {
-        this.password += e.key
-        this.$emit('type')
+      if (
+        ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(e.key) >= 0
+      ) {
+        this.password += e.key;
+        this.$emit('type');
       }
-      if (this.password.length === 6) return this.$emit('password', this.password)
-      if (this.password.length > 6) this.password = this.password.substring(0, 6)
-      if (e.key === 'Backspace') this.password = this.password.substr(0, this.password.length - 1)
+      if (this.password.length === 6) {
+        return this.$emit('password', this.password);
+      }
+      if (this.password.length > 6) {
+        this.password = this.password.substring(0, 6);
+      }
+      if (e.key === 'Backspace') {
+        this.password = this.password.substr(0, this.password.length - 1);
+      }
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-  .code {
-    display: flex;
+.code {
+  display: flex;
   > .code-item {
     display: inline-block;
     line-height: 50px;
@@ -51,7 +63,7 @@ export default {
     font-weight: bold;
     height: 50px;
     width: 36px;
-    border-bottom: 1px solid #C5CAD5;
+    border-bottom: 1px solid #c5cad5;
     margin-top: 10px;
     margin-right: 10px;
     margin-bottom: 10px;
@@ -59,11 +71,11 @@ export default {
       border-bottom: 1px solid #000;
     }
     &.error {
-      border-bottom: 1px solid #FF0000;
+      border-bottom: 1px solid #ff0000;
     }
-  &:last-child {
-     margin-right: 0;
-   }
+    &:last-child {
+      margin-right: 0;
+    }
   }
-  }
+}
 </style>

@@ -1,33 +1,33 @@
 // import enLocale from './plugins/lang/en.js'
-import zhLocale from './plugins/lang/zh.js'
-import config from './config.js'
-const path = require('path')
+import zhLocale from './plugins/lang/zh.js';
+import config from './config.js';
+const path = require('path');
 
 function resolve(dir) {
-  return path.join(__dirname, dir)
+  return path.join(__dirname, dir);
 }
 
-const DEV_API_URL = config.DEV_API_URL
+const DEV_API_URL = config.DEV_API_URL;
 
-const isProduction = process.env.NODE_ENV === 'production'
+const isProduction = process.env.NODE_ENV === 'production';
 
 const proxyConfig = {
   '/api': {
     target: DEV_API_URL, // 目标服务器
     changeOrigin: true
   }
-}
+};
 const plugins = [
   ['component',
     {
-      'libraryName': 'element-ui',
-      'styleLibraryName': 'theme-chalk'
+      libraryName: 'element-ui',
+      styleLibraryName: 'theme-chalk'
     }
   ]
-]
+];
 //  生产环境清除log
 if (isProduction) {
-  plugins.push('transform-remove-console')
+  plugins.push('transform-remove-console');
 }
 
 // 条件编译
@@ -37,7 +37,7 @@ const conditionalCompiler = {
     default: process.env.SCENE === 'default',
     pay: process.env.SCENE === 'pay'
   }
-}
+};
 
 export default {
   env: {
@@ -174,8 +174,8 @@ export default {
     babel: {
       plugins: plugins,
       presets({ isServer }) {
-        const targets = isServer ? { node: '10' } : { ie: '11' }
-        return [[require.resolve('@nuxt/babel-preset-app'), { targets }]]
+        const targets = isServer ? { node: '10' } : { ie: '11' };
+        return [[require.resolve('@nuxt/babel-preset-app'), { targets }]];
       }
     },
     // svg处理
@@ -187,7 +187,7 @@ export default {
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
           exclude: /(node_modules)/
-        })
+        });
       }
 
       config.module.rules.push({
@@ -195,19 +195,19 @@ export default {
         test: /\.(js|vue|css|scss)$/,
         loader: conditionalCompiler,
         exclude: /(node_modules)/
-      })
+      });
 
       // 排除 nuxt 原配置的影响,Nuxt 默认有vue-loader,会处理svg,img等
       // 找到匹配.svg的规则,然后将存放svg文件的目录排除
-      const svgRule = config.module.rules.find(rule => rule.test.test('.svg'))
-      svgRule.exclude = [resolve('assets/svg-icons')]
+      const svgRule = config.module.rules.find(rule => rule.test.test('.svg'));
+      svgRule.exclude = [resolve('assets/svg-icons')];
 
       // 添加loader规则
       config.module.rules.push({
         test: /\.svg$/, // 匹配.svg
         include: [resolve('assets/svg-icons')], // 将存放svg的目录加入到loader处理目录
         use: [{ loader: 'svg-sprite-loader', options: { esModule: false }}]
-      })
+      });
     }
   }
-}
+};

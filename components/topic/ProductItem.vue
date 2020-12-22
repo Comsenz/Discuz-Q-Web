@@ -30,9 +30,9 @@ export default {
     }
   },
   data() {
-    return {}
+    return {};
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 @import "@/assets/css/variable/mixin.scss";

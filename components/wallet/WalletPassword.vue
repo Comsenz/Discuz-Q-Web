@@ -43,23 +43,23 @@ export default {
   },
   data() {
     return {
-    }
+    };
   },
   computed: {
     forums() {
-      return this.$store.state.site.info.attributes || {}
+      return this.$store.state.site.info.attributes || {};
     }
   },
   methods: {
     empty() {
-      this.$refs.walletinput.deleat()
+      this.$refs.walletinput.deleat();
     },
     findpaypwd() {
-      this.$emit('close')
-      this.$emit('findpaypwd')
+      this.$emit('close');
+      this.$emit('findpaypwd');
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

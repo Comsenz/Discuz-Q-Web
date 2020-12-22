@@ -76,12 +76,12 @@
   </div>
 </template>
 <script>
-import { time2MinuteOrHour } from '@/utils/time'
+import { time2MinuteOrHour } from '@/utils/time';
 export default {
   name: 'ChatItem',
   filters: {
     formatDate(date) {
-      return time2MinuteOrHour(date)
+      return time2MinuteOrHour(date);
     }
   },
   props: {
@@ -97,15 +97,15 @@ export default {
   data() {
     return {
 
-    }
+    };
   },
   methods: {
     // 打开对话框 传值给父组件
     showChatBox() {
-      this.$emit('show-chat-box', this.item)
+      this.$emit('show-chat-box', this.item);
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 @import "@/assets/css/variable/color.scss";

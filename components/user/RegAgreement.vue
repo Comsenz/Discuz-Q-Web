@@ -40,29 +40,29 @@ export default {
       popDetail: '',
       showagree: false,
       checked: true
-    }
+    };
   },
   mounted() {
-    this.getAttachMent()
+    this.getAttachMent();
   },
   methods: {
     getAttachMent() {
       const params = {
         include: 'users',
         'filter[tag]': 'agreement'
-      }
+      };
       this.$store.dispatch('jv/get', ['forum', { params }]).then((res) => {
-        this.forums = res
-      })
+        this.forums = res;
+      });
     },
     open(type) {
-      this.$router.push(`/user/agreement?type=${type}`)
+      this.$router.push(`/user/agreement?type=${type}`);
     },
     rcheck() {
-      this.$emit('check', this.checked)
+      this.$emit('check', this.checked);
     }
   }
-}
+};
 </script>
 <style lang='scss' scoped>
 @import "@/assets/css/variable/color.scss";

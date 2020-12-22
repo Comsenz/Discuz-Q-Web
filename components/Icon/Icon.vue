@@ -31,22 +31,22 @@ export default {
   },
   computed: {
     cssClass() {
-      const { name } = this
-      return `qui-icon ${name}`
+      const { name } = this;
+      return `qui-icon ${name}`;
     },
     dotClass() {
-      const { badge } = this
-      const base = 'qui-info'
-      if (!badge.toString()) return `${base} qui-info--dot`
-      return base
+      const { badge } = this;
+      const base = 'qui-info';
+      if (!badge.toString()) return `${base} qui-info--dot`;
+      return base;
     }
   },
   methods: {
     handleClick(evt) {
-      this.$emit('click', evt)
+      this.$emit('click', evt);
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

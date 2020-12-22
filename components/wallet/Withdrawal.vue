@@ -1,9 +1,13 @@
 <template>
-  <message v-if="userInfo" :title="$t('profile.towithdrawal')" @close="$emit('close')">
+  <message
+    v-if="userInfo"
+    :title="$t('profile.towithdrawal')"
+    @close="$emit('close')"
+  >
     <div class="top">
       <div class="row">
         <div v-if="cashtype" class="head">微信号</div>
-        <div v-else class="head">{{ $t('modify.wechatpayee') }}</div>
+        <div v-else class="head">{{ $t("modify.wechatpayee") }}</div>
         <div v-if="cashtype" class="body reward">
           <label v-if="userInfo.wechat && userInfo.wechat.nickname">
             <input
@@ -26,17 +30,19 @@
               class="rinput ript"
             >
           </label>
-          <div class="cashtext">{{ $t('pay.cashtext') }}</div>
+          <div class="cashtext">{{ $t("pay.cashtext") }}</div>
         </div>
       </div>
       <div class="row">
-        <div class="head">{{ $t('modify.withdrawable') }}</div>
+        <div class="head">{{ $t("modify.withdrawable") }}</div>
         <div class="body product-information">
           <span class="title2"> ￥ {{ balance }}</span>
         </div>
       </div>
       <div class="row">
-        <div class="head reward">{{ $t('modify.withdratitle') + $t('pay.sumOfMoney') }}</div>
+        <div class="head reward">
+          {{ $t("modify.withdratitle") + $t("pay.sumOfMoney") }}
+        </div>
         <div class="body reward">
           <label>
             <span>￥</span>
@@ -51,15 +57,16 @@
         </div>
       </div>
       <div class="row">
-        <div class="head">{{ $t('modify.actualamout') }}</div>
+        <div class="head">{{ $t("modify.actualamout") }}</div>
         <div class="body product-information">
           <span class="title3"> ￥ {{ contint || 0 }}</span>
           <span class="title4">
-            {{ $t('modify.servicechaege') }}{{ procedures }}{{ $t('modify.percentage') }} {{ percentage }}%)</span>
+            {{ $t("modify.servicechaege") }}{{ procedures
+            }}{{ $t("modify.percentage") }} {{ percentage }}%)</span>
         </div>
       </div>
       <div class="row">
-        <div class="head reward">{{ $t('user.verificationCode2') }}</div>
+        <div class="head reward">{{ $t("user.verificationCode2") }}</div>
         <div class="body reward">
           <!-- 发送验证码 -->
           <label>
@@ -76,36 +83,50 @@
             >{{ content }}</el-button>
           </label>
           <span v-if="usertestphon" class="phone">
-            {{ $t('profile.codesend') }}
-            <span style="font-weight:bold;color:#000000; ">{{ usertestphon }}</span> {{ $t('profile.phonesms') }}
+            {{ $t("profile.codesend") }}
+            <span style="font-weight:bold;color:#000000; ">{{
+              usertestphon
+            }}</span>
+            {{ $t("profile.phonesms") }}
           </span>
           <span v-else class="phone">
-            {{ $t('profile.withoutbind') }}
+            {{ $t("profile.withoutbind") }}
             <span class="phonei" @click="tomy">
-              {{ $t('profile.personalhomepage') }}
+              {{ $t("profile.personalhomepage") }}
             </span>
-            {{ $t('profile.tobindphone') }}
+            {{ $t("profile.tobindphone") }}
           </span>
         </div>
       </div>
     </div>
     <div class="bottom">
       <span v-if="cashtype" style="font-size:14px">
-        ￥{{ contint || 0 }}{{ $t('pay.rmb') + $t('profile.withdrawalto') + (userInfo && userInfo.wechat && userInfo.wechat.nickname ? userInfo.wechat.nickname : '') }}{{ $t('pay.ofAccount') }}
+        ￥{{ contint || 0
+        }}{{
+          $t("pay.rmb") +
+            $t("profile.withdrawalto") +
+            (userInfo && userInfo.wechat && userInfo.wechat.nickname
+              ? userInfo.wechat.nickname
+              : "")
+        }}{{ $t("pay.ofAccount") }}
       </span>
       <span v-else style="font-size:14px">
-        ￥{{ contint || 0 }}{{ $t('pay.rmb') + $t('profile.withdrawalto') + withdrawlNumber || '' }}{{ $t('pay.ofAccount') }}
+        ￥{{ contint || 0
+        }}{{ $t("pay.rmb") + $t("profile.withdrawalto") + withdrawlNumber || ""
+        }}{{ $t("pay.ofAccount") }}
       </span>
-      <el-button size="medium" type="primary" class="border" @click="btncash">{{ $t('profile.comfirmwithdrawal' ) }}</el-button>
+      <el-button size="medium" type="primary" class="border" @click="btncash">{{
+        $t("profile.comfirmwithdrawal")
+      }}</el-button>
     </div>
   </message>
 </template>
 
 <script>
-import { status } from '@/store/modules/jsonapi-vuex/index'
-import handleError from '@/mixin/handleError'
-import countDown from '@/mixin/countDown'
-const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
+import { status } from '@/store/modules/jsonapi-vuex/index';
+import handleError from '@/mixin/handleError';
+import countDown from '@/mixin/countDown';
+const tcaptchs = process.client ? require('@/utils/tcaptcha') : '';
 
 export default {
   name: 'Withdrawal',
@@ -144,20 +165,20 @@ export default {
       captchaResult: {},
       withdrawlNumber: '',
       cashtype: 0
-    }
+    };
   },
   computed: {
     forums() {
-      return this.$store.state.site.info.attributes || {}
+      return this.$store.state.site.info.attributes || {};
     }
   },
   watch: {
     forums: {
       handler(val) {
         if (val.paycenter && val.paycenter.wxpay_mchpay_close) {
-          this.cashtype = 1
+          this.cashtype = 1;
         } else {
-          this.cashtype = 0
+          this.cashtype = 0;
         }
       },
       deep: true,
@@ -165,60 +186,78 @@ export default {
     }
   },
   mounted() {
-    this.userinfo()
-    this.forumsdata()
+    this.userinfo();
+    this.forumsdata();
   },
   methods: {
     userinfo() {
       const params = {
         include: 'groups,wechat'
-      }
+      };
       this.$store.dispatch('jv/get', [`users/${this.userId}`, { params }]).then(
-        (res) => {
-          this.userInfo = res
-          this.setmydata()
+        res => {
+          this.userInfo = res;
+          this.setmydata();
           this.userInfo.groupsName = this.userInfo.groups
             ? this.userInfo.groups[0].name
-            : ''
+            : '';
         },
-        (e) => {
-          const { response: { data: { errors }}} = e
-          if (errors && Array.isArray(errors) && errors.length > 0 && errors[0]) {
-            const error = errors[0].detail && errors[0].detail.length > 0 ? errors[0].detail[0] : errors[0].code
+        e => {
+          const {
+            response: {
+              data: { errors }
+            }
+          } = e;
+          if (
+            errors
+            && Array.isArray(errors)
+            && errors.length > 0
+            && errors[0]
+          ) {
+            const error
+              = errors[0].detail && errors[0].detail.length > 0
+                ? errors[0].detail[0]
+                : errors[0].code;
             if (error === 'Invalid includes [wechat]') {
-              this.$message.error(error)
-              localStorage.removeItem('access_token')
-              localStorage.removeItem('user_id')
-              window.location.replace('/')
+              this.$message.error(error);
+              localStorage.removeItem('access_token');
+              localStorage.removeItem('user_id');
+              window.location.replace('/');
             } else {
-              const errorText = errors[0].detail && errors[0].detail.length > 0 ? errors[0].detail[0] : this.$t(`core.${error}`)
-              this.$message.error(errorText)
+              const errorText
+                = errors[0].detail && errors[0].detail.length > 0
+                  ? errors[0].detail[0]
+                  : this.$t(`core.${error}`);
+              this.$message.error(errorText);
             }
           }
         }
-      )
+      );
     },
     setmydata() {
-      this.name = this.userInfo.username
-      this.balance = this.userInfo.walletBalance
-      this.usertestphon = this.userInfo.mobile
-      this.userphon = this.userInfo.originalMobile
-      this.withdrawlNumber = this.userphon
+      this.name = this.userInfo.username;
+      this.balance = this.userInfo.walletBalance;
+      this.usertestphon = this.userInfo.mobile;
+      this.userphon = this.userInfo.originalMobile;
+      this.withdrawlNumber = this.userphon;
       if (!this.usertestphon) {
-        this.disabtype = true
+        this.disabtype = true;
       }
     },
     forumsdata() {
-      this.cost = this.forums.set_cash.cash_rate
-      this.percentage = this.forums.set_cash.cash_rate * 100
-      this.cashtype = this.forums.paycenter && this.forums.paycenter.wxpay_mchpay_close ? 1 : 0
+      this.cost = this.forums.set_cash.cash_rate;
+      this.percentage = this.forums.set_cash.cash_rate * 100;
+      this.cashtype
+        = this.forums.paycenter && this.forums.paycenter.wxpay_mchpay_close
+          ? 1
+          : 0;
     },
     settlement() {
       setTimeout(() => {
         if (this.canAmount[0] === '.') {
-          const num = 0
-          const cun = '.'
-          this.canAmount = num + cun
+          const num = 0;
+          const cun = '.';
+          this.canAmount = num + cun;
         }
         this.canAmount = this.canAmount
           .replace(/[^\d.]/g, '')
@@ -227,53 +266,56 @@ export default {
           .replace(/\./g, '')
           .replace('$#$', '.')
           .replace(/^(-)*(\d+)\.(\d\d).*$/, '$1$2.$3')
-          .replace(/^\./g, '')
+          .replace(/^\./g, '');
         if (Number(this.canAmount) > Number(this.balance)) {
-          this.canAmount = this.canAmount.slice(0, this.canAmount.length - 1)
-          this.$message.warning(this.$t('modify.greaterthan'))
+          this.canAmount = this.canAmount.slice(0, this.canAmount.length - 1);
+          this.$message.warning(this.$t('modify.greaterthan'));
         }
         if (this.canAmount.length > 0) {
-          this.length = true
-          const number = this.canAmount - (this.canAmount * this.cost)
+          this.length = true;
+          const number = this.canAmount - (this.canAmount * this.cost);
           if (number) {
-            this.contint = `${number.toFixed(2)}`
-            const casnumber = this.canAmount * this.cost
-            this.procedures = casnumber.toFixed(2)
+            this.contint = `${number.toFixed(2)}`;
+            const casnumber = this.canAmount * this.cost;
+            this.procedures = casnumber.toFixed(2);
           } else {
-            this.contint = ''
-            this.procedures = ''
+            this.contint = '';
+            this.procedures = '';
           }
         } else if (this.canAmount.length <= 0) {
           // this.length = false;
-          this.contint = ''
-          const casnumber = this.canAmount * this.cost
-          this.procedures = casnumber.toFixed(2)
+          this.contint = '';
+          const casnumber = this.canAmount * this.cost;
+          this.procedures = casnumber.toFixed(2);
         }
-      }, 5)
+      }, 5);
     },
     // 发送验证码
     sendsms() {
       if (this.forums.qcloud.qcloud_captcha) {
-        this.tcaptcha()
+        this.tcaptcha();
       } else {
-        this.second = 60
-        this.sendVerifyCode()
+        this.second = 60;
+        this.sendVerifyCode();
       }
     },
     // 腾讯验证码
     tcaptcha() {
       // eslint-disable-next-line no-undef
-      this.captcha = new TencentCaptcha(this.forums.qcloud.qcloud_captcha_app_id, (res) => {
-        if (res.ret === 0) {
-          this.ticket = res.ticket
-          this.randstr = res.randstr
-          // 验证通过后发布
-          // 修改手机验证码发送
-          this.sendVerifyCode()
+      this.captcha = new TencentCaptcha(
+        this.forums.qcloud.qcloud_captcha_app_id,
+        res => {
+          if (res.ret === 0) {
+            this.ticket = res.ticket;
+            this.randstr = res.randstr;
+            // 验证通过后发布
+            // 修改手机验证码发送
+            this.sendVerifyCode();
+          }
         }
-      })
+      );
       // 显示验证码
-      this.captcha.show()
+      this.captcha.show();
     },
     sendVerifyCode() {
       const params = {
@@ -284,17 +326,21 @@ export default {
         type: 'verify',
         captcha_ticket: this.ticket,
         captcha_rand_str: this.randstr
-      }
-      const postphon = status.run(() => this.$store.dispatch('jv/post', params))
-      postphon
-        .then((res) => {
-          if (res.interval) this.countDown(res.interval)
-          this.ticket = ''
-          this.randstr = ''
-        }, e => this.handleError(e))
+      };
+      const postphon = status.run(() =>
+        this.$store.dispatch('jv/post', params)
+      );
+      postphon.then(
+        res => {
+          if (res.interval) this.countDown(res.interval);
+          this.ticket = '';
+          this.randstr = '';
+        },
+        e => this.handleError(e)
+      );
     },
     btncash() {
-      this.verifytitle()
+      this.verifytitle();
     },
     // 验证短信
     verifytitle() {
@@ -304,24 +350,29 @@ export default {
         },
         code: this.verifycode,
         type: 'verify'
-      }
-      this.$store
-        .dispatch('jv/post', params)
-        .then((res) => {
+      };
+      this.$store.dispatch('jv/post', params).then(
+        res => {
           if (res) {
-            this.cashwithdrawal()
+            this.cashwithdrawal();
           }
-        }, (e) => {
+        },
+        e => {
           // eslint-disable-next-line object-curly-spacing
-          const { response: { data: { errors } } } = e
+          const {
+            response: {
+              data: { errors }
+            }
+          } = e;
           if (errors[0]) {
             if (errors[0].status === '422') {
-              this.$message.error(errors[0].detail[0])
+              this.$message.error(errors[0].detail[0]);
             } else if (errors[0].status === 500) {
-              this.$message.error(this.$t(`core.${errors[0].code}`))
+              this.$message.error(this.$t(`core.${errors[0].code}`));
             }
           }
-        })
+        }
+      );
     },
     // 提现申请
     cashwithdrawal() {
@@ -333,49 +384,57 @@ export default {
         cash_apply_amount: this.canAmount,
         cash_mobile: this.withdrawlNumber,
         cash_type: this.cashtype
-      }
-      const postcash = status.run(() => this.$store.dispatch('jv/post', params))
-      postcash
-        .then((res) => {
+      };
+      const postcash = status.run(() =>
+        this.$store.dispatch('jv/post', params)
+      );
+      postcash.then(
+        res => {
           if (res) {
-            this.canAmount = ''
-            this.contint = ''
-            this.procedures = 0
+            this.canAmount = '';
+            this.contint = '';
+            this.procedures = 0;
             // 重新更新数据
             // this.$store.dispatch('user/getUserInfo', this.userId)
-            this.$message.success(this.$t('modify.withdrawal'))
-            this.$emit('close')
+            this.$message.success(this.$t('modify.withdrawal'));
+            this.$emit('close');
             // this.$router.go(0)
           }
-        }, (e) => {
+        },
+        e => {
           // eslint-disable-next-line object-curly-spacing
-          const { response: { data: { errors } } } = e
+          const {
+            response: {
+              data: { errors }
+            }
+          } = e;
           if (errors[0]) {
             if (errors[0].status === '422') {
-              this.$message.error(errors[0].detail[0])
-              this.canAmount = ''
-              this.contint = ''
-              this.procedures = 0
+              this.$message.error(errors[0].detail[0]);
+              this.canAmount = '';
+              this.contint = '';
+              this.procedures = 0;
             } else if (errors[0].status === 500) {
               if (errors[0].code === 'unbind_wechat') {
-                this.$message.error(errors[0].detail)
+                this.$message.error(errors[0].detail);
               } else if (errors[0].code === 'cash_mch_invalid') {
-                this.$message.error(errors[0].detail)
+                this.$message.error(errors[0].detail);
               } else {
-                this.$message.error(this.$t(`core.${errors[0].code}`))
-                this.canAmount = ''
-                this.contint = ''
-                this.procedures = 0
+                this.$message.error(this.$t(`core.${errors[0].code}`));
+                this.canAmount = '';
+                this.contint = '';
+                this.procedures = 0;
               }
             }
           }
-        })
+        }
+      );
     },
     tomy() {
-      this.$router.push('/my/profile')
+      this.$router.push('/my/profile');
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -438,23 +497,23 @@ export default {
           border-top: none;
           border-right: none;
           border-bottom: none;
-          color:#000000;
-          &:active{
+          color: #000000;
+          &:active {
             border-color: #dcdfe6;
           }
         }
-        .cashtext{
+        .cashtext {
           font-size: 11px;
-          color:#777777;
-          width:395px;
+          color: #777777;
+          width: 395px;
         }
         .phone {
           margin-top: 10px;
           font-size: 12px;
           .phonei {
-            font-weight:bold;
-            color:#1878F3;
-            cursor:pointer;
+            font-weight: bold;
+            color: #1878f3;
+            cursor: pointer;
           }
         }
         > label {

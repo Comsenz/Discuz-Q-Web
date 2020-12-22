@@ -98,4 +98,4 @@ export default [{ // 详情页
   h5: '/pages/my/favorite',
   pc: '/my/favorite'
 }
-]
+];

@@ -1,10 +1,10 @@
 const getResponseDataArray = data => {
   if (Array.isArray(data)) {
-    return data
+    return data;
   } else if (data && data._jv && data._jv.json) {
-    return data._jv.json.data || []
+    return data._jv.json.data || [];
   }
-  return undefined
-}
+  return undefined;
+};
 
-export default getResponseDataArray
+export default getResponseDataArray;

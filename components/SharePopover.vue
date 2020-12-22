@@ -31,7 +31,7 @@
   </div>
 </template>
 <script>
-const QRCode = process.client && require('qrcodejs2')
+const QRCode = process.client && require('qrcodejs2');
 export default {
   name: 'SharePopover',
   props: {
@@ -48,40 +48,40 @@ export default {
     return {
       qrcode: null,
       currentType: ''
-    }
+    };
   },
   methods: {
     // 复制链接
     copyLink() {
-      const oInput = document.createElement('input')
+      const oInput = document.createElement('input');
       if (process.client) {
         if (this.type === 'topic') {
           // 话题详情
-          oInput.value = window.location.href
+          oInput.value = window.location.href;
         } else {
-          oInput.value = `${window.location.protocol}//${window.location.host}/thread/${this.threadsId}`
+          oInput.value = `${window.location.protocol}//${window.location.host}/thread/${this.threadsId}`;
         }
-        oInput.id = 'copyInput'
-        document.body.appendChild(oInput)
-        oInput.select()
-        document.execCommand('Copy')
+        oInput.id = 'copyInput';
+        document.body.appendChild(oInput);
+        oInput.select();
+        document.execCommand('Copy');
       }
-      this.$message.success('链接复制成功')
+      this.$message.success('链接复制成功');
       setTimeout(() => {
-        oInput.remove()
-      }, 100)
+        oInput.remove();
+      }, 100);
     },
     // 弹出框显示时触发
     onShowPopover() {
-      this.currentType = this.type
-      let path = window.location.href
+      this.currentType = this.type;
+      let path = window.location.href;
       if (this.type === 'topic') {
         // 话题详情
-        path = window.location.href
+        path = window.location.href;
       } else {
-        path = `${window.location.protocol}//${window.location.host}/thread/${this.threadsId}`
+        path = `${window.location.protocol}//${window.location.host}/thread/${this.threadsId}`;
       }
-      this.createQrcode(path)
+      this.createQrcode(path);
     },
     /**
      * 生成二维码
@@ -91,22 +91,22 @@ export default {
      */
     createQrcode(link) {
       if (process.client) {
-        this.qrcode = null
+        this.qrcode = null;
         this.$nextTick(() => {
           this.qrcode = new QRCode(this.$refs.qrcode, {
             width: 88,
             height: 88, // 高度
             text: link // 二维码内容
-          })
-        })
+          });
+        });
       }
     },
     // 关闭弹框,清除已经生成的二维码
     closeCode() {
-      this.$refs.qrcode.innerHTML = ''
+      this.$refs.qrcode.innerHTML = '';
     }
   }
-}
+};
 </script>
 <style lang="scss">
 .custom-popover-width{

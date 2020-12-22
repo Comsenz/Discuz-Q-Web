@@ -2,16 +2,25 @@
   <div v-if="forums" v-loading="loading" class="register">
     <el-tabs v-model="activeName" type="border-card" class="register-select">
       <!-- 手机号登录 -->
-      <el-tab-pane v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms" :label="$t('user.phonelogin')" name="0">
-        <span class="title2">{{ $t('profile.mobile') }}</span>
-        <el-input v-model="phoneNumber" :placeholder="$t('user.phoneNumber')" class="phone-input" maxlength="11" />
+      <el-tab-pane
+        v-if="forums && forums.qcloud && forums.qcloud.qcloud_sms"
+        :label="$t('user.phonelogin')"
+        name="0"
+      >
+        <span class="title2">{{ $t("profile.mobile") }}</span>
+        <el-input
+          v-model="phoneNumber"
+          :placeholder="$t('user.phoneNumber')"
+          class="phone-input"
+          maxlength="11"
+        />
         <el-button
           class="count-b"
-          :class="{disabled: !canClick}"
+          :class="{ disabled: !canClick }"
           size="middle"
           @click="sendVerifyCode"
         >{{ content }}</el-button>
-        <span class="title3">{{ $t('user.verification') }}</span>
+        <span class="title3">{{ $t("user.verification") }}</span>
         <el-input
           v-model="verifyCode"
           :placeholder="$t('user.verificationCode')"
@@ -19,9 +28,21 @@
           @keyup.enter.native="PhoneLogin"
         />
         <div class="agreement"><reg-agreement @check="check" /></div>
-        <el-button type="primary" class="r-button" @click="PhoneLogin">{{ $t('user.login') }}</el-button>
+        <el-button type="primary" class="r-button" @click="PhoneLogin">{{
+          $t("user.login")
+        }}</el-button>
         <div class="otherlogin">
-          <svg-icon v-if="forums && forums.passport && forums.passport.oplatform_close && forums.passport.offiaccount_close" class="wechat-icon" type="wechatlogin" @click="toWechat" />
+          <svg-icon
+            v-if="
+              forums &&
+                forums.passport &&
+                forums.passport.oplatform_close &&
+                forums.passport.offiaccount_close
+            "
+            class="wechat-icon"
+            type="wechatlogin"
+            @click="toWechat"
+          />
           <svg-icon class="wechat-icon" type="userlogin" @click="toUserlogin" />
         </div>
       </el-tab-pane>
@@ -30,12 +51,12 @@
 </template>
 
 <script>
-import { status } from '@/store/modules/jsonapi-vuex/index'
-import head from '@/mixin/head'
-import handleError from '@/mixin/handleError'
-import tencentCaptcha from '@/mixin/tencentCaptcha'
-import countDown from '@/mixin/countDown'
-import loginAbout from '@/mixin/loginAbout'
+import { status } from '@/store/modules/jsonapi-vuex/index';
+import head from '@/mixin/head';
+import handleError from '@/mixin/handleError';
+import tencentCaptcha from '@/mixin/tencentCaptcha';
+import countDown from '@/mixin/countDown';
+import loginAbout from '@/mixin/loginAbout';
 
 export default {
   name: 'PhoneLogin',
@@ -54,38 +75,38 @@ export default {
       ischeck: true,
       loading: false,
       preurl: '/'
-    }
+    };
   },
   computed: {
     forums() {
-      return this.$store.state.site.info.attributes || {}
+      return this.$store.state.site.info.attributes || {};
     }
   },
   mounted() {
-    const { code, preurl } = this.$route.query
+    const { code, preurl } = this.$route.query;
     if (preurl) {
-      this.preurl = preurl
+      this.preurl = preurl;
     }
     if (code !== 'undefined') {
-      this.code = code
+      this.code = code;
     }
     if (this.forums && this.forums.set_site && this.forums.set_site.site_mode) {
-      this.site_mode = this.forums.set_site.site_mode
+      this.site_mode = this.forums.set_site.site_mode;
     }
   },
   methods: {
     check(value) {
-      this.ischeck = value
+      this.ischeck = value;
     },
     // 简单判断
     changeinput() {
       setTimeout(() => {
-        this.phoneNumber = this.phoneNumber.replace(/[^\d]/g, '')
-      }, 30)
+        this.phoneNumber = this.phoneNumber.replace(/[^\d]/g, '');
+      }, 30);
       if (this.phoneNumber.length === 11) {
-        this.canClick = true
+        this.canClick = true;
       } else {
-        this.canClick = false
+        this.canClick = false;
       }
     },
     async sendVerifyCode() {
@@ -93,21 +114,25 @@ export default {
         _jv: { type: 'sms/send' },
         mobile: this.phoneNumber,
         type: 'login'
-      }
-      params = await this.checkCaptcha(params)
-      status.run(() => this.$store.dispatch('jv/post', params))
-        .then((res) => {
-          if (res.interval) this.countDown(res.interval)
-        }, e => this.handleError(e))
+      };
+      params = await this.checkCaptcha(params);
+      status
+        .run(() => this.$store.dispatch('jv/post', params))
+        .then(
+          res => {
+            if (res.interval) this.countDown(res.interval);
+          },
+          e => this.handleError(e)
+        );
     },
     PhoneLogin() {
-      this.loading = true
+      this.loading = true;
       if (this.phoneNumber === '') {
-        this.$message.error('手机号不能为空')
-        this.loading = false
+        this.$message.error('手机号不能为空');
+        this.loading = false;
       } else if (this.verifyCode === '') {
-        this.$message.error('验证码不能为空')
-        this.loading = false
+        this.$message.error('验证码不能为空');
+        this.loading = false;
       } else {
         const params = {
           data: {
@@ -117,66 +142,67 @@ export default {
               type: 'login'
             }
           }
-        }
+        };
         if (this.code && this.code !== 'undefined') {
-          params.data.attributes.inviteCode = this.code
+          params.data.attributes.inviteCode = this.code;
         }
         this.$store
           .dispatch('session/verificationCodeh5Login', params)
-          .then((res) => {
-            this.loading = false
+          .then(res => {
+            this.loading = false;
             if (res && res.data && res.data.data && res.data.data.id) {
-              this.logind(res)
+              this.logind(res);
             }
             if (
-              res &&
-              res.data &&
-              res.data.errors &&
-              res.data.errors[0].code === 'no_bind_user'
+              res
+              && res.data
+              && res.data.errors
+              && res.data.errors[0].code === 'no_bind_user'
             ) {
               if (process.client) {
-                const mobileToken = res.data.errors[0].token
-                localStorage.setItem('mobileToken', mobileToken)
+                const mobileToken = res.data.errors[0].token;
+                localStorage.setItem('mobileToken', mobileToken);
               }
-              this.$router.push(`/user/register-bind-phone?phoneNumber=${this.phoneNumber}`)
-              return
+              this.$router.push(
+                `/user/register-bind-phone?phoneNumber=${this.phoneNumber}`
+              );
+              return;
             }
             if (
-              res &&
-              res.data &&
-              res.data.errors &&
-              res.data.errors[0].code === 'register_validate'
+              res
+              && res.data
+              && res.data.errors
+              && res.data.errors[0].code === 'register_validate'
             ) {
-              this.$router.push(`/user/warning?username=${this.phoneNumber}`)
-              return
+              this.$router.push(`/user/warning?username=${this.phoneNumber}`);
+              return;
             }
-            if (
-              res &&
-              res.data &&
-              res.data.errors &&
-              res.data.errors[0]
-            ) {
-              const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code
-              const errorText = res.data.errors[0].detail ? res.data.errors[0].detail[0] : this.$t(`core.${error}`)
-              this.$message.error(errorText)
+            if (res && res.data && res.data.errors && res.data.errors[0]) {
+              const error = res.data.errors[0].detail
+                ? res.data.errors[0].detail[0]
+                : res.data.errors[0].code;
+              const errorText = res.data.errors[0].detail
+                ? res.data.errors[0].detail[0]
+                : this.$t(`core.${error}`);
+              this.$message.error(errorText);
             }
           })
-          .catch((err) => {
-            this.loading = false
-            this.handleError(err)
-          })
+          .catch(err => {
+            this.loading = false;
+            this.handleError(err);
+          });
       }
     },
     toWechat() {
-      this.$router.push(`/user/wechat?code=${this.code}&preurl=${this.preurl}`)
+      this.$router.push(`/user/wechat?code=${this.code}&preurl=${this.preurl}`);
     },
     toUserlogin() {
-      this.$router.push(`/user/login?code=${this.code}&preurl=${this.preurl}`)
+      this.$router.push(`/user/login?code=${this.code}&preurl=${this.preurl}`);
     }
   }
-}
+};
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import "@/assets/css/variable/color.scss";
 ::v-deep input::-ms-reveal {
   display: none;
@@ -222,8 +248,8 @@ export default {
     }
   }
   .otherlogin {
-    font-size:50px;
-    margin-top:30px;
+    font-size: 50px;
+    margin-top: 30px;
     margin-left: 70px;
     .wechat-icon {
       cursor: pointer;

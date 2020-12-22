@@ -132,9 +132,9 @@
 </template>
 
 <script>
-import { status } from '@/store/modules/jsonapi-vuex/index'
-import head from '@/mixin/head'
-import handleError from '@/mixin/handleError'
+import { status } from '@/store/modules/jsonapi-vuex/index';
+import head from '@/mixin/head';
+import handleError from '@/mixin/handleError';
 
 export default {
   name: 'Wallet',
@@ -163,45 +163,45 @@ export default {
       isfindpwd: false,
       isWithoutphone: false,
       passwordErrorTip: ''
-    }
+    };
   },
   computed: {
     forums() {
-      return this.$store.state.site.info.attributes || {}
+      return this.$store.state.site.info.attributes || {};
     },
     userId() {
-      return this.$store.getters['session/get']('userId')
+      return this.$store.getters['session/get']('userId');
     }
   },
   watch: {
     userId(id) {
-      if (id) this.getInfo()
+      if (id) this.getInfo();
     }
   },
   mounted() {
-    if (this.userId) this.getInfo()
+    if (this.userId) this.getInfo();
   },
   methods: {
     // 提现成功后的数据更新
     updateWithdraw() {
-      this.isWithdraw = false
-      this.$refs.cash.getList()
+      this.isWithdraw = false;
+      this.$refs.cash.getList();
     },
     // 提现
     showWithdraw() {
-      this.isWithdraw = true
+      this.isWithdraw = true;
     },
     // 设置密码框展示
     setPassword() {
-      this.setPasswordInput = true
+      this.setPasswordInput = true;
     },
     // 修改密码框展示
     changePassword() {
-      this.showPasswordInput = true
+      this.showPasswordInput = true;
     },
     repeatclose() {
-      this.showNewverify2 = false
-      this.codeError = false
+      this.showNewverify2 = false;
+      this.codeError = false;
     },
     // 原密码判断
     validatePass(password = '') {
@@ -210,56 +210,56 @@ export default {
           type: 'users/pay-password/reset'
         },
         pay_password: password
-      }
-      const postphon = status.run(() => this.$store.dispatch('jv/post', params))
+      };
+      const postphon = status.run(() => this.$store.dispatch('jv/post', params));
       postphon
         .then((res) => {
           if (res._jv.json.data.id) {
-            this.passError = false
-            this.showPasswordInput = false
-            this.$message.success(this.$t('modify.authensucceeded'))
-            this.showNewverify = true
-            this.usertokenid = res._jv.json.data.id
+            this.passError = false;
+            this.showPasswordInput = false;
+            this.$message.success(this.$t('modify.authensucceeded'));
+            this.showNewverify = true;
+            this.usertokenid = res._jv.json.data.id;
           }
         })
         .catch((err) => {
-          this.$refs.walletpass.empty()
-          const { response: { data: { errors }}} = err
+          this.$refs.walletpass.empty();
+          const { response: { data: { errors }}} = err;
           if (errors[0].code === 'validation_error') {
-            this.passError = true
+            this.passError = true;
             // eslint-disable-next-line prefer-destructuring
-            this.passwordErrorTip = errors[0].detail[0]
-            return
+            this.passwordErrorTip = errors[0].detail[0];
+            return;
           }
-          this.handleError(err)
-        })
+          this.handleError(err);
+        });
     },
     // 新密码
     checkpass(num) {
       if (num.length >= 6) {
-        this.inputpas = num
-        this.showNewverify = false
-        this.showNewverify2 = true
+        this.inputpas = num;
+        this.showNewverify = false;
+        this.showNewverify2 = true;
       }
     },
     // 重复输入新密码
     checkpass2(sum) {
       if (sum.length >= 6) {
-        this.validateVerify(sum)
+        this.validateVerify(sum);
       }
     },
     // 获取初始化密码
     setPass(password) {
       if (password.length >= 6) {
-        this.inputpas = password
-        this.setPasswordInput = false
-        this.repPasswordInput = true
+        this.inputpas = password;
+        this.setPasswordInput = false;
+        this.repPasswordInput = true;
       }
     },
     // 重复初始化密码
     setPass2(password) {
       if (password.length >= 6) {
-        this.validateVerify(password)
+        this.validateVerify(password);
       }
     },
     // 初始密码判断
@@ -272,50 +272,50 @@ export default {
         pay_password_token: this.usertokenid, // 初始化密码不需要
         payPassword: this.inputpas,
         pay_password_confirmation: password
-      }
-      const postphon = status.run(() => this.$store.dispatch('jv/patch', params))
+      };
+      const postphon = status.run(() => this.$store.dispatch('jv/patch', params));
       postphon
         .then((res) => {
-          this.inputpas = ''
+          this.inputpas = '';
           if (res) {
-            this.repPasswordInput = false
-            this.showNewverify2 = false
-            this.$message.success(this.$t('modify.paymentsucceed'))
+            this.repPasswordInput = false;
+            this.showNewverify2 = false;
+            this.$message.success(this.$t('modify.paymentsucceed'));
             // this.$router.go(0)
-            this.getInfo()
+            this.getInfo();
           }
         })
         .catch((err) => {
           if (this.$refs.repeatnewpass) {
-            this.$refs.repeatnewpass.empty()
+            this.$refs.repeatnewpass.empty();
           }
           if (this.$refs.repeatpass) {
-            this.$refs.repeatpass.empty()
+            this.$refs.repeatpass.empty();
           }
-          this.codeError = true
-          this.handleError(err)
-        })
+          this.codeError = true;
+          this.handleError(err);
+        });
     },
     // 获取钱包信息
     getInfo() {
       status
         .run(() => this.$store.dispatch('jv/get', `wallet/user/${this.userId}`))
         .then((res) => {
-          this.dataInfo = res
-          this.hasPassword = res.user.canWalletPay
-        }, e => this.handleError(e))
+          this.dataInfo = res;
+          this.hasPassword = res.user.canWalletPay;
+        }, e => this.handleError(e));
     },
     // 找回密码
     findPaypwd() {
       if (this.dataInfo.user.mobile) {
-        this.isfindpwd = true
+        this.isfindpwd = true;
       } else {
-        this.isWithoutphone = true
+        this.isWithoutphone = true;
       }
     }
   }
 
-}
+};
 </script>
 <style lang='scss' scoped>
 @import "@/assets/css/variable/color.scss";

@@ -5,7 +5,8 @@
       <el-tab-pane :label="$t('user.registerBindWechat')" name="0">
         <form>
           <div class="bindtext">
-            <div>{{ $t('user.dear') }}
+            <div>
+              {{ $t("user.dear") }}
               <avatar
                 :user="{
                   username: nickname,
@@ -16,15 +17,23 @@
                 style="display:inline-block;
                 vertical-align:text-top;"
               />
-              <b>{{ nickname || '' }}</b> {{ $t('user.user') }}</div>
-            <div>{{ $t('user.yourWechat') }}<b>{{ $t('user.withoutBind') }}</b>，<b>{{ $t('user.register') }}</b>{{ $t('user.readyBInd') }}</div>
+              <b>{{ nickname || "" }}</b> {{ $t("user.user") }}
+            </div>
+            <div>
+              {{ $t("user.yourWechat") }}
+              <b>{{ $t("user.withoutBind") }}</b>，<b>{{ $t("user.register") }}</b>{{ $t("user.readyBInd") }}
+            </div>
           </div>
           <div>
-            <span class="title">{{ $t('profile.username') }}</span>
-            <el-input v-model="userName" :placeholder="$t('user.username')" class="reg-input" />
+            <span class="title">{{ $t("profile.username") }}</span>
+            <el-input
+              v-model="userName"
+              :placeholder="$t('user.username')"
+              class="reg-input"
+            />
           </div>
           <div>
-            <span class="title2">{{ $t('user.passwd') }}</span>
+            <span class="title2">{{ $t("user.passwd") }}</span>
             <el-input
               v-model="passWord"
               :placeholder="$t('user.password')"
@@ -34,36 +43,35 @@
               @keyup.enter.native="register"
             />
           </div>
-          <div :class="passerror ?'rep passerr':'rep'">
-            <span class="title2">{{ $t('user.repeatpasswd') }}</span>
+          <div :class="passerror ? 'rep passerr' : 'rep'">
+            <span class="title2">{{ $t("user.repeatpasswd") }}</span>
             <el-input
               v-model="repeatPassWord"
               :placeholder="$t('user.password')"
               type="password"
-              :class="passerror ? 'reg-input inputerr':'reg-input'"
+              :class="passerror ? 'reg-input inputerr' : 'reg-input'"
               show-password
               @input="notsame"
               @keyup.enter.native="register"
             />
-            <div v-if="passerror" class="passerror">{{ $t('modify.reenter') }}</div>
-          </div>
-          <div v-if="validate">
-            <span class="title2">{{ $t('user.registerReason') }}</span>
-            <el-input
-              v-model="Reason"
-              :placeholder="$t('user.reason')"
-              class="reg-input"
-              @keyup.enter.native="register"
-            />
+            <div v-if="passerror" class="passerror">
+              {{ $t("modify.reenter") }}
+            </div>
           </div>
           <div class="agreement">
             <reg-agreement @check="check" />
           </div>
-          <el-button type="primary" class="r-button" @click="register">{{ $t('user.registerbind') }}</el-button>
+          <el-button type="primary" class="r-button" @click="register">{{
+            $t("user.registerbind")
+          }}</el-button>
           <div class="tologin">
             <span
               @click="jump2Login"
-            >{{ $t('user.exist') }}<nuxt-link to="/user/login-bind">{{ $t('user.loginbind') }}</nuxt-link> </span>
+            >{{ $t("user.exist")
+            }}<nuxt-link to="/user/login-bind">{{
+              $t("user.loginbind")
+            }}</nuxt-link>
+            </span>
           </div>
         </form>
       </el-tab-pane>
@@ -72,16 +80,14 @@
 </template>
 
 <script>
-import head from '@/mixin/head'
-import handleError from '@/mixin/handleError'
-import loginAbout from '@/mixin/loginAbout'
-const tcaptchs = process.client ? require('@/utils/tcaptcha') : ''
+import head from '@/mixin/head';
+import handleError from '@/mixin/handleError';
+import loginAbout from '@/mixin/loginAbout';
+const tcaptchs = process.client ? require('@/utils/tcaptcha') : '';
 
 export default {
   name: 'RegisterBind',
-  mixins: [
-    head, handleError, tcaptchs, loginAbout
-  ],
+  mixins: [head, handleError, tcaptchs, loginAbout],
   data() {
     return {
       title: this.$t('profile.register'),
@@ -89,7 +95,6 @@ export default {
       passWord: '',
       repeatPassWord: '',
       activeName: '0', // 默认激活tab
-      Reason: '', // 注册原因
       validate: false, // 默认不开启注册审核
       code: '', // 注册邀请码
       register_captcha: false, // 默认不开启注册验证码
@@ -105,97 +110,110 @@ export default {
       headimgurl: '',
       token: '', // 微信绑定token
       preurl: '/'
-    }
+    };
   },
   computed: {
     forums() {
-      return this.$store.state.site.info.attributes || {}
+      return this.$store.state.site.info.attributes || {};
     },
     userInfo() {
-      return this.$store.state.user.info.attributes || {}
+      return this.$store.state.user.info.attributes || {};
     }
   },
   mounted() {
-    const { validate, code, nickname, headimgurl, preurl } = this.$route.query
+    const { validate, code, nickname, headimgurl, preurl } = this.$route.query;
     if (preurl) {
-      this.preurl = preurl
+      this.preurl = preurl;
     }
-    if (process.client) this.token = localStorage.getItem('wechat')
+    if (process.client) this.token = localStorage.getItem('wechat');
     if (nickname) {
-      this.nickname = nickname
+      this.nickname = nickname;
     }
     if (headimgurl) {
-      this.headimgurl = headimgurl
+      this.headimgurl = headimgurl;
     }
     if (validate) {
-      this.validate = JSON.parse(validate)
+      this.validate = JSON.parse(validate);
     }
     if (code !== 'undefined') {
-      this.code = code
+      this.code = code;
     }
-    if (this.forums && this.forums.set_reg && this.forums.set_reg.register_captcha) {
-      this.register_captcha = this.forums.set_reg.register_captcha
+    if (
+      this.forums
+      && this.forums.set_reg
+      && this.forums.set_reg.register_captcha
+    ) {
+      this.register_captcha = this.forums.set_reg.register_captcha;
     }
     if (this.forums && this.forums.set_site && this.forums.set_site.site_mode) {
-      this.site_mode = this.forums.set_site.site_mode
+      this.site_mode = this.forums.set_site.site_mode;
     }
 
     if (this.forums && this.forums.set_reg) {
-      this.validate = this.forums.set_reg.register_validate
+      this.validate = this.forums.set_reg.register_validate;
     }
   },
   methods: {
     notsame() {
       if (this.passWord !== this.repeatPassWord) {
-        this.passerror = true
+        this.passerror = true;
       } else {
-        this.passerror = false
+        this.passerror = false;
       }
     },
     check(value) {
-      this.ischeck = value
+      this.ischeck = value;
     },
     // 用户名注册
     register() {
       if (this.userName === '') {
-        this.$message.error('用户名不能为空')
+        this.$message.error('用户名不能为空');
       } else if (this.passWord === '') {
-        this.$message.error('密码不能为空')
+        this.$message.error('密码不能为空');
       } else if (this.passWord !== this.repeatPassWord) {
-        this.$message.error('两次输入的密码不一致,请重新输入')
-        this.passWord = ''
-        this.repeatPassWord = ''
-        this.passerror = true
+        this.$message.error('两次输入的密码不一致,请重新输入');
+        this.passWord = '';
+        this.repeatPassWord = '';
+        this.passerror = true;
       } else if (!this.ischeck) {
-        this.$message.error('请同意协议')
-      } else if (this.forums && this.forums.set_reg && this.forums.set_reg.register_captcha) {
-        if (this.validate && this.Reason === '') {
-          this.$message.error('注册原因不能为空')
-        } else {
-          this.toTCaptcha()
-        }
+        this.$message.error('请同意协议');
+      } else if (
+        this.forums
+        && this.forums.set_reg
+        && this.forums.set_reg.register_captcha
+      ) {
+        if (this.validate) {
+          this.toTCaptcha();
+        } 
       } else {
-        this.registerClick()
+        this.registerClick();
       }
     },
     // 验证码
     toTCaptcha() {
-      if (this.forums && this.forums.qcloud && this.forums.qcloud.qcloud_captcha_app_id) {
+      if (
+        this.forums
+        && this.forums.qcloud
+        && this.forums.qcloud.qcloud_captcha_app_id
+      ) {
         // eslint-disable-next-line no-undef
-        this.captcha = new TencentCaptcha(this.forums.qcloud.qcloud_captcha_app_id, (res) => {
-          if (res.ret === 0) {
-            this.ticket = res.ticket
-            this.randstr = res.randstr
-            this.registerClick()
+        this.captcha = new TencentCaptcha(
+          this.forums.qcloud.qcloud_captcha_app_id,
+          res => {
+            if (res.ret === 0) {
+              this.ticket = res.ticket;
+              this.randstr = res.randstr;
+              this.registerClick();
+            }
           }
-        })
+        );
         // 显示验证码
-        this.captcha.show()
+        this.captcha.show();
       }
     },
     // 用户名注册
     registerClick() {
-      this.loading = true
+      this.loading = true;
       const params = {
         data: {
           attributes: {
@@ -204,73 +222,70 @@ export default {
             token: this.token
           }
         }
-      }
+      };
       if (this.register_captcha && this.validate) {
-        params.data.attributes.register_reason = this.Reason
-        params.data.attributes.captcha_ticket = this.ticket
-        params.data.attributes.captcha_rand_str = this.randstr
-      }
-      if (this.validate) {
-        params.data.attributes.register_reason = this.Reason
+        params.data.attributes.captcha_ticket = this.ticket;
+        params.data.attributes.captcha_rand_str = this.randstr;
       }
       if (this.register_captcha) {
-        params.data.attributes.captcha_ticket = this.ticket
-        params.data.attributes.captcha_rand_str = this.randstr
+        params.data.attributes.captcha_ticket = this.ticket;
+        params.data.attributes.captcha_rand_str = this.randstr;
       }
       if (this.code !== '') {
-        params.data.attributes.code = this.code
+        params.data.attributes.code = this.code;
       }
       this.$store
         .dispatch('session/h5Register', params)
-        .then((res) => {
-          this.loading = false
+        .then(res => {
+          this.loading = false;
           if (res && res.data && res.data.data && res.data.data.id) {
-            this.logind(res)
+            this.logind(res);
           }
           if (
-            res &&
-            res.data &&
-            res.data.errors &&
-            res.data.errors[0].code === 'register_validate'
+            res
+            && res.data
+            && res.data.errors
+            && res.data.errors[0].code === 'register_validate'
           ) {
             // this.$message.error('帐号审核中，请等管理员审核通过')
-            this.$router.push(`/user/warning?username=${this.userName}`)
-            return
+            this.$router.push(`/user/warning?username=${this.userName}`);
+            return;
           }
           if (
-            res &&
-            res.data &&
-            res.data.errors &&
-            res.data.errors[0].code === 'content_banned'
+            res
+            && res.data
+            && res.data.errors
+            && res.data.errors[0].code === 'content_banned'
           ) {
-            this.$message.error('当前用户名包含禁止注册的词语')
-            return
+            this.$message.error('当前用户名包含禁止注册的词语');
+            return;
           }
-          if (
-            res &&
-            res.data &&
-            res.data.errors &&
-            res.data.errors[0]
-          ) {
-            const error = res.data.errors[0].detail ? res.data.errors[0].detail[0] : res.data.errors[0].code
-            const errorText = res.data.errors[0].detail ? res.data.errors[0].detail[0] : this.$t(`core.${error}`)
-            this.$message.error(errorText)
+          if (res && res.data && res.data.errors && res.data.errors[0]) {
+            const error = res.data.errors[0].detail
+              ? res.data.errors[0].detail[0]
+              : res.data.errors[0].code;
+            const errorText = res.data.errors[0].detail
+              ? res.data.errors[0].detail[0]
+              : this.$t(`core.${error}`);
+            this.$message.error(errorText);
           }
         })
-        .catch((err) => {
-          this.loading = false
-          this.passWord = ''
-          this.repeatPassWord = ''
-          console.log(err)
-        })
+        .catch(err => {
+          this.loading = false;
+          this.passWord = '';
+          this.repeatPassWord = '';
+          console.log(err);
+        });
     },
     jump2Login() {
-      this.$router.push(`/user/login-bind?nickname=${this.nickname}&headimgurl=${this.headimgurl}&preurl=${this.preurl}`)
+      this.$router.push(
+        `/user/login-bind?nickname=${this.nickname}&headimgurl=${this.headimgurl}&preurl=${this.preurl}`
+      );
     }
   }
-}
+};
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import "@/assets/css/variable/color.scss";
 ::v-deep input::-ms-reveal {
   display: none;
@@ -290,7 +305,7 @@ export default {
     border: none;
     background: transparent;
     box-shadow: none;
-    .bindtext{
+    .bindtext {
       font-size: 16px;
       margin-bottom: 40px;
     }

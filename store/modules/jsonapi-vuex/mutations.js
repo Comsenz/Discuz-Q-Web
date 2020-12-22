@@ -5,9 +5,9 @@
  * @memberof module:jsonapi-vuex.jsonapiModule
  */
 
-import Vue from 'vue'
-import get from 'lodash.get'
-import { utils } from './index'
+import Vue from 'vue';
+import get from 'lodash.get';
+import { utils } from './index';
 
 export default () => {
   return {
@@ -18,12 +18,12 @@ export default () => {
      * @param {(string|object)} record - The record to be deleted
      */
     deleteRecord: (state, record) => {
-      const [type, id] = utils.getTypeId(record)
+      const [type, id] = utils.getTypeId(record);
       if (!type || !id) {
         // eslint-disable-next-line no-throw-literal
-        throw `deleteRecord: Missing type or id: ${record}`
+        throw `deleteRecord: Missing type or id: ${record}`;
       }
-      Vue.delete(state[type], id)
+      Vue.delete(state[type], id);
     },
     /**
      * Add record(s) to the store, according to `mergeRecords` config option
@@ -32,7 +32,7 @@ export default () => {
      * @param {object} records - The record(s) to be added
      */
     addRecords: (state, records) => {
-      utils.updateRecords(state, records)
+      utils.updateRecords(state, records);
     },
     /**
      * Replace (or add) record(s) to the store
@@ -41,7 +41,7 @@ export default () => {
      * @param {object} records - The record(s) to be replaced
      */
     replaceRecords: (state, records) => {
-      utils.updateRecords(state, records, false)
+      utils.updateRecords(state, records, false);
     },
     /**
      * Merge (or add) records to the store
@@ -50,7 +50,7 @@ export default () => {
      * @param {object} records - The record(s) to be merged
      */
     mergeRecords: (state, records) => {
-      utils.updateRecords(state, records, true)
+      utils.updateRecords(state, records, true);
     },
     /**
      * Delete all records from the store for a given type
@@ -59,15 +59,15 @@ export default () => {
      * @param {object} records - A record with type set.
      */
     clearRecords: (state, records) => {
-      const newRecords = utils.normToStore(records)
+      const newRecords = utils.normToStore(records);
       for (const [type, item] of Object.entries(newRecords)) {
-        const storeRecords = get(state, [type], {})
+        const storeRecords = get(state, [type], {});
         for (const id of Object.keys(storeRecords)) {
           if (!utils.hasProperty(item, id)) {
-            Vue.delete(state[type], id)
+            Vue.delete(state[type], id);
           }
         }
       }
     }
-  }
-}
+  };
+};

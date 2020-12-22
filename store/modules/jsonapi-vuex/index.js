@@ -2,13 +2,13 @@
  * @module jsonapi-vuex
  */
 
-import actions from './actions'
-import jvConfig from './config'
-import mutations from './mutations'
-import getters from './getters'
-import { Utils, ActionStatus } from './lib'
+import actions from './actions';
+import jvConfig from './config';
+import mutations from './mutations';
+import getters from './getters';
+import { Utils, ActionStatus } from './lib';
 
-let config, status, utils
+let config, status, utils;
 
 /**
  * jsonapi-vuex store module
@@ -19,12 +19,12 @@ let config, status, utils
  * @return {object} A Vuex store object
  */
 const jsonapiModule = (api, conf = {}) => {
-  config = Object.assign({}, jvConfig, conf)
-  const state = { [config['jvtag']]: {}}
+  config = Object.assign({}, jvConfig, conf);
+  const state = { [config['jvtag']]: {}};
 
   // Instantiate helper classes with config prior to re-exporting
-  utils = new Utils(config)
-  status = new ActionStatus(config.maxStatusID)
+  utils = new Utils(config);
+  status = new ActionStatus(config.maxStatusID);
 
   return {
     namespaced: true,
@@ -34,8 +34,8 @@ const jsonapiModule = (api, conf = {}) => {
     actions: actions(api, config),
     getters: getters(config),
     mutations: mutations()
-  }
-}
+  };
+};
 
 // Export instance of Utils, and merged configs
-export { jsonapiModule, config, status, utils }
+export { jsonapiModule, config, status, utils };

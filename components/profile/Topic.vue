@@ -33,8 +33,8 @@
 </template>
 
 <script>
-import { status } from '@/store/modules/jsonapi-vuex/index'
-import handleError from '@/mixin/handleError'
+import { status } from '@/store/modules/jsonapi-vuex/index';
+import handleError from '@/mixin/handleError';
 
 export default {
   name: 'Topic',
@@ -58,68 +58,69 @@ export default {
       loading: false,
       hasMore: false,
       currentAudioId: '' // 当前播放语音id
-    }
+    };
   },
   mounted() {
-    this.threadsData = this.threadData
+    this.threadsData = this.threadData;
     if (this.threadsData.length === 0) {
-      this.loadThreads()
+      this.loadThreads();
     }
   },
   methods: {
     // 加载当前主题数据
     loadThreads() {
-      this.loading = true
+      this.loading = true;
       const params = {
         'filter[isDeleted]': 'no',
         'filter[isDisplay]': 'yes',
         'filter[type]': '0,1,2,3,4,6',
         sort: '-createdAt',
-        include: 'user,user.groups,firstPost,firstPost.images,firstPost.postGoods,category,threadVideo,threadAudio,question,question.beUser,question.beUser.groups',
+        // eslint-disable-next-line max-len
+        include: `user,user.groups,firstPost,firstPost.images,firstPost.postGoods,category,threadVideo,threadAudio,question,question.beUser,question.beUser.groups`,
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize,
         'filter[isApproved]': 1,
         'filter[userId]': this.userId
-      }
+      };
       status
         .run(() => this.$store.dispatch('jv/get', ['threads', { params }]))
         .then((res) => {
-          this.loading = false
-          this.hasMore = res.length === this.pageSize
-          this.threadsData = [...this.threadsData, ...res]
+          this.loading = false;
+          this.hasMore = res.length === this.pageSize;
+          this.threadsData = [...this.threadsData, ...res];
           if (res._jv) {
-            this.hasMore = this.threadsData.length < res._jv.json.meta.threadCount
+            this.hasMore = this.threadsData.length < res._jv.json.meta.threadCount;
           }
-          this.pageNum += 1
+          this.pageNum += 1;
         }, (e) => {
-          this.handleError(e)
+          this.handleError(e);
         })
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     loadMore() {
       if (this.hasMore) {
-        this.loadThreads()
+        this.loadThreads();
       }
     },
     changelike() {
-      this.$emit('changeLike', { userId: this.userId })
+      this.$emit('changeLike', { userId: this.userId });
     },
     changetopiclike() {
-      this.pageNum = 1
-      this.threadsData = []
-      this.loadThreads()
+      this.pageNum = 1;
+      this.threadsData = [];
+      this.loadThreads();
     },
     // 语音互斥播放
     audioPlay(id) {
       if (this.currentAudioId && this.currentAudioId !== id) {
-        this.$refs[`audio${this.currentAudioId}`][0].pause()
+        this.$refs[`audio${this.currentAudioId}`][0].pause();
       }
-      this.currentAudioId = id
+      this.currentAudioId = id;
     }
   }
-}
+};
 </script>
 <style lang='scss' scoped>
 @import "@/assets/css/variable/color.scss";

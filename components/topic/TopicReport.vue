@@ -1,22 +1,23 @@
 <template>
-  <message
-    :title="$t('report.reportTitle')"
-    @close="$emit('close')"
-  >
+  <message :title="$t('report.reportTitle')" @close="$emit('close')">
     <div class="reportcontainer">
       <div class="reportselect">
-        <el-radio-group
-          v-model="radio"
-          @change="select"
-        >
-          <el-radio label="advertisingRubbish">{{ this.$t('report.advertisingRubbish') }}</el-radio>
-          <el-radio label="illegalContent">{{ this.$t('report.illegalContent') }}</el-radio>
-          <el-radio label="maliciousIrrigation">{{ this.$t('report.maliciousIrrigation') }}</el-radio>
-          <el-radio label="repeatPost">{{ this.$t('report.repeatPost') }}</el-radio>
-          <el-radio
-            label="other"
-            class="otherr"
-          >{{ this.$t('report.otherreason') }}</el-radio>
+        <el-radio-group v-model="radio" @change="select">
+          <el-radio label="advertisingRubbish">{{
+            this.$t("report.advertisingRubbish")
+          }}</el-radio>
+          <el-radio label="illegalContent">{{
+            this.$t("report.illegalContent")
+          }}</el-radio>
+          <el-radio label="maliciousIrrigation">{{
+            this.$t("report.maliciousIrrigation")
+          }}</el-radio>
+          <el-radio label="repeatPost">{{
+            this.$t("report.repeatPost")
+          }}</el-radio>
+          <el-radio label="other" class="otherr">{{
+            this.$t("report.otherreason")
+          }}</el-radio>
         </el-radio-group>
       </div>
       <div class="other">
@@ -36,19 +37,17 @@
           class="comfirm"
           type="small"
           @click="reportConfirmClick(type)"
-        >{{ this.$t('report.confirm') }}</el-button>
-        <el-button
-          class="cancel"
-          type="small"
-          @click="reportCancelClick"
-        >{{ this.$t('report.cancel') }}</el-button>
+        >{{ this.$t("report.confirm") }}</el-button>
+        <el-button class="cancel" type="small" @click="reportCancelClick">{{
+          this.$t("report.cancel")
+        }}</el-button>
       </div>
     </div>
   </message>
 </template>
 
 <script>
-import handleError from '@/mixin/handleError'
+import handleError from '@/mixin/handleError';
 
 export default {
   name: 'TopicReport',
@@ -97,46 +96,41 @@ export default {
           name: '其他'
         }
       ]
-
-    }
+    };
   },
   computed: {
     currentLoginId() {
-      const userId = this.$store.getters['session/get']('userId')
-      return parseInt(userId, 10)
+      const userId = this.$store.getters['session/get']('userId');
+      return parseInt(userId, 10);
     }
   },
   mounted() {
-    this.otherReasonValue = ''
+    this.otherReasonValue = '';
   },
   methods: {
     select(val) {
-      this.currentReport = val
-      this.isOther = this.currentReport === 'other'
+      this.currentReport = val;
+      this.isOther = this.currentReport === 'other';
     },
     // 确认举报
     reportConfirmClick(type) {
       if (!this.currentReport) {
-        this.$message.error(
-          this.$t('report.pleaseClickReasons')
-        )
-        return
+        this.$message.error(this.$t('report.pleaseClickReasons'));
+        return;
       }
-      let reason = ''
+      let reason = '';
       if (this.currentReport === 'other') {
         if (!this.otherReasonValue) {
-          this.$message.error(
-            this.$t('report.enterOtherReason')
-          )
-          return
+          this.$message.error(this.$t('report.enterOtherReason'));
+          return;
         }
-        reason = this.otherReasonValue
+        reason = this.otherReasonValue;
       } else {
         this.reportData.forEach(item => {
           if (item.value === this.currentReport) {
-            reason = item.name
+            reason = item.name;
           }
-        })
+        });
       }
       const params = {
         _jv: {
@@ -146,29 +140,30 @@ export default {
         thread_id: parseInt(this.threadId),
         type,
         reason: `${reason}`
-      }
+      };
       if (type === 2) {
-        params.post_id = parseInt(this.commentId)
+        params.post_id = parseInt(this.commentId);
       }
-      this.$store.dispatch('jv/post', params).then(res => {
-        if (res._jv) {
-          this.$emit('close')
-          this.$message.success(
-            this.$t('report.reportSucceed')
-          )
-        }
-      }, e => this.handleError(e))
+      this.$store.dispatch('jv/post', params).then(
+        res => {
+          if (res._jv) {
+            this.$emit('close');
+            this.$message.success(this.$t('report.reportSucceed'));
+          }
+        },
+        e => this.handleError(e)
+      );
     },
     // 取消举报
     reportCancelClick() {
-      this.otherReasonValue = ''
-      this.currentReport = ''
-      this.$emit('close')
+      this.otherReasonValue = '';
+      this.currentReport = '';
+      this.$emit('close');
     }
   }
-}
+};
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @import "@/assets/css/variable/color.scss";
 
 .reportcontainer {
@@ -211,8 +206,8 @@ export default {
     color: #ffffff;
     border-radius: 2px;
     border: none;
-    &:hover{
-      background:$color-blue-deep;
+    &:hover {
+      background: $color-blue-deep;
     }
   }
   .cancel {

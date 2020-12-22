@@ -92,14 +92,14 @@
 </template>
 
 <script>
-import { time2MinuteOrHour } from '@/utils/time'
-import head from '@/mixin/head'
+import { time2MinuteOrHour } from '@/utils/time';
+import head from '@/mixin/head';
 export default {
   layout: 'center_layout',
   name: 'InviteExtension',
   filters: {
     formatDate(date) {
-      return time2MinuteOrHour(date)
+      return time2MinuteOrHour(date);
     }
   },
   mixins: [head],
@@ -116,26 +116,26 @@ export default {
       detailTotalMoney: 0,
       detailUserId: '',
       incomeDetailList: [] // 收益详情列表
-    }
+    };
   },
   computed: {
     userId() {
-      return this.$store.state.user.info.id
+      return this.$store.state.user.info.id;
     }
   },
   mounted() {
   },
   methods: {
     viewDetail(item) {
-      this.detail = item
-      this.isShowDetail = true
-      this.detailUserId = item.user_id
-      this.getIncomeDetailList()
+      this.detail = item;
+      this.isShowDetail = true;
+      this.detailUserId = item.user_id;
+      this.getIncomeDetailList();
     },
     // 获取用户详情收益
     getIncomeDetailList() {
-      if (!this.userId) return
-      this.loading = true
+      if (!this.userId) return;
+      this.loading = true;
       const params = {
         include: 'sourceUser',
         'filter[user]': this.userId,
@@ -144,43 +144,43 @@ export default {
         'page[limit]': this.pageSize,
         sort: this.sort,
         'filter[source_user_id]': this.detailUserId
-      }
+      };
       this.$store.dispatch('jv/get', ['wallet/log', { params }]).then((res) => {
         if (res && res._jv && res._jv.json && res._jv.json.meta) {
-          this.detailTotalMoney = res._jv.json.meta.sumChangeAvailableAmount
-          this.total = res._jv.json.meta.total
+          this.detailTotalMoney = res._jv.json.meta.sumChangeAvailableAmount;
+          this.total = res._jv.json.meta.total;
         }
-        this.incomeDetailList = res
+        this.incomeDetailList = res;
       }, (e) => {
-        this.handleError(e)
+        this.handleError(e);
       })
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     // 排序
     sortChange(val) {
-      const { order } = val
+      const { order } = val;
       if (order === 'descending') {
-        this.sort = '-created_at'
+        this.sort = '-created_at';
       } else if (order === 'ascending') {
-        this.sort = 'created_at'
+        this.sort = 'created_at';
       } else {
-        this.sort = ''
+        this.sort = '';
       }
-      this.getIncomeDetailList()
+      this.getIncomeDetailList();
     },
     handleSizeChange(val) {
-      this.pageNum = 1
-      this.pageSize = val
-      this.getIncomeDetailList()
+      this.pageNum = 1;
+      this.pageSize = val;
+      this.getIncomeDetailList();
     },
     handleCurrentChange(val) {
-      this.pageNum = val
-      this.getIncomeDetailList()
+      this.pageNum = val;
+      this.getIncomeDetailList();
     }
   }
-}
+};
 </script>
 <style lang='scss' scoped>
 @import '@/assets/css/variable/color.scss';

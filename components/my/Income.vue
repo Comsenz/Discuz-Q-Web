@@ -98,13 +98,13 @@
   </div>
 </template>
 <script>
-import handleError from '@/mixin/handleError'
-import { time2MinuteOrHour } from '@/utils/time'
+import handleError from '@/mixin/handleError';
+import { time2MinuteOrHour } from '@/utils/time';
 export default {
   name: 'Income',
   filters: {
     formatDate(date) {
-      return time2MinuteOrHour(date)
+      return time2MinuteOrHour(date);
     }
   },
   mixins: [handleError],
@@ -125,31 +125,31 @@ export default {
       total: 0,
       incomeList: [],
       totalMoney: 0 // 累计收益
-    }
+    };
   },
   computed: {
     userId() {
-      return this.$store.state.user.info.id
+      return this.$store.state.user.info.id;
     },
     forums() {
-      return this.$store.state.site.info.attributes || {}
+      return this.$store.state.site.info.attributes || {};
     }
   },
   watch: {
     userId(val) {
       if (val && this.incomeList.length === 0) {
-        this.getIncomeList()
+        this.getIncomeList();
       }
     }
   },
   mounted() {
-    this.getIncomeList()
+    this.getIncomeList();
   },
   methods: {
     // 收益列表
     getIncomeList() {
-      if (!this.userId) return
-      this.loading = true
+      if (!this.userId) return;
+      this.loading = true;
       const params = {
         include: 'sourceUser',
         'filter[user]': this.userId,
@@ -158,41 +158,41 @@ export default {
         'page[limit]': this.pageSize,
         'filter[source_username]': this.searchText,
         sort: this.sort
-      }
+      };
       this.$store.dispatch('jv/get', ['wallet/log', { params }]).then((res) => {
         if (res && res._jv && res._jv.json && res._jv.json.meta) {
-          this.totalMoney = res._jv.json.meta.sumChangeAvailableAmount
-          this.total = res._jv.json.meta.total
+          this.totalMoney = res._jv.json.meta.sumChangeAvailableAmount;
+          this.total = res._jv.json.meta.total;
         }
-        this.incomeList = res
+        this.incomeList = res;
       }, (e) => {
-        this.handleError(e)
+        this.handleError(e);
       })
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     // 普通用户邀请
     createUserInvite() {
-      const canInviteUserScale = this.forums && this.forums.other && this.forums.other.can_invite_user_scale
+      const canInviteUserScale = this.forums && this.forums.other && this.forums.other.can_invite_user_scale;
       if (!canInviteUserScale) {
-        return this.$message.error(this.$t('core.permission_denied'))
+        return this.$message.error(this.$t('core.permission_denied'));
       }
       const params = {
         _jv: {
           type: 'userInviteCode'
         }
-      }
+      };
       this.$store.dispatch('jv/get', params).then((res) => {
         if (res && res._jv) {
-          this.copyLink(res._jv.code)
+          this.copyLink(res._jv.code);
         }
       }, (e) => {
-        this.handleError(e)
+        this.handleError(e);
       })
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     /**
      * 复制链接
@@ -201,49 +201,49 @@ export default {
      * copyLink('https://xxx.com/site/partner-invite?code=1178')
      */
     copyLink(code) {
-      const oInput = document.createElement('input')
+      const oInput = document.createElement('input');
       if (process.client) {
-        oInput.value = `${window.location.protocol}//${window.location.host}/site/partner-invite?code=${code}`
-        oInput.id = 'copyInput'
-        document.body.appendChild(oInput)
-        oInput.select()
-        document.execCommand('Copy')
+        oInput.value = `${window.location.protocol}//${window.location.host}/site/partner-invite?code=${code}`;
+        oInput.id = 'copyInput';
+        document.body.appendChild(oInput);
+        oInput.select();
+        document.execCommand('Copy');
       }
-      this.$message.success(this.$t('discuzq.msgBox.copySuccess'))
+      this.$message.success(this.$t('discuzq.msgBox.copySuccess'));
       setTimeout(() => {
-        oInput.remove()
-      }, 100)
+        oInput.remove();
+      }, 100);
     },
     // 排序
     sortChange(val) {
-      const { order } = val
+      const { order } = val;
       if (order === 'descending') {
-        this.sort = '-created_at'
+        this.sort = '-created_at';
       } else if (order === 'ascending') {
-        this.sort = 'created_at'
+        this.sort = 'created_at';
       } else {
-        this.sort = ''
+        this.sort = '';
       }
-      this.getIncomeList()
+      this.getIncomeList();
     },
     // 搜索
     onClickSearch() {
-      this.pageNum = 1
-      this.getIncomeList()
+      this.pageNum = 1;
+      this.getIncomeList();
     },
     // 分页
     handleSizeChange(val) {
-      this.pageNum = 1
-      this.pageSize = val
-      this.getIncomeList()
+      this.pageNum = 1;
+      this.pageSize = val;
+      this.getIncomeList();
     },
     // 更换每一页数量
     handleCurrentChange(val) {
-      this.pageNum = val
-      this.getIncomeList()
+      this.pageNum = val;
+      this.getIncomeList();
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 @import "@/assets/css/variable/color.scss";

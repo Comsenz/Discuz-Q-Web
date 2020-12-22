@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /**
  * The default configuration is provided here. This is overridden by passing
  * a 'conf' object to {@link module:jsonapi-vuex.jsonapiModule}
@@ -24,4 +25,4 @@ export default {
   cleanPatchProps: [],
   recurseRelationships: false,
   maxStatusID: -1
-}
+};

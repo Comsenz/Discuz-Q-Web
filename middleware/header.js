@@ -1,6 +1,6 @@
-import axios from 'axios'
+import axios from 'axios';
 // import cookie from '../utils/parserCookie'
-import env from '../utils/env'
+import env from '../utils/env';
 
 /**
  * 中间件 判断是不是爬虫
@@ -10,13 +10,15 @@ export default function(context) {
     // https://yq.aliyun.com/articles/655062
     const list = [
       // “Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)”
-      // “AdsBot-Google-Mobile (+http://www.google.com/mobile/adsbot.html) Mozilla (iPhone; U; CPU iPhone OS 3 0 like Mac OS X) AppleWebKit (KHTML, like Gecko) Mobile Safari”
+      // “AdsBot-Google-Mobile (+http://www.google.com/mobile/adsbot.html)
+      // Mozilla (iPhone; U; CPU iPhone OS 3 0 like Mac OS X) AppleWebKit (KHTML, like Gecko) Mobile Safari”
       'Googlebot', // Google
       // “Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)”
       // Mozilla/5.0 (compatible; Baiduspider-render/2.0; +http://www.baidu.com/search/spider.html)
       'Baiduspider', // baidu
       // 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)',
-      'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)', // http://stool.chinaz.com/tools/robot.aspx
+      'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)',
+      // http://stool.chinaz.com/tools/robot.aspx
       // 360spider (http://webscan.360.cn)
       '360spider', // 360
       // Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)”
@@ -34,14 +36,14 @@ export default function(context) {
       // “Mozilla/5.0 (compatible; YoudaoBot/1.0; http://www.youdao.com/help/webmaster/spider/; )
       'YoudaoBot', // 网易有道
       'spider'
-    ]
-    const ua = context.req.headers['user-agent']
+    ];
+    const ua = context.req.headers['user-agent'];
     if (ua) {
-      const isSpider = !!list.find(item => ua.toLocaleLowerCase().indexOf(item.toLocaleLowerCase()) >= 0)
-      env.isSpider = isSpider
+      const isSpider = !!list.find(item => ua.toLocaleLowerCase().indexOf(item.toLocaleLowerCase()) >= 0);
+      env.isSpider = isSpider;
     }
 
     // const token = cookie.get('token', context.req.headers.cookie)
-    axios.defaults.headers['authorization'] = ''
+    axios.defaults.headers['authorization'] = '';
   }
 }

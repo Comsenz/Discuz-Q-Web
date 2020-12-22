@@ -1,41 +1,77 @@
 <template>
   <div class="qa">
     <div class="qa-payment block">
-      <div class="title">{{ $t('post.questionMode') }}:</div>
-      <el-radio :value="question.paymentType" label="free" @input="value => $emit('paymentTypeChange', value)">{{ $t('post.freeWatch') }}</el-radio>
-      <el-radio :value="question.paymentType" label="paid" @input="value => $emit('paymentTypeChange', value)">{{ $t('post.paidWatch') }}</el-radio>
+      <div class="title">{{ $t("post.questionMode") }}:</div>
+      <el-radio
+        :value="question.paymentType"
+        label="free"
+        @input="value => $emit('paymentTypeChange', value)"
+      >{{ $t("post.freeWatch") }}</el-radio>
+      <el-radio
+        :value="question.paymentType"
+        label="paid"
+        @input="value => $emit('paymentTypeChange', value)"
+      >{{ $t("post.paidWatch") }}</el-radio>
     </div>
     <div class="qa-anonymous block">
-      <div class="title">{{ $t('post.anonymous') }}:</div>
-      <el-switch :value="question.isAnonymous" active-color="#1878F3" @input="value => $emit('isAnonymousChange', value)" />
+      <div class="title">{{ $t("post.anonymous") }}:</div>
+      <el-switch
+        :value="question.isAnonymous"
+        active-color="#1878F3"
+        @input="value => $emit('isAnonymousChange', value)"
+      />
     </div>
     <div v-show="canSetOnlooker" class="qa-onlooker block">
-      <div class="title">{{ $t('post.onLooker') }}:</div>
-      <el-switch :value="question.isOnlooker" active-color="#1878F3" @input="value => $emit('isOnlookerChange', value)" />
-      <span v-show="siteOnlookerPrice && siteMasterScale && siteUserScale" class="tip">
-        <span>{{ '他人围观需付费 ' + siteOnlookerPrice + ' 元' }}</span>
-        <span>{{ `（你得 ${(siteOnlookerPrice * siteUserScale / 2).toFixed(2)} 元，回答者得 ${(siteOnlookerPrice * siteUserScale / 2).toFixed(2)} 元，平台得 ${(siteOnlookerPrice * siteMasterScale).toFixed(2)} 元）` }}</span>
+      <div class="title">{{ $t("post.onLooker") }}:</div>
+      <el-switch
+        :value="question.isOnlooker"
+        active-color="#1878F3"
+        @input="value => $emit('isOnlookerChange', value)"
+      />
+      <span
+        v-show="siteOnlookerPrice && siteMasterScale && siteUserScale"
+        class="tip"
+      >
+        <span>{{ "他人围观需付费 " + siteOnlookerPrice + " 元" }}</span>
+        <span>{{
+          `（你得 ${((siteOnlookerPrice * siteUserScale) / 2).toFixed(
+            2
+          )} 元，回答者得 ${((siteOnlookerPrice * siteUserScale) / 2).toFixed(
+            2
+          )} 元，平台得 ${(siteOnlookerPrice * siteMasterScale).toFixed(
+            2
+          )} 元）`
+        }}</span>
       </span>
     </div>
     <div class="qa-answerer block">
       <div class="title">
-        <span>{{ $t('post.questionHim') }}:</span>
+        <span>{{ $t("post.questionHim") }}:</span>
         <span class="select-answerer" @click="showQACaller = true">
-          {{ Object.keys(beAskedUser).length > 0 ? $t('post.changeBeAskedUser') : $t('post.addBeAskedUser') }}
+          {{
+            Object.keys(beAskedUser).length > 0
+              ? $t("post.changeBeAskedUser")
+              : $t("post.addBeAskedUser")
+          }}
         </span>
       </div>
       <div v-show="Object.keys(beAskedUser).length > 0" class="be-asked-user">
         <avatar-component :author="beAskedUser" :size="50" round>
-          {{ $t('topic.activeAt') }} {{ timerDiff(beAskedUser.updatedAt) }}{{ $t('topic.before') }}
+          {{ $t("topic.activeAt") }} {{ timerDiff(beAskedUser.updatedAt)
+          }}{{ $t("topic.before") }}
         </avatar-component>
       </div>
     </div>
-    <qa-caller v-if="showQACaller" @close="showQACaller = false" @selectedQaCaller="selectedQaCaller" />
+    <qa-caller
+      v-if="showQACaller"
+      @close="showQACaller = false"
+      @selectedQaCaller="selectedQaCaller"
+    />
   </div>
 </template>
 
 <script>
-import timerDiff from '@/mixin/timerDiff'
+import timerDiff from '@/mixin/timerDiff';
 
 export default {
   name: 'EditorQa',
@@ -50,30 +86,38 @@ export default {
     return {
       beAskedUser: {},
       showQACaller: false
-    }
+    };
   },
   computed: {
     forums() {
-      return this.$store.state.site.info.attributes || {}
+      return this.$store.state.site.info.attributes || {};
     },
     canSetOnlooker() {
-      return this.forums && this.forums.other && this.forums.other.can_be_onlooker ? this.forums.other.can_be_onlooker : false
+      return this.forums
+        && this.forums.other
+        && this.forums.other.can_be_onlooker
+        ? this.forums.other.can_be_onlooker
+        : false;
     },
     siteOnlookerPrice() {
-      return this.forums && this.forums.set_site ? this.forums.set_site.site_onlooker_price : ''
+      return this.forums && this.forums.set_site
+        ? this.forums.set_site.site_onlooker_price
+        : '';
     },
     siteMasterScale() {
-      return this.forums && this.forums.set_site ? this.forums.set_site.site_master_scale / 10 : ''
+      return this.forums && this.forums.set_site
+        ? this.forums.set_site.site_master_scale / 10
+        : '';
     },
     siteUserScale() {
-      return this.siteMasterScale ? 1 - this.siteMasterScale : ''
+      return this.siteMasterScale ? 1 - this.siteMasterScale : '';
     }
   },
   watch: {
     question: {
       handler(val) {
         if (val.beUser) {
-          this.beAskedUser = val.beUser
+          this.beAskedUser = val.beUser;
         }
       },
       deep: true,
@@ -82,25 +126,25 @@ export default {
   },
   // TODO beAskedUser 回显
   mounted() {
-    console.log(this.forums, 'forums')
-    console.log('被提问信息', this.question)
+    console.log(this.forums, 'forums');
+    console.log('被提问信息', this.question);
     if (this.question.beUser) {
-      this.beAskedUser = this.question.beUser
+      this.beAskedUser = this.question.beUser;
     }
-    console.log(this.beAskedUser)
+    console.log(this.beAskedUser);
   },
   methods: {
     selectedQaCaller(user) {
-      this.beAskedUser = user
-      this.showQACaller = false
-      this.$emit('beUserChange', user)
+      this.beAskedUser = user;
+      this.showQACaller = false;
+      this.$emit('beUserChange', user);
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/css/variable/color.scss';
+@import "@/assets/css/variable/color.scss";
 
 .qa {
   > .block {
@@ -109,7 +153,7 @@ export default {
       font-size: 14px;
       font-weight: bold;
       margin-bottom: 10px;
-      color: #6D6D6D;
+      color: #6d6d6d;
       > .select-answerer {
         font-weight: normal;
         color: $color-blue-base;
@@ -123,19 +167,18 @@ export default {
       padding: 0 11px;
       display: inline-flex;
       align-items: center;
-      background: #F4F5F6;
-      border: 1px solid #EDEDED;
+      background: #f4f5f6;
+      border: 1px solid #ededed;
       border-radius: 2px;
     }
     > .tip {
       font-size: 14px;
       margin-left: 15px;
-      color: #6D6D6D;
+      color: #6d6d6d;
       span:last-child {
-        color: #CCCCCC;
+        color: #cccccc;
       }
     }
   }
 }
-
 </style>

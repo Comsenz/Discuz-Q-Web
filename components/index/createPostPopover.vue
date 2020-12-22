@@ -37,7 +37,7 @@
   </el-popover>
 </template>
 <script>
-import loginAbout from '@/mixin/loginAbout'
+import loginAbout from '@/mixin/loginAbout';
 
 export default {
   name: 'CreatePostPopover',
@@ -53,17 +53,17 @@ export default {
       can_create_thread_image: true, // 是否有发图片贴权限
       can_create_thread_question: true, // 是否有发问答贴权限
       can_create_thread_goods: true // 是否有发商品贴权限
-    }
+    };
   },
   computed: {
     userInfo() {
-      return this.$store.getters['jv/get'](`/users/${this.userId}`)
+      return this.$store.getters['jv/get'](`/users/${this.userId}`);
     },
     forums() {
-      return this.$store.state.site.info.attributes || {}
+      return this.$store.state.site.info.attributes || {};
     },
     categoryId() {
-      return this.$route.query.categoryId
+      return this.$route.query.categoryId;
     }
   },
   methods: {
@@ -71,78 +71,78 @@ export default {
     showAndHidePopover() {
       if (!this.$store.getters['session/get']('isLogin')) {
         if (process.client) {
-          this.$message.warning('请登录')
+          this.$message.warning('请登录');
           window.setTimeout(() => {
-            this.headerTologin()
-          }, 1000)
+            this.headerTologin();
+          }, 1000);
         }
       } else {
         if (!this.visible) {
-          const _other = this.forums.other
-          const _userInfo = this.userInfo
-          if (!_other) return
+          const _other = this.forums.other;
+          const _userInfo = this.userInfo;
+          if (!_other) return;
           // 判断是否有发帖权限
           if (
-            !_other.can_create_thread &&
-            !_other.can_create_thread_long &&
-            !_other.can_create_thread_video &&
-            !_other.can_create_thread_image &&
-            !_other.can_create_thread_question &&
-            !_other.can_create_thread_goods
+            !_other.can_create_thread
+            && !_other.can_create_thread_long
+            && !_other.can_create_thread_video
+            && !_other.can_create_thread_image
+            && !_other.can_create_thread_question
+            && !_other.can_create_thread_goods
           ) {
-            this.$message.error(this.$t('home.noPostingPermission'))
-            return
+            this.$message.error(this.$t('home.noPostingPermission'));
+            return;
           }
           // 发布是否需要实名认证
           if (_other.publish_need_real_name && !_userInfo.realname) {
-            this.$message.error(this.$t('home.needRealname'))
-            return
+            this.$message.error(this.$t('home.needRealname'));
+            return;
           }
           // 发布是否需要手机号
           if (_other.publish_need_bind_phone && !_userInfo.mobile) {
-            this.$message.error(this.$t('home.needPhone'))
-            return
+            this.$message.error(this.$t('home.needPhone'));
+            return;
           }
           // 判断至少在某个分类下有发帖权限
           if (!_other.can_create_thread_in_category) {
-            this.$message.error(this.$t('home.noPostingCategory'))
-            return
+            this.$message.error(this.$t('home.noPostingCategory'));
+            return;
           }
           // 当前分类是否有发帖权限
           if (this.categoryId) {
             const category = this.$store.getters['jv/get'](
               `categories/${this.categoryId}`
-            )
+            );
             if (!category.canCreateThread) {
-              this.$message.error(this.$t('home.noPostingCategory'))
+              this.$message.error(this.$t('home.noPostingCategory'));
             }
           }
           // 判断发文本权限
           if (!_other.can_create_thread) {
-            this.can_create_thread = false
+            this.can_create_thread = false;
           }
           // 判断发帖子权限
           if (!_other.can_create_thread_long) {
-            this.can_create_thread_long = false
+            this.can_create_thread_long = false;
           }
           // 判断发视频帖权限
           if (!_other.can_create_thread_video) {
-            this.can_create_thread_video = false
+            this.can_create_thread_video = false;
           }
           // 判断发图片权限
           if (!_other.can_create_thread_image) {
-            this.can_create_thread_image = false
+            this.can_create_thread_image = false;
           }
           // 判断发问答贴权限
           if (!_other.can_create_thread_question) {
-            this.can_create_thread_question = false
+            this.can_create_thread_question = false;
           }
           // 判断发商品贴权限
           if (!_other.can_create_thread_goods) {
-            this.can_create_thread_goods = false
+            this.can_create_thread_goods = false;
           }
         }
-        this.visible = !this.visible
+        this.visible = !this.visible;
       }
     },
     // 跳往发帖页
@@ -151,10 +151,10 @@ export default {
         `/thread/post?type=${val}${
           this.categoryId ? `&categoryId=${this.categoryId}` : ''
         }`
-      )
+      );
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 @import "@/assets/css/variable/color.scss";

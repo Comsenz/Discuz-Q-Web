@@ -92,8 +92,8 @@
   </div>
 </template>
 <script>
-import { status } from '@/store/modules/jsonapi-vuex/index'
-import handleError from '@/mixin/handleError'
+import { status } from '@/store/modules/jsonapi-vuex/index';
+import handleError from '@/mixin/handleError';
 
 export default {
   name: 'Following',
@@ -123,15 +123,15 @@ export default {
         label: '用户创建时间',
         value: 'users.createdAt'
       }]
-    }
+    };
   },
   mounted() {
-    this.getFollowingList()
+    this.getFollowingList();
   },
   methods: {
     // 获取用户关注列表
     getFollowingList(type) {
-      this.loading = true
+      this.loading = true;
       const params = {
         include: 'toUser,toUser.groups',
         'filter[type]': 1,
@@ -140,36 +140,36 @@ export default {
         'page[limit]': this.pageSize,
         'filter[user_id]': this.userId,
         'filter[username]': `${this.inputVal}`
-      }
+      };
       status
         .run(() => this.$store.dispatch('jv/get', ['follow', { params }]))
         .then((res) => {
-          this.loading = false
-          this.hasMore = res.length === this.pageSize
+          this.loading = false;
+          this.hasMore = res.length === this.pageSize;
           if (type === 'change') {
-            this.followingList = res
+            this.followingList = res;
           } else {
-            this.followingList = [...this.followingList, ...res]
+            this.followingList = [...this.followingList, ...res];
           }
           if (res._jv) {
-            this.hasMore = this.followingList.length < res._jv.json.meta.total
+            this.hasMore = this.followingList.length < res._jv.json.meta.total;
           }
-          this.pageNum += 1
+          this.pageNum += 1;
         }, (e) => {
-          this.handleError(e)
+          this.handleError(e);
         })
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     // 添加关注
     addFollow(userInfo, index) {
       if (!this.$store.getters['session/get']('isLogin')) {
-        return
+        return;
       }
       if (userInfo.follow !== 0) {
-        this.deleteFollow(userInfo, index)
-        return
+        this.deleteFollow(userInfo, index);
+        return;
       }
       const params = {
         _jv: {
@@ -177,57 +177,57 @@ export default {
         },
         type: 'user_follow',
         to_user_id: userInfo.id
-      }
+      };
       this.$store.dispatch('jv/post', params)
         .then((res) => {
           if (this.userId === this.currentLoginId) {
-            this.$emit('changeFollow', { userId: this.userId })
+            this.$emit('changeFollow', { userId: this.userId });
           }
           // is_mutual 是否互相关注 1 是 0 否
-          const item = this.followingList[index]
+          const item = this.followingList[index];
           // 深拷贝防止vuex 修改state报错
-          const item2 = JSON.parse(JSON.stringify(item))
-          item2.toUser.follow = res.is_mutual === 1 ? 2 : 1
-          this.$set(this.followingList, index, item2)
-        })
+          const item2 = JSON.parse(JSON.stringify(item));
+          item2.toUser.follow = res.is_mutual === 1 ? 2 : 1;
+          this.$set(this.followingList, index, item2);
+        });
     },
     // 取消关注
     deleteFollow(userInfo, index) {
       if (!this.$store.getters['session/get']('isLogin')) {
-        return
+        return;
       }
       this.$store.dispatch('jv/delete', `follow/${userInfo.id}/1`).then(() => {
         if (this.userId === this.currentLoginId) {
-          this.$emit('changeFollow', { userId: this.userId })
+          this.$emit('changeFollow', { userId: this.userId });
         }
-        const item = this.followingList[index]
+        const item = this.followingList[index];
         // 深拷贝防止vuex 修改state报错
-        const item2 = JSON.parse(JSON.stringify(item))
-        item2.toUser.follow = 0
-        this.$set(this.followingList, index, item2)
-      })
+        const item2 = JSON.parse(JSON.stringify(item));
+        item2.toUser.follow = 0;
+        this.$set(this.followingList, index, item2);
+      });
     },
     loadMore() {
       if (this.hasMore) {
         // this.pageNum += 1
-        this.getFollowingList()
+        this.getFollowingList();
       }
     },
     toUser(userId) {
-      this.$router.push(`/user/${userId}`)
+      this.$router.push(`/user/${userId}`);
     },
     confirm(e) {
-      this.sort = e
-      this.pageNum = 1
-      this.followingList = []
-      this.getFollowingList('change')
+      this.sort = e;
+      this.pageNum = 1;
+      this.followingList = [];
+      this.getFollowingList('change');
     },
     onClickSearch() {
-      this.pageNum = 1
-      this.getFollowingList('change')
+      this.pageNum = 1;
+      this.getFollowingList('change');
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 @import "@/assets/css/variable/color.scss";

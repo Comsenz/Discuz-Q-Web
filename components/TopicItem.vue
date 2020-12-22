@@ -6,15 +6,21 @@
           #<span class="topic-name">{{ item.content }}</span>#
           <svg-icon v-if="item.recommended === 1" type="recommend" />
         </div>
-        <div class="view-count">{{ $t('home.topicViewCount', {total: item.view_count }) }}</div>
+        <div class="view-count">
+          {{ $t("home.topicViewCount", { total: item.view_count }) }}
+        </div>
       </div>
       <template v-if="thread && thread.firstPost">
         <div class="first-post" @click.self="toDetail">
           <div @click="onClickContent">
             <div class="content">
-              <svg-icon v-show="parseFloat(thread.price) > 0" type="pay-yuan" class="icon-pay-yuan" />
+              <svg-icon
+                v-show="parseFloat(thread.price) > 0"
+                type="pay-yuan"
+                class="icon-pay-yuan"
+              />
               <div
-                :class="{'content-block': parseFloat(thread.price) > 0}"
+                :class="{ 'content-block': parseFloat(thread.price) > 0 }"
                 v-html="$xss(formatTopicHTML(thread.firstPost.summary))"
               />
             </div>
@@ -75,19 +81,21 @@
           /> -->
         </div>
       </template>
-      <div class="thread-count">{{ $t('home.topicCount', {total: item.thread_count}) }}</div>
+      <div class="thread-count">
+        {{ $t("home.topicCount", { total: item.thread_count }) }}
+      </div>
     </div>
   </div>
 </template>
 <script>
-import s9e from '@/utils/s9e'
-import { time2MinuteOrHour } from '@/utils/time'
-import handleError from '@/mixin/handleError'
+import s9e from '@/utils/s9e';
+import { time2MinuteOrHour } from '@/utils/time';
+import handleError from '@/mixin/handleError';
 export default {
   name: 'TopicItem',
   filters: {
     formatDate(date) {
-      return time2MinuteOrHour(date)
+      return time2MinuteOrHour(date);
     }
   },
   mixins: [handleError],
@@ -106,36 +114,47 @@ export default {
       loading: false,
       showVideoPop: false,
       showViewer: false
-    }
+    };
   },
   computed: {
     // 话题最新主题
     thread() {
-      return (this.item && this.item.lastThread && this.item.lastThread.length > 0 && this.item.lastThread[0]) || {}
+      return (
+        (this.item
+          && this.item.lastThread
+          && this.item.lastThread.length > 0
+          && this.item.lastThread[0])
+        || {}
+      );
     },
     // 未付费
     unpaid() {
-      return this.thread && !(this.thread.paid || parseFloat(this.thread.price) === 0)
+      return (
+        this.thread
+        && !(this.thread.paid || parseFloat(this.thread.price) === 0)
+      );
     }
   },
   methods: {
     // 跳转详情页
     toDetail() {
-      if (!this.canViewPostsFn()) return
-      this.routerLink()
+      if (!this.canViewPostsFn()) return;
+      this.routerLink();
     },
     // 点击图片 判断是否付费， 未付费跳转详情页
     onClickImage() {
-      if ((this.thread && !this.thread.unpaid) || !this.canViewPostsFn()) return
-      this.routerLink()
+      if ((this.thread && !this.thread.unpaid) || !this.canViewPostsFn()) {
+        return;
+      }
+      this.routerLink();
     },
     // 点击视频 判断是否付费， 未付费跳转详情页
     openVideo() {
-      if (!this.canViewPostsFn()) return
+      if (!this.canViewPostsFn()) return;
       if (this.thread && this.thread.unpaid) {
-        this.routerLink()
+        this.routerLink();
       } else {
-        this.showVideoPop = true
+        this.showVideoPop = true;
       }
     },
     // 详情路由
@@ -143,30 +162,30 @@ export default {
       window.open(
         `/thread/${this.thread && this.thread._jv && this.thread._jv.id}`,
         '_blank'
-      )
+      );
     },
     // 点击正文，使用事件委托判断a标签
     onClickContent(e) {
-      const event = e || window.event
-      const target = event.target || event.srcElement
+      const event = e || window.event;
+      const target = event.target || event.srcElement;
       if (target.nodeName.toLocaleLowerCase() !== 'a') {
-        this.toDetail()
+        this.toDetail();
       }
     },
     // 是否有查看详情的权限
     canViewPostsFn() {
       if (this.thread && !this.thread.canViewPosts) {
-        this.$message.error(this.$t('home.noPostingTopic'))
-        return false
+        this.$message.error(this.$t('home.noPostingTopic'));
+        return false;
       }
-      return true
+      return true;
     },
     // 格式化html
     formatTopicHTML(html) {
-      return s9e.parse(html)
+      return s9e.parse(html);
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 @import "@/assets/css/variable/color.scss";
@@ -178,19 +197,19 @@ export default {
   border-bottom: 1px solid $line-color-base;
   .main-cont {
     flex: 1;
-    .top-flex{
+    .top-flex {
       display: flex;
     }
-    .topic-title{
+    .topic-title {
       font-weight: bold;
-      font-size:16px;
+      font-size: 16px;
       word-break: break-word;
       flex: 1;
       margin-right: 20px;
     }
-    .view-count{
+    .view-count {
       color: $font-color-grey;
-      font-size:12px;
+      font-size: 12px;
       margin-top: 10px;
     }
     .first-post {
@@ -202,9 +221,9 @@ export default {
       position: absolute;
       top: 0;
       left: 0;
-      color: #8590A6;
+      color: #8590a6;
     }
-    .content-block{
+    .content-block {
       text-indent: 20px;
     }
     ::v-deep .content {
@@ -305,7 +324,7 @@ export default {
         transform: translate(-50%, -50%);
       }
     }
-    .thread-count{
+    .thread-count {
       font-size: 12px;
       color: $font-color-grey;
       margin-top: 10px;
