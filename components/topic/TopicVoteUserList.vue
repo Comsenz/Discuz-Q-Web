@@ -1,6 +1,6 @@
 <template>
   <div class="global">
-    <div v-if="personNum > 0" class="per-num">共有{{ personNum }}人投票</div>
+    <div v-if="personNum > 0" class="per-num">{{ $t('topic.allVotePer', { personNum }) }}</div>
     <div v-if="personRes.length > 0" class="det-per-list">
       <div v-for="(person, index) in personRes" :key="index" class="det-person">
         <Avatar

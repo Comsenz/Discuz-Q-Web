@@ -57,7 +57,7 @@
         </el-checkbox-group>
       </div>
       <div class="vote-btn-box">
-        <div v-if="isVoted" class="already-vote">您已投票</div>
+        <div v-if="isVoted" class="already-vote">{{ $t("topic.voted") }}</div>
         <el-button
           v-else
           size="medium"
@@ -65,15 +65,15 @@
           class="vote-btn"
           :disabled="stopStatus ? true : false"
           @click="voteClick"
-        >投票</el-button>
+        >{{ $t("topic.vote") }}</el-button>
       </div>
       
-      <div v-if="!stopStatus" class="count-down">距离结束还有：
-        <span>{{ day }}</span>天
-        <span>{{ hourString }}</span>小时
-        <span>{{ minuteString }}</span>分钟
+      <div v-if="!stopStatus" class="count-down">{{ $t("topic.countDown") }}
+        <span>{{ day }}</span>{{ $t("topic.day") }}
+        <span>{{ hourString }}</span>{{ $t("topic.hour") }}
+        <span>{{ minuteString }}</span>{{ $t("topic.minute") }}
       </div>
-      <div v-if="stopStatus" class="count-over">已结束</div>
+      <div v-if="stopStatus" class="count-over">{{ $t("topic.itsOver") }}</div>
       <topic-vote-user-list
         v-if="voteRes.is_show_participant"
         :user-list="voteRes.logsUsers"
