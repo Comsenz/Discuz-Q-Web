@@ -109,7 +109,8 @@ export default {
       second: '',
       promiseTimer: '',
       remainTime: this.voteRes.end_day * 86400,
-      stopStatus: false
+      stopStatus: false,
+      optional: 0 // 投票可选项
     };
   },
   computed: {
@@ -193,6 +194,7 @@ export default {
     });
     this.voteId = Number(this.voteRes._jv.id);
     this.voteData = this.voteRes.options;
+    this.optional = this.voteRes.optional;
     this.voteRes.options.forEach((item, index) => {
       if (total === 0 || Number.isNaN(total)) {
         this.voteData[index].percent = 0;
@@ -224,6 +226,7 @@ export default {
       // console.log(this.voteIdData, '单选选中的');
     },
     checkboxChange(curId) {
+      console.log(this.checkboxVal, '多选');
       this.voteIdData = this.checkboxVal.join(',');
       // console.log(this.voteIdData, '多选选中的');
     },
@@ -232,30 +235,27 @@ export default {
     },
     // 参与投票
     voteClick() {
-      console.log('点击投票');
+      console.log(this.checkboxVal.length, this.optional, this.voteIdData, '点击投票');
       let voteIds = '';
 
-      if (Array.isArray(this.voteIdData)) {
-        if (this.voteIdData.length > this.optional) {
-          // this.$refs.toast.show({
-          //   message: this.i18n.t('topic.maximumOptions', { num: this.optional }),
-          // });
+      if (this.checkboxVal.length > 0) {
+        // 多选
+        if (this.checkboxVal.length > this.optional) {
+          this.$message.warning(this.$t('topic.maximumOptions', { num: this.optional }));
           return;
         }
-        voteIds = this.voteIdData.join(',');
+        voteIds = this.checkboxVal.join(',');
       } else if (this.voteIdData) {
+        // 单选
         voteIds = this.voteIdData;
       } else {
-        // this.$refs.toast.show({
-        //   message: this.i18n.t('topic.pleaseSelectVoteOptions'),
-        // });
+        // 没选
+        this.$message.warning(this.$t('topic.pleaseSelectVoteOptions'));
         return;
       }
       this.$store.dispatch('jv/get', `votes/cast/${this.voteId}/${voteIds}`).then(res => {
-        console.log(res, '成功了');
+        // console.log(res, '成功了');
         this.$emit('voteSuccess', res);
-        // this.$router.push({ path: `/thread/${res.thread_id}` });
-        // this.$router.push({ path: `/` });
         
       }).catch(err => {
         console.log(err, '报错了');

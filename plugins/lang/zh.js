@@ -454,7 +454,9 @@ export default {
     day: "天",
     hour: "小时",
     minute: "分钟",
-    allVotePer: "共有{personNum}人投票"
+    allVotePer: "共有{personNum}人投票",
+    maximumOptions: '最多可选 {num} 项',
+    pleaseSelectVoteOptions: '请选择投票选项'
   },
   pay: {
     passwordError: "密码错误请重试",
