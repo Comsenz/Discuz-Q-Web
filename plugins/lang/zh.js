@@ -440,7 +440,9 @@ export default {
     question: '提问：',
     answer: '回答了',
     answered: '已回答',
-    joinAfterView: '加入站点后才可以预览'
+    joinAfterView: '加入站点后才可以预览',
+    radioVote: '单选投票',
+    checkboxVote: '多选投票'
   },
   pay: {
     passwordError: '密码错误请重试',

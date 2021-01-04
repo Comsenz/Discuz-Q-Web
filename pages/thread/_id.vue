@@ -27,9 +27,12 @@
           :audio="thread.threadAudio || {}"
           :paid-information="paidInformation"
           :thread-type="thread.type || 0"
+          :vote="thread.vote || {}"
+          :is-voted="thread.isVoted"
           :category="thread.category || {}"
           :location="location"
           @payForThread="showCheckoutCounter = true"
+          @voteSuccess="voteSuccess"
         />
         <qa-actions
           v-if="thread.type === 5"
@@ -111,7 +114,7 @@
 
 <script>
 // eslint-disable-next-line max-len
-const threadInclude = `posts.replyUser,threadAudio,user.groups,user,user.groups.permissionWithoutCategories,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers,question,question.beUser,question.images,onlookers`;
+const threadInclude = `posts.replyUser,threadAudio,user.groups,user,user.groups.permissionWithoutCategories,posts,posts.user,posts.likedUsers,posts.images,firstPost,firstPost.likedUsers,firstPost.images,firstPost.attachments,rewardedUsers,category,threadVideo,paidUsers,question,question.beUser,question.images,onlookers,vote,vote.options,vote.logs,vote.logs.user,vote.logsUsers,vote.actorLogs`;
 import handleError from '@/mixin/handleError';
 import isLogin from '@/mixin/isLogin';
 import payment from '@/mixin/payment';
@@ -290,6 +293,7 @@ export default {
   },
   methods: {
     getThread() {
+      console.log('重新请求主题接口');
       return this.$store
         .dispatch('jv/get', [
           `threads/${this.threadId}`,
@@ -300,6 +304,7 @@ export default {
             if (data.isDeleted) return this.$router.replace('/error');
             this.articleLoading = false;
             this.thread = data;
+            console.log(data, '这是接口拿到的啊');
             this.article = data.firstPost;
             this.postId = this.article._jv.id;
             this.initData();
@@ -500,6 +505,12 @@ export default {
       setTimeout(() => {
         this.$router.push('/');
       }, 1000);
+    },
+    voteSuccess(res) {
+      console.log(this.currentUser, '这是投票');
+      this.getThread();
+      this.thread.vote.logs.unshift(this.currentUser);
+      console.log(this.thread.vote.logs, '追加后');
     }
   },
   head() {

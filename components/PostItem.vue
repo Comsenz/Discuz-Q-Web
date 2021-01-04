@@ -143,6 +143,11 @@
                 class="icon-pay-yuan blue"
               />
               <svg-icon
+                v-else-if="item.type === 7"
+                type="vote-icon"
+                class="icon-pay-yuan blue"
+              />
+              <svg-icon
                 v-else-if="
                   parseFloat(item.price) > 0 ||
                     parseFloat(item.attachmentPrice) > 0
@@ -155,6 +160,7 @@
                   'content-block':
                     item.type === 5 ||
                     item.type === 6 ||
+                    item.type === 7 ||
                     parseFloat(item.price) > 0,
                   blue: item.type === 5
                 }"
