@@ -74,6 +74,7 @@
           </span>
         </nuxt-link>
         <div class="time">
+          {{ item.title }}
           <div
             v-if="
               item.type === 5 && item.question && item.question.is_answer === 1
@@ -131,6 +132,14 @@
               />
               <span class="blue ">{{ item.title }}</span>
             </div>
+            <div v-else-if="item.type === 7" class="title">
+              <svg-icon
+                v-show="item.type === 7"
+                type="vote-icon"
+                style="font-size: 17px; display: inline-block; margin-right: 5px;"
+              />
+              <span>{{ item.title }}</span>
+            </div>
             <div v-else class="content">
               <svg-icon
                 v-if="item.type === 5"
@@ -140,11 +149,6 @@
               <svg-icon
                 v-else-if="item.type === 6"
                 type="product-icon"
-                class="icon-pay-yuan blue"
-              />
-              <svg-icon
-                v-else-if="item.type === 7"
-                type="vote-icon"
                 class="icon-pay-yuan blue"
               />
               <svg-icon
