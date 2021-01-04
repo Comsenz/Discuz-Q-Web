@@ -9,10 +9,6 @@
         }}
       </h1> 
     </div>
-    
-    <!--<span>
-      {{ hour ? `${hourString}:${minuteString}:${secondString}` : `${minuteString}:${secondString}` }}
-    </span>-->
     <div>
       <div v-if="voteRes.optional && voteRes.optional === 1">
         <el-radio-group
@@ -47,7 +43,7 @@
             :label="vote._jv.id"
             class="vote-radio"
             @change="checkboxChange(vote._jv.id)"
-          >{{ vote.content }}-----{{ vote._jv.id }}</el-checkbox>
+          >{{ vote.content }}</el-checkbox>
           <div v-if="isVoted" class="vote-content">{{ `${index + 1}.${vote.content}` }}</div>
           <el-progress 
             v-if="voteRes.is_show_result"
