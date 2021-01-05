@@ -45,10 +45,10 @@ export default {
   },
   data() {
     return {
-      atMost: '', // 投票可选项
-      count: 0, // 计票天数
-      voteResult: false, // 是否展示投票结果
-      participants: false // 是否公开投票参与人
+      // atMost: '', // 投票可选项
+      // count: 0, // 计票天数
+      // voteResult: false, // 是否展示投票结果
+      // participants: false // 是否公开投票参与人
     };
   }
 };

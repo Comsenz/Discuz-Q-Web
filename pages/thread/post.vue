@@ -71,7 +71,7 @@
 </template>
 
 <script>
-const threadInclude = 'firstPost,firstPost.images,firstPost.attachments,category,threadVideo';
+const threadInclude = 'firstPost,firstPost.images,firstPost.attachments,category,threadVideo,vote,vote.options';
 import head from '@/mixin/head';
 import publishResource from '@/mixin/publishResource';
 import handleError from '@/mixin/handleError';
@@ -108,7 +108,7 @@ export default {
       product: {},
       voteBeforeList: [], // 投票选项
       vote: {
-        voteId: '',
+        voteId: '', // 投票贴ID
         atMost: '', // 投票可选项
         count: 0, // 计票天数
         voteResult: 0, // 是否展示投票结果
@@ -400,6 +400,26 @@ export default {
       this.location.latitude = data.latitude;
       this.location.longitude = data.longitude;
       this.product = { ...data.firstPost.postGoods };
+      this.vote.count = data.vote.end_day;
+      // if (data.vote.is_show_result === 1) {
+      //   this.vote.voteResult = true;
+      // } else if (data.vote.is_show_result === 0) {
+      //   this.vote.voteResult = false;
+      // } else if (data.vote.is_show_participant === 1) {
+      //   this.vote.participants = true;
+      // } else if (data.vote.is_show_participant === 0) {
+      //   this.vote.participants = false;
+      // }
+      this.vote.voteResult = data.vote.is_show_result;
+      this.vote.participants = data.vote.is_show_participant;
+      this.vote.atMost = data.vote.optional;
+      this.vote.voteId = data.vote.thread_id;
+      data.vote.options.forEach((item, index) => {
+        this.vote.voteBeforeList.push({
+          id: Number(item._jv.id),
+          content: item.content
+        });
+      });
     },
     initThreadResource(target, resource, key = '') {
       resource.forEach(item => {
@@ -538,8 +558,14 @@ export default {
       if (this.type === '7' && this.voteBeforeList.length < 2) {
         return this.$message.warning(this.$t('post.votingOptionsBeLessThan2'));
       }
-      if (this.type === '7' && this.vote.count > this.voteBeforeList.length) {
+      if (this.type === '7' && this.vote.atMost <= 0) {
         return this.$message.warning(this.$t('post.maximumSelectRange'));
+      }
+      if (this.type === '7' && this.vote.atMost > this.voteBeforeList.length) {
+        return this.$message.warning(this.$t('post.maximumSelectRange'));
+      }
+      if (this.type === '7' && this.vote.count <= 0) {
+        return this.$message.warning(this.$t('post.countingDaysBeGreaterThan0'));    
       }
       if (this.payment.paidType === 'paid' && this.payment.price === 0) {
         return this.$message.warning(
@@ -567,7 +593,6 @@ export default {
       return 'success';
     },
     async publish() {
-      console.log('发布');
       if (this.checkPublish() !== 'success') return;
       this.onPublish = true;
       if (this.isEditor) {
@@ -668,6 +693,7 @@ export default {
       threadParams = this.publishPayment(threadParams, this.payment);
       threadParams = this.publishLocation(threadParams, this.location);
       threadParams = this.publishThreadResource(threadParams, this.post);
+      if (this.type === '7') threadParams = this.publishVote(threadParams, this.vote);
       if (this.forums.other.create_thread_with_captcha) {
         try {
           threadParams = await this.checkCaptcha(threadParams);
@@ -682,10 +708,8 @@ export default {
       ]);
     },
     voteChanges(e) {
-      console.log(e, 'dppdkk');
       this.voteBeforeList = e;
       this.vote.voteBeforeList = e;
-      console.log(this.voteBeforeList, '0000000');
     }
   }
 };

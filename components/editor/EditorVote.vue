@@ -59,7 +59,6 @@ export default {
     }
   },
   created() {
-    console.log(this.voteBeforeList, 'this.voteBeforeList');
     if (this.voteBeforeList.length > 0) {
       this.voteList = [];
       this.voteBeforeList.forEach(item => {
@@ -69,8 +68,7 @@ export default {
         });
       });
       this.voteData = this.voteBeforeList;
-    }
-    this.voteData = this.voteBeforeList;  
+    }  
   },
   methods: {
     // 增加投票选项
@@ -78,8 +76,6 @@ export default {
       this.voteList.push({
         title: ''
       });
-      console.log(this.voteList, '99999');
-      console.log(this.voteData, 'voteDatavoteData');
     },
     // 删除投票选项
     remove(index) {
