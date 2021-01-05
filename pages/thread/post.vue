@@ -21,11 +21,14 @@
       :edit-resource-show="editResourceShow"
       :question.sync="question"
       :product.sync="product"
+      :vote-before-list.sync="voteBeforeList"
+      :vote.sync="vote"
       :payment.sync="payment"
       :on-publish="onPublish"
       :is-edit="isEditor"
       :post.sync="post"
       @publish="publish"
+      @change="voteChanges"
     />
     <topic-checkout-counter
       v-if="showCheckoutCounter"
@@ -103,6 +106,15 @@ export default {
         paidType: 'free', price: 0, freeWords: 0, attachmentPrice: 0 }, // free 免费， paid 全部付费，attachmentPaid 文章免费，附件付费
       location: { latitude: '', location: '', longitude: '' },
       product: {},
+      voteBeforeList: [], // 投票选项
+      vote: {
+        voteId: '',
+        atMost: '', // 投票可选项
+        count: 0, // 计票天数
+        voteResult: 0, // 是否展示投票结果
+        participants: 0, // 是否公开投票参与人
+        voteBeforeList: []
+      }, // 投票结果
       question: {
         beUser: '',
         orderId: '',
@@ -118,7 +130,7 @@ export default {
         showUploadAttached: false
       },
       typeInformation: {
-        // 0 文字帖 1 帖子 2 视频 3 图片 4 语音 5 问答 6 商品
+        // 0 文字帖 1 帖子 2 视频 3 图片 4 语音 5 问答 6 商品 7 投票
         0: {
           type: 0,
           headerText: 'postText',
@@ -215,6 +227,20 @@ export default {
           showTopic: true,
           showCaller: true,
           placeholder: '请输入您要发表的内容 ...'
+        },
+        7: {
+          type: 7,
+          headerText: 'postVote',
+          textLimit: 49999,
+          showPayment: false,
+          showTitle: true,
+          showImage: false,
+          showVideo: false,
+          showAttached: true,
+          showEmoji: true,
+          showTopic: true,
+          showCaller: true,
+          placeholder: '请输入投票帖的内容 ...'
         }
       },
       categorySelectedId: '',
@@ -261,7 +287,7 @@ export default {
     }
   },
   mounted() {
-    if (['0', '1', '2', '3', '5', '6'].indexOf(this.type) < 0) {
+    if (['0', '1', '2', '3', '5', '6', '7'].indexOf(this.type) < 0) {
       return this.$router.replace('/error');
     }
     this.getCategoryList();
@@ -345,6 +371,7 @@ export default {
         );
     },
     initData(data) {
+      console.log(data, 'data');
       this.editThread = data;
       this.categorySelectedId = data.category._jv.id;
       this.post.title = data.title;
@@ -444,7 +471,7 @@ export default {
     },
     checkPublish() {
       if (!this.isLogin()) return;
-      // 0 文字帖 1 帖子 2 视频 3 图片 4 音频 5 问答 6 商品
+      // 0 文字帖 1 帖子 2 视频 3 图片 4 音频 5 问答 6 商品 7 投票
       if (!this.categorySelectedId) {
         return this.$message.warning(this.$t('post.theClassifyCanNotBeBlank'));
       }
@@ -508,6 +535,12 @@ export default {
       ) {
         return this.$message.warning(this.$t('post.goodsEmpty'));
       }
+      if (this.type === '7' && this.voteBeforeList.length < 2) {
+        return this.$message.warning(this.$t('post.votingOptionsBeLessThan2'));
+      }
+      if (this.type === '7' && this.vote.count > this.voteBeforeList.length) {
+        return this.$message.warning(this.$t('post.maximumSelectRange'));
+      }
       if (this.payment.paidType === 'paid' && this.payment.price === 0) {
         return this.$message.warning(
           this.$t('post.paidTypePaidPriceCanNotBeZero')
@@ -534,6 +567,7 @@ export default {
       return 'success';
     },
     async publish() {
+      console.log('发布');
       if (this.checkPublish() !== 'success') return;
       this.onPublish = true;
       if (this.isEditor) {
@@ -570,6 +604,7 @@ export default {
         params = this.publishQuestion(params, this.question);
       }
       if (this.type === '6') params = this.publishProduct(params, this.product);
+      if (this.type === '7') params = this.publishVote(params, this.vote);
       if (this.forums.other.create_thread_with_captcha) {
         try {
           params = await this.checkCaptcha(params);
@@ -604,6 +639,7 @@ export default {
       if (this.type === '6') {
         postParams = this.publishProduct(postParams, this.product);
       }
+      if (this.type === '7') postParams = this.publishVote(postParams, this.vote);
       // this.deleteAttachmentsAfterEdit(this.editThread.firstPost.images, this.post.imageList) // 编辑主题时删除的图片，在发布的时候删除
       this.deleteAttachmentsAfterEdit(
         this.editThread.firstPost.attachments,
@@ -644,6 +680,12 @@ export default {
         threadParams,
         { url: `/threads/${this.threadId}` }
       ]);
+    },
+    voteChanges(e) {
+      console.log(e, 'dppdkk');
+      this.voteBeforeList = e;
+      this.vote.voteBeforeList = e;
+      console.log(this.voteBeforeList, '0000000');
     }
   }
 };

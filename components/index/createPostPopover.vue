@@ -26,6 +26,9 @@
       <li v-if="can_create_thread_goods" @click.stop="toRouter(6)">
         {{ $t("home.product") }}
       </li>
+      <li v-if="can_create_thread_vote" @click.stop="toRouter(7)">
+        {{ $t("home.vote") }}
+      </li>
     </ul>
     <template slot="reference">
       <slot name="button">
@@ -52,7 +55,8 @@ export default {
       can_create_thread_video: true, // 是否有发视频贴权限
       can_create_thread_image: true, // 是否有发图片贴权限
       can_create_thread_question: true, // 是否有发问答贴权限
-      can_create_thread_goods: true // 是否有发商品贴权限
+      can_create_thread_goods: true, // 是否有发商品贴权限
+      can_create_thread_vote: true // 是否有发投票贴权限
     };
   },
   computed: {
@@ -140,6 +144,10 @@ export default {
           // 判断发商品贴权限
           if (!_other.can_create_thread_goods) {
             this.can_create_thread_goods = false;
+          }
+          // 判断发投票贴权限
+          if (!_other.can_create_thread_vote) {
+            this.can_create_thread_vote = false;
           }
         }
         this.visible = !this.visible;

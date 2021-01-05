@@ -27,6 +27,12 @@
       :product="product"
       @productChange="onProductChange"
     />
+    <!--投票贴 -->
+    <editor-vote 
+      v-if="typeInformation && typeInformation.type === 7"
+      :vote-before-list="voteBeforeList"
+      @change="voteChange"
+    />
     <editor-payment
       v-if="
         typeInformation && typeInformation.showPayment && canCreateThreadPaid
@@ -140,6 +146,13 @@
         />
       </div>
     </div>
+    <!--投票显示 -->
+    <editor-vote-result
+      v-if="typeInformation && typeInformation.type === 7"
+      :vote="vote"
+      @isVoteResult="value => onVoteChange('voteResult', value)"
+      @isParticipants="value => onVoteChange('participants', value)"
+    />
     <caller
       v-if="showCaller && !isPost"
       @close="showCaller = false"
@@ -150,9 +163,11 @@
 
 <script>
 import handleError from '@/mixin/handleError';
+import EditorVoteResult from './EditorVoteResult.vue';
 
 export default {
   name: 'Editor',
+  components: { EditorVoteResult },
   mixins: [handleError],
   props: {
     post: {
@@ -168,6 +183,14 @@ export default {
       default: () => {}
     },
     product: {
+      type: Object,
+      default: () => {}
+    },
+    voteBeforeList: {
+      type: Array,
+      default: () => []
+    },
+    vote: {
       type: Object,
       default: () => {}
     },
@@ -338,6 +361,15 @@ export default {
     onProductChange(product) {
       const _product = Object.assign({}, product);
       this.$emit(`update:product`, _product);
+    },
+    onVoteChange(key, value) {
+      const _vote = Object.assign({}, this.vote);
+      _vote[key] = value;
+      this.$emit(`update:vote`, _vote);
+    },
+    voteChange(e) { // 投票帖选项改变
+      console.log(e, 'dhssjdsshdjs');
+      this.$emit('change', e);
     },
     autoHeight() {
       if (this.editorStyle === 'chat') return; // 聊天框不需要自动高度

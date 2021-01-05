@@ -78,6 +78,18 @@ module.exports = {
       deleteImageIds.forEach(id => {
         this.$store.dispatch('jv/delete', [`/attachments/${id}`, {}]).catch(() => '');
       });
+    },
+    publishVote(params, vote) {
+      params._jv.relationships.vote = {};
+      params._jv.relationships.vote.data = {};
+      const data = params._jv.relationships.vote.data;
+      data.id = vote.voteId;
+      data.optional = vote.atMost;
+      data.is_show_participant = vote.participants;
+      data.is_show_result = vote.voteResult;
+      data.end_day = vote.count;
+      data.contents = vote.voteBeforeList;
+      return params;
     }
   }
 };
