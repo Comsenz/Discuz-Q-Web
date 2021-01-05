@@ -68,6 +68,12 @@
     <div v-if="unpaid && threadType === 1" class="hide-content-tip">
       {{ $t("pay.contentHide") }}
     </div>
+    <topic-vote
+      v-if="threadType === 7"
+      :vote-res="vote"
+      :is-voted="isVoted"
+      @voteSuccess="voteSuccess"
+    />
     <nuxt-link
       v-if="category.name"
       :to="{ path: `/category/${category._jv.id}` }"
@@ -154,6 +160,14 @@ export default {
     location: {
       type: Object,
       default: () => {}
+    },
+    vote: {
+      type: Object,
+      default: () => {}
+    },
+    isVoted: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -277,6 +291,9 @@ export default {
     seeking(time) {
       this.currentAudio.seeking = true;
       this.currentAudio.currentTime = time;
+    },
+    voteSuccess(res) {
+      this.$emit('voteSuccess', res);
     }
   }
 };
