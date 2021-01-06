@@ -54,7 +54,7 @@ import handleError from '@/mixin/handleError';
 import head from '@/mixin/head';
 import env from '@/utils/env';
 // eslint-disable-next-line max-len
-const threadInclude = `user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio`;
+const threadInclude = `user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio,vote`;
 export default {
   layout: 'custom_layout',
   name: 'Position',
