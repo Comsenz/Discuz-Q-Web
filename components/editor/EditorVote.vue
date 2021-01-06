@@ -31,6 +31,10 @@ export default {
         return [];
       }
     }
+    // vote: {
+    //   type: Object,
+    //   default: () => {}
+    // }
   },
   data() {
     return {
@@ -56,19 +60,23 @@ export default {
       },
       deep: true,
       immediate: true
+    },
+    voteBeforeList: {
+      handler(n, o) {
+        if (this.voteBeforeList.length > 0) {
+          this.voteList = [];
+          this.voteBeforeList.forEach(item => {
+            this.voteList.push({
+              title: item.content,
+              id: item.id
+            });
+          });
+          this.voteData = this.voteBeforeList;
+        }
+      },
+      deep: true,
+      immediate: true
     }
-  },
-  created() {
-    if (this.voteBeforeList.length > 0) {
-      this.voteList = [];
-      this.voteBeforeList.forEach(item => {
-        this.voteList.push({
-          title: item.content,
-          id: item.id
-        });
-      });
-      this.voteData = this.voteBeforeList;
-    }  
   },
   methods: {
     // 增加投票选项
@@ -92,6 +100,7 @@ export default {
     voteInput() {
       this.voteData = [];
       this.voteList.forEach(item => {
+        console.log(item, 'item');
         if (item.title) {
           if (item.id) {
             this.voteData.push({

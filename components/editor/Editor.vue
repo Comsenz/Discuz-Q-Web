@@ -239,6 +239,7 @@ export default {
       onUploadVideo: false,
       onUploadAttached: false,
 
+      onVoteList: [],
       listenerList: ['emoji-list', 'topic-list'],
       actions: [
         { icon: 'emoji', toggle: 'showEmoji', show: false },
@@ -368,7 +369,6 @@ export default {
       this.$emit(`update:vote`, _vote);
     },
     voteChange(e) { // 投票帖选项改变
-      console.log(e, 'dhssjdsshdjs');
       this.$emit('change', e);
     },
     autoHeight() {
