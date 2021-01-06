@@ -9,6 +9,10 @@
         }}
       </h1> 
     </div>
+    
+    <!--<span>
+      {{ hour ? `${hourString}:${minuteString}:${secondString}` : `${minuteString}:${secondString}` }}
+    </span>-->
     <div>
       <div v-if="voteRes.optional && voteRes.optional === 1">
         <el-radio-group
@@ -24,11 +28,14 @@
             @change="radioChange"
           >{{ vote.content }}</el-radio>
           <div v-if="isVoted" class="vote-content">{{ `${index + 1}.${vote.content}` }}</div>
-          <el-progress 
-            v-if="voteRes.is_show_result"
-            :percentage="Number(vote.percent)"
-            color="#1E78F3" 
-          />
+          <div v-if="voteRes.is_show_result" class="progress-box">
+            <el-progress
+              :show-text="false"
+              :percentage="Number(vote.percent)"
+              color="#1E78F3" 
+            />
+            <div class="percent">{{ `${vote.percent}%(${vote.count})` }}</div>
+          </div>
         </el-radio-group>
       </div>
       <div v-if="voteRes.optional && voteRes.optional > 1">
@@ -45,11 +52,15 @@
             @change="checkboxChange(vote._jv.id)"
           >{{ vote.content }}</el-checkbox>
           <div v-if="isVoted" class="vote-content">{{ `${index + 1}.${vote.content}` }}</div>
-          <el-progress 
-            v-if="voteRes.is_show_result"
-            :percentage="Number(vote.percent)"
-            color="#1E78F3" 
-          />
+          <div v-if="voteRes.is_show_result" class="progress-box">
+            <el-progress
+              :show-text="false"
+              :percentage="Number(vote.percent)"
+              color="#1E78F3" 
+            />
+            <div class="percent">{{ `${vote.percent}%(${vote.count})` }}</div>
+          </div>
+          
         </el-checkbox-group>
       </div>
       <div class="vote-btn-box">
@@ -242,10 +253,10 @@ export default {
         }
         voteIds = this.checkboxVal.join(',');
       } else if (this.voteIdData) {
-        // 单选
+        // console.log('单选');
         voteIds = this.voteIdData;
       } else {
-        // 没选
+        // console.log('没选');
         this.$message.warning(this.$t('topic.pleaseSelectVoteOptions'));
         return;
       }
@@ -332,11 +343,21 @@ export default {
 .vote-item {
   .el-progress {
     display: flex;
-    justify-content: space-around;
+    flex: 1;
+    align-items: center;
   }
   .el-progress-bar {
-    padding-right: 58px;
-    margin-right: -61px
+    // padding-right: 58px;
+    // margin-right: -61px
+  }
+}
+.progress-box {
+  display: flex;
+  justify-content: space-between;
+  .percent {
+    padding-left: 14px;
+    font-size: 14px;
+    color: $color-blue-base;
   }
 }
 </style>

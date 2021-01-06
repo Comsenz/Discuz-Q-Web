@@ -90,6 +90,9 @@ export default {
       }, {
         label: this.$t('home.product'), // 商品
         value: 6
+      }, {
+        label: this.$t('home.vote'), // 商品
+        value: 7
       }],
       // 排序
       filterSort: [{
