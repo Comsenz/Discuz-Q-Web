@@ -9,6 +9,10 @@
         }}
       </h1> 
     </div>
+    
+    <!--<span>
+      {{ hour ? `${hourString}:${minuteString}:${secondString}` : `${minuteString}:${secondString}` }}
+    </span>-->
     <div>
       <div v-if="voteRes.optional && voteRes.optional === 1">
         <el-radio-group
@@ -18,17 +22,20 @@
           class="vote-item"
         >
           <el-radio
-            v-if="!isVoted"
+            v-if="!isVoted && !stopStatus"
             :label="vote._jv.id"
             class="vote-radio"
             @change="radioChange"
           >{{ vote.content }}</el-radio>
-          <div v-if="isVoted" class="vote-content">{{ `${index + 1}.${vote.content}` }}</div>
-          <el-progress 
-            v-if="voteRes.is_show_result"
-            :percentage="Number(vote.percent)"
-            color="#1E78F3" 
-          />
+          <div v-if="isVoted || stopStatus" class="vote-content">{{ `${index + 1}.${vote.content}` }}</div>
+          <div v-if="voteRes.is_show_result" class="progress-box">
+            <el-progress
+              :show-text="false"
+              :percentage="Number(vote.percent)"
+              color="#1E78F3" 
+            />
+            <div class="percent">{{ `${vote.percent}%(${vote.count})` }}</div>
+          </div>
         </el-radio-group>
       </div>
       <div v-if="voteRes.optional && voteRes.optional > 1">
@@ -39,17 +46,21 @@
           class="vote-item"
         >
           <el-checkbox
-            v-if="!isVoted"
+            v-if="!isVoted && !stopStatus"
             :label="vote._jv.id"
             class="vote-radio"
             @change="checkboxChange(vote._jv.id)"
           >{{ vote.content }}</el-checkbox>
-          <div v-if="isVoted" class="vote-content">{{ `${index + 1}.${vote.content}` }}</div>
-          <el-progress 
-            v-if="voteRes.is_show_result"
-            :percentage="Number(vote.percent)"
-            color="#1E78F3" 
-          />
+          <div v-if="isVoted || stopStatus" class="vote-content">{{ `${index + 1}.${vote.content}` }}</div>
+          <div v-if="voteRes.is_show_result" class="progress-box">
+            <el-progress
+              :show-text="false"
+              :percentage="Number(vote.percent)"
+              color="#1E78F3" 
+            />
+            <div class="percent">{{ `${vote.percent}%(${vote.count})` }}</div>
+          </div>
+          
         </el-checkbox-group>
       </div>
       <div class="vote-btn-box">
@@ -57,7 +68,7 @@
         <el-button
           v-else
           size="medium"
-          type="primary"
+          :type="stopStatus ? 'info' : 'primary'"
           class="vote-btn"
           :disabled="stopStatus ? true : false"
           @click="voteClick"
@@ -242,16 +253,30 @@ export default {
         }
         voteIds = this.checkboxVal.join(',');
       } else if (this.voteIdData) {
-        // 单选
+        // console.log('单选');
         voteIds = this.voteIdData;
       } else {
-        // 没选
+        // console.log('没选');
         this.$message.warning(this.$t('topic.pleaseSelectVoteOptions'));
         return;
       }
       this.$store.dispatch('jv/get', `votes/cast/${this.voteId}/${voteIds}`).then(res => {
         // console.log(res, '成功了');
         this.$emit('voteSuccess', res);
+        console.log(res, '变了111111111111111111111');
+        let total = 0;
+        res.options.forEach(item => {
+          total += item.count;
+        });
+        this.voteData = res.options;
+        this.optional = res.optional;
+        res.options.forEach((item, index) => {
+          if (total === 0 || Number.isNaN(total)) {
+            this.voteData[index].percent = 0;
+          } else {
+            this.voteData[index].percent = this.format(item.count / total);
+          }
+        });
         
       }).catch(err => {
         console.log(err, '报错了');
@@ -332,11 +357,21 @@ export default {
 .vote-item {
   .el-progress {
     display: flex;
-    justify-content: space-around;
+    flex: 1;
+    align-items: center;
   }
   .el-progress-bar {
-    padding-right: 58px;
-    margin-right: -61px
+    // padding-right: 58px;
+    // margin-right: -61px
+  }
+}
+.progress-box {
+  display: flex;
+  justify-content: space-between;
+  .percent {
+    padding-left: 14px;
+    font-size: 14px;
+    color: $color-blue-base;
   }
 }
 </style>

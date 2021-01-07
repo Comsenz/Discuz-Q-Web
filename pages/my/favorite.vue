@@ -74,7 +74,7 @@ export default {
       this.loading = true;
       const params = {
         // eslint-disable-next-line max-len
-        include: `user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio`,
+        include: `user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio,vote`,
         'page[number]': this.pageNum,
         'page[limit]': this.pageSize
       };

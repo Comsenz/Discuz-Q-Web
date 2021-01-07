@@ -460,7 +460,7 @@ export default {
     vote: "投票",
     voted: "您已投票",
     countDown: "距离结束还有：",
-    itsOver: "已结束",
+    itsOver: "投票已结束",
     day: "天",
     hour: "小时",
     minute: "分钟",

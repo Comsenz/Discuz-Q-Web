@@ -662,6 +662,7 @@ export default {
       display: inline-block;
       font-size: 16px;
       margin-bottom: 6px;
+      word-break: break-all;
     }
     .icon-pay-yuan {
       height: 24px;

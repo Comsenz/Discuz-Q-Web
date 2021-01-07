@@ -242,7 +242,7 @@ import { status } from '@/store/modules/jsonapi-vuex/index';
 import handleError from '@/mixin/handleError';
 import env from '@/utils/env';
 // eslint-disable-next-line max-len
-const threadInclude = `user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio`;
+const threadInclude = `user,user.groups,firstPost,firstPost.images,category,threadVideo,question,question.beUser,question.beUser.groups,firstPost.postGoods,threadAudio,vote`;
 export default {
   name: 'Index',
   layout: 'custom_layout',
