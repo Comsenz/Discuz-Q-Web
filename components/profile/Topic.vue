@@ -73,7 +73,7 @@ export default {
       const params = {
         'filter[isDeleted]': 'no',
         'filter[isDisplay]': 'yes',
-        'filter[type]': '0,1,2,3,4,6',
+        'filter[type]': '0,1,2,3,4,6,7',
         sort: '-createdAt',
         // eslint-disable-next-line max-len
         include: `user,user.groups,firstPost,firstPost.images,firstPost.postGoods,category,threadVideo,threadAudio,question,question.beUser,question.beUser.groups`,

@@ -22,12 +22,12 @@
           class="vote-item"
         >
           <el-radio
-            v-if="!isVoted"
+            v-if="!isVoted && !stopStatus"
             :label="vote._jv.id"
             class="vote-radio"
             @change="radioChange"
           >{{ vote.content }}</el-radio>
-          <div v-if="isVoted" class="vote-content">{{ `${index + 1}.${vote.content}` }}</div>
+          <div v-if="isVoted || stopStatus" class="vote-content">{{ `${index + 1}.${vote.content}` }}</div>
           <div v-if="voteRes.is_show_result" class="progress-box">
             <el-progress
               :show-text="false"
@@ -46,12 +46,12 @@
           class="vote-item"
         >
           <el-checkbox
-            v-if="!isVoted"
+            v-if="!isVoted && !stopStatus"
             :label="vote._jv.id"
             class="vote-radio"
             @change="checkboxChange(vote._jv.id)"
           >{{ vote.content }}</el-checkbox>
-          <div v-if="isVoted" class="vote-content">{{ `${index + 1}.${vote.content}` }}</div>
+          <div v-if="isVoted || stopStatus" class="vote-content">{{ `${index + 1}.${vote.content}` }}</div>
           <div v-if="voteRes.is_show_result" class="progress-box">
             <el-progress
               :show-text="false"
@@ -68,7 +68,7 @@
         <el-button
           v-else
           size="medium"
-          type="primary"
+          :type="stopStatus ? 'info' : 'primary'"
           class="vote-btn"
           :disabled="stopStatus ? true : false"
           @click="voteClick"
@@ -263,6 +263,20 @@ export default {
       this.$store.dispatch('jv/get', `votes/cast/${this.voteId}/${voteIds}`).then(res => {
         // console.log(res, '成功了');
         this.$emit('voteSuccess', res);
+        console.log(res, '变了111111111111111111111');
+        let total = 0;
+        res.options.forEach(item => {
+          total += item.count;
+        });
+        this.voteData = res.options;
+        this.optional = res.optional;
+        res.options.forEach((item, index) => {
+          if (total === 0 || Number.isNaN(total)) {
+            this.voteData[index].percent = 0;
+          } else {
+            this.voteData[index].percent = this.format(item.count / total);
+          }
+        });
         
       }).catch(err => {
         console.log(err, '报错了');
