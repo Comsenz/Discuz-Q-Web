@@ -5,7 +5,7 @@
         {{
           voteRes.optional && voteRes.optional === 1
             ? $t("topic.radioVote")
-            : $t("topic.checkboxVote")
+            : $t("topic.checkboxVote", { num: optional })
         }}
       </h1> 
     </div>

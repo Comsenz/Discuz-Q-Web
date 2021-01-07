@@ -456,7 +456,7 @@ export default {
     answered: "已回答",
     joinAfterView: "加入站点后才可以预览",
     radioVote: "单选投票",
-    checkboxVote: "多选投票",
+    checkboxVote: "多选投票（最多可选{num}个）",
     vote: "投票",
     voted: "您已投票",
     countDown: "距离结束还有：",
