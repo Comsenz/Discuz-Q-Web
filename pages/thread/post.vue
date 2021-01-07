@@ -286,12 +286,13 @@ export default {
       return this.$route.query.beaskId;
     }
   },
-  mounted() {
+  created() {
     if (['0', '1', '2', '3', '5', '6', '7'].indexOf(this.type) < 0) {
       return this.$router.replace('/error');
     }
     this.getCategoryList();
     this.getThread();
+    console.log('created');
     if (this.beaskId) {
       this.getBeAskUserInfo();
     }
@@ -401,15 +402,6 @@ export default {
       this.location.longitude = data.longitude;
       this.product = { ...data.firstPost.postGoods };
       this.vote.count = data.vote.end_day;
-      // if (data.vote.is_show_result === 1) {
-      //   this.vote.voteResult = true;
-      // } else if (data.vote.is_show_result === 0) {
-      //   this.vote.voteResult = false;
-      // } else if (data.vote.is_show_participant === 1) {
-      //   this.vote.participants = true;
-      // } else if (data.vote.is_show_participant === 0) {
-      //   this.vote.participants = false;
-      // }
       this.vote.voteResult = data.vote.is_show_result;
       this.vote.participants = data.vote.is_show_participant;
       this.vote.atMost = data.vote.optional;
@@ -419,7 +411,7 @@ export default {
           id: Number(item._jv.id),
           content: item.content
         });
-      });
+      });      
     },
     initThreadResource(target, resource, key = '') {
       resource.forEach(item => {
@@ -710,6 +702,7 @@ export default {
     voteChanges(e) {
       this.voteBeforeList = e;
       this.vote.voteBeforeList = e;
+      // console.log(this.voteBeforeList, 'this.voteBeforeListthis.voteBeforeList');
     }
   }
 };
