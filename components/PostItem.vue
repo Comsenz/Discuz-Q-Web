@@ -74,6 +74,7 @@
           </span>
         </nuxt-link>
         <div class="time">
+          <!-- {{ item.title }} -->
           <div
             v-if="
               item.type === 5 && item.question && item.question.is_answer === 1
