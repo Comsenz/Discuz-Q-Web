@@ -90,8 +90,8 @@ export default {
       this.voteList.splice(index, 1);
       if (this.voteData.length > 0) {
         this.voteData.forEach((item, vIndex) => {
-          const voteIndex = item.id - 1;
-          if (voteIndex === index) {
+          // const voteIndex = item.id - 1;
+          if (vIndex === index) {
             this.voteData.splice(vIndex, 1);
           }
         });
@@ -100,19 +100,21 @@ export default {
     voteInput() {
       this.voteData = [];
       this.voteList.forEach(item => {
-        console.log(item, 'item');
-        if (item.title) {
-          if (item.id) {
-            this.voteData.push({
-              id: item.id,
-              content: item.title
-            });
-          } else {
-            this.voteData.push({
-              content: item.title
-            });
-          }
-        }
+        this.voteData.push({
+          content: item.title
+        });
+        // if (item.title) {
+        //   if (item.id) {
+        //     this.voteData.push({
+        //       id: item.id,
+        //       content: item.title
+        //     });
+        //   } else {
+        //     this.voteData.push({
+        //       content: item.title
+        //     });
+        //   }
+        // }
       });
     }
   }
