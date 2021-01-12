@@ -3,6 +3,8 @@
   "version": "2.1.201112",
   "private": true,
   "scripts": {
+    "pm2": "pm2",
+    "daemon": "pm2 start npm --name \"DiscuzQ\" -- run start",
     "dev": "cross-env SCENE=default nuxt --fix",
     "build:spa": "cross-env SCENE=default nuxt build --spa",
     "build": "cross-env SCENE=default nuxt build",
@@ -30,6 +32,7 @@
     "lodash.merge": "^4.6.2",
     "nuxt": "^2.14.0",
     "nuxt-i18n": "^6.13.7",
+    "pm2": "^4.5.1",
     "qs": "^6.5.2",
     "v-viewer": "^1.5.1",
     "vditor": "^3.5.2",
