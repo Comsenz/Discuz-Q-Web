@@ -31,6 +31,7 @@
           :is-voted="thread.isVoted"
           :category="thread.category || {}"
           :location="location"
+          :lookvote-status="lookvoteStatus"
           @payForThread="showCheckoutCounter = true"
           @voteSuccess="voteSuccess"
         />
@@ -229,7 +230,9 @@ export default {
       articleLoading: false,
       passwordError: false,
       passwordErrorTip: '',
-      findPassword: false
+      findPassword: false,
+      currentLoginId: this.$store.getters['session/get']('userId'),
+      lookvoteStatus: false
     };
   },
   computed: {
@@ -293,7 +296,6 @@ export default {
   },
   methods: {
     getThread() {
-      console.log('重新请求主题接口');
       return this.$store
         .dispatch('jv/get', [
           `threads/${this.threadId}`,
@@ -304,7 +306,9 @@ export default {
             if (data.isDeleted) return this.$router.replace('/error');
             this.articleLoading = false;
             this.thread = data;
-            console.log(data, '这是接口拿到的啊');
+            if (this.currentLoginId === '1' || this.currentLoginId === data.user.id.toString()) {
+              this.lookvoteStatus = true;
+            }
             this.article = data.firstPost;
             this.postId = this.article._jv.id;
             this.initData();

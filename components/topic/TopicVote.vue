@@ -7,12 +7,9 @@
             ? $t("topic.radioVote")
             : $t("topic.checkboxVote", { num: optional })
         }}
-      </h1> 
+      </h1>
+      <div v-if="lookvoteStatus" class="look-player" @click="lookPlayer">{{ $t("topic.lookVotePlayers") }}</div>
     </div>
-    
-    <!--<span>
-      {{ hour ? `${hourString}:${minuteString}:${secondString}` : `${minuteString}:${secondString}` }}
-    </span>-->
     <div>
       <div v-if="voteRes.optional && voteRes.optional === 1">
         <el-radio-group
@@ -87,6 +84,11 @@
         :person-num="voteRes.user_count"
       />
     </div>
+    <vote-player
+      v-if="showCaller"
+      :vote-options="voteRes.options"
+      @close="showCaller = false"
+    />
   </div>
 </template>
 <script>
@@ -100,6 +102,10 @@ export default {
       default: () => {}
     },
     isVoted: {
+      type: Boolean,
+      default: false
+    },
+    lookvoteStatus: {
       type: Boolean,
       default: false
     }
@@ -117,7 +123,8 @@ export default {
       promiseTimer: '',
       remainTime: this.voteRes.end_day * 86400,
       stopStatus: false,
-      optional: 0 // 投票可选项
+      optional: 0, // 投票可选项
+      showCaller: false // 投票参与人弹框
     };
   },
   computed: {
@@ -137,11 +144,11 @@ export default {
   mounted() {
     
     // 验证秒杀开始时间是否过期
-    console.log(dayjs().format(), '当前时间',
-      dayjs().isBefore(dayjs(this.voteRes.created_at)),
-      dayjs().isSame(dayjs(this.voteRes.end_at)));
+    // console.log(dayjs().format(), '当前时间',
+    //   dayjs().isBefore(dayjs(this.voteRes.created_at)),
+    //   dayjs().isSame(dayjs(this.voteRes.end_at)));
     if (!dayjs().isBefore(dayjs(this.voteRes.created_at)) && !dayjs().isSame(dayjs(this.voteRes.end_at))) {
-      console.log('符合判断');
+      // console.log('符合判断');
       // 计算当前时间 - 结束时间
       // let time = Math.abs(new Date().getTime() - parseInt(this.vote.end_at));
       let time = dayjs(this.voteRes.end_at).diff(dayjs());
@@ -156,7 +163,7 @@ export default {
       let m = parseInt((time % 3600) / 60);
       // 秒
       let s = parseInt(time % 60);
-      console.log(d, h, m, s, '时间差');
+      // console.log(d, h, m, s, '时间差');
       const t = setInterval(() => {
         s--;
         if (s < 0) {
@@ -172,7 +179,6 @@ export default {
           h = 23;
         }
         if (d <= 0 && h <= 0 && m <= 0 && s <= 0) {
-          console.log('走了判断');
           this.stopStatus = true;
           // d = h = m = s = 0;
           clearInterval(t); // 清除定时器
@@ -187,8 +193,7 @@ export default {
         // console.log(d, h, m, s, 111111);
       }, 1000);
     } else {
-      console.log('秒杀过期');
-      // this.seckill = [];
+      // console.log('秒杀过期');
     }
   },
   created() {
@@ -227,13 +232,13 @@ export default {
     //   console.log(vote, '---');
     // },
     radioChange(curId) {
-      console.log(curId, '单选');
+      // console.log(curId, '单选');
       this.radioVal = curId;
       this.voteIdData = curId;
       // console.log(this.voteIdData, '单选选中的');
     },
     checkboxChange(curId) {
-      console.log(this.checkboxVal, '多选');
+      // console.log(this.checkboxVal, '多选');
       this.voteIdData = this.checkboxVal.join(',');
       // console.log(this.voteIdData, '多选选中的');
     },
@@ -242,7 +247,7 @@ export default {
     },
     // 参与投票
     voteClick() {
-      console.log(this.checkboxVal.length, this.optional, this.voteIdData, '点击投票');
+      // console.log(this.checkboxVal.length, this.optional, this.voteIdData, '点击投票');
       let voteIds = '';
 
       if (this.checkboxVal.length > 0) {
@@ -263,7 +268,6 @@ export default {
       this.$store.dispatch('jv/get', `votes/cast/${this.voteId}/${voteIds}`).then(res => {
         // console.log(res, '成功了');
         this.$emit('voteSuccess', res);
-        console.log(res, '变了111111111111111111111');
         let total = 0;
         res.options.forEach(item => {
           total += item.count;
@@ -281,7 +285,9 @@ export default {
       }).catch(err => {
         console.log(err, '报错了');
       });
-      console.log(voteIds, 'id');
+    },
+    lookPlayer() {
+      this.showCaller = true;
     }
   }
   
@@ -297,11 +303,15 @@ export default {
   border-radius: 5px;
   .vote-top {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     .tit {
       padding-bottom: 20px;
       font-size: 16px;
       font-weight: normal;
+    }
+    .look-player {
+      color: $color-blue-base;
+      cursor: pointer;
     }
   }
   .count-down {

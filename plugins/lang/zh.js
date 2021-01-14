@@ -466,7 +466,10 @@ export default {
     minute: "分钟",
     allVotePer: "共有{personNum}人投票",
     maximumOptions: '最多可选 {num} 项',
-    pleaseSelectVoteOptions: '请选择投票选项'
+    pleaseSelectVoteOptions: '请选择投票选项',
+    lookVotePlayers: '查看投票参与人',
+    votingMembers: '参与投票的会员',
+    currentOptionsPlayers: '当前投票选项参与者：'
   },
   pay: {
     passwordError: "密码错误请重试",

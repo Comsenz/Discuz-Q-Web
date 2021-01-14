@@ -72,6 +72,7 @@
       v-if="threadType === 7"
       :vote-res="vote"
       :is-voted="isVoted"
+      :lookvote-status="lookvoteStatus"
       @voteSuccess="voteSuccess"
     />
     <nuxt-link
@@ -166,6 +167,10 @@ export default {
       default: () => {}
     },
     isVoted: {
+      type: Boolean,
+      default: false
+    },
+    lookvoteStatus: {
       type: Boolean,
       default: false
     }
