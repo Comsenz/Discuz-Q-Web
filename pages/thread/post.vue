@@ -553,7 +553,7 @@ export default {
       if (this.type === '7' && this.vote.atMost <= 0) {
         return this.$message.warning(this.$t('post.maximumSelectRange'));
       }
-      if (this.type === '7' && this.vote.atMost > this.voteBeforeList.length) {
+      if (this.type === '7' && this.vote.atMost >= this.voteBeforeList.length) {
         return this.$message.warning(this.$t('post.maximumSelectRange'));
       }
       if (this.type === '7' && this.vote.count <= 0) {
